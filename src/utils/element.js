@@ -1,6 +1,5 @@
 import Vue from 'vue'
 
-const DESIGN_DRAFT_WIDTH = 320
 const styleKey = 'commonStyle'
 
 /**
@@ -30,7 +29,6 @@ const styleKey = 'commonStyle'
  }
  */
 export function getComponentsForPropsEditor (elementName) {
-
   const Ctor = Vue.component(elementName)
   // TODO 为何直接 return new Ctor() 并将其赋值给 vuex 的 state 会报错：Cannot convert a Symbol value to a string
   return new Ctor().$options.componentsForPropsEditor
@@ -52,9 +50,7 @@ export function swapZindex (x, y) {
  * @param {Number} px
  */
 function px2Rem (px) {
-  const number = Math.pow(10, 6)
-  const val = (px / (DESIGN_DRAFT_WIDTH / 10)) * number
-  const rem = Math.round(val) / number + 'rem'
+  const rem = (px * 2) / 100 + 'rem'
   return rem
 }
 

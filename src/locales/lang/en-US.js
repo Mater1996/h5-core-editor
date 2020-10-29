@@ -32,7 +32,8 @@ export default {
     sidebar: {
       components: 'Components',
       pages: 'Pages',
-      templates: 'Templates'
+      templates: 'Templates',
+      tree: 'Tree'
     },
     pageManager: {
       title: 'Page {index}',
@@ -60,7 +61,9 @@ export default {
         moveToTop: 'Move To Top',
         moveToBottom: 'Move To Bottom',
         moveUp: 'Move Up',
-        moveDown: 'Move Down'
+        moveDown: 'Move Down',
+        showOnlyButton: 'showOnlyButton',
+        showExcludePicture: 'showExcludePicture'
       }
     },
     fixedTool: {
@@ -68,6 +71,7 @@ export default {
       redo: 'Redo{hotkey}',
       preview: 'Preview',
       copyCurrentPage: 'CopyCurrentPage',
+      copyCurrentElement: 'copyCurrentElement',
       importPSD: 'Import PSD',
       zoomIn: 'Zoom In{hotkey}',
       zoomOut: 'Zoom Out{hotkey}',
@@ -79,7 +83,7 @@ export default {
         animation: 'Animation',
         action: 'Action',
         script: 'Script',
-        background: 'Background'
+        page: 'Page'
       },
       animation: {
         add: 'Add',
@@ -98,7 +102,7 @@ export default {
     },
     tip: {
       componentUsage: 'Tip: just {0} on component',
-      click: 'click'
+      click: 'click/drag'
     }
   }
 }

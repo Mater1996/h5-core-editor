@@ -1,4 +1,4 @@
-import { loadLanguageAsync } from '@core-editor/locales'
+import { loadLanguageAsync } from '@/locales'
 
 const i18n = {
   namespaced: true,

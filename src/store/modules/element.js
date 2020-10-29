@@ -1,11 +1,11 @@
-import Element from '../../components/core/models/element'
-import { swapZindex, getVM } from '@core-editor/utils/element'
+import Element from 'core/models/element'
+import { swapZindex, getVM } from '@/utils/element'
 
 // actions
 export const actions = {
   setEditingElement ({ commit }, payload) {
     commit('setEditingElement', payload)
-    payload && window.getEditorApp.$emit('setEditingElement', payload)
+    payload && window.EditorApp.$emit('setEditingElement', payload)
   },
   setElementPosition ({ commit }, payload) {
     commit('setElementCommonStyle', payload)
@@ -39,21 +39,13 @@ export const mutations = {
 
     switch (type) {
       case 'add':
-        {
-          console.log('editor add')
-          // value.name => pluginName
-          const { name } = value
-          console.log(getVM)
-          const vm = getVM(value.name)
-          const props = vm.$options.props
-          value = {
-            ...value,
-            zindex: len + 1
-          }
-          const element = new Element({ name, props })
-          elements.push(element)
-          break
-        }
+        const vm = getVM(value.name)
+        vm.$options.shortcutProps = value.shortcutProps
+        // 用于拖拽结束，确定最终放置的位置
+        vm.$options.dragStyle = value.dragStyle // {left: Number, top: Number}
+        const element = new Element(vm.$options)
+        elements.push(element)
+        break
       case 'copy':
         elements.push(state.editingElement.clone({ zindex: len + 1 }))
         break
@@ -83,16 +75,14 @@ export const mutations = {
         break
       case 'addZindex':
       case 'minusZindex':
-        {
-          const maxZindex = elements.length
-          const eleZindex = editingElement.commonStyle.zindex
-          if (eleZindex === maxZindex || eleZindex === 1) return
+        const maxZindex = elements.length
+        const eleZindex = editingElement.commonStyle.zindex
+        if (eleZindex === maxZindex || eleZindex === 1) return
 
-          const flag = type === 'addZindex' ? 1 : -1
-          const swapElement = elements.find(ele => ele.commonStyle.zindex === eleZindex + flag * 1)
-          swapZindex(editingElement, swapElement)
-          break
-        }
+        const flag = type === 'addZindex' ? 1 : -1
+        const swapElement = elements.find(ele => ele.commonStyle.zindex === eleZindex + flag * 1)
+        swapZindex(editingElement, swapElement)
+        break
       default:
     }
   },

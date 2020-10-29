@@ -2,11 +2,11 @@
  * @Author: ly525
  * @Date: 2019-11-24 18:51:58
  * @LastEditors: ly525
- * @LastEditTime: 2020-04-18 00:30:40
- * @FilePath: /luban-h5/front-end/h5/src/locales/lang/zh-CN.js
+ * @LastEditTime: 2020-10-13 01:29:21
+ * @FilePath: /h5/src/locales/lang/zh-CN.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
- * @Copyright 2018 - 2019 luban-h5. All Rights Reserved
+ * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
 export default {
   app: {
@@ -42,7 +42,8 @@ export default {
     sidebar: {
       components: '组件列表',
       pages: '页面管理',
-      templates: '模板'
+      templates: '模板',
+      tree: '组件树'
     },
     pageManager: {
       title: '第{index}页面',
@@ -69,7 +70,9 @@ export default {
         moveToTop: '置顶',
         moveToBottom: '置底',
         moveUp: '上移',
-        moveDown: '下移'
+        moveDown: '下移',
+        showOnlyButton: '只有按钮才显示该选项',
+        showExcludePicture: '除了图片都显示该选项'
       }
     },
     fixedTool: {
@@ -77,6 +80,7 @@ export default {
       redo: '重做{hotkey}',
       preview: '预览',
       copyCurrentPage: '复制当前页面',
+      copyCurrentElement: '复制当前元素',
       importPSD: '导入PSD',
       zoomIn: '缩小{hotkey}',
       zoomOut: '放大{hotkey}',
@@ -88,7 +92,7 @@ export default {
         animation: '动画',
         action: '动作',
         script: '脚本',
-        background: '背景'
+        page: '页面'
       },
       animation: {
         add: '添加动画',
@@ -107,7 +111,7 @@ export default {
     },
     tip: {
       componentUsage: '使用提示: {0} 组件即可',
-      click: '点击'
+      click: '点击或拖拽'
     }
   }
 }

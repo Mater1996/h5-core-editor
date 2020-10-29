@@ -1,17 +1,17 @@
 /*
  * @Author: ly525
  * @Date: 2019-11-24 18:51:58
- * @LastEditors  : ly525
- * @LastEditTime : 2020-01-09 21:57:30
- * @FilePath: /luban-h5/front-end/h5/src/mixins/animation.js
+ * @LastEditors: ly525
+ * @LastEditTime: 2020-10-10 23:35:49
+ * @FilePath: /luban-h5/front-end/h5/src/components/core/mixins/animation.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description:
- * @Copyright 2018 - 2019 luban-h5. All Rights Reserved
+ * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
 // https://stackoverflow.com/questions/26874769/getcomputedstyle-and-csstext-in-ie-and-firefox
 function getComputedCSSText (style) {
   let cssText = ''
-  for (const attr in style) {
+  for (let attr in style) {
     // m <?> matched
     // #!en: hump to line
     // #!zh: 驼峰转下划线
@@ -24,11 +24,11 @@ export default {
   methods: {
     runAnimations () {
       const animationQueue = this.animations || this.element.animations || []
-      const len = animationQueue.length
+      let len = animationQueue.length
       if (len === 0) return
 
-      const that = this
-      const parentNode = this.$el
+      let that = this
+      let parentNode = this.$el
       let animIdx = 0
       const oldStyle = that.element.getStyle({ position: 'absolute' })
       runAnimation()
@@ -36,7 +36,7 @@ export default {
       function runAnimation () {
         if (animIdx < len) {
           const animation = animationQueue[animIdx]
-          const animationStyle = {
+          let animationStyle = {
             animationName: animation.type,
             animationDuration: `${animation.duration}s`,
             animationIterationCount: animation.infinite ? 'infinite' : animation.interationCount,
@@ -55,7 +55,7 @@ export default {
   },
   created () {
     const that = this
-    window.getEditorApp && window.getEditorApp.$on('RUN_ANIMATIONS', () => {
+    window.EditorApp && window.EditorApp.$on('RUN_ANIMATIONS', () => {
       that.runAnimations()
       // if (that.active) {
       //   that.runAnimations()
