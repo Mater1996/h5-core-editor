@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-10-29 09:43:11
+ * @LastEditTime : 2020-10-30 11:01:13
  * @Description :
  */
 import Vue from 'vue'
@@ -21,7 +21,7 @@ import store from 'core/store/index'
 import i18n from 'core/locales/index'
 import '@/plugins/index'
 
-window.EditorApp = new Vue() // event bus
+window.EditorApp = new Vue()
 
 const CoreEditor = {
   name: 'CoreEditor',
@@ -74,14 +74,14 @@ const CoreEditor = {
   }
 }
 
-// Vue install, Vue.use 会调用该方法。
 CoreEditor.install = (Vue, opts = {}) => {
   Vue.component(CoreEditor.name, CoreEditor)
 }
 
-// 通过script标签引入Vue的环境
 if (typeof window !== 'undefined' && window.Vue) {
   CoreEditor.install(window.Vue)
 }
+
+// test
 
 export default CoreEditor
