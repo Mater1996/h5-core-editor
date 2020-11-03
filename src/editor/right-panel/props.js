@@ -14,7 +14,9 @@ import {
   Select
 } from "ant-design-vue";
 import colorsPanel from "@/support/colors-panel";
-import lbsTextAlign from '@luban-h5/lbs-text-align'
+import lbsTextAlign from '@/support/text-align'
+import lbsExcelEditor from '@/support/excel'
+import lbpSlideCustomEditor from '@/plugins/lbp-slide__editor'
 
 export default {
   components: {
@@ -31,7 +33,9 @@ export default {
     [InputNumber.name]: InputNumber,
     [Select.name]: Select,
     colorsPanel,
-    lbsTextAlign
+    lbsTextAlign,
+    lbsExcelEditor,
+    lbpSlideCustomEditor
   },
   data: () => ({
     loadCustomEditorFlag: false
@@ -63,11 +67,10 @@ export default {
     loadCustomEditorForPlugin() {
       this.loadCustomEditorFlag = false;
       if (!this.editingElement) return;
-
       if (Vue.component(this.customEditorName)) {
         this.loadCustomEditorFlag = true;
       } else {
-        // import(`core/plugins/${this.editingElement.name}__editor`).then(component => {
+        // import(`../../plugins/${this.editingElement.name}__editor.js`).then(component => {
         //   this.loadCustomEditorFlag = true
         //   Vue.component(this.customEditorName, component.default)
         // }).catch(_err => {

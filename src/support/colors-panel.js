@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-03 10:20:06
+ * @LastEditTime : 2020-11-03 16:51:42
  * @Description :
  */
 export default {
@@ -12,9 +12,6 @@ export default {
       type: [Array, String],
       default: () => []
     }
-  },
-  created() {
-    console.log(this.value);
   },
   render() {
     return (

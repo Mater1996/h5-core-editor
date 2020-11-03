@@ -1,5 +1,5 @@
 import Vue from 'vue'
-// import LbpButton from '@luban-h5/lbc-button'
+
 import LbpButton from 'core/plugins/lbp-button'
 import LbpPicture from 'core/plugins/lbp-picture'
 import LbpVideo from 'core/plugins/lbp-video'

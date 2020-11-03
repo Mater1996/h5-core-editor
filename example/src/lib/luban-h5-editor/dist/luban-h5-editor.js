@@ -6,6 +6,8 @@
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
+  var Spreadsheet__default = /*#__PURE__*/_interopDefaultLegacy(Spreadsheet);
+  var Papa__default = /*#__PURE__*/_interopDefaultLegacy(Papa);
   var Vuex__default = /*#__PURE__*/_interopDefaultLegacy(Vuex);
   var hotkeys__default = /*#__PURE__*/_interopDefaultLegacy(hotkeys);
   var Vue__default = /*#__PURE__*/_interopDefaultLegacy(Vue);
@@ -26,10 +28,6 @@
   });
 
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
-
-  function getDefaultExportFromCjs (x) {
-  	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-  }
 
   function createCommonjsModule(fn, basedir, module) {
   	return module = {
@@ -1587,11 +1585,210 @@
     }
   });
 
+  var validFileMimeTypes = ['text/csv', 'text/x-csv', 'application/vnd.ms-excel', 'text/plain'];
+  var CsvImport = {
+    name: 'lbs-csv-import',
+    methods: {
+      checkMimeType: function checkMimeType(type) {
+        return validFileMimeTypes.indexOf(type) > -1;
+      },
+      validFileMimeType: function validFileMimeType(e) {
+        e.preventDefault();
+        var file = this.$refs.csv.files[0];
+        var isValidFileMimeType = this.checkMimeType(file.type);
+        if (isValidFileMimeType) this.loadFile();
+      },
+      loadFile: function loadFile() {
+        var _this = this;
+
+        /**
+         * output {String}
+            "columnA,columnB,columnC
+            "Susan",41,a
+            "Mike",5,b
+            "Jake",33,c
+            "Jill",30,d
+            "
+          * csv {Object}
+          {
+            "data": [
+              ["columnA", "columnB", "columnC"],
+              ["Susan", "41", "a"],
+              ["Mike", "5", "b"],
+              ["Jake", "33", "c"],
+              ["Jill", "30", "d"],
+            ],
+            "errors": [],
+            "meta": {
+              "delimiter": ",",
+              "linebreak": "\n",
+              "aborted": false,
+              "truncated": false,
+              "cursor": 72
+            }
+          }
+         */
+        this.readFile(function (output) {
+          // const sample = Papa.parse(output, { preview: 2, skipEmptyLines: true })
+          var csv = Papa__default['default'].parse(output, {
+            skipEmptyLines: true
+          });
+
+          _this.$emit('parse', csv);
+
+          _this.$refs.input.value = '';
+        });
+      },
+      readFile: function readFile(callback) {
+        var file = this.$refs.csv.files[0];
+
+        if (file) {
+          var reader = new FileReader();
+          reader.readAsText(file, 'UTF-8');
+
+          reader.onload = function (evt) {
+            callback(evt.target.result);
+          };
+
+          reader.onerror = function () {};
+        }
+      }
+    },
+    render: function render() {
+      var h = arguments[0];
+      var randomId = +new Date();
+      return h("div", {
+        "style": "height: 24px;"
+      }, [h("label", {
+        "attrs": {
+          "for": randomId
+        },
+        "class": "ant-btn ant-btn-primary ant-btn-sm"
+      }, ["\u9009\u62E9\u5BFC\u5165 csv \u6587\u4EF6"]), h("input", {
+        "ref": "csv",
+        "attrs": {
+          "id": randomId,
+          "type": "file",
+          "name": "csv"
+        },
+        "on": {
+          "change": this.validFileMimeType
+        },
+        "style": "visibility:hidden;"
+      }, ["xxxx"])]);
+    }
+  };
+
+  /**
+   * 后续学习资料：https://github.com/myliang/x-spreadsheet/issues/159
+   */
+  //   [1, 2, 3, 4],
+  //   [5, 6, 7, 8],
+  //   [9, 10, 11, 12]
+  // ]
+
+  var lbsExcelEditor = {
+    name: 'lbs-excel-editor',
+    props: {
+      value: {
+        type: Array,
+        // default: () => getDefaultTableMatrix()
+        default: function _default() {
+          return [];
+        }
+      },
+      formatter: {
+        type: Function,
+        default: Parser.excel2BinaryMatrix
+      }
+    },
+    computed: {
+      innerItems: {
+        get: function get() {
+          return Parser.binaryMatrix2excel(this.value);
+        },
+        set: function set(val) {
+          this.$emit('input', val);
+        }
+      }
+    },
+    watch: {
+      value: function value() {
+        this.refreshSheet({
+          rows: this.innerItems
+        });
+      }
+    },
+    methods: {
+      parseCSV: function parseCSV(csv) {
+        var sheetData = Parser.binaryMatrix2excel(csv.data);
+        this.$emit('change', csv.data);
+        this.refreshSheet({
+          rows: sheetData
+        });
+      },
+
+      /**
+       *
+       * @param {Object} data { rows }
+       */
+      refreshSheet: function refreshSheet(data) {
+        this.sheet.loadData(data);
+        this.sheet.reRender();
+      },
+      initSheet: function initSheet() {
+        var _this = this;
+
+        var ele = this.$refs.excel;
+        return this.sheet || new Spreadsheet__default['default'](ele, {
+          showToolbar: false,
+          showGrid: true,
+          showContextmenu: true // view: {
+          //   height: () => 400,
+          //   width: () => ele.getBoundingClientRect().width
+          // }
+
+        }).change(function (excelData) {
+          // console.log('----------')
+          // console.log(excelData)
+          // console.log(this.formatter(excelData))
+          // console.log('----------')
+          _this.$emit('change', _this.formatter(excelData)
+          /** BinaryMatrix */
+          ); // save data to db
+
+        });
+      }
+    },
+    // 注意(看源码)： 如果不调用 data 或 props 的某个值，则 render 不会执行。watcher 的更新时机是什么？？
+    render: function render() {
+      var h = arguments[0];
+      return h("div", {
+        "style": "max-height: 320px;overflow:scroll;"
+      }, [h("div", {
+        "style": "line-height:2;"
+      }, [h("span", ["\u65B9\u68481: ", h(CsvImport, {
+        "on": {
+          "parse": this.parseCSV
+        }
+      })]), h("span", ["\u65B9\u68482: \u76F4\u63A5\u7F16\u8F91 Excel"]), h("div", {
+        "ref": "excel",
+        "style": "margin-right: 12px;width: 100%;overflow: scroll"
+      })])]);
+    },
+    mounted: function mounted() {
+      this.sheet = this.initSheet();
+      this.refreshSheet({
+        rows: this.innerItems
+      });
+    }
+  };
+
   /*
    * @author : Mater
    * @Email : bxh8640@gmail.com
    * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-03 10:20:06
+   * @LastEditTime : 2020-11-03 16:51:42
    * @Description :
    */
   var colorsPanel = {
@@ -1603,9 +1800,6 @@
           return [];
         }
       }
-    },
-    created: function created() {
-      console.log(this.value);
     },
     render: function render() {
       var _this = this;
@@ -2593,20 +2787,187 @@
 
   var EventBus = new Vue__default['default'](); // event bus
 
-  var lbsTextAlign_umd_min = createCommonjsModule(function (module, exports) {
-  (function(t,n){module.exports=n(Vue__default['default']);})("undefined"!==typeof self?self:commonjsGlobal,(function(t){return function(t){var n={};function e(r){if(n[r])return n[r].exports;var o=n[r]={i:r,l:!1,exports:{}};return t[r].call(o.exports,o,o.exports,e),o.l=!0,o.exports}return e.m=t,e.c=n,e.d=function(t,n,r){e.o(t,n)||Object.defineProperty(t,n,{enumerable:!0,get:r});},e.r=function(t){"undefined"!==typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0});},e.t=function(t,n){if(1&n&&(t=e(t)),8&n)return t;if(4&n&&"object"===typeof t&&t&&t.__esModule)return t;var r=Object.create(null);if(e.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:t}),2&n&&"string"!=typeof t)for(var o in t)e.d(r,o,function(n){return t[n]}.bind(null,o));return r},e.n=function(t){var n=t&&t.__esModule?function(){return t["default"]}:function(){return t};return e.d(n,"a",n),n},e.o=function(t,n){return Object.prototype.hasOwnProperty.call(t,n)},e.p="",e(e.s="fb15")}({"06cf":function(t,n,e){var r=e("83ab"),o=e("d1e7"),c=e("5c6c"),i=e("fc6a"),u=e("c04e"),a=e("5135"),f=e("0cfb"),s=Object.getOwnPropertyDescriptor;n.f=r?s:function(t,n){if(t=i(t),n=u(n,!0),f)try{return s(t,n)}catch(e){}if(a(t,n))return c(!o.f.call(t,n),t[n])};},"0cfb":function(t,n,e){var r=e("83ab"),o=e("d039"),c=e("cc12");t.exports=!r&&!o((function(){return 7!=Object.defineProperty(c("div"),"a",{get:function(){return 7}}).a}));},"1be4":function(t,n,e){var r=e("d066");t.exports=r("document","documentElement");},"1c0b":function(t,n){t.exports=function(t){if("function"!=typeof t)throw TypeError(String(t)+" is not a function");return t};},"1d80":function(t,n){t.exports=function(t){if(void 0==t)throw TypeError("Can't call method on "+t);return t};},"1dde":function(t,n,e){var r=e("d039"),o=e("b622"),c=e("60ae"),i=o("species");t.exports=function(t){return c>=51||!r((function(){var n=[],e=n.constructor={};return e[i]=function(){return {foo:1}},1!==n[t](Boolean).foo}))};},"23cb":function(t,n,e){var r=e("a691"),o=Math.max,c=Math.min;t.exports=function(t,n){var e=r(t);return e<0?o(e+n,0):c(e,n)};},"23e7":function(t,n,e){var r=e("da84"),o=e("06cf").f,c=e("9112"),i=e("6eeb"),u=e("ce4e"),a=e("e893"),f=e("94ca");t.exports=function(t,n){var e,s,p,l,d,v,b=t.target,y=t.global,g=t.stat;if(s=y?r:g?r[b]||u(b,{}):(r[b]||{}).prototype,s)for(p in n){if(d=n[p],t.noTargetGet?(v=o(s,p),l=v&&v.value):l=s[p],e=f(y?p:b+(g?".":"#")+p,t.forced),!e&&void 0!==l){if(typeof d===typeof l)continue;a(d,l);}(t.sham||l&&l.sham)&&c(d,"sham",!0),i(s,p,d,t);}};},"241c":function(t,n,e){var r=e("ca84"),o=e("7839"),c=o.concat("length","prototype");n.f=Object.getOwnPropertyNames||function(t){return r(t,c)};},"37e8":function(t,n,e){var r=e("83ab"),o=e("9bf2"),c=e("825a"),i=e("df75");t.exports=r?Object.defineProperties:function(t,n){c(t);var e,r=i(n),u=r.length,a=0;while(u>a)o.f(t,e=r[a++],n[e]);return t};},"3bbe":function(t,n,e){var r=e("861d");t.exports=function(t){if(!r(t)&&null!==t)throw TypeError("Can't set "+String(t)+" as a prototype");return t};},"428f":function(t,n,e){t.exports=e("da84");},"44ad":function(t,n,e){var r=e("d039"),o=e("c6b6"),c="".split;t.exports=r((function(){return !Object("z").propertyIsEnumerable(0)}))?function(t){return "String"==o(t)?c.call(t,""):Object(t)}:Object;},4930:function(t,n,e){var r=e("d039");t.exports=!!Object.getOwnPropertySymbols&&!r((function(){return !String(Symbol())}));},"4d64":function(t,n,e){var r=e("fc6a"),o=e("50c4"),c=e("23cb"),i=function(t){return function(n,e,i){var u,a=r(n),f=o(a.length),s=c(i,f);if(t&&e!=e){while(f>s)if(u=a[s++],u!=u)return !0}else for(;f>s;s++)if((t||s in a)&&a[s]===e)return t||s||0;return !t&&-1}};t.exports={includes:i(!0),indexOf:i(!1)};},"50c4":function(t,n,e){var r=e("a691"),o=Math.min;t.exports=function(t){return t>0?o(r(t),9007199254740991):0};},5135:function(t,n){var e={}.hasOwnProperty;t.exports=function(t,n){return e.call(t,n)};},5692:function(t,n,e){var r=e("c430"),o=e("c6cd");(t.exports=function(t,n){return o[t]||(o[t]=void 0!==n?n:{})})("versions",[]).push({version:"3.3.4",mode:r?"pure":"global",copyright:"© 2019 Denis Pushkarev (zloirock.ru)"});},"56ef":function(t,n,e){var r=e("d066"),o=e("241c"),c=e("7418"),i=e("825a");t.exports=r("Reflect","ownKeys")||function(t){var n=o.f(i(t)),e=c.f;return e?n.concat(e(t)):n};},5899:function(t,n){t.exports="\t\n\v\f\r                　\u2028\u2029\ufeff";},"58a8":function(t,n,e){var r=e("1d80"),o=e("5899"),c="["+o+"]",i=RegExp("^"+c+c+"*"),u=RegExp(c+c+"*$"),a=function(t){return function(n){var e=String(r(n));return 1&t&&(e=e.replace(i,"")),2&t&&(e=e.replace(u,"")),e}};t.exports={start:a(1),end:a(2),trim:a(3)};},"5c6c":function(t,n){t.exports=function(t,n){return {enumerable:!(1&t),configurable:!(2&t),writable:!(4&t),value:n}};},"60ae":function(t,n,e){var r,o,c=e("da84"),i=e("b39a"),u=c.process,a=u&&u.versions,f=a&&a.v8;f?(r=f.split("."),o=r[0]+r[1]):i&&(r=i.match(/Chrome\/(\d+)/),r&&(o=r[1])),t.exports=o&&+o;},"65f0":function(t,n,e){var r=e("861d"),o=e("e8b5"),c=e("b622"),i=c("species");t.exports=function(t,n){var e;return o(t)&&(e=t.constructor,"function"!=typeof e||e!==Array&&!o(e.prototype)?r(e)&&(e=e[i],null===e&&(e=void 0)):e=void 0),new(void 0===e?Array:e)(0===n?0:n)};},"69f3":function(t,n,e){var r,o,c,i=e("7f9a"),u=e("da84"),a=e("861d"),f=e("9112"),s=e("5135"),p=e("f772"),l=e("d012"),d=u.WeakMap,v=function(t){return c(t)?o(t):r(t,{})},b=function(t){return function(n){var e;if(!a(n)||(e=o(n)).type!==t)throw TypeError("Incompatible receiver, "+t+" required");return e}};if(i){var y=new d,g=y.get,h=y.has,x=y.set;r=function(t,n){return x.call(y,t,n),n},o=function(t){return g.call(y,t)||{}},c=function(t){return h.call(y,t)};}else {var m=p("state");l[m]=!0,r=function(t,n){return f(t,m,n),n},o=function(t){return s(t,m)?t[m]:{}},c=function(t){return s(t,m)};}t.exports={set:r,get:o,has:c,enforce:v,getterFor:b};},"6eeb":function(t,n,e){var r=e("da84"),o=e("5692"),c=e("9112"),i=e("5135"),u=e("ce4e"),a=e("9e81"),f=e("69f3"),s=f.get,p=f.enforce,l=String(a).split("toString");o("inspectSource",(function(t){return a.call(t)})),(t.exports=function(t,n,e,o){var a=!!o&&!!o.unsafe,f=!!o&&!!o.enumerable,s=!!o&&!!o.noTargetGet;"function"==typeof e&&("string"!=typeof n||i(e,"name")||c(e,"name",n),p(e).source=l.join("string"==typeof n?n:"")),t!==r?(a?!s&&t[n]&&(f=!0):delete t[n],f?t[n]=e:c(t,n,e)):f?t[n]=e:u(n,e);})(Function.prototype,"toString",(function(){return "function"==typeof this&&s(this).source||a.call(this)}));},7156:function(t,n,e){var r=e("861d"),o=e("d2bb");t.exports=function(t,n,e){var c,i;return o&&"function"==typeof(c=n.constructor)&&c!==e&&r(i=c.prototype)&&i!==e.prototype&&o(t,i),t};},7418:function(t,n){n.f=Object.getOwnPropertySymbols;},7839:function(t,n){t.exports=["constructor","hasOwnProperty","isPrototypeOf","propertyIsEnumerable","toLocaleString","toString","valueOf"];},"7b0b":function(t,n,e){var r=e("1d80");t.exports=function(t){return Object(r(t))};},"7c73":function(t,n,e){var r=e("825a"),o=e("37e8"),c=e("7839"),i=e("d012"),u=e("1be4"),a=e("cc12"),f=e("f772"),s=f("IE_PROTO"),p="prototype",l=function(){},d=function(){var t,n=a("iframe"),e=c.length,r="<",o="script",i=">",f="java"+o+":";n.style.display="none",u.appendChild(n),n.src=String(f),t=n.contentWindow.document,t.open(),t.write(r+o+i+"document.F=Object"+r+"/"+o+i),t.close(),d=t.F;while(e--)delete d[p][c[e]];return d()};t.exports=Object.create||function(t,n){var e;return null!==t?(l[p]=r(t),e=new l,l[p]=null,e[s]=t):e=d(),void 0===n?e:o(e,n)},i[s]=!0;},"7f9a":function(t,n,e){var r=e("da84"),o=e("9e81"),c=r.WeakMap;t.exports="function"===typeof c&&/native code/.test(o.call(c));},"825a":function(t,n,e){var r=e("861d");t.exports=function(t){if(!r(t))throw TypeError(String(t)+" is not an object");return t};},"83ab":function(t,n,e){var r=e("d039");t.exports=!r((function(){return 7!=Object.defineProperty({},"a",{get:function(){return 7}}).a}));},"861d":function(t,n){t.exports=function(t){return "object"===typeof t?null!==t:"function"===typeof t};},"8bbf":function(n,e){n.exports=t;},"90e3":function(t,n){var e=0,r=Math.random();t.exports=function(t){return "Symbol("+String(void 0===t?"":t)+")_"+(++e+r).toString(36)};},9112:function(t,n,e){var r=e("83ab"),o=e("9bf2"),c=e("5c6c");t.exports=r?function(t,n,e){return o.f(t,n,c(1,e))}:function(t,n,e){return t[n]=e,t};},"94ca":function(t,n,e){var r=e("d039"),o=/#|\.prototype\./,c=function(t,n){var e=u[i(t)];return e==f||e!=a&&("function"==typeof n?r(n):!!n)},i=c.normalize=function(t){return String(t).replace(o,".").toLowerCase()},u=c.data={},a=c.NATIVE="N",f=c.POLYFILL="P";t.exports=c;},"9bf2":function(t,n,e){var r=e("83ab"),o=e("0cfb"),c=e("825a"),i=e("c04e"),u=Object.defineProperty;n.f=r?u:function(t,n,e){if(c(t),n=i(n,!0),c(e),o)try{return u(t,n,e)}catch(r){}if("get"in e||"set"in e)throw TypeError("Accessors not supported");return "value"in e&&(t[n]=e.value),t};},"9e81":function(t,n,e){var r=e("5692");t.exports=r("native-function-to-string",Function.toString);},a691:function(t,n){var e=Math.ceil,r=Math.floor;t.exports=function(t){return isNaN(t=+t)?0:(t>0?r:e)(t)};},a9e3:function(t,n,e){var r=e("83ab"),o=e("da84"),c=e("94ca"),i=e("6eeb"),u=e("5135"),a=e("c6b6"),f=e("7156"),s=e("c04e"),p=e("d039"),l=e("7c73"),d=e("241c").f,v=e("06cf").f,b=e("9bf2").f,y=e("58a8").trim,g="Number",h=o[g],x=h.prototype,m=a(l(x))==g,w=function(t){var n,e,r,o,c,i,u,a,f=s(t,!1);if("string"==typeof f&&f.length>2)if(f=y(f),n=f.charCodeAt(0),43===n||45===n){if(e=f.charCodeAt(2),88===e||120===e)return NaN}else if(48===n){switch(f.charCodeAt(1)){case 66:case 98:r=2,o=49;break;case 79:case 111:r=8,o=55;break;default:return +f}for(c=f.slice(2),i=c.length,u=0;u<i;u++)if(a=c.charCodeAt(u),a<48||a>o)return NaN;return parseInt(c,r)}return +f};if(c(g,!h(" 0o1")||!h("0b1")||h("+0x1"))){for(var O,j=function(t){var n=arguments.length<1?0:t,e=this;return e instanceof j&&(m?p((function(){x.valueOf.call(e);})):a(e)!=g)?f(new h(w(n)),e,j):w(n)},S=r?d(h):"MAX_VALUE,MIN_VALUE,NaN,NEGATIVE_INFINITY,POSITIVE_INFINITY,EPSILON,isFinite,isInteger,isNaN,isSafeInteger,MAX_SAFE_INTEGER,MIN_SAFE_INTEGER,parseFloat,parseInt,isInteger".split(","),_=0;S.length>_;_++)u(h,O=S[_])&&!u(j,O)&&b(j,O,v(h,O));j.prototype=x,x.constructor=j,i(o,g,j);}},b0c0:function(t,n,e){var r=e("83ab"),o=e("9bf2").f,c=Function.prototype,i=c.toString,u=/^\s*function ([^ (]*)/,a="name";!r||a in c||o(c,a,{configurable:!0,get:function(){try{return i.call(this).match(u)[1]}catch(t){return ""}}});},b39a:function(t,n,e){var r=e("d066");t.exports=r("navigator","userAgent")||"";},b622:function(t,n,e){var r=e("da84"),o=e("5692"),c=e("90e3"),i=e("4930"),u=r.Symbol,a=o("wks");t.exports=function(t){return a[t]||(a[t]=i&&u[t]||(i?u:c)("Symbol."+t))};},b727:function(t,n,e){var r=e("f8c2"),o=e("44ad"),c=e("7b0b"),i=e("50c4"),u=e("65f0"),a=[].push,f=function(t){var n=1==t,e=2==t,f=3==t,s=4==t,p=6==t,l=5==t||p;return function(d,v,b,y){for(var g,h,x=c(d),m=o(x),w=r(v,b,3),O=i(m.length),j=0,S=y||u,_=n?S(d,O):e?S(d,0):void 0;O>j;j++)if((l||j in m)&&(g=m[j],h=w(g,j,x),t))if(n)_[j]=h;else if(h)switch(t){case 3:return !0;case 5:return g;case 6:return j;case 2:a.call(_,g);}else if(s)return !1;return p?-1:f||s?s:_}};t.exports={forEach:f(0),map:f(1),filter:f(2),some:f(3),every:f(4),find:f(5),findIndex:f(6)};},c04e:function(t,n,e){var r=e("861d");t.exports=function(t,n){if(!r(t))return t;var e,o;if(n&&"function"==typeof(e=t.toString)&&!r(o=e.call(t)))return o;if("function"==typeof(e=t.valueOf)&&!r(o=e.call(t)))return o;if(!n&&"function"==typeof(e=t.toString)&&!r(o=e.call(t)))return o;throw TypeError("Can't convert object to primitive value")};},c430:function(t,n){t.exports=!1;},c6b6:function(t,n){var e={}.toString;t.exports=function(t){return e.call(t).slice(8,-1)};},c6cd:function(t,n,e){var r=e("da84"),o=e("ce4e"),c="__core-js_shared__",i=r[c]||o(c,{});t.exports=i;},c8ba:function(t,n){var e;e=function(){return this}();try{e=e||new Function("return this")();}catch(r){"object"===typeof window&&(e=window);}t.exports=e;},ca84:function(t,n,e){var r=e("5135"),o=e("fc6a"),c=e("4d64").indexOf,i=e("d012");t.exports=function(t,n){var e,u=o(t),a=0,f=[];for(e in u)!r(i,e)&&r(u,e)&&f.push(e);while(n.length>a)r(u,e=n[a++])&&(~c(f,e)||f.push(e));return f};},cc12:function(t,n,e){var r=e("da84"),o=e("861d"),c=r.document,i=o(c)&&o(c.createElement);t.exports=function(t){return i?c.createElement(t):{}};},ce4e:function(t,n,e){var r=e("da84"),o=e("9112");t.exports=function(t,n){try{o(r,t,n);}catch(e){r[t]=n;}return n};},d012:function(t,n){t.exports={};},d039:function(t,n){t.exports=function(t){try{return !!t()}catch(n){return !0}};},d066:function(t,n,e){var r=e("428f"),o=e("da84"),c=function(t){return "function"==typeof t?t:void 0};t.exports=function(t,n){return arguments.length<2?c(r[t])||c(o[t]):r[t]&&r[t][n]||o[t]&&o[t][n]};},d1e7:function(t,n,e){var r={}.propertyIsEnumerable,o=Object.getOwnPropertyDescriptor,c=o&&!r.call({1:2},1);n.f=c?function(t){var n=o(this,t);return !!n&&n.enumerable}:r;},d2bb:function(t,n,e){var r=e("825a"),o=e("3bbe");t.exports=Object.setPrototypeOf||("__proto__"in{}?function(){var t,n=!1,e={};try{t=Object.getOwnPropertyDescriptor(Object.prototype,"__proto__").set,t.call(e,[]),n=e instanceof Array;}catch(c){}return function(e,c){return r(e),o(c),n?t.call(e,c):e.__proto__=c,e}}():void 0);},d81d:function(t,n,e){var r=e("23e7"),o=e("b727").map,c=e("1dde");r({target:"Array",proto:!0,forced:!c("map")},{map:function(t){return o(this,t,arguments.length>1?arguments[1]:void 0)}});},da84:function(t,n,e){(function(n){var e=function(t){return t&&t.Math==Math&&t};t.exports=e("object"==typeof globalThis&&globalThis)||e("object"==typeof window&&window)||e("object"==typeof self&&self)||e("object"==typeof n&&n)||Function("return this")();}).call(this,e("c8ba"));},df75:function(t,n,e){var r=e("ca84"),o=e("7839");t.exports=Object.keys||function(t){return r(t,o)};},e893:function(t,n,e){var r=e("5135"),o=e("56ef"),c=e("06cf"),i=e("9bf2");t.exports=function(t,n){for(var e=o(n),u=i.f,a=c.f,f=0;f<e.length;f++){var s=e[f];r(t,s)||u(t,s,a(n,s));}};},e8b5:function(t,n,e){var r=e("c6b6");t.exports=Array.isArray||function(t){return "Array"==r(t)};},f6fd:function(t,n){(function(t){var n="currentScript",e=t.getElementsByTagName("script");n in t||Object.defineProperty(t,n,{get:function(){try{throw new Error}catch(r){var t,n=(/.*at [^\(]*\((.*):.+:.+\)$/gi.exec(r.stack)||[!1])[1];for(t in e)if(e[t].src==n||"interactive"==e[t].readyState)return e[t];return null}}});})(document);},f772:function(t,n,e){var r=e("5692"),o=e("90e3"),c=r("keys");t.exports=function(t){return c[t]||(c[t]=o(t))};},f8c2:function(t,n,e){var r=e("1c0b");t.exports=function(t,n,e){if(r(t),void 0===n)return t;switch(e){case 0:return function(){return t.call(n)};case 1:return function(e){return t.call(n,e)};case 2:return function(e,r){return t.call(n,e,r)};case 3:return function(e,r,o){return t.call(n,e,r,o)}}return function(){return t.apply(n,arguments)}};},fb15:function(t,n,e){var r;(e.r(n),"undefined"!==typeof window)&&(e("f6fd"),(r=window.document.currentScript)&&(r=r.src.match(/(.+\/)[^/]+\.js(\?.*)?$/))&&(e.p=r[1]));e("d81d"),e("b0c0"),e("a9e3");var o=e("8bbf"),c=e.n(o);c.a.config.productionTip=!0;var i={name:"lbs-text-align",render:function(t){var n=this;return t("div",{class:"wrap"},[t("a-radio-group",{attrs:{size:"small",value:this.value},on:{change:function(t){n.$emit("change",t),n.$emit("input",t);}}},[this.textAlignTabs.map((function(n){return t("a-tooltip",{attrs:{effect:"dark",placement:"top",title:n.label},key:n.value},[t("a-radio-button",{attrs:{value:n.value}},[t("i",{class:["fa","fa-align-"+n.value],attrs:{"aria-hidden":"true"}})])])}))])])},props:{value:{type:[String,Number]}},data:function(){return {textAlignTabs:[{label:"左对齐",value:"left"},{label:"居中对齐",value:"center"},{label:"右对齐",value:"right"}]}},install:function(t){t.component(i.name,i);}},u=i;n["default"]=u;},fc6a:function(t,n,e){var r=e("44ad"),o=e("1d80");t.exports=function(t){return r(o(t))};}})}));
-
-  });
-
-  var lbsTextAlign = /*@__PURE__*/getDefaultExportFromCjs(lbsTextAlign_umd_min);
-
   var _components$2;
+  var lbsTextAlign = {
+    name: 'lbs-text-align',
+    components: (_components$2 = {}, defineProperty$1(_components$2, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$1(_components$2, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$1(_components$2, antDesignVue.Tooltip.name, antDesignVue.Tooltip), _components$2),
+    render: function render(h) {
+      var _this = this;
+
+      return h("div", {
+        "class": "wrap"
+      }, [h("a-radio-group", {
+        "attrs": {
+          "size": "small",
+          "value": this.value
+        },
+        "on": {
+          "change": function change(value) {
+            _this.$emit('change', value);
+
+            _this.$emit('input', value);
+          }
+        }
+      }, [this.textAlignTabs.map(function (item) {
+        return h("a-tooltip", {
+          "attrs": {
+            "effect": "dark",
+            "placement": "top",
+            "title": item.label
+          },
+          "key": item.value
+        }, [h("a-radio-button", {
+          "attrs": {
+            "value": item.value
+          }
+        }, [h("i", {
+          "class": ['fa', 'fa-align-' + item.value],
+          "attrs": {
+            "aria-hidden": "true"
+          }
+        })])]);
+      })])]);
+    },
+    props: {
+      value: {
+        type: [String, Number]
+      }
+    },
+    data: function data() {
+      return {
+        textAlignTabs: [{
+          label: '左对齐',
+          value: 'left'
+        }, {
+          label: '居中对齐',
+          value: 'center'
+        }, {
+          label: '右对齐',
+          value: 'right'
+        }]
+      };
+    }
+  };
+
+  var _components$3;
+  var lbpSlideCustomEditor = {
+    components: (_components$3 = {}, defineProperty$1(_components$3, antDesignVue.Pagination.name, antDesignVue.Pagination), defineProperty$1(_components$3, antDesignVue.Button.name, antDesignVue.Pagination), _components$3),
+    props: {
+      elementProps: {
+        type: Object,
+        default: function _default() {
+          return {
+            items: [],
+            activeIndex: 0
+          };
+        }
+      }
+    },
+    computed: {
+      innerItems: function innerItems() {
+        return this.elementProps.items;
+      }
+    },
+    data: function data() {
+      return {
+        current: 1
+      };
+    },
+    methods: {
+      itemRender: function itemRender(current, type, originalElement) {
+        var _this = this;
+
+        var h = this.$createElement;
+
+        if (type === "prev") {
+          return h("a-button", {
+            "style": {
+              marginRight: "8px"
+            },
+            "attrs": {
+              "size": "small",
+              "icon": "minus",
+              "disabled": this.innerItems.length === 1
+            },
+            "on": {
+              "click": function click() {
+                return _this.minus(current);
+              }
+            }
+          });
+        } else if (type === "next") {
+          return h("a-button", {
+            "style": {
+              marginLeft: "8px"
+            },
+            "attrs": {
+              "size": "small",
+              "icon": "plus"
+            },
+            "on": {
+              "click": this.add
+            }
+          });
+        }
+
+        return originalElement;
+      },
+      add: function add() {
+        this.elementProps.items.push({
+          image: "",
+          value: "\u9009\u9879".concat(this.innerItems.length + 1, "-value"),
+          label: "\u9009\u9879".concat(this.innerItems.length + 1, "-label")
+        });
+      },
+      minus: function minus(index) {
+        if (this.innerItems.length === 1) return;
+        this.elementProps.items.splice(index, 1); // this.elementProps.activeIndex = index > 0 ? index - 1 : 0
+
+        this.elementProps.activeIndex = Math.max(index - 1, 0);
+      }
+    },
+    render: function render() {
+      var _this2 = this;
+
+      var h = arguments[0];
+      var currentItem = this.innerItems[this.current - 1] || {};
+      return h("div", [h("a-pagination", {
+        "attrs": {
+          "current": this.current,
+          "size": "small",
+          "total": this.innerItems.length,
+          "defaultPageSize": 1,
+          "itemRender": this.itemRender
+        },
+        "on": {
+          "change": function change(page) {
+            _this2.current = page;
+            _this2.elementProps.activeIndex = page - 1;
+          }
+        }
+      }), h("lbs-image-gallery", {
+        "style": {
+          margin: "16px 0"
+        },
+        "attrs": {
+          "value": currentItem.image
+        },
+        "on": {
+          "change": function change(url) {
+            currentItem.image = url;
+          }
+        }
+      })]);
+    }
+  };
+
+  var _components$4;
 
   function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
   function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var RenderPropsEditor = {
-    components: (_components$2 = {}, defineProperty$1(_components$2, antDesignVue.Form.name, antDesignVue.Form), defineProperty$1(_components$2, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$1(_components$2, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$1(_components$2, antDesignVue.Button.name, antDesignVue.Button), defineProperty$1(_components$2, antDesignVue.Radio.name, antDesignVue.Radio), defineProperty$1(_components$2, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$1(_components$2, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$1(_components$2, antDesignVue.Input.name, antDesignVue.Input), defineProperty$1(_components$2, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$1(_components$2, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$1(_components$2, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$1(_components$2, antDesignVue.Select.name, antDesignVue.Select), defineProperty$1(_components$2, "colorsPanel", colorsPanel), defineProperty$1(_components$2, "lbsTextAlign", lbsTextAlign), _components$2),
+    components: (_components$4 = {}, defineProperty$1(_components$4, antDesignVue.Form.name, antDesignVue.Form), defineProperty$1(_components$4, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$1(_components$4, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$1(_components$4, antDesignVue.Button.name, antDesignVue.Button), defineProperty$1(_components$4, antDesignVue.Radio.name, antDesignVue.Radio), defineProperty$1(_components$4, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$1(_components$4, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$1(_components$4, antDesignVue.Input.name, antDesignVue.Input), defineProperty$1(_components$4, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$1(_components$4, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$1(_components$4, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$1(_components$4, antDesignVue.Select.name, antDesignVue.Select), defineProperty$1(_components$4, "colorsPanel", colorsPanel), defineProperty$1(_components$4, "lbsTextAlign", lbsTextAlign), defineProperty$1(_components$4, "lbsExcelEditor", lbsExcelEditor), defineProperty$1(_components$4, "lbpSlideCustomEditor", lbpSlideCustomEditor), _components$4),
     data: function data() {
       return {
         loadCustomEditorFlag: false
@@ -2764,13 +3125,13 @@
     }
   };
 
-  var _components$3;
+  var _components$5;
 
   function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
   function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var RenderScriptEditor = {
-    components: (_components$3 = {}, defineProperty$1(_components$3, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$1(_components$3, antDesignVue.Button.name, antDesignVue.Button), _components$3),
+    components: (_components$5 = {}, defineProperty$1(_components$5, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$1(_components$5, antDesignVue.Button.name, antDesignVue.Button), _components$5),
     data: function data() {
       return {
         editorContent: "return {\n      editorMethods: {              // \u6B64\u9879\u914D\u7F6E\u81EA\u5B9A\u4E49\u65B9\u6CD5\u7684\u5728\u7EC4\u4EF6\u914D\u7F6E\u9762\u677F\u5982\u4F55\u5C55\u793A\n        projectJump1: {             // \u65B9\u6CD5\u540D\uFF0C\u5BF9\u5E94\u4E8E methods \u5185\u7684\u67D0\u65B9\u6CD5\n          label: '\u5916\u90E8\u8DF3\u8F6C1',        // \u81EA\u5B9A\u4E49\u65B9\u6CD5\u663E\u793A\u540D\n          params: [                 // \u53C2\u6570\u5217\u8868\uFF0C\u5BF9\u8C61\u6570\u7EC4\n            {\n              label: '\u8DF3\u8F6C\u5730\u5740',     // \u53C2\u65701\u7684\u540D\u79F0\n              desc: '\u9879\u76EE\u76F8\u5BF9\u5730\u5740',   // \u53C2\u65701\u7684\u63CF\u8FF0\n              type: 'string',       // \u53C2\u65701\u7684\u7C7B\u578B\uFF0C\u652F\u6301string|number|boolean|array|object\n              default: ''           // \u53C2\u65701\u9ED8\u8BA4\u503C\n            },\n            {\n              label: '\u53C2\u6570',\n              desc: 'query\u5F62\u5F0F\u53C2\u6570',\n              type: 'object',\n              default: {}\n            }\n          ]\n        }\n      },\n      methods:{\n        projectJump1:function(url, query){\n          console.log(url, query)\n          let win = window.open(url, '_blank')\n          win.focus()\n        }\n      }\n    }"
@@ -3505,13 +3866,13 @@
     return obj;
   }, {});
 
-  var _components$4;
+  var _components$6;
 
   function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
   function _objectSpread$3(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var RenderAnimationEditor = {
-    components: (_components$4 = {}, defineProperty$1(_components$4, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$1(_components$4, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$1(_components$4, antDesignVue.List.name, antDesignVue.List), defineProperty$1(_components$4, antDesignVue.Form.name, antDesignVue.Form), defineProperty$1(_components$4, antDesignVue.Button.name, antDesignVue.Button), defineProperty$1(_components$4, antDesignVue.Popover.name, antDesignVue.Popover), defineProperty$1(_components$4, antDesignVue.Slider.name, antDesignVue.Slider), defineProperty$1(_components$4, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$1(_components$4, antDesignVue.Collapse.name, antDesignVue.Collapse), defineProperty$1(_components$4, antDesignVue.Collapse.Panel.name, antDesignVue.Collapse.Pane), defineProperty$1(_components$4, antDesignVue.Icon.name, antDesignVue.Icon), defineProperty$1(_components$4, antDesignVue.Drawer.name, antDesignVue.Drawer), defineProperty$1(_components$4, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), defineProperty$1(_components$4, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$1(_components$4, antDesignVue.Form.Item.name, antDesignVue.Form.Item), _components$4),
+    components: (_components$6 = {}, defineProperty$1(_components$6, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$1(_components$6, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$1(_components$6, antDesignVue.List.name, antDesignVue.List), defineProperty$1(_components$6, antDesignVue.Form.name, antDesignVue.Form), defineProperty$1(_components$6, antDesignVue.Button.name, antDesignVue.Button), defineProperty$1(_components$6, antDesignVue.Popover.name, antDesignVue.Popover), defineProperty$1(_components$6, antDesignVue.Slider.name, antDesignVue.Slider), defineProperty$1(_components$6, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$1(_components$6, antDesignVue.Collapse.name, antDesignVue.Collapse), defineProperty$1(_components$6, antDesignVue.Collapse.Panel.name, antDesignVue.Collapse.Pane), defineProperty$1(_components$6, antDesignVue.Icon.name, antDesignVue.Icon), defineProperty$1(_components$6, antDesignVue.Drawer.name, antDesignVue.Drawer), defineProperty$1(_components$6, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), defineProperty$1(_components$6, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$1(_components$6, antDesignVue.Form.Item.name, antDesignVue.Form.Item), _components$6),
     computed: _objectSpread$3(_objectSpread$3({}, Vuex.mapState("editor", ["editingElement"])), {}, {
       animationQueue: function animationQueue() {
         return this.editingElement && this.editingElement.animations || [];
@@ -4070,13 +4431,13 @@
     LONG_PAGE: '长页面'
   };
 
-  var _components$5;
+  var _components$7;
 
   function ownKeys$6(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
   function _objectSpread$5(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var script = {
-    components: (_components$5 = {}, defineProperty$1(_components$5, antDesignVue.Form.name, antDesignVue.Form), defineProperty$1(_components$5, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$1(_components$5, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$1(_components$5, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), _components$5),
+    components: (_components$7 = {}, defineProperty$1(_components$7, antDesignVue.Form.name, antDesignVue.Form), defineProperty$1(_components$7, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$1(_components$7, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$1(_components$7, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), _components$7),
     data: function data() {
       return {
         formLayout: 'vertical',
@@ -4273,9 +4634,9 @@
     }
   };
 
-  var _components$6;
+  var _components$8;
   var EditorRightPanel = {
-    components: (_components$6 = {}, defineProperty$1(_components$6, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$1(_components$6, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$1(_components$6, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), _components$6),
+    components: (_components$8 = {}, defineProperty$1(_components$8, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$1(_components$8, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$1(_components$8, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), _components$8),
     name: "ElementPropsEditor",
     props: {
       width: {
@@ -5067,7 +5428,7 @@
     }
   });
 
-  var _components$7;
+  var _components$9;
 
   function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -5130,7 +5491,7 @@
     value: "minusZindex"
   }];
   var ContextMenu = {
-    components: (_components$7 = {}, defineProperty$1(_components$7, antDesignVue.Menu.name, antDesignVue.Menu), defineProperty$1(_components$7, antDesignVue.Menu.Item.name, antDesignVue.Menu.Item), defineProperty$1(_components$7, antDesignVue.Card.name, antDesignVue.Card), _components$7),
+    components: (_components$9 = {}, defineProperty$1(_components$9, antDesignVue.Menu.name, antDesignVue.Menu), defineProperty$1(_components$9, antDesignVue.Menu.Item.name, antDesignVue.Menu.Item), defineProperty$1(_components$9, antDesignVue.Card.name, antDesignVue.Card), _components$9),
     computed: _objectSpread$8(_objectSpread$8({}, Vuex.mapState("editor", ["editingElement", "work"])), {}, {
       /**
        * 做一下扩展，提供：黑白名单，来针对某些特定组件，展示特定右键菜单
@@ -5224,13 +5585,13 @@
     }
   };
 
-  var _components$8;
+  var _components$a;
 
   function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
   function _objectSpread$9(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var RenderEditCanvas = {
-    components: (_components$8 = {}, defineProperty$1(_components$8, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$1(_components$8, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), _components$8),
+    components: (_components$a = {}, defineProperty$1(_components$a, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$1(_components$a, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), _components$a),
     props: ["elements", "handleClickElementProp", "handleClickCanvasProp"],
     data: function data() {
       return {
@@ -5647,14 +6008,14 @@
     }
   };
 
-  var _components$9;
+  var _components$b;
 
   function ownKeys$b(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
   function _objectSpread$a(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$b(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var EditorCanvas = {
     name: "EditorCanvas",
-    components: (_components$9 = {}, defineProperty$1(_components$9, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$1(_components$9, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$1(_components$9, antDesignVue.Layout.name, antDesignVue.Layout), defineProperty$1(_components$9, antDesignVue.Layout.Content.name, antDesignVue.Layout), _components$9),
+    components: (_components$b = {}, defineProperty$1(_components$b, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$1(_components$b, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$1(_components$b, antDesignVue.Layout.name, antDesignVue.Layout), defineProperty$1(_components$b, antDesignVue.Layout.Content.name, antDesignVue.Layout), _components$b),
     data: function data() {
       return {
         isPreviewMode: false
@@ -5811,13 +6172,13 @@
     }
   };
 
-  var _components$a;
+  var _components$c;
 
   function ownKeys$c(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
   function _objectSpread$b(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$c(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$c(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var script$1 = {
-    components: (_components$a = {}, defineProperty$1(_components$a, antDesignVue.Modal.name, antDesignVue.Modal), defineProperty$1(_components$a, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$1(_components$a, antDesignVue.Button.name, antDesignVue.Button), _components$a),
+    components: (_components$c = {}, defineProperty$1(_components$c, antDesignVue.Modal.name, antDesignVue.Modal), defineProperty$1(_components$c, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$1(_components$c, antDesignVue.Button.name, antDesignVue.Button), _components$c),
     data: function data() {
       return {
         visible: false,
@@ -68200,7 +68561,7 @@
     }
   };
 
-  var _components$b;
+  var _components$d;
 
   function ownKeys$g(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -68208,7 +68569,7 @@
   console.log(antDesignVue.Col.name, antDesignVue.Col);
   var RenderShortcutsPanel = {
     name: "shotcuts-panle",
-    components: (_components$b = {}, defineProperty$1(_components$b, antDesignVue.Row.name, antDesignVue.Row), defineProperty$1(_components$b, antDesignVue.Col.name, antDesignVue.Col), _components$b),
+    components: (_components$d = {}, defineProperty$1(_components$d, antDesignVue.Row.name, antDesignVue.Row), defineProperty$1(_components$d, antDesignVue.Col.name, antDesignVue.Col), _components$d),
     mixins: [langMixin, dragMixin, loadPluginsMixin],
     data: function data() {
       return {
@@ -68342,9 +68703,9 @@
     }
   };
 
-  var _components$c;
+  var _components$e;
   var PageTitleEditor = {
-    components: (_components$c = {}, defineProperty$1(_components$c, antDesignVue.Popconfirm.name, antDesignVue.Popconfirm), defineProperty$1(_components$c, antDesignVue.Input.name, antDesignVue.Input), defineProperty$1(_components$c, antDesignVue.Icon.name, antDesignVue.Icon), _components$c),
+    components: (_components$e = {}, defineProperty$1(_components$e, antDesignVue.Popconfirm.name, antDesignVue.Popconfirm), defineProperty$1(_components$e, antDesignVue.Input.name, antDesignVue.Input), defineProperty$1(_components$e, antDesignVue.Icon.name, antDesignVue.Icon), _components$e),
     props: ["page", "pageIndex"],
     data: function data() {
       return {
@@ -68404,9 +68765,9 @@
     }
   };
 
-  var _components$d;
+  var _components$f;
   var PageTitleMenu = {
-    components: (_components$d = {}, defineProperty$1(_components$d, antDesignVue.Dropdown.name, antDesignVue.Dropdown), defineProperty$1(_components$d, antDesignVue.Menu.name, antDesignVue.Menu), defineProperty$1(_components$d, antDesignVue.Menu.Item.name, antDesignVue.Menu.Item), defineProperty$1(_components$d, antDesignVue.Icon.name, antDesignVue.Icon), _components$d),
+    components: (_components$f = {}, defineProperty$1(_components$f, antDesignVue.Dropdown.name, antDesignVue.Dropdown), defineProperty$1(_components$f, antDesignVue.Menu.name, antDesignVue.Menu), defineProperty$1(_components$f, antDesignVue.Menu.Item.name, antDesignVue.Menu.Item), defineProperty$1(_components$f, antDesignVue.Icon.name, antDesignVue.Icon), _components$f),
     render: function render() {
       var _this = this;
 
@@ -68677,9 +69038,9 @@
       undefined
     );
 
-  var _components$e;
+  var _components$g;
   var EditorLeftPanel = {
-    components: (_components$e = {}, defineProperty$1(_components$e, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$1(_components$e, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$1(_components$e, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), _components$e),
+    components: (_components$g = {}, defineProperty$1(_components$g, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$1(_components$g, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$1(_components$g, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), _components$g),
     name: "EditorLeftPanel",
     render: function render(h) {
       return h("a-layout-sider", {
