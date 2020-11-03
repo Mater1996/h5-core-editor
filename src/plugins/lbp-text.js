@@ -9,7 +9,7 @@
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
 import vClickOutside from 'v-click-outside'
-import PropTypes from '@luban-h5/plugin-common-props'
+import PropTypes from '@/utils/commom-props'
 import { quillEditor } from 'vue-quill-editor'
 // require styles
 import 'quill/dist/quill.core.css'

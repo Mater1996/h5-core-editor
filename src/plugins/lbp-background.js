@@ -1,14 +1,14 @@
 /*
  * @Author: ly525
  * @Date: 2019-11-24 18:51:58
- * @LastEditors: ly525
- * @LastEditTime: 2020-10-10 23:32:48
+ * @LastEditors : Please set LastEditors
+ * @LastEditTime : 2020-10-30 14:12:20
  * @FilePath: /luban-h5/front-end/h5/src/components/core/plugins/lbp-background.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: luban-h5 background image/color component/plugin
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
-import PropTypes from '@luban-h5/plugin-common-props'
+import PropTypes from '@/utils/commom-props'
 import { renderWaterMark } from '@/utils/dom-helper'
 
 export default {

@@ -1,26 +1,50 @@
+/*
+ * @author : Mater
+ * @Email : bxh8640@gmail.com
+ * @Date : 2020-11-02 16:12:09
+ * @LastEditTime : 2020-11-03 10:20:06
+ * @Description :
+ */
 export default {
-  name: 'colors-panel',
+  name: "colors-panel",
   props: {
     value: {
-      type: Array,
+      type: [Array, String],
       default: () => []
     }
   },
-  render () {
-    return <div>
-      {
-        this.value.map((colorString, index) => {
-          return <el-color-picker
+  created() {
+    console.log(this.value);
+  },
+  render() {
+    return (
+      <div>
+        {Array.isArray(this.value) ? (
+          this.value.map((v, index) => {
+            <input
+              size="small"
+              type="color"
+              autocomplete
+              value={v}
+              onChange={e => {
+                const colors = this.value.slice(0);
+                colors[index] = e.target.value;
+                this.$emit("change", colors);
+              }}
+            />;
+          })
+        ) : (
+          <input
             size="small"
-            value={colorString}
-            onChange={newColorString => {
-              const colors = this.value.slice(0)
-              colors[index] = newColorString
-              this.$emit('change', colors)
+            type="color"
+            autocomplete
+            value={this.value}
+            onChange={e => {
+              this.$emit("change", e.target.value);
             }}
           />
-        })
-      }
-    </div>
+        )}
+      </div>
+    );
   }
-}
+};

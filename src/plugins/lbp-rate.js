@@ -8,7 +8,7 @@
  * @Description: Do not edit
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
-import PropTypes from '@luban-h5/plugin-common-props'
+import PropTypes from '@/utils/commom-props'
 import { Rate } from 'vant'
 import 'vant/lib/rate/style'
 import 'vant/lib/icon/local.css'

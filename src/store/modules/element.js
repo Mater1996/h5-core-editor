@@ -1,11 +1,18 @@
+/*
+ * @author : Mater
+ * @Email : bxh8640@gmail.com
+ * @Date : 2020-10-28 09:30:06
+ * @LastEditTime : 2020-11-02 09:46:24
+ * @Description :
+ */
 import Element from 'core/models/element'
 import { swapZindex, getVM } from '@/utils/element'
-
+import EventBus from "@/bus"
 // actions
 export const actions = {
   setEditingElement ({ commit }, payload) {
     commit('setEditingElement', payload)
-    payload && window.EditorApp.$emit('setEditingElement', payload)
+    payload && EventBus.$emit('setEditingElement', payload)
   },
   setElementPosition ({ commit }, payload) {
     commit('setElementCommonStyle', payload)

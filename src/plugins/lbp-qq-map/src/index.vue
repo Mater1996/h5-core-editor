@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-import PropTypes from '@luban-h5/plugin-common-props'
+import PropTypes from '@/utils/commom-props'
 import Map from './Map'
 import MapMixin from './mixin'
 

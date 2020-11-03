@@ -1,7 +1,13 @@
-import ShortcutButton from './shortcut-button'
-import LoadNpmPlugins from './load-npm-plugins.vue'
-import langMixin from '@/mixins/i18n'
+import ShortcutButton from "./shortcut-button";
+import LoadNpmPlugins from "./load-npm-plugins.vue";
+import langMixin from "@/mixins/i18n";
+import { Row, Col } from "ant-design-vue";
+
 export default {
+  components: {
+    [Row.name]: Row,
+    [Col.name]: Col
+  },
   mixins: [langMixin],
   props: {
     pluginsList: {
@@ -14,16 +20,16 @@ export default {
     },
     handleDragStart: {
       type: Function,
-      default: (e) => {}
+      default: e => {}
     }
   },
   data: () => ({
     npmPackages: []
   }),
   methods: {
-    onClickShortcut (item) {
+    onClickShortcut(item) {
       if (this.handleClickShortcut) {
-        this.handleClickShortcut(item)
+        this.handleClickShortcut(item);
       }
     }
     /**
@@ -92,13 +98,15 @@ export default {
     //   )
     // }
   },
-  render (h) {
+  render(h) {
     // return this.renderShortCutsPanel(this.groups)
     return (
       <a-row gutter={20}>
-        {
-          [].concat(this.pluginsList, this.npmPackages).filter(plugin => plugin.visible).map(plugin => (
-            <a-col span={12} style={{ marginTop: '10px' }}>
+        {[]
+          .concat(this.pluginsList, this.npmPackages)
+          .filter(plugin => plugin.visible)
+          .map(plugin => (
+            <a-col span={12} style={{ marginTop: "10px" }}>
               <ShortcutButton
                 clickFn={this.onClickShortcut.bind(this, plugin)}
                 mousedownFn={this.handleDragStart.bind(this, plugin)}
@@ -108,12 +116,13 @@ export default {
                 disabled={plugin.disabled}
               />
             </a-col>
-          ))
-        }
-        <LoadNpmPlugins onLoadComplete={npmPackages => {
-          this.npmPackages = npmPackages
-        }} />
+          ))}
+        <LoadNpmPlugins
+          onLoadComplete={npmPackages => {
+            this.npmPackages = npmPackages;
+          }}
+        />
       </a-row>
-    )
+    );
   }
-}
+};

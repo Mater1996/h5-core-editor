@@ -2,21 +2,28 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-27 15:04:59
- * @LastEditTime : 2020-10-29 09:40:52
+ * @LastEditTime : 2020-11-02 11:47:08
  * @Description :
  */
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions } from "vuex";
+import { Layout, Radio } from "ant-design-vue";
 
-import RenderEditCanvas from './edit'
-import RenderPreviewCanvas from './preview'
+import RenderEditCanvas from "./edit";
+import RenderPreviewCanvas from "./preview";
 
 export default {
-  name: 'EditorCanvas',
+  name: "EditorCanvas",
+  components: {
+    [Radio.Button.name]: Radio.Button,
+    [Radio.Group.name]: Radio.Group,
+    [Layout.name]: Layout,
+    [Layout.Content.name]: Layout
+  },
   data: () => ({
     isPreviewMode: false
   }),
   computed: {
-    ...mapState('editor', {
+    ...mapState("editor", {
       editingPage: state => state.editingPage,
       editingElement: state => state.editingElement,
       elements: state => state.editingPage.elements,
@@ -26,21 +33,21 @@ export default {
     })
   },
   methods: {
-    ...mapActions('editor', ['setEditingElement']),
-    handleToggleMode (isPreviewMode) {
-      this.isPreviewMode = isPreviewMode
+    ...mapActions("editor", ["setEditingElement"]),
+    handleToggleMode(isPreviewMode) {
+      this.isPreviewMode = isPreviewMode;
       if (isPreviewMode) {
         // 当切换到预览模式的时候，清空当前编辑元素
-        this.setEditingElement() // 相当于  setEditingElement(null)
+        this.setEditingElement(); // 相当于  setEditingElement(null)
       }
     }
   },
-  created () {
-    console.log(this.elements)
+  created() {
+    console.log(this.elements);
   },
-  render (h) {
+  render(h) {
     return (
-      <a-layout id="canvas-outer-wrapper" style={{ 'margin-bottom': '24px' }}>
+      <a-layout id="canvas-outer-wrapper" style={{ "margin-bottom": "24px" }}>
         <a-radio-group
           class="mode-toggle-wrapper"
           size="small"
@@ -49,16 +56,16 @@ export default {
         >
           {/* 编辑模式、预览模式 */}
           <a-radio-button label={false} value={false}>
-            {this.$t('editor.centerPanel.mode.edit')}
+            {this.$t("editor.centerPanel.mode.edit")}
           </a-radio-button>
           <a-radio-button label={true} value={true}>
-            {this.$t('editor.centerPanel.mode.preview')}
+            {this.$t("editor.centerPanel.mode.preview")}
           </a-radio-button>
         </a-radio-group>
         <a-layout-content
           style={{
             transform: `scale(${this.scaleRate})`,
-            'transform-origin': 'center top'
+            "transform-origin": "center top"
           }}
         >
           <div
@@ -75,6 +82,6 @@ export default {
           </div>
         </a-layout-content>
       </a-layout>
-    )
+    );
   }
-}
+};

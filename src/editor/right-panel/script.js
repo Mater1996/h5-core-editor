@@ -1,6 +1,18 @@
-import { mapState, mapActions } from 'vuex'
+/*
+ * @author : Mater
+ * @Email : bxh8640@gmail.com
+ * @Date : 2020-10-28 09:30:06
+ * @LastEditTime : 2020-11-02 10:43:53
+ * @Description :
+ */
+import { mapState, mapActions } from "vuex";
+import { Button, Input } from "ant-design-vue";
 
 export default {
+  components: {
+    [Input.TextArea.name]: Input.TextArea,
+    [Button.name]: Button
+  },
   data: () => ({
     editorContent: `return {
       editorMethods: {              // 此项配置自定义方法的在组件配置面板如何展示
@@ -32,32 +44,32 @@ export default {
     }`
   }),
   computed: {
-    ...mapState('editor', [
-      'editingElement'
-    ])
+    ...mapState("editor", ["editingElement"])
   },
   methods: {
-    ...mapActions('editor', [
-      'setEditingElement'
-    ]),
-    mixinScript () {
+    ...mapActions("editor", ["setEditingElement"]),
+    mixinScript() {
       // mixin script
     }
   },
-  render (h) {
-    const ele = this.editingElement
-    if (!ele) return (<span>{this.$t('editor.editPanel.common.empty')}</span>)
-    return <div>
-      <a-button onClick={this.mixinScript} disabled>使用脚本</a-button>
-      <div style={{ margin: '20px' }}></div>
-      <a-textarea
-        rows={12}
-        placeholder="Basic usage"
-        value={this.editorContent}
-        onChange={(e) => {
-          this.editorContent = e.target.value
-        }}
-      />
-    </div>
+  render(h) {
+    const ele = this.editingElement;
+    if (!ele) return <span>{this.$t("editor.editPanel.common.empty")}</span>;
+    return (
+      <div>
+        <a-button onClick={this.mixinScript} disabled>
+          使用脚本
+        </a-button>
+        <div style={{ margin: "20px" }}></div>
+        <a-textarea
+          rows={12}
+          placeholder="Basic usage"
+          value={this.editorContent}
+          onChange={e => {
+            this.editorContent = e.target.value;
+          }}
+        />
+      </div>
+    );
   }
-}
+};

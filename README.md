@@ -2,7 +2,7 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-10-29 19:52:14
- * @LastEditTime: 2020-10-29 19:57:19
+ * @LastEditTime: 2020-11-03 10:29:39
  * @Description: 
 -->
 # 鲁班H5核心编辑模块
@@ -42,3 +42,5 @@ yarn build
 - 分离请求数据
 - rollup重新构建
 - 分离不需要的js文件等
+- ant-design 按需引用
+- 测试模式开发

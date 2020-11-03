@@ -2,40 +2,41 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 14:39:39
- * @LastEditTime : 2020-10-30 10:58:08
+ * @LastEditTime : 2020-11-03 10:27:59
  * @Description :
  */
-import peerDepsExternal from "rollup-plugin-peer-deps-external";
-import resolve from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
-import vue from "rollup-plugin-vue";
-import babel from "rollup-plugin-babel";
-import alias from "rollup-plugin-alias";
-import postcss from "rollup-plugin-postcss";
-import image from "rollup-plugin-img";
-import json from "@rollup/plugin-json";
-import del from "rollup-plugin-delete";
-import { terser } from "rollup-plugin-terser";
-import packageJson from "./package.json";
+const path = require("path");
+const peerDepsExternal = require("rollup-plugin-peer-deps-external");
+const { nodeResolve } = require("@rollup/plugin-node-resolve");
+const commonjs = require("@rollup/plugin-commonjs");
+const vue = require("rollup-plugin-vue");
+const babel = require("rollup-plugin-babel");
+const alias = require("rollup-plugin-alias");
+const postcss = require("rollup-plugin-postcss");
+const image = require("rollup-plugin-img");
+const json = require("@rollup/plugin-json");
+const del = require("rollup-plugin-delete");
+const progress = require("rollup-plugin-progress");
+const { terser } = require("rollup-plugin-terser");
+const filesize = require("rollup-plugin-filesize");
+const packageJson = require("./package.json");
 
 const globals = {
-  vue: "vue",
+  vue: "Vue",
   vant: "vant",
-  "resize-detector": "resize-detector",
-  vuex: "vuex",
-  "element-ui": "element-ui",
-  "hotkeys-js": "hotkeys-js",
+  "resize-detector": "resizeDetector",
+  vuex: "Vuex",
+  "hotkeys-js": "hotkeys",
   lodash: "lodash",
   "ant-design-vue": "ant-design-vue",
-  "vue-quill-editor": "vue-quill-editor",
-  "v-charts": "v-charts",
+  "vue-quill-editor": "VueQuillEditor",
+  "v-charts": "VeIndex",
   stream: "stream",
-  "vue-i18n": "vue-i18n",
-  "x-data-spreadsheet": "x-data-spreadsheet",
+  "vue-i18n": "VueI18n",
+  "x-data-spreadsheet": "x_spreadsheet",
   html2canvas: "html2canvas",
   papaparse: "papaparse",
   echarts: "echarts",
-  "font-awesome": "font-awesome",
   qrcode: "qrcode",
   "v-click-outside": "v-click-outside",
   "vue-matomo": "vue-matomo"
@@ -67,8 +68,13 @@ const babelOption = {
   exclude: "node_modules/**"
 };
 
-export default args => {
+module.exports = args => {
   const isProd = args.prod;
+  function resolveUrl(dir) {
+    return !isProd
+      ? path.join("./example/src/lib/luban-h5-editor", dir)
+      : path.join(__dirname, dir);
+  }
   return {
     input: "src/index.js",
     treeshake: !isProd,
@@ -77,7 +83,7 @@ export default args => {
         exports: "auto",
         name: packageJson.name,
         format: "umd",
-        file: packageJson.main,
+        file: !isProd ? resolveUrl(`${packageJson.main}`) : packageJson.main,
         sourcemap: !isProd,
         indent: !isProd,
         globals
@@ -90,7 +96,6 @@ export default args => {
       "vuex",
       "vant",
       "resize-detector",
-      "element-ui",
       "hotkeys-js",
       "lodash",
       "ant-design-vue",
@@ -108,7 +113,7 @@ export default args => {
       "vue-matomo"
     ],
     plugins: [
-      del({ targets: "dist/*" }),
+      isProd && del({ targets: `${resolveUrl("dist/*")}` }),
       peerDepsExternal(),
       alias({
         resolve: [".jsx", ".js", ".css", ".scss", ".vue"],
@@ -118,7 +123,7 @@ export default args => {
         }
       }),
       image({
-        output: `${__dirname}/dist/images`,
+        output: resolveUrl("dist/images"),
         extensions: /\.(png|jpg|jpeg|gif|svg)$/,
         limit: 8192,
         exclude: "node_modules/**"
@@ -128,28 +133,37 @@ export default args => {
         compileTemplate: true
       }),
       commonjs(),
-      resolve({
+      nodeResolve({
         browser: true,
         preferBuiltins: true,
         mainFields: ["browser", "module", "main"]
       }),
-      !isProd && terser(),
+      isProd && terser(),
       postcss({
+        to: resolveUrl(`dist/${packageJson.name}.css`),
         extract: true,
-        minimize: !isProd,
+        minimize: isProd,
         sourceMap: !isProd,
         modules: false,
         plugins: [
           require("autoprefixer"),
           require("postcss-url")({
-            url: "inline", // enable inline assets using base64 encoding
-            maxSize: 10, // maximum file size to inline (in kilobytes)
-            fallback: "copy", // fallback method to use if max size is exceeded
-            assetsPath: `${__dirname}/dist/images`
+            filter: /\.(png|jpg|jpeg|gif|svg)$/,
+            url: "inline",
+            maxSize: 10,
+            fallback: "copy",
+            assetsPath: "./images"
+          }),
+          require("postcss-url")({
+            filter: /\.(woff(2)?|ttf|eot|svg)$/,
+            url: "copy",
+            assetsPath: "./fonts"
           })
         ]
       }),
-      json()
+      json(),
+      progress(),
+      filesize()
     ]
   };
 };

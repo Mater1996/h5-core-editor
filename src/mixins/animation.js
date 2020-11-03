@@ -1,14 +1,16 @@
 /*
  * @Author: ly525
  * @Date: 2019-11-24 18:51:58
- * @LastEditors: ly525
- * @LastEditTime: 2020-10-10 23:35:49
+ * @LastEditors : Please set LastEditors
+ * @LastEditTime : 2020-11-02 09:46:13
  * @FilePath: /luban-h5/front-end/h5/src/components/core/mixins/animation.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description:
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
-// https://stackoverflow.com/questions/26874769/getcomputedstyle-and-csstext-in-ie-and-firefox
+import EventBus from '@/bus'
+
+ // https://stackoverflow.com/questions/26874769/getcomputedstyle-and-csstext-in-ie-and-firefox
 function getComputedCSSText (style) {
   let cssText = ''
   for (let attr in style) {
@@ -55,7 +57,7 @@ export default {
   },
   created () {
     const that = this
-    window.EditorApp && window.EditorApp.$on('RUN_ANIMATIONS', () => {
+    EventBus && EventBus.$on('RUN_ANIMATIONS', () => {
       that.runAnimations()
       // if (that.active) {
       //   that.runAnimations()

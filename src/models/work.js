@@ -2,7 +2,7 @@
  * @Author: ly525
  * @Date: 2019-11-24 18:51:58
  * @LastEditors : Please set LastEditors
- * @LastEditTime : 2020-10-27 17:18:36
+ * @LastEditTime : 2020-11-02 11:57:24
  * @FilePath: /luban-h5/front-end/h5/src/components/core/models/work.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: work model
@@ -32,7 +32,7 @@ class Work {
 
     this.is_publish = !!work.is_publish
     this.is_template = false
-    this.height = work.height
+    this.height = work.height >= 0 ? work.height : 667
     this.page_mode = work.page_mode || PAGE_MODE.SWIPPER_PAGE
   }
 }

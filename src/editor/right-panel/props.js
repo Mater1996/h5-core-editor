@@ -1,16 +1,45 @@
-import Vue from 'vue'
-import { mapState, mapActions } from 'vuex'
-import { getVM, getComponentsForPropsEditor } from '@/utils/element'
-import 'core/styles/props-config-panel.scss'
+import Vue from "vue";
+import { mapState, mapActions } from "vuex";
+import { getVM, getComponentsForPropsEditor } from "@/utils/element";
+import "core/styles/props-config-panel.scss";
+import EventBus from "@/bus";
+import {
+  Form,
+  Tabs,
+  Button,
+  Radio,
+  Input,
+  Switch,
+  InputNumber,
+  Select
+} from "ant-design-vue";
+import colorsPanel from "@/support/colors-panel";
+import lbsTextAlign from '@luban-h5/lbs-text-align'
 
 export default {
+  components: {
+    [Form.name]: Form,
+    [Form.Item.name]: Form.Item,
+    [Tabs.name]: Tabs,
+    [Button.name]: Button,
+    [Radio.name]: Radio,
+    [Radio.Group.name]: Radio.Group,
+    [Radio.Button.name]: Radio.Button,
+    [Input.name]: Input,
+    [Input.TextArea.name]: Input.TextArea,
+    [Switch.name]: Switch,
+    [InputNumber.name]: InputNumber,
+    [Select.name]: Select,
+    colorsPanel,
+    lbsTextAlign
+  },
   data: () => ({
     loadCustomEditorFlag: false
   }),
   props: {
     layout: {
       type: String,
-      default: 'horizontal'
+      default: "horizontal"
     },
     // 优先级更高的当前编辑元素
     realEditingElement: {
@@ -19,26 +48,24 @@ export default {
     }
   },
   computed: {
-    ...mapState('editor', {
+    ...mapState("editor", {
       stateEditingElement: state => state.editingElement
     }),
-    customEditorName () {
-      return `${this.editingElement.name}-custom-editor`
+    customEditorName() {
+      return `${this.editingElement.name}-custom-editor`;
     },
-    editingElement () {
-      return this.realEditingElement || this.stateEditingElement
+    editingElement() {
+      return this.realEditingElement || this.stateEditingElement;
     }
   },
   methods: {
-    ...mapActions('editor', [
-      'setEditingElement'
-    ]),
-    loadCustomEditorForPlugin () {
-      this.loadCustomEditorFlag = false
-      if (!this.editingElement) return
+    ...mapActions("editor", ["setEditingElement"]),
+    loadCustomEditorForPlugin() {
+      this.loadCustomEditorFlag = false;
+      if (!this.editingElement) return;
 
       if (Vue.component(this.customEditorName)) {
-        this.loadCustomEditorFlag = true
+        this.loadCustomEditorFlag = true;
       } else {
         // import(`core/plugins/${this.editingElement.name}__editor`).then(component => {
         //   this.loadCustomEditorFlag = true
@@ -52,11 +79,11 @@ export default {
     /**
      * 将插件属性的 自定义增强编辑器注入 属性编辑面板中
      */
-    mixinEnhancedPropsEditor (editingElement) {
-      if (!this.componentsForPropsEditor) return
+    mixinEnhancedPropsEditor(editingElement) {
+      if (!this.componentsForPropsEditor) return;
       for (const key in this.componentsForPropsEditor) {
-        if (this.$options.components[key]) return
-        this.$options.components[key] = this.componentsForPropsEditor[key]
+        if (this.$options.components[key]) return;
+        this.$options.components[key] = this.componentsForPropsEditor[key];
       }
     },
     /**
@@ -67,14 +94,14 @@ export default {
      *  default: 'red'
      * }
      */
-    renderPropFormItem (h, { propKey, propConfig }) {
-      const editingElement = this.editingElement
-      const item = propConfig.editor
+    renderPropFormItem(h, { propKey, propConfig }) {
+      const editingElement = this.editingElement;
+      const item = propConfig.editor;
       // https://vuejs.org/v2/guide/render-function.html
       const data = {
         // style: { width: '100%' },
         props: {
-          ...item.props || {},
+          ...(item.props || {}),
           // https://vuejs.org/v2/guide/render-function.html#v-model
 
           // #!zh:不设置默认值的原因（下一行的代码，注释的代码）：
@@ -83,40 +110,49 @@ export default {
           // value: editingElement.pluginProps[propKey] || item.defaultPropValue
 
           // https://cn.vuejs.org/v2/guide/components-custom-events.html#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E4%BB%B6%E7%9A%84-v-model
-          [item.type === 'a-switch' ? 'checked' : 'value']: editingElement.pluginProps[propKey]
+          [item.type === "a-switch" ? "checked" : "value"]: editingElement
+            .pluginProps[propKey]
         },
         on: {
-        // https://vuejs.org/v2/guide/render-function.html#v-model
-        // input (e) {
-        //   editingElement.pluginProps[propKey] = e.target ? e.target.value : e
-        // }
-          change (e) {
+          // https://vuejs.org/v2/guide/render-function.html#v-model
+          // input (e) {
+          //   editingElement.pluginProps[propKey] = e.target ? e.target.value : e
+          // }
+          change(e) {
             // fixme: update plugin props in vuex with dispatch
-            editingElement.pluginProps[propKey] = e.target ? e.target.value : e
+            editingElement.pluginProps[propKey] = e.target ? e.target.value : e;
           }
         }
-      }
-      const formItemLayout = this.layout === 'horizontal' ? {
-        labelCol: { span: 6 }, wrapperCol: { span: 16, offset: 2 }
-      } : {}
+      };
+      const formItemLayout =
+        this.layout === "horizontal"
+          ? {
+              labelCol: { span: 6 },
+              wrapperCol: { span: 16, offset: 2 }
+            }
+          : {};
       const formItemData = {
         props: {
           ...formItemLayout,
           label: item.label,
           ...item.layout
         }
-      }
+      };
       return (
         <a-form-item {...formItemData}>
           {/* extra: 操作补充说明 */}
-          { item.extra && <div slot="extra">{typeof item.extra === 'function' ? item.extra(h) : item.extra}</div>}
-          { h(item.type, data) }
+          {item.extra && (
+            <div slot="extra">
+              {typeof item.extra === "function" ? item.extra(h) : item.extra}
+            </div>
+          )}
+          {h(item.type, data)}
         </a-form-item>
-      )
+      );
     },
-    renderPropsEditorPanel (h, editingElement) {
-      const vm = getVM(editingElement.name)
-      const props = vm.$options.props
+    renderPropsEditorPanel(h, editingElement) {
+      const vm = getVM(editingElement.name);
+      const props = vm.$options.props;
 
       return (
         <a-form
@@ -125,44 +161,45 @@ export default {
           class="props-config-form"
           layout={this.layout}
         >
-          {
-            // plugin-custom-editor
-            this.loadCustomEditorFlag &&
+          {// plugin-custom-editor
+          this.loadCustomEditorFlag &&
             h(this.customEditorName, {
               props: {
                 elementProps: editingElement.pluginProps
               }
+            })}
+          {Object.entries(props)
+            .filter(([propKey, propConfig]) => {
+              // 1. 如果开发者给 某个prop 显式指定了 visible 属性，则取开发者指定的值；
+              // 2. 否则取默认值：true，即默认在属性面板显示该属性
+              // 3. 组件的某些属性是不需要显示在 配置编辑器的，比如：editorMode(编辑模式/预览模式)，因为这个是鲁班编辑器默认注入到每个组件的，无须显示出来
+              const isVisible = propConfig.hasOwnProperty("visible")
+                ? propConfig.visible
+                : true;
+              return (
+                isVisible && propConfig.editor && !propConfig.editor.custom
+              );
             })
-          }
-          {
-            Object
-              .entries(props)
-              .filter(([propKey, propConfig]) => {
-                // 1. 如果开发者给 某个prop 显式指定了 visible 属性，则取开发者指定的值；
-                // 2. 否则取默认值：true，即默认在属性面板显示该属性
-                // 3. 组件的某些属性是不需要显示在 配置编辑器的，比如：editorMode(编辑模式/预览模式)，因为这个是鲁班编辑器默认注入到每个组件的，无须显示出来
-                const isVisible = propConfig.hasOwnProperty('visible') ? propConfig.visible : true
-                return isVisible && propConfig.editor && !propConfig.editor.custom
-              })
-              .map(([propKey, propConfig]) => this.renderPropFormItem(h, { propKey, propConfig }))
-          }
+            .map(([propKey, propConfig]) =>
+              this.renderPropFormItem(h, { propKey, propConfig })
+            )}
         </a-form>
-      )
+      );
     },
-    renderWorkGlobalPropsPanel (h) {
-      return <RenderWorkMode />
+    renderWorkGlobalPropsPanel(h) {
+      return <RenderWorkMode />;
     }
   },
-  render (h) {
-    const ele = this.editingElement
-    if (!ele) return '请选择一个元素'
-    this.mixinEnhancedPropsEditor(ele)
-    return this.renderPropsEditorPanel(h, ele)
+  render(h) {
+    const ele = this.editingElement;
+    if (!ele) return "请选择一个元素";
+    this.mixinEnhancedPropsEditor(ele);
+    return this.renderPropsEditorPanel(h, ele);
   },
-  created () {
-    window.EditorApp.$on('setEditingElement', (ele) => {
-      this.loadCustomEditorForPlugin()
-      this.componentsForPropsEditor = getComponentsForPropsEditor(ele.name)
-    })
+  created() {
+    EventBus.$on("setEditingElement", ele => {
+      this.loadCustomEditorForPlugin();
+      this.componentsForPropsEditor = getComponentsForPropsEditor(ele.name);
+    });
   }
-}
+};

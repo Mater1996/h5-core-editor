@@ -1,4 +1,4 @@
-import PropTypes from '@luban-h5/plugin-common-props'
+import PropTypes from '@/utils/commom-props'
 import Parser from '@/utils/excel-parser'
 import './styles/news-list.scss'
 

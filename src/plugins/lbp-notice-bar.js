@@ -2,14 +2,14 @@
  * @Author: ly525
  * @Date: 2020-05-14 08:09:44
  * @LastEditors : Please set LastEditors
- * @LastEditTime : 2020-10-28 16:06:54
+ * @LastEditTime : 2020-11-03 10:16:58
  * @FilePath: /luban-h5/front-end/h5/src/components/core/plugins/lbp-notice-bar.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
 
-import PropTypes from '@luban-h5/plugin-common-props'
+import PropTypes from '@/utils/commom-props'
 import { NoticeBar } from 'vant'
 import 'vant/lib/notice-bar/style'
 

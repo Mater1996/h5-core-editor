@@ -1,8 +1,8 @@
 <!--
  * @Author: ly525
  * @Date: 2019-11-23 12:35:43
- * @LastEditors: ly525
- * @LastEditTime: 2019-11-23 19:37:29
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2020-11-02 11:23:59
  * @FilePath: /luban-h5/front-end/h5/src/components/core/editor/shortcuts-panel/load-npm-plugins.vue
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
@@ -20,45 +20,54 @@
       @cancel="handleCancel"
     >
       <div>
-        <a-textarea v-model="text" placeholder="Basic usage"  :rows="20" />
+        <a-textarea v-model="text" placeholder="Basic usage" :rows="20" />
       </div>
     </a-modal>
   </div>
 </template>
 <script>
 import Vue from 'vue'
+import { Button, Modal, Input } from 'ant-design-vue'
 export default {
-  data () {
+  components: {
+    [Button.name]: Button,
+    [Modal.name]: Modal,
+    [Input.TextArea.name]: Input.TextArea
+  },
+  data() {
     return {
       visible: false,
       confirmLoading: false,
       text: JSON.stringify(
         [
           {
-            'package': '@luban-h5/lbp-slide',
-            'version': '0.0.7',
-            'name': 'lbp-slide',
-            'icon': 'photo',
-            'i18nTitle': {
+            package: '@luban-h5/lbp-slide',
+            version: '0.0.7',
+            name: 'lbp-slide',
+            icon: 'photo',
+            i18nTitle: {
               'en-US': 'Carousel',
               'zh-CN': '轮播图'
             },
             title: '轮播图',
             visible: true
           }
-        ], null, 2)
+        ],
+        null,
+        2
+      )
     }
   },
   methods: {
-    showModal () {
+    showModal() {
       this.visible = true
     },
-    handleOk (e) {
+    handleOk(e) {
       const createjs = window.createjs
 
       // eslint-disable-next-line no-new-func
       let npmPackages = new Function(`return ${this.text}`.replace('\n', ''))()
-      npmPackages = npmPackages.map(pluginInfo => ({
+      npmPackages = npmPackages.map((pluginInfo) => ({
         ...pluginInfo,
         // src: `https://cdn.jsdelivr.net/npm/${pluginInfo}/dist/${pluginInfo.name}.umd.js`
         // src: `https://unpkg.com/${pluginInfo}/dist/${pluginName}.umd.js`
@@ -70,19 +79,19 @@ export default {
       queue.on('complete', handleComplete, this)
 
       queue.loadManifest(npmPackages)
-      function handleComplete (e) {
+      function handleComplete(e) {
         // 可以直接使用 this 的原因： query。on 最后一个参数用来做做 bind this 操作
         this.visible = false
         this.confirmLoading = false
         this.$emit('loadComplete', npmPackages)
       }
 
-      function handleFileLoad (event) {
+      function handleFileLoad(event) {
         const { name } = event.item
         Vue.component(name, window[name])
       }
     },
-    handleCancel (e) {
+    handleCancel(e) {
       this.visible = false
     }
   }

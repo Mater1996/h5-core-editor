@@ -2,7 +2,7 @@
  * @Author: ly525
  * @Date: 2019-12-01 18:11:50
  * @LastEditors : Please set LastEditors
- * @LastEditTime : 2020-10-28 10:22:11
+ * @LastEditTime : 2020-11-02 10:25:54
  * @FilePath: /luban-h5/front-end/h5/src/components/core/support/index.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description:
@@ -12,25 +12,6 @@
  * @Copyright 2018 - 2019 luban-h5. All Rights Reserved
  */
 
-import Vue from 'vue'
-import PropMultiTextItemsEditor from './prop-multi-items-editor/text.js'
-import ImageGallery from './image-gallery/gallery.js'
-import VideoGallery from './video-gallery/gallery.js'
-import LbsExcelEditor from './excel'
-import ColorsPanel from './colors-panel'
-import LbpTextAlign from '@luban-h5/lbs-text-align'
-/**
- * #!en import element-ui color picker for bgcolor、color, because a-input(ant-design-vue) component do not support alpha
- * #!zh 引入 element-ui 颜色选择器，因为 ant-design-vue 没有提供颜色选择器，默认的 <a-input type="color" /> 不支持选择透明度
- * https://github.com/ly525/luban-h5/issues/105
- */
-import { ColorPicker, Button } from 'element-ui'
-
-Vue.component(Button.name, Button)
-Vue.component(ColorPicker.name, ColorPicker)
-Vue.component(PropMultiTextItemsEditor.name, PropMultiTextItemsEditor)
-Vue.component(ImageGallery.name, ImageGallery)
-Vue.component(VideoGallery.name, VideoGallery)
-Vue.component(LbpTextAlign.name, LbpTextAlign)
-Vue.component(LbsExcelEditor.name, LbsExcelEditor)
-Vue.component(ColorsPanel.name, ColorsPanel)
+import PropMultiTextItemsEditor from "./prop-multi-items-editor/text.js";
+import LbsExcelEditor from "./excel";
+import ColorsPanel from "./colors-panel";

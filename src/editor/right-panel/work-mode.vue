@@ -2,7 +2,7 @@
  * @Author: ly525
  * @Date: 2020-05-10 23:10:52
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2020-10-27 17:14:44
+ * @LastEditTime: 2020-11-02 11:25:23
  * @FilePath: /luban-h5/front-end/h5/src/components/core/editor/right-panel/work-mode.vue
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
@@ -12,20 +12,29 @@
   <a-form :layout="formLayout">
     <a-form-item label="H5类型">
       <a-radio-group v-model="pageMode" size="small">
-        <a-radio-button v-for="(value, key) in PAGE_MODE" :key="key" :value="value">
-          {{PAGE_MODE_LABEL[key]}}
-        </a-radio-button>
+        <a-radio-button
+          v-for="(value, key) in PAGE_MODE"
+          :key="key"
+          :value="value"
+        >{{PAGE_MODE_LABEL[key]}}</a-radio-button>
       </a-radio-group>
     </a-form-item>
   </a-form>
 </template>
 
 <script>
+import { Radio, Form } from 'ant-design-vue'
 import { mapState, mapActions } from 'vuex'
 import { PAGE_MODE, PAGE_MODE_LABEL } from 'core/constants/work'
 
 export default {
-  data () {
+  components: {
+    [Form.name]: Form,
+    [Form.Item.name]: Form.Item,
+    [Radio.Group.name]: Radio.Group,
+    [Radio.Button.name]: Radio.Button
+  },
+  data() {
     return {
       formLayout: 'vertical',
       PAGE_MODE: Object.freeze(PAGE_MODE),
@@ -38,18 +47,16 @@ export default {
     // src/constants/work -> PAGE_MODE
     // https://vuex.vuejs.org/zh/guide/forms.html#%E5%8F%8C%E5%90%91%E7%BB%91%E5%AE%9A%E7%9A%84%E8%AE%A1%E7%AE%97%E5%B1%9E%E6%80%A7
     pageMode: {
-      get () {
+      get() {
         return this.work.page_mode || PAGE_MODE.SWIPPER_PAGE
       },
-      set (pageMode) {
+      set(pageMode) {
         this.updateWork({ page_mode: pageMode })
       }
     }
   },
   methods: {
-    ...mapActions('editor', [
-      'updateWork'
-    ])
+    ...mapActions('editor', ['updateWork'])
   }
 }
 </script>

@@ -5,7 +5,7 @@
  * @LastEditTime : 2020-10-28 09:23:44
  * @Description :
  */
-import PropTypes from '@luban-h5/plugin-common-props'
+import PropTypes from '@/utils/commom-props'
 
 import placeholderImg from './lbp-picture-placeholder.png' // issue #34
 export default {

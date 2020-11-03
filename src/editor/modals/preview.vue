@@ -1,8 +1,14 @@
 <script>
 import { mapActions } from 'vuex'
 import QRCode from 'qrcode'
+import { Row, Col, Button } from 'ant-design-vue'
 
 export default {
+  components: {
+    [Row.name]: Row,
+    [Col.name]: Col,
+    [Button.name]: Button
+  },
   props: {
     visible: {
       type: Boolean,
@@ -21,62 +27,62 @@ export default {
     // ...mapState('editor', {
     //   work: state => state.work
     // }),
-    releaseUrl () {
+    releaseUrl() {
       return `${window.location.origin}/works/preview/${this.work.id}?view_mode=preview`
     }
   },
-  data () {
+  data() {
     return {
       confirmLoading: false,
       qrcodeSize: 500
     }
   },
   watch: {
-    visible (val) {
+    visible(val) {
       if (!val) return
       this.$nextTick(() => this.drawQRcode())
     }
   },
   methods: {
-    ...mapActions('editor', [
-      'saveWork',
-      'updateWork'
-    ]),
-    handleOk (e) {
+    ...mapActions('editor', ['saveWork', 'updateWork']),
+    handleOk(e) {
       this.confirmLoading = true
-      this.saveWork().then(res => {
+      this.saveWork().then((res) => {
         this.handleClose()
         this.confirmLoading = false
       })
       // setTimeout(() => {
       // }, 2000);
     },
-    handleCancel (e) {
+    handleCancel(e) {
       console.log('Clicked cancel button')
       this.handleClose()
     },
-    drawQRcode () {
+    drawQRcode() {
       var canvas = document.getElementById('qrcode-container')
-      QRCode.toCanvas(canvas, this.releaseUrl, { scale: 4 }, err => {
+      QRCode.toCanvas(canvas, this.releaseUrl, { scale: 4 }, (err) => {
         console.log(err)
       })
     },
-    postMessage2Iframe (message) {
-      let iframeWin = document.getElementById('iframe-for-preview').contentWindow
+    postMessage2Iframe(message) {
+      let iframeWin = document.getElementById('iframe-for-preview')
+        .contentWindow
       iframeWin.postMessage(message, window.location.origin)
     },
-    openNewTab (urlType) {
+    openNewTab(urlType) {
       switch (urlType) {
         case 'openPreviewPage':
           window.open(this.releaseUrl)
           break
         case 'buildEngineDocs':
-          window.open('https://ly525.github.io/luban-h5/zh/getting-started/quick-start.html#_2-%E6%9E%84%E5%BB%BA%E9%A2%84%E8%A7%88%E6%89%80%E9%9C%80%E7%9A%84%E6%B8%B2%E6%9F%93%E5%BC%95%E6%93%8E')
+          window.open(
+            'https://ly525.github.io/luban-h5/zh/getting-started/quick-start.html#_2-%E6%9E%84%E5%BB%BA%E9%A2%84%E8%A7%88%E6%89%80%E9%9C%80%E7%9A%84%E6%B8%B2%E6%9F%93%E5%BC%95%E6%93%8E'
+          )
           break
       }
     }
   },
-  render (h) {
+  render(h) {
     return (
       <a-modal
         visible={this.visible}
@@ -92,8 +98,22 @@ export default {
               <div class="phone-wrapper" style={{ transform: 'scale(0.8)' }}>
                 <div class="phone">
                   <div class="float-ctrl-panel">
-                    <a class="page-controller" onClick={(e) => { this.postMessage2Iframe('prev') }}>上一页</a>
-                    <a class="page-controller" onClick={(e) => { this.postMessage2Iframe('next') }}>下一页</a>
+                    <a
+                      class="page-controller"
+                      onClick={(e) => {
+                        this.postMessage2Iframe('prev')
+                      }}
+                    >
+                      上一页
+                    </a>
+                    <a
+                      class="page-controller"
+                      onClick={(e) => {
+                        this.postMessage2Iframe('next')
+                      }}
+                    >
+                      下一页
+                    </a>
                     {/**
                     <a-button icon="up" shape="circle" onClick={() => { this.postMessage2Iframe('prev') }}></a-button>
                     <a-button icon="down" shape="circle" onClick={() => { this.postMessage2Iframe('next') }}></a-button>
@@ -104,12 +124,14 @@ export default {
                   {
                     // 类似 v-if="this.visible" 的目的：关闭预览弹框之后，销毁 iframe，避免继续播放音乐、视频
                     // similar with v-if="this.visible": destory the iframe after close the preview dialog to avoid playing the music and video
-                    this.visible && <iframe
-                      id="iframe-for-preview"
-                      src={this.releaseUrl}
-                      frameborder="0"
-                      style="height: 100%;width: 100%;"
-                    ></iframe>
+                    this.visible && (
+                      <iframe
+                        id="iframe-for-preview"
+                        src={this.releaseUrl}
+                        frameborder="0"
+                        style="height: 100%;width: 100%;"
+                      ></iframe>
+                    )
                   }
                   {/** <engine :work="editingWork" :map-config="{}" /> */}
                 </div>
@@ -122,14 +144,16 @@ export default {
                   <a-input
                     class="input"
                     value={this.work.title}
-                    onChange={e => this.updateWork({ title: e.target.value })}
+                    onChange={(e) => this.updateWork({ title: e.target.value })}
                     // onBlur={this.saveTitle}
                     placeholder="请输入标题"
                   ></a-input>
                   <a-input
                     class="input"
                     value={this.work.description}
-                    onChange={e => this.updateWork({ description: e.target.value })}
+                    onChange={(e) =>
+                      this.updateWork({ description: e.target.value })
+                    }
                     // v-model="description"
                     // onBlur={this.saveDescription}
                     placeholder="请输入描述"
@@ -152,8 +176,20 @@ export default {
                   </div>
                 </div>
                 <div style="background: #fafafa;">
-                  <a-button type="link" icon="link" onClick={() => this.openNewTab('openPreviewPage')}>打开预览页面</a-button>
-                  <a-button type="link" icon="link" onClick={() => this.openNewTab('buildEngineDocs')}>如果本地预览显示空白，点此查看文档</a-button>
+                  <a-button
+                    type="link"
+                    icon="link"
+                    onClick={() => this.openNewTab('openPreviewPage')}
+                  >
+                    打开预览页面
+                  </a-button>
+                  <a-button
+                    type="link"
+                    icon="link"
+                    onClick={() => this.openNewTab('buildEngineDocs')}
+                  >
+                    如果本地预览显示空白，点此查看文档
+                  </a-button>
                 </div>
               </div>
             </a-col>
@@ -213,7 +249,6 @@ export default {
           margin-top: 12px;
           // margin-top: -50px;
         }
-
       }
     }
   }
@@ -260,5 +295,4 @@ export default {
     }
   }
 }
-
 </style>

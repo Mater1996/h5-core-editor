@@ -1,22 +1,30 @@
-import ShortcutButton from './shortcut-button'
-import UsageTip from './usage-tip'
-import LoadNpmPlugins from './load-npm-plugins.vue'
-import langMixin from 'core/mixins/i18n'
-import dragMixin from 'core/mixins/drag'
-import loadPluginsMixin from 'core/plugins/index'
-import { mapActions } from 'vuex'
+import ShortcutButton from "./shortcut-button";
+import UsageTip from "./usage-tip";
+import LoadNpmPlugins from "./load-npm-plugins.vue";
+import langMixin from "core/mixins/i18n";
+import dragMixin from "core/mixins/drag";
+import loadPluginsMixin from "core/plugins/index";
+import { mapActions } from "vuex";
+import { Row, Col } from "ant-design-vue";
+
+console.log(Col.name, Col);
 
 export default {
+  name: "shotcuts-panle",
+  components: {
+    [Row.name]: Row,
+    [Col.name]: Col
+  },
   mixins: [langMixin, dragMixin, loadPluginsMixin],
   data: () => ({
     npmPackages: []
   }),
   methods: {
-    ...mapActions('editor', [
-      'elementManager',
-      'pageManager',
-      'saveWork',
-      'setEditingPage'
+    ...mapActions("editor", [
+      "elementManager",
+      "pageManager",
+      "saveWork",
+      "setEditingPage"
     ]),
     /**
      * !#zh 点击插件，copy 其基础数据到组件树（中间画布）
@@ -28,11 +36,11 @@ export default {
       shortcutProps: {}
      }
      */
-    clone (shortcutItem) {
+    clone(shortcutItem) {
       this.elementManager({
-        type: 'add',
+        type: "add",
         value: shortcutItem
-      })
+      });
     }
     /**
      * #!zh 渲染多个插件的快捷方式
@@ -105,31 +113,32 @@ export default {
    * #!en: render shortcust at the sidebar or the header.
    * if user click/drag the shortcut, the related plugin will be added to the canvas
    */
-  render (h) {
+  render(h) {
     // return this.renderShortCutsPanel(this.groups)
     return (
       <a-row style="max-height: calc(100vh - 150px);overflow-y: scroll; padding-bottom: 24px">
         <UsageTip />
-        {
-          [].concat(this.pluginsList, this.npmPackages)
-            .filter(plugin => plugin.visible)
-            .map(plugin => (
-              <a-col span={12} style={{ marginTop: '10px' }}>
-                <ShortcutButton
-                  clickFn={this.clone.bind(this, plugin)}
-                  mousedownFn={this.handleDragStartFromMixin.bind(this, plugin)}
-                  // title={plugin.title}
-                  title={plugin.i18nTitle[this.currentLang] || plugin.title}
-                  faIcon={plugin.icon}
-                  disabled={plugin.disabled}
-                />
-              </a-col>
-            ))
-        }
-        <LoadNpmPlugins onLoadComplete={npmPackages => {
-          this.npmPackages = npmPackages
-        }} />
+        {[]
+          .concat(this.pluginsList, this.npmPackages)
+          .filter(plugin => plugin.visible)
+          .map(plugin => (
+            <a-col span={12} style={{ marginTop: "10px" }}>
+              <ShortcutButton
+                clickFn={this.clone.bind(this, plugin)}
+                mousedownFn={this.handleDragStartFromMixin.bind(this, plugin)}
+                // title={plugin.title}
+                title={plugin.i18nTitle[this.currentLang] || plugin.title}
+                faIcon={plugin.icon}
+                disabled={plugin.disabled}
+              />
+            </a-col>
+          ))}
+        <LoadNpmPlugins
+          onLoadComplete={npmPackages => {
+            this.npmPackages = npmPackages;
+          }}
+        />
       </a-row>
-    )
+    );
   }
-}
+};

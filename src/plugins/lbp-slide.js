@@ -8,7 +8,7 @@
  * @Description: #!zh: 轮播图组件 #!en slide component
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
-import PropTypes from '@luban-h5/plugin-common-props'
+import PropTypes from '@/utils/commom-props'
 
 import { Swipe, SwipeItem } from 'vant'
 import 'vant/lib/swipe/style'
