@@ -2,12 +2,12 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-10-29 19:52:14
- * @LastEditTime: 2020-11-03 17:02:34
+ * @LastEditTime: 2020-11-03 17:10:56
  * @Description: 
 -->
 # 鲁班H5核心编辑模块
 
-- [Demo](https://mater1996.github.io/h5-core-editor/demo)
+- [Demo](https://mater1996.github.io/h5-core-editor)
 
 ## Usage Example
 
