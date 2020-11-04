@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 14:39:39
- * @LastEditTime : 2020-11-04 08:51:33
+ * @LastEditTime : 2020-11-04 08:57:32
  * @Description :
  */
 const path = require('path')
@@ -68,6 +68,30 @@ const globals = {
   'vue-matomo': 'vue-matomo'
 }
 
+const external = [
+  'quill',
+  'animate.css',
+  'vue',
+  'vuex',
+  'vant',
+  'resize-detector',
+  'hotkeys-js',
+  'lodash',
+  'ant-design-vue',
+  'vue-quill-editor',
+  'v-charts',
+  'stream',
+  'vue-i18n',
+  'x-data-spreadsheet',
+  'html2canvas',
+  'papaparse',
+  'echarts',
+  'font-awesome',
+  'qrcode',
+  'v-click-outside',
+  'vue-matomo'
+]
+
 module.exports = args => {
   const isProd = args.prod
   function resolveUrl(dir) {
@@ -89,29 +113,7 @@ module.exports = args => {
         globals
       }
     ],
-    external: [
-      'quill',
-      'animate.css',
-      'vue',
-      'vuex',
-      'vant',
-      'resize-detector',
-      'hotkeys-js',
-      'lodash',
-      'ant-design-vue',
-      'vue-quill-editor',
-      'v-charts',
-      'stream',
-      'vue-i18n',
-      'x-data-spreadsheet',
-      'html2canvas',
-      'papaparse',
-      'echarts',
-      'font-awesome',
-      'qrcode',
-      'v-click-outside',
-      'vue-matomo'
-    ],
+    external,
     plugins: [
       isProd && del({ targets: `${resolveUrl('dist/*')}` }),
       peerDepsExternal(),
