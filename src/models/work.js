@@ -2,7 +2,7 @@
  * @Author: ly525
  * @Date: 2019-11-24 18:51:58
  * @LastEditors : Please set LastEditors
- * @LastEditTime : 2020-11-02 11:57:24
+ * @LastEditTime : 2020-11-04 10:27:29
  * @FilePath: /luban-h5/front-end/h5/src/components/core/models/work.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: work model
@@ -12,28 +12,25 @@ import Page from './page.js'
 import { PAGE_MODE } from 'core/constants/work'
 
 class Work {
-  constructor (work = {}) {
-    this.id = work.id
-    this.title = work.title || '标题'
-    this.description = work.description || '描述'
-    this.pages = work.pages || [new Page()]
-
-    // this.id = this.id
-    // TODO 用id 并不是一个好办法，有心人会得知整个系统中共有多少作品等额外信息，尽量防止信息泄漏
-    // this.key = this.key
+  constructor({
+    id,
+    title = '标题',
+    pages = [],
+    description = '描述',
+    is_publish,
+    is_template,
+    height = 667,
+    page_mode = PAGE_MODE.SWIPPER_PAGE
+  } = {}) {
+    this.id = id
+    this.title = title
+    this.description = description
+    this.pages = pages.length > 0 ? pages : [new Page()]
     this.cover_image_url = ''
-    // TODO 后期可以添加一个类似项目组的概念，每个项目组下可以有多个作品
-    // this.project_id = 1
-
-    // #!zh: strapi.js 会自动创建与维护 created_at、updated_at
-    // #!en: strapi.js will auto create and maintain the fields: created_at、updated_at
-    // this.created_at = new Date()
-    // this.updated_at = new Date()
-
-    this.is_publish = !!work.is_publish
+    this.is_publish = !!is_publish
     this.is_template = false
-    this.height = work.height >= 0 ? work.height : 667
-    this.page_mode = work.page_mode || PAGE_MODE.SWIPPER_PAGE
+    this.height = height >= 0 ? height : 667
+    this.page_mode = page_mode
   }
 }
 

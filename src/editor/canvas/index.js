@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-27 15:04:59
- * @LastEditTime : 2020-11-02 11:47:08
+ * @LastEditTime : 2020-11-04 10:20:50
  * @Description :
  */
 import { mapState, mapActions } from "vuex";
@@ -41,9 +41,6 @@ export default {
         this.setEditingElement(); // 相当于  setEditingElement(null)
       }
     }
-  },
-  created() {
-    console.log(this.elements);
   },
   render(h) {
     return (

@@ -7,8 +7,6 @@ import loadPluginsMixin from "core/plugins/index";
 import { mapActions } from "vuex";
 import { Row, Col } from "ant-design-vue";
 
-console.log(Col.name, Col);
-
 export default {
   name: "shotcuts-panle",
   components: {

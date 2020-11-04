@@ -16,9 +16,18 @@ const points = ['lt', 'rt', 'lb', 'rb', 'l', 'r', 't', 'b']
 
 export default {
   mixins: [animationMixin],
-  props: ['defaultPosition', 'active', 'handleMousedownProp', 'handleElementMoveProp', 'handlePointMoveProp', 'handleElementMouseUpProp', 'handlePointMouseUpProp', 'element'],
+  props: [
+    'defaultPosition',
+    'active',
+    'handleMousedownProp',
+    'handleElementMoveProp',
+    'handlePointMoveProp',
+    'handleElementMouseUpProp',
+    'handlePointMouseUpProp',
+    'element'
+  ],
   computed: {
-    position () {
+    position() {
       return { ...this.defaultPosition }
     }
   },
@@ -26,7 +35,7 @@ export default {
     /**
      * 通过方位计算样式，主要是 top、left、鼠标样式
      */
-    getPointStyle (point, isWrapElement = true) {
+    getPointStyle(point, isWrapElement = true) {
       const pos = this.position
       const top = pos.top // !#zh 减4是为了让元素能够处于 border 的中间
       const left = pos.left
@@ -54,22 +63,27 @@ export default {
         }
       }
       const style = {
-        marginLeft: (hasL || hasR) ? '-3px' : 0,
-        marginTop: (hasT || hasB) ? '-3px' : 0,
+        marginLeft: hasL || hasR ? '-3px' : 0,
+        marginTop: hasT || hasB ? '-3px' : 0,
         left: `${newLeft + (isWrapElement ? 0 : left)}px`,
         top: `${newTop + (isWrapElement ? 0 : top)}px`,
-        cursor: point.split('').reverse().map(m => directionKey[m]).join('') + '-resize'
+        cursor:
+          point
+            .split('')
+            .reverse()
+            .map(m => directionKey[m])
+            .join('') + '-resize'
       }
       return style
     },
     /**
      * !#zh 主要目的是：阻止冒泡
      */
-    handleWrapperClick (e) {
+    handleWrapperClick(e) {
       e.stopPropagation()
       e.preventDefault()
     },
-    mousedownForMark (point, downEvent) {
+    mousedownForMark(point, downEvent) {
       downEvent.stopPropagation()
       downEvent.preventDefault() // Let's stop this event.
       const pos = { ...this.position }
@@ -109,7 +123,7 @@ export default {
      *
      * @param {mouseEvent} e
      */
-    mousedownForElement (e) {
+    mousedownForElement(e) {
       const pos = { ...this.position }
       let startY = e.clientY
       let startX = e.clientX
@@ -133,10 +147,11 @@ export default {
         document.removeEventListener('mousemove', move, true)
         document.removeEventListener('mouseup', up, true)
       }
+
       document.addEventListener('mousemove', move, true)
       document.addEventListener('mouseup', up, true)
     },
-    handleMousedown (e) {
+    handleMousedown(e) {
       if (this.handleMousedownProp) {
         this.handleMousedownProp()
         this.mousedownForElement(e, this.element)
@@ -148,7 +163,7 @@ export default {
      *
      * TODO: 增加 确认删除 拦截操作
      */
-    handleDeleteByKeyboard (event) {
+    handleDeleteByKeyboard(event) {
       const key = event.keyCode || event.charCode
       if (key === 8 || key === 46) {
         this.$emit('delete')
@@ -161,11 +176,11 @@ export default {
      * 支持如下行为：
      * - Backspace/Delete 快速删除元素
      */
-    handleKeyPressed (e) {
+    handleKeyPressed(e) {
       this.handleDeleteByKeyboard(e)
     }
   },
-  render (h) {
+  render(h) {
     return (
       <div
         tabIndex="0"
@@ -174,8 +189,7 @@ export default {
         onMousedown={this.handleMousedown}
         class={{ 'shape__wrapper-active': this.active }}
       >
-        {
-          this.active &&
+        {this.active &&
           points.map(point => {
             const pointStyle = this.getPointStyle(point)
             return (
@@ -187,8 +201,7 @@ export default {
                 onMousedown={this.mousedownForMark.bind(this, point)}
               ></div>
             )
-          })
-        }
+          })}
         {this.$slots.default}
       </div>
     )

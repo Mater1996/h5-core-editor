@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 14:39:39
- * @LastEditTime : 2020-11-04 08:57:32
+ * @LastEditTime : 2020-11-04 10:12:29
  * @Description :
  */
 const path = require('path')
@@ -162,7 +162,13 @@ module.exports = args => {
         preferBuiltins: true,
         mainFields: ['browser', 'module', 'main']
       }),
-      isProd && terser(),
+      isProd &&
+        terser({
+          safari10: isProd,
+          compress: {
+            drop_console: isProd
+          }
+        }),
       json(),
       progress(),
       filesize()

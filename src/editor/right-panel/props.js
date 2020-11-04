@@ -1,8 +1,8 @@
-import Vue from "vue";
-import { mapState, mapActions } from "vuex";
-import { getVM, getComponentsForPropsEditor } from "@/utils/element";
-import "core/styles/props-config-panel.scss";
-import EventBus from "@/bus";
+import Vue from 'vue'
+import { mapState, mapActions } from 'vuex'
+import { getVM, getComponentsForPropsEditor } from '@/utils/element'
+import 'core/styles/props-config-panel.scss'
+import EventBus from '@/bus'
 import {
   Form,
   Tabs,
@@ -12,8 +12,8 @@ import {
   Switch,
   InputNumber,
   Select
-} from "ant-design-vue";
-import colorsPanel from "@/support/colors-panel";
+} from 'ant-design-vue'
+import colorsPanel from '@/support/colors-panel'
 import lbsTextAlign from '@/support/text-align'
 import lbsExcelEditor from '@/support/excel'
 import lbpSlideCustomEditor from '@/plugins/lbp-slide__editor'
@@ -43,7 +43,7 @@ export default {
   props: {
     layout: {
       type: String,
-      default: "horizontal"
+      default: 'horizontal'
     },
     // 优先级更高的当前编辑元素
     realEditingElement: {
@@ -52,23 +52,31 @@ export default {
     }
   },
   computed: {
-    ...mapState("editor", {
+    ...mapState('editor', {
       stateEditingElement: state => state.editingElement
     }),
     customEditorName() {
-      return `${this.editingElement.name}-custom-editor`;
+      return `${this.editingElement.name}-custom-editor`
     },
     editingElement() {
-      return this.realEditingElement || this.stateEditingElement;
+      return this.realEditingElement || this.stateEditingElement
+    },
+    formItemLayout() {
+      this.layout === 'horizontal'
+        ? {
+            labelCol: { span: 6 },
+            wrapperCol: { span: 16, offset: 2 }
+          }
+        : {}
     }
   },
   methods: {
-    ...mapActions("editor", ["setEditingElement"]),
+    ...mapActions('editor', ['setEditingElement']),
     loadCustomEditorForPlugin() {
-      this.loadCustomEditorFlag = false;
-      if (!this.editingElement) return;
+      this.loadCustomEditorFlag = false
+      if (!this.editingElement) return
       if (Vue.component(this.customEditorName)) {
-        this.loadCustomEditorFlag = true;
+        this.loadCustomEditorFlag = true
       } else {
         // import(`../../plugins/${this.editingElement.name}__editor.js`).then(component => {
         //   this.loadCustomEditorFlag = true
@@ -83,10 +91,10 @@ export default {
      * 将插件属性的 自定义增强编辑器注入 属性编辑面板中
      */
     mixinEnhancedPropsEditor(editingElement) {
-      if (!this.componentsForPropsEditor) return;
+      if (!this.componentsForPropsEditor) return
       for (const key in this.componentsForPropsEditor) {
-        if (this.$options.components[key]) return;
-        this.$options.components[key] = this.componentsForPropsEditor[key];
+        if (this.$options.components[key]) return
+        this.$options.components[key] = this.componentsForPropsEditor[key]
       }
     },
     /**
@@ -98,65 +106,51 @@ export default {
      * }
      */
     renderPropFormItem(h, { propKey, propConfig }) {
-      const editingElement = this.editingElement;
-      const item = propConfig.editor;
-      // https://vuejs.org/v2/guide/render-function.html
+      const { pluginProps = [] } = this.editingElement
+      const editor = propConfig.editor
+      const editorType = editor.type === 'a-switch' ? 'checked' : 'value'
       const data = {
-        // style: { width: '100%' },
         props: {
-          ...(item.props || {}),
+          ...(editor.props || {}),
           // https://vuejs.org/v2/guide/render-function.html#v-model
-
           // #!zh:不设置默认值的原因（下一行的代码，注释的代码）：
           // 比如表单 input，如果用户手动删除了 placeholder的内容，程序会用defaultPropValue填充，
           // 表现在UI上就是：用户永远无法彻底删掉默认值（必须保留至少一个字符）
           // value: editingElement.pluginProps[propKey] || item.defaultPropValue
-
-          // https://cn.vuejs.org/v2/guide/components-custom-events.html#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E4%BB%B6%E7%9A%84-v-model
-          [item.type === "a-switch" ? "checked" : "value"]: editingElement
-            .pluginProps[propKey]
+          [editorType]: pluginProps[propKey]
         },
         on: {
-          // https://vuejs.org/v2/guide/render-function.html#v-model
-          // input (e) {
-          //   editingElement.pluginProps[propKey] = e.target ? e.target.value : e
-          // }
           change(e) {
+            console.log('change123')
             // fixme: update plugin props in vuex with dispatch
-            editingElement.pluginProps[propKey] = e.target ? e.target.value : e;
+            pluginProps[propKey] = e.target ? e.target.value : e
           }
         }
-      };
-      const formItemLayout =
-        this.layout === "horizontal"
-          ? {
-              labelCol: { span: 6 },
-              wrapperCol: { span: 16, offset: 2 }
-            }
-          : {};
+      }
       const formItemData = {
         props: {
-          ...formItemLayout,
-          label: item.label,
-          ...item.layout
+          ...this.formItemLayout,
+          label: editor.label,
+          ...editor.layout
         }
-      };
+      }
       return (
         <a-form-item {...formItemData}>
           {/* extra: 操作补充说明 */}
-          {item.extra && (
+          {editor.extra && (
             <div slot="extra">
-              {typeof item.extra === "function" ? item.extra(h) : item.extra}
+              {typeof editor.extra === 'function'
+                ? editor.extra(h)
+                : editor.extra}
             </div>
           )}
-          {h(item.type, data)}
+          {h(editor.type, data)}
         </a-form-item>
-      );
+      )
     },
     renderPropsEditorPanel(h, editingElement) {
-      const vm = getVM(editingElement.name);
-      const props = vm.$options.props;
-
+      const vm = getVM(editingElement.name)
+      const props = vm.$options.props
       return (
         <a-form
           ref="form"
@@ -176,33 +170,31 @@ export default {
               // 1. 如果开发者给 某个prop 显式指定了 visible 属性，则取开发者指定的值；
               // 2. 否则取默认值：true，即默认在属性面板显示该属性
               // 3. 组件的某些属性是不需要显示在 配置编辑器的，比如：editorMode(编辑模式/预览模式)，因为这个是鲁班编辑器默认注入到每个组件的，无须显示出来
-              const isVisible = propConfig.hasOwnProperty("visible")
+              const isVisible = propConfig.hasOwnProperty('visible')
                 ? propConfig.visible
-                : true;
-              return (
-                isVisible && propConfig.editor && !propConfig.editor.custom
-              );
+                : true
+              return isVisible && propConfig.editor && !propConfig.editor.custom
             })
             .map(([propKey, propConfig]) =>
               this.renderPropFormItem(h, { propKey, propConfig })
             )}
         </a-form>
-      );
+      )
     },
     renderWorkGlobalPropsPanel(h) {
-      return <RenderWorkMode />;
+      return <RenderWorkMode />
     }
   },
   render(h) {
-    const ele = this.editingElement;
-    if (!ele) return "请选择一个元素";
-    this.mixinEnhancedPropsEditor(ele);
-    return this.renderPropsEditorPanel(h, ele);
+    const ele = this.editingElement
+    if (!ele) return '请选择一个元素'
+    this.mixinEnhancedPropsEditor(ele)
+    return this.renderPropsEditorPanel(h, ele)
   },
   created() {
-    EventBus.$on("setEditingElement", ele => {
-      this.loadCustomEditorForPlugin();
-      this.componentsForPropsEditor = getComponentsForPropsEditor(ele.name);
-    });
+    EventBus.$on('setEditingElement', ele => {
+      this.loadCustomEditorForPlugin()
+      this.componentsForPropsEditor = getComponentsForPropsEditor(ele.name)
+    })
   }
-};
+}

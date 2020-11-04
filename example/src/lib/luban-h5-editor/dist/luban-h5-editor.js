@@ -1788,7 +1788,7 @@
    * @author : Mater
    * @Email : bxh8640@gmail.com
    * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-03 16:51:42
+   * @LastEditTime : 2020-11-04 10:07:47
    * @Description :
    */
   var colorsPanel = {
@@ -2976,7 +2976,7 @@
     props: {
       layout: {
         type: String,
-        default: "horizontal"
+        default: 'horizontal'
       },
       // 优先级更高的当前编辑元素
       realEditingElement: {
@@ -2986,7 +2986,7 @@
         }
       }
     },
-    computed: _objectSpread$1(_objectSpread$1({}, Vuex.mapState("editor", {
+    computed: _objectSpread$1(_objectSpread$1({}, Vuex.mapState('editor', {
       stateEditingElement: function stateEditingElement(state) {
         return state.editingElement;
       }
@@ -2996,9 +2996,20 @@
       },
       editingElement: function editingElement() {
         return this.realEditingElement || this.stateEditingElement;
+      },
+      formItemLayout: function formItemLayout() {
+        this.layout === 'horizontal' ? {
+          labelCol: {
+            span: 6
+          },
+          wrapperCol: {
+            span: 16,
+            offset: 2
+          }
+        } : {};
       }
     }),
-    methods: _objectSpread$1(_objectSpread$1({}, Vuex.mapActions("editor", ["setEditingElement"])), {}, {
+    methods: _objectSpread$1(_objectSpread$1({}, Vuex.mapActions('editor', ['setEditingElement'])), {}, {
       loadCustomEditorForPlugin: function loadCustomEditorForPlugin() {
         this.loadCustomEditorFlag = false;
         if (!this.editingElement) return;
@@ -3031,40 +3042,28 @@
       renderPropFormItem: function renderPropFormItem(h, _ref) {
         var propKey = _ref.propKey,
             propConfig = _ref.propConfig;
-        var editingElement = this.editingElement;
-        var item = propConfig.editor; // https://vuejs.org/v2/guide/render-function.html
-
+        var _this$editingElement$ = this.editingElement.pluginProps,
+            pluginProps = _this$editingElement$ === void 0 ? [] : _this$editingElement$;
+        var editor = propConfig.editor;
+        var editorType = editor.type === 'a-switch' ? 'checked' : 'value';
         var data = {
-          // style: { width: '100%' },
-          props: _objectSpread$1(_objectSpread$1({}, item.props || {}), {}, defineProperty$1({}, item.type === "a-switch" ? "checked" : "value", editingElement.pluginProps[propKey])),
+          props: _objectSpread$1(_objectSpread$1({}, editor.props || {}), {}, defineProperty$1({}, editorType, pluginProps[propKey])),
           on: {
-            // https://vuejs.org/v2/guide/render-function.html#v-model
-            // input (e) {
-            //   editingElement.pluginProps[propKey] = e.target ? e.target.value : e
-            // }
             change: function change(e) {
-              // fixme: update plugin props in vuex with dispatch
-              editingElement.pluginProps[propKey] = e.target ? e.target.value : e;
+              console.log('change123'); // fixme: update plugin props in vuex with dispatch
+
+              pluginProps[propKey] = e.target ? e.target.value : e;
             }
           }
         };
-        var formItemLayout = this.layout === "horizontal" ? {
-          labelCol: {
-            span: 6
-          },
-          wrapperCol: {
-            span: 16,
-            offset: 2
-          }
-        } : {};
         var formItemData = {
-          props: _objectSpread$1(_objectSpread$1({}, formItemLayout), {}, {
-            label: item.label
-          }, item.layout)
+          props: _objectSpread$1(_objectSpread$1({}, this.formItemLayout), {}, {
+            label: editor.label
+          }, editor.layout)
         };
-        return h("a-form-item", helper([{}, formItemData]), [item.extra && h("div", {
+        return h("a-form-item", helper([{}, formItemData]), [editor.extra && h("div", {
           "slot": "extra"
-        }, [typeof item.extra === "function" ? item.extra(h) : item.extra]), h(item.type, data)]);
+        }, [typeof editor.extra === 'function' ? editor.extra(h) : editor.extra]), h(editor.type, data)]);
       },
       renderPropsEditorPanel: function renderPropsEditorPanel(h, editingElement) {
         var _this = this;
@@ -3091,7 +3090,7 @@
           // 1. 如果开发者给 某个prop 显式指定了 visible 属性，则取开发者指定的值；
           // 2. 否则取默认值：true，即默认在属性面板显示该属性
           // 3. 组件的某些属性是不需要显示在 配置编辑器的，比如：editorMode(编辑模式/预览模式)，因为这个是鲁班编辑器默认注入到每个组件的，无须显示出来
-          var isVisible = propConfig.hasOwnProperty("visible") ? propConfig.visible : true;
+          var isVisible = propConfig.hasOwnProperty('visible') ? propConfig.visible : true;
           return isVisible && propConfig.editor && !propConfig.editor.custom;
         }).map(function (_ref4) {
           var _ref5 = slicedToArray(_ref4, 2),
@@ -3110,14 +3109,14 @@
     }),
     render: function render(h) {
       var ele = this.editingElement;
-      if (!ele) return "请选择一个元素";
+      if (!ele) return '请选择一个元素';
       this.mixinEnhancedPropsEditor(ele);
       return this.renderPropsEditorPanel(h, ele);
     },
     created: function created() {
       var _this2 = this;
 
-      EventBus.$on("setEditingElement", function (ele) {
+      EventBus.$on('setEditingElement', function (ele) {
         _this2.loadCustomEditorForPlugin();
 
         _this2.componentsForPropsEditor = getComponentsForPropsEditor(ele.name);
@@ -3873,7 +3872,7 @@
   function _objectSpread$3(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var RenderAnimationEditor = {
     components: (_components$6 = {}, defineProperty$1(_components$6, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$1(_components$6, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$1(_components$6, antDesignVue.List.name, antDesignVue.List), defineProperty$1(_components$6, antDesignVue.Form.name, antDesignVue.Form), defineProperty$1(_components$6, antDesignVue.Button.name, antDesignVue.Button), defineProperty$1(_components$6, antDesignVue.Popover.name, antDesignVue.Popover), defineProperty$1(_components$6, antDesignVue.Slider.name, antDesignVue.Slider), defineProperty$1(_components$6, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$1(_components$6, antDesignVue.Collapse.name, antDesignVue.Collapse), defineProperty$1(_components$6, antDesignVue.Collapse.Panel.name, antDesignVue.Collapse.Pane), defineProperty$1(_components$6, antDesignVue.Icon.name, antDesignVue.Icon), defineProperty$1(_components$6, antDesignVue.Drawer.name, antDesignVue.Drawer), defineProperty$1(_components$6, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), defineProperty$1(_components$6, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$1(_components$6, antDesignVue.Form.Item.name, antDesignVue.Form.Item), _components$6),
-    computed: _objectSpread$3(_objectSpread$3({}, Vuex.mapState("editor", ["editingElement"])), {}, {
+    computed: _objectSpread$3(_objectSpread$3({}, Vuex.mapState('editor', ['editingElement'])), {}, {
       animationQueue: function animationQueue() {
         return this.editingElement && this.editingElement.animations || [];
       }
@@ -3882,7 +3881,7 @@
       return {
         // animationQueue: [],
         activeCollapsePanel: 0,
-        activePreviewAnimation: "",
+        activePreviewAnimation: '',
         drawerVisible: false
       };
     },
@@ -3890,7 +3889,7 @@
       addAnimation: function addAnimation() {
         // TODO move this to vuex
         this.animationQueue.push({
-          type: "",
+          type: '',
           duration: 1,
           delay: 0,
           interationCount: 1,
@@ -3904,7 +3903,7 @@
       },
       runAnimate: function runAnimate() {
         // front-end/h5/src/components/core/editor/index.js created()
-        EventBus.$emit("RUN_ANIMATIONS");
+        EventBus.$emit('RUN_ANIMATIONS');
       },
       renderSecondAnimationTabs: function renderSecondAnimationTabs(animations) {
         var _this = this;
@@ -3914,7 +3913,7 @@
           "attrs": {
             "defaultActiveKey": animations[0].value,
             "tabBarStyle": {
-              marginLeft: "-16px"
+              marginLeft: '-16px'
             },
             "size": "small",
             "tabBarGutter": 0,
@@ -3954,7 +3953,7 @@
                         // this.activePreviewAnimation = ''
                       }
                     },
-                    "class": [_this.activePreviewAnimation === item.value && item.value + " animated", "shortcut-button"]
+                    "class": [_this.activePreviewAnimation === item.value && item.value + ' animated', 'shortcut-button']
                   }, [item.label])])
                 );
               }
@@ -3998,7 +3997,7 @@
           }
         }, [h("a-form-item", {
           "attrs": {
-            "label": this.$t("editor.editPanel.animation.type"),
+            "label": this.$t('editor.editPanel.animation.type'),
             "labelCol": {
               span: 5
             },
@@ -4018,9 +4017,9 @@
               _this3.drawerVisible = true;
             }
           }
-        }, [this.$t("editor.editPanel.animation.list")])]), h("a-form-item", {
+        }, [this.$t('editor.editPanel.animation.list')])]), h("a-form-item", {
           "attrs": {
-            "label": this.$t("editor.editPanel.animation.duration"),
+            "label": this.$t('editor.editPanel.animation.duration'),
             "labelCol": {
               span: 5
             },
@@ -4032,8 +4031,8 @@
           "style": "margin-bottom:0;"
         }, [h("a-form-item", {
           "style": {
-            display: "inline-block",
-            width: "calc(50% - 12px)"
+            display: 'inline-block',
+            width: 'calc(50% - 12px)'
           }
         }, [h("a-slider", {
           "attrs": {
@@ -4049,9 +4048,9 @@
           }
         })]), h("a-form-item", {
           "style": {
-            display: "inline-block",
-            width: "calc(50% - 12px)",
-            marginLeft: "4px"
+            display: 'inline-block',
+            width: 'calc(50% - 12px)',
+            marginLeft: '4px'
           }
         }, [h("a-input-number", {
           "attrs": {
@@ -4070,7 +4069,7 @@
           }
         })])]), h("a-form-item", {
           "attrs": {
-            "label": this.$t("editor.editPanel.animation.delay"),
+            "label": this.$t('editor.editPanel.animation.delay'),
             "labelCol": {
               span: 5
             },
@@ -4082,8 +4081,8 @@
           "style": "margin-bottom:0;"
         }, [h("a-form-item", {
           "style": {
-            display: "inline-block",
-            width: "calc(50% - 12px)"
+            display: 'inline-block',
+            width: 'calc(50% - 12px)'
           }
         }, [h("a-slider", {
           "attrs": {
@@ -4099,9 +4098,9 @@
           }
         })]), h("a-form-item", {
           "style": {
-            display: "inline-block",
-            width: "calc(50% - 12px)",
-            marginLeft: "4px"
+            display: 'inline-block',
+            width: 'calc(50% - 12px)',
+            marginLeft: '4px'
           }
         }, [h("a-input-number", {
           "attrs": {
@@ -4120,7 +4119,7 @@
           }
         })])]), h("a-form-item", {
           "attrs": {
-            "label": this.$t("editor.editPanel.animation.iteration"),
+            "label": this.$t('editor.editPanel.animation.iteration'),
             "labelCol": {
               span: 5
             },
@@ -4132,8 +4131,8 @@
           "style": "margin-bottom:0;"
         }, [h("a-form-item", {
           "style": {
-            display: "inline-block",
-            width: "calc(50% - 12px)"
+            display: 'inline-block',
+            width: 'calc(50% - 12px)'
           }
         }, [h("a-slider", {
           "attrs": {
@@ -4149,9 +4148,9 @@
           }
         })]), h("a-form-item", {
           "style": {
-            display: "inline-block",
-            width: "calc(50% - 12px)",
-            marginLeft: "4px"
+            display: 'inline-block',
+            width: 'calc(50% - 12px)',
+            marginLeft: '4px'
           }
         }, [h("a-input-number", {
           "attrs": {
@@ -4170,7 +4169,7 @@
           }
         })])]), h("a-form-item", {
           "attrs": {
-            "label": this.$t("editor.editPanel.animation.inifinite"),
+            "label": this.$t('editor.editPanel.animation.inifinite'),
             "labelCol": {
               span: 5
             },
@@ -4196,7 +4195,7 @@
       var _this4 = this;
 
       var ele = this.editingElement;
-      if (!ele) return h("span", [this.$t("editor.editPanel.common.empty")]);
+      if (!ele) return h("span", [this.$t('editor.editPanel.common.empty')]);
       return h("div", {
         "class": "main-animate widget",
         "attrs": {
@@ -4213,14 +4212,14 @@
         "attrs": {
           "type": "plus"
         }
-      }), this.$t("editor.editPanel.animation.add")]), h("a-button", {
+      }), this.$t('editor.editPanel.animation.add')]), h("a-button", {
         "attrs": {
           "type": "primary"
         },
         "on": {
           "click": this.runAnimate
         }
-      }, [this.$t("editor.editPanel.animation.run"), h("a-icon", {
+      }, [this.$t('editor.editPanel.animation.run'), h("a-icon", {
         "attrs": {
           "type": "right-circle"
         }
@@ -4229,13 +4228,13 @@
       !!this.animationQueue.length && h("a-collapse", {
         "attrs": {
           "accordion": true,
-          "activeKey": "" + this.activeCollapsePanel
+          "activeKey": '' + this.activeCollapsePanel
         },
         "class": "collapse-wrapper",
         "on": {
           "change": function change(key) {
             // 当全部收起来时候，key 为 undefined
-            _this4.activeCollapsePanel = typeof key !== "undefined" ? +key : -1;
+            _this4.activeCollapsePanel = typeof key !== 'undefined' ? +key : -1;
           }
         }
       }, [this.animationQueue.map(function (addedAnimation, index) {
@@ -4243,7 +4242,7 @@
           "key": "".concat(index)
         }, [h("template", {
           "slot": "header"
-        }, [h("span", [_this4.$t("editor.editPanel.animation.title", {
+        }, [h("span", [_this4.$t('editor.editPanel.animation.title', {
           index: index + 1
         })]), h("a-tag", {
           "attrs": {
@@ -4268,7 +4267,7 @@
           "visible": this.drawerVisible,
           "width": 400,
           "wrapStyle": {
-            margin: "-16px"
+            margin: '-16px'
           }
         },
         "on": {
@@ -5592,7 +5591,7 @@
   function _objectSpread$9(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var RenderEditCanvas = {
     components: (_components$a = {}, defineProperty$1(_components$a, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$1(_components$a, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), _components$a),
-    props: ["elements", "handleClickElementProp", "handleClickCanvasProp"],
+    props: ['elements', 'handleClickElementProp', 'handleClickCanvasProp'],
     data: function data() {
       return {
         vLines: [],
@@ -5600,8 +5599,8 @@
         contextmenuPos: []
       };
     },
-    computed: _objectSpread$9({}, Vuex.mapState("editor", ["editingElement", "work"])),
-    methods: _objectSpread$9(_objectSpread$9({}, Vuex.mapActions("editor", ["setEditingElement", "setElementPosition", "setElementShape", "recordElementRect", "elementManager", "updateWork"])), {}, {
+    computed: _objectSpread$9({}, Vuex.mapState('editor', ['editingElement', 'work'])),
+    methods: _objectSpread$9(_objectSpread$9({}, Vuex.mapActions('editor', ['setEditingElement', 'setElementPosition', 'setElementShape', 'recordElementRect', 'elementManager', 'updateWork'])), {}, {
       // generate vertical line
       drawVLine: function drawVLine(newLeft) {
         this.vLines = [{
@@ -5721,7 +5720,7 @@
         this.contextmenuPos = [];
       },
       handleClickCanvas: function handleClickCanvas(e) {
-        if (!e.target.classList.contains("element-on-edit-canvas")) {
+        if (!e.target.classList.contains('element-on-edit-canvas')) {
           this.setEditingElement();
         }
       },
@@ -5746,7 +5745,7 @@
 
         var startY = e.clientY;
         var startHeight = this.work.height;
-        var canvasOuterWrapper = document.querySelector("#canvas-outer-wrapper");
+        var canvasOuterWrapper = document.querySelector('#canvas-outer-wrapper');
 
         var move = function move(moveEvent) {
           // !#zh 移动的时候，不需要向后代元素传递事件，只需要单纯的移动就OK
@@ -5762,200 +5761,173 @@
         };
 
         var up = function up(moveEvent) {
-          document.removeEventListener("mousemove", move, true);
-          document.removeEventListener("mouseup", up, true);
+          document.removeEventListener('mousemove', move, true);
+          document.removeEventListener('mouseup', up, true);
         };
 
-        document.addEventListener("mousemove", move, true);
-        document.addEventListener("mouseup", up, true);
-      },
-
-      /**
-       * #!zh: renderCanvas 渲染中间画布
-       * elements
-       * @param {*} h
-       * @param {*} elements
-       * @returns
-       */
-      renderCanvas: function renderCanvas(h, elements) {
-        var _this3 = this;
-
-        return h("div", {
-          "style": {
-            height: "100%",
-            position: "relative"
-          },
-          "on": {
-            "click": function click(e) {
-              _this3.hideContextMenu();
-
-              _this3.handleClickCanvas(e);
-            },
-            "contextmenu": function contextmenu(e) {
-              e.preventDefault();
-              e.stopPropagation(); // this.bindContextMenu(e)
-            }
-          }
-        }, [elements.map(function (element, index) {
-          if (element.name === "lbp-background") {
-            return h("lbp-background", {
-              props: element.getProps()
-            });
-          }
-
-          var data = {
-            style: {
-              width: "100%",
-              height: "100%"
-            },
-            // 添加 class 的原因：与 handleClickCanvasProp 配合,
-            // 当点击编辑画布上的其它区域（clickEvent.target.classList 不包含下面的 className）的时候，设置 editingElement=null
-            class: "element-on-edit-canvas",
-            props: _objectSpread$9(_objectSpread$9({}, element.getProps()), {}, {
-              // #6 #3,
-              editorMode: "edit"
-            }),
-            // nativeOn: {
-            //   contextmenu: e => {
-            //     this.bindContextMenu(e)
-            //   }
-            // },
-            on: {
-              // 高亮当前点击的元素
-              // click: () => this.setEditingElement(element)
-              input: function input(_ref) {
-                var value = _ref.value,
-                    pluginName = _ref.pluginName;
-
-                if (pluginName === "lbp-text") {
-                  element.pluginProps.text = value;
-                }
-              }
-            }
-          };
-          return h(Shape, {
-            "on": {
-              "delete": function _delete() {
-                return _this3.elementManager({
-                  type: "delete"
-                });
-              }
-            },
-            "style": element.getStyle({
-              position: "absolute"
-            }),
-            "attrs": {
-              "defaultPosition": element.commonStyle,
-              "element": element,
-              "active": _this3.editingElement === element,
-              "handleMousedownProp": function handleMousedownProp() {
-                // 优化右键菜单的交互体验：
-                // 原来的交互为：鼠标一旦离开 contextmenu，即刻消失
-                // 带来的体验问题：有时候鼠标不小心滑到右键菜单外边，还没操作完，菜单消失了
-                // 改进：1. 鼠标离开，右键菜单不消失 2. 点击画布的时候，隐藏右键菜单（包含点击editingElement + 画布）
-                _this3.hideContextMenu(); // 在 shape 上面添加 mousedown，而非 plugin 本身添加 onClick 的原因：
-                // 在 mousedown 的时候，即可激活 editingElement(当前选中元素)
-                // 这样，就不用等到鼠标抬起的时候，也就是 plugin 的 onClick 生效的时候，才给选中的元素添加边框等选中效果
-
-
-                _this3.setEditingElement(element);
-              },
-              "handlePointMoveProp": _this3.handlePointMove,
-              "handleElementMoveProp": _this3.handleElementMove,
-              "handleElementMouseUpProp": function handleElementMouseUpProp() {
-                _this3.clearHLine();
-
-                _this3.clearVLine();
-
-                _this3.recordElementRect();
-              },
-              "handlePointMouseUpProp": function handlePointMouseUpProp() {
-                _this3.clearHLine();
-
-                _this3.clearVLine();
-
-                _this3.recordElementRect();
-              }
-            },
-            "nativeOn": {
-              "contextmenu": function contextmenu(e) {
-                _this3.bindContextMenu(e);
-              }
-            }
-          }, [h(element.name, data)]);
-        }), this.vLines.map(function (line) {
-          return h("div", {
-            "class": "v-line",
-            "style": {
-              left: "".concat(line.left, "px")
-            }
-          });
-        }), this.hLines.map(function (line) {
-          return h("div", {
-            "class": "h-line",
-            "style": {
-              top: "".concat(line.top, "px")
-            }
-          });
-        }), this.contextmenuPos.length ? h(ContextMenu, {
-          "style": {
-            left: this.contextmenuPos[0] + "px",
-            top: this.contextmenuPos[1] + "px",
-            userSelect: "none",
-            position: "absolute",
-            zIndex: 999
-          },
-          "on": {
-            "select": function select(_ref2) {
-              var item = _ref2.item,
-                  key = _ref2.key,
-                  selectedKeys = _ref2.selectedKeys;
-
-              _this3.elementManager({
-                type: key
-              });
-
-              _this3.hideContextMenu();
-            },
-            "hideMenu": this.hideContextMenu
-          }
-        }) : null, h("div", {
-          "style": {
-            position: "absolute",
-            top: "".concat(this.work.height, "px"),
-            width: "100%"
-          }
-        }, [h("div", {
-          "class": "adjust-line-wrapper adjust-line-wrapper-h"
-        }, [h("div", {
-          "class": "adjust-line adjust-line-h"
-        }), h("div", {
-          "class": "adjust-button",
-          "on": {
-            "mousedown": this.mousedownForAdjustLine
-          }
-        }, [h("div", {
-          "class": "indicator"
-        })]), h("div", {
-          "class": "adjust-tip"
-        }, [h("span", ["375 x"]), h("a-input-number", {
-          "attrs": {
-            "size": "small",
-            "value": this.work.height
-          },
-          "style": "margin: 0 4px; width:60px;",
-          "on": {
-            "change": function change(height) {
-              _this3.updateWork({
-                height: height
-              });
-            }
-          }
-        }), h("span", ["px"])])])])]);
+        document.addEventListener('mousemove', move, true);
+        document.addEventListener('mouseup', up, true);
       }
     }),
-    render: function render(h) {
-      return this.renderCanvas(h, this.elements);
+    render: function render() {
+      var _this3 = this;
+
+      var h = arguments[0];
+      var elements = this.elements;
+      return h("div", {
+        "style": {
+          height: '100%',
+          position: 'relative'
+        },
+        "on": {
+          "click": function click(e) {
+            _this3.hideContextMenu();
+
+            _this3.handleClickCanvas(e);
+          },
+          "contextmenu": function contextmenu(e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }
+      }, [elements.map(function (element, index) {
+        if (element.name === 'lbp-background') {
+          return h("lbp-background", helper([{}, element.getProps()]));
+        }
+
+        var data = {
+          style: {
+            width: '100%',
+            height: '100%'
+          },
+          class: 'element-on-edit-canvas',
+          props: _objectSpread$9(_objectSpread$9({}, element.getProps()), {}, {
+            // #6 #3,
+            editorMode: 'edit'
+          }),
+          on: {
+            input: function input(_ref) {
+              var value = _ref.value,
+                  pluginName = _ref.pluginName;
+
+              if (pluginName === 'lbp-text') {
+                element.pluginProps.text = value;
+              }
+            }
+          }
+        };
+        return h(Shape, {
+          "on": {
+            "delete": function _delete() {
+              return _this3.elementManager({
+                type: 'delete'
+              });
+            }
+          },
+          "style": element.getStyle({
+            position: 'absolute'
+          }),
+          "attrs": {
+            "defaultPosition": element.commonStyle,
+            "element": element,
+            "active": _this3.editingElement === element,
+            "handleMousedownProp": function handleMousedownProp() {
+              _this3.hideContextMenu();
+
+              _this3.setEditingElement(element);
+            },
+            "handlePointMoveProp": _this3.handlePointMove,
+            "handleElementMoveProp": _this3.handleElementMove,
+            "handleElementMouseUpProp": function handleElementMouseUpProp() {
+              _this3.clearHLine();
+
+              _this3.clearVLine();
+
+              _this3.recordElementRect();
+            },
+            "handlePointMouseUpProp": function handlePointMouseUpProp() {
+              _this3.clearHLine();
+
+              _this3.clearVLine();
+
+              _this3.recordElementRect();
+            }
+          },
+          "nativeOn": {
+            "contextmenu": function contextmenu(e) {
+              _this3.bindContextMenu(e);
+            }
+          }
+        }, [h(element.name, helper([{}, data]))]);
+      }), this.vLines.map(function (line) {
+        return h("div", {
+          "class": "v-line",
+          "style": {
+            left: "".concat(line.left, "px")
+          }
+        });
+      }), this.hLines.map(function (line) {
+        return h("div", {
+          "class": "h-line",
+          "style": {
+            top: "".concat(line.top, "px")
+          }
+        });
+      }), this.contextmenuPos.length ? h(ContextMenu, {
+        "style": {
+          left: this.contextmenuPos[0] + 'px',
+          top: this.contextmenuPos[1] + 'px',
+          userSelect: 'none',
+          position: 'absolute',
+          zIndex: 999
+        },
+        "on": {
+          "select": function select(_ref2) {
+            var item = _ref2.item,
+                key = _ref2.key,
+                selectedKeys = _ref2.selectedKeys;
+
+            _this3.elementManager({
+              type: key
+            });
+
+            _this3.hideContextMenu();
+          },
+          "hideMenu": this.hideContextMenu
+        }
+      }) : null, h("div", {
+        "style": {
+          position: 'absolute',
+          top: "".concat(this.work.height, "px"),
+          width: '100%'
+        }
+      }, [h("div", {
+        "class": "adjust-line-wrapper adjust-line-wrapper-h"
+      }, [h("div", {
+        "class": "adjust-line adjust-line-h"
+      }), h("div", {
+        "class": "adjust-button",
+        "on": {
+          "mousedown": this.mousedownForAdjustLine
+        }
+      }, [h("div", {
+        "class": "indicator"
+      })]), h("div", {
+        "class": "adjust-tip"
+      }, [h("span", ["375 x"]), h("a-input-number", {
+        "attrs": {
+          "size": "small",
+          "value": this.work.height
+        },
+        "style": "margin: 0 4px; width:60px;",
+        "on": {
+          "change": function change(height) {
+            _this3.updateWork({
+              height: height
+            });
+          }
+        }
+      }), h("span", ["px"])])])])]);
     }
   };
 
@@ -6051,9 +6023,6 @@
         }
       }
     }),
-    created: function created() {
-      console.log(this.elements);
-    },
     render: function render(h) {
       return h("a-layout", {
         "attrs": {
@@ -7785,7 +7754,7 @@
   var LbpBackground = {
     name: 'lbp-background',
     props: {
-      imgSrc: PropTypes.image({
+      imgSrc: PropTypes.string({
         label: '背景图'
       }),
       backgroundColor: PropTypes.color({
@@ -68566,7 +68535,6 @@
   function ownKeys$g(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
   function _objectSpread$f(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$g(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$g(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  console.log(antDesignVue.Col.name, antDesignVue.Col);
   var RenderShortcutsPanel = {
     name: "shotcuts-panle",
     components: (_components$d = {}, defineProperty$1(_components$d, antDesignVue.Row.name, antDesignVue.Row), defineProperty$1(_components$d, antDesignVue.Col.name, antDesignVue.Col), _components$d),
@@ -69424,28 +69392,32 @@
   }();
 
   var Work = function Work() {
-    var work = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+        id = _ref.id,
+        _ref$title = _ref.title,
+        title = _ref$title === void 0 ? '标题' : _ref$title,
+        _ref$pages = _ref.pages,
+        pages = _ref$pages === void 0 ? [] : _ref$pages,
+        _ref$description = _ref.description,
+        description = _ref$description === void 0 ? '描述' : _ref$description,
+        is_publish = _ref.is_publish,
+        is_template = _ref.is_template,
+        _ref$height = _ref.height,
+        height = _ref$height === void 0 ? 667 : _ref$height,
+        _ref$page_mode = _ref.page_mode,
+        page_mode = _ref$page_mode === void 0 ? PAGE_MODE.SWIPPER_PAGE : _ref$page_mode;
 
     classCallCheck(this, Work);
 
-    this.id = work.id;
-    this.title = work.title || '标题';
-    this.description = work.description || '描述';
-    this.pages = work.pages || [new Page()]; // this.id = this.id
-    // TODO 用id 并不是一个好办法，有心人会得知整个系统中共有多少作品等额外信息，尽量防止信息泄漏
-    // this.key = this.key
-
-    this.cover_image_url = ''; // TODO 后期可以添加一个类似项目组的概念，每个项目组下可以有多个作品
-    // this.project_id = 1
-    // #!zh: strapi.js 会自动创建与维护 created_at、updated_at
-    // #!en: strapi.js will auto create and maintain the fields: created_at、updated_at
-    // this.created_at = new Date()
-    // this.updated_at = new Date()
-
-    this.is_publish = !!work.is_publish;
+    this.id = id;
+    this.title = title;
+    this.description = description;
+    this.pages = pages.length > 0 ? pages : [new Page()];
+    this.cover_image_url = '';
+    this.is_publish = !!is_publish;
     this.is_template = false;
-    this.height = work.height >= 0 ? work.height : 667;
-    this.page_mode = work.page_mode || PAGE_MODE.SWIPPER_PAGE;
+    this.height = height >= 0 ? height : 667;
+    this.page_mode = page_mode;
   };
 
   // actions
@@ -70096,7 +70068,7 @@
   });
 
   var CoreEditor = {
-    name: "CoreEditor",
+    name: 'CoreEditor',
     store: store$2,
     i18n: i18n,
     props: {
@@ -70109,9 +70081,14 @@
     },
     components: defineProperty$1({}, antDesignVue.Layout.name, antDesignVue.Layout),
     watch: {
-      work: function work(newValue) {
-        this.$store.commit("editor/setWork", newValue);
-        this.$store.commit("editor/setEditingPage");
+      work: {
+        handler: function handler(newWork) {
+          if (newWork) {
+            this.$store.commit('editor/setWork', newWork);
+            this.$store.commit('editor/setEditingPage');
+          }
+        },
+        immediate: true
       }
     },
     data: function data() {
@@ -70156,7 +70133,7 @@
   }; // 通过script标签引入Vue的环境
 
 
-  if (typeof window !== "undefined" && window.Vue) {
+  if (typeof window !== 'undefined' && window.Vue) {
     CoreEditor.install(window.Vue);
   }
 
