@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 14:39:39
- * @LastEditTime : 2020-11-03 15:24:55
+ * @LastEditTime : 2020-11-04 08:51:33
  * @Description :
  */
 const path = require('path')
@@ -77,7 +77,7 @@ module.exports = args => {
   }
   return {
     input: 'src/index.js',
-    treeshake: !isProd,
+    treeshake: isProd,
     output: [
       {
         exports: 'auto',
@@ -85,7 +85,7 @@ module.exports = args => {
         format: 'umd',
         file: !isProd ? resolveUrl(`${packageJson.main}`) : packageJson.main,
         sourcemap: !isProd,
-        indent: !isProd,
+        indent: isProd,
         globals
       }
     ],
