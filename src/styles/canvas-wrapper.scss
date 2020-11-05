@@ -4,15 +4,15 @@
 
 $cellSize: 35.6px;
 $designerWidth: 375px;
-$designerHeight: 568px;
 $designerWidthHalf: $designerWidth / 2;
+
+#canvas-outer-wrapper {
+  padding: 60px 16px 24px;
+}
 
 .canvas-wrapper {
   position: relative;
-  top: 60px;
   width: $designerWidth;
-  // height: $designerHeight;
-  min-height: $designerHeight;
   margin: 0 auto;
   background: #fff;
   border: 1px solid #e7e7e7;
@@ -30,8 +30,7 @@ $designerWidthHalf: $designerWidth / 2;
 .mode-toggle-wrapper {
   position: fixed;
   z-index: 999;
-  top: 80px;
-  left: calc(50% - 120px);
+  top: 24px;
+  left: calc(50% - 147px);
   text-align: center;
 }
-

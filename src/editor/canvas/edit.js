@@ -1,6 +1,6 @@
 import { mapState, mapActions } from 'vuex'
-import Shape from 'core/support/shape'
-import ContextMenu from 'core/support/contexmenu'
+import Shape from '@/editor/canvas/components/shape'
+import ContextMenu from '@/editor/canvas/components/contexmenu'
 import { InputNumber, Radio } from 'ant-design-vue'
 
 export default {
@@ -146,28 +146,29 @@ export default {
      * @param {MouseEvent} e
      */
     mousedownForAdjustLine(e) {
-      let startY = e.clientY
-      let startHeight = this.work.height
+      const startY = e.clientY
+      const startHeight = this.work.height
+      const canvasOuterWrapper = document.querySelector(
+        '#canvas-outer-wrapper .ant-layout'
+      )
 
-      const canvasOuterWrapper = document.querySelector('#canvas-outer-wrapper')
-
-      let move = moveEvent => {
+      const move = moveEvent => {
         // !#zh 移动的时候，不需要向后代元素传递事件，只需要单纯的移动就OK
         moveEvent.stopPropagation()
         moveEvent.preventDefault()
-
-        let currY = moveEvent.clientY
-        let currentHeight = currY - startY + startHeight
+        const currY = moveEvent.clientY
+        const moveHeight = currY - startY
+        const currentHeight = moveHeight + startHeight
         this.updateWorkHeight(currentHeight)
-        // 交互效果：滚动条同步滚动至底部
-        canvasOuterWrapper &&
-          (canvasOuterWrapper.scrollTop = canvasOuterWrapper.scrollHeight)
+        if (canvasOuterWrapper)
+          canvasOuterWrapper.scrollTop = canvasOuterWrapper.scrollHeight
       }
 
-      let up = moveEvent => {
+      const up = () => {
         document.removeEventListener('mousemove', move, true)
         document.removeEventListener('mouseup', up, true)
       }
+
       document.addEventListener('mousemove', move, true)
       document.addEventListener('mouseup', up, true)
     }

@@ -3,13 +3,13 @@
  * @Date: 2019-11-24 18:51:58
  * @LastEditors : Please set LastEditors
  * @LastEditTime : 2020-11-04 10:27:29
- * @FilePath: /luban-h5/front-end/h5/src/components/core/models/work.js
+ * @FilePath: /luban-h5/front-end/h5/src/components/@/models/work.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: work model
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
 import Page from './page.js'
-import { PAGE_MODE } from 'core/constants/work'
+import { PAGE_MODE } from '@/constants/work'
 
 class Work {
   constructor({

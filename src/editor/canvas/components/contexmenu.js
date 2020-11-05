@@ -20,7 +20,6 @@
 
 import { mapState } from "vuex";
 import { Menu, Card } from "ant-design-vue";
-import "./contexmenu.scss";
 
 function isRegExp(value) {
   return value instanceof RegExp;

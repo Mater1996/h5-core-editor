@@ -1,4 +1,4 @@
-import animationMixin from 'core/mixins/animation.js'
+import animationMixin from '@/mixins/animation.js'
 
 export default {
   mixins: [animationMixin],

@@ -3,7 +3,7 @@ import {
   animationOptions,
   animationValue2Name,
   firstLevelAnimationOptions
-} from 'core/constants/animation.js'
+} from '@/constants/animation.js'
 import EventBus from '@/bus'
 import {
   Tabs,
@@ -66,7 +66,7 @@ export default {
       this.animationQueue.splice(index, 1)
     },
     runAnimate() {
-      // front-end/h5/src/components/core/editor/index.js created()
+      // front-end/h5/src/components/@/editor/index.js created()
       EventBus.$emit('RUN_ANIMATIONS')
     },
     renderSecondAnimationTabs(animations) {

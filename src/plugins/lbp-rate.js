@@ -3,7 +3,7 @@
  * @Date: 2020-05-17 20:04:23
  * @LastEditors : Please set LastEditors
  * @LastEditTime : 2020-10-28 17:58:59
- * @FilePath: /luban-h5/front-end/h5/src/components/core/plugins/lbp-rate.js
+ * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-rate.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved

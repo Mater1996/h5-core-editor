@@ -1,5 +1,5 @@
 // initial state
-import Work from 'core/models/work'
+import Work from '@/models/work'
 import { actions as canvasActions, mutations as canvasMutations } from './canvas'
 import { actions as pageActions, mutations as pageMutations } from './page'
 import { actions as elementActions, mutations as elementMutations } from './element'

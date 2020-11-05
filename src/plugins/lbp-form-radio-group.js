@@ -3,7 +3,7 @@
  * @Date: 2019-11-23 12:35:43
  * @LastEditors: ly525
  * @LastEditTime: 2020-10-10 23:33:03
- * @FilePath: /luban-h5/front-end/h5/src/components/core/plugins/lbp-form-radio-group.js
+ * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-form-radio-group.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: 表单单选组组件 #!en: radio group component
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved

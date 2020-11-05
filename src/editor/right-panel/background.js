@@ -3,7 +3,7 @@
  * @Date: 2019-12-01 18:11:49
  * @LastEditors: ly525
  * @LastEditTime: 2020-10-10 23:36:27
- * @FilePath: /luban-h5/front-end/h5/src/components/core/editor/right-panel/background.js
+ * @FilePath: /luban-h5/front-end/h5/src/components/@/editor/right-panel/background.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved

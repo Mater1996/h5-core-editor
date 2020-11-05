@@ -24,7 +24,7 @@ class Element {
     this.uuid = ele.uuid || +new Date()
     /**
      * #!zh:
-     * 之前版本代码：https://github.com/ly525/luban-h5/blob/a7875cbc73c0d18bc2459985ca3ce1d4dc44f141/front-end/h5/src/components/core/models/element.js#L21
+     * 之前版本代码：https://github.com/ly525/luban-h5/blob/a7875cbc73c0d18bc2459985ca3ce1d4dc44f141/front-end/h5/src/components/@/models/element.js#L21
      * 1.之前的版本为：this.pluginProps = {}, 改为下面的版本
      * 是因为要支持[复制画布上的元素]，所以需要先使用 ele.pluginProps 进行初始化（也就是拷贝之前的元素的值）
      *

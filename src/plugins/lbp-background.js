@@ -3,7 +3,7 @@
  * @Date: 2019-11-24 18:51:58
  * @LastEditors : Please set LastEditors
  * @LastEditTime : 2020-11-04 10:02:35
- * @FilePath: /luban-h5/front-end/h5/src/components/core/plugins/lbp-background.js
+ * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-background.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: luban-h5 background image/color component/plugin
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved

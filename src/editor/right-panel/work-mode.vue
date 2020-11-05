@@ -2,7 +2,7 @@
  * @Author: ly525
  * @Date: 2020-05-10 23:10:52
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2020-11-02 11:25:23
+ * @LastEditTime: 2020-11-04 14:35:16
  * @FilePath: /luban-h5/front-end/h5/src/components/core/editor/right-panel/work-mode.vue
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
@@ -25,7 +25,7 @@
 <script>
 import { Radio, Form } from 'ant-design-vue'
 import { mapState, mapActions } from 'vuex'
-import { PAGE_MODE, PAGE_MODE_LABEL } from 'core/constants/work'
+import { PAGE_MODE, PAGE_MODE_LABEL } from '@/constants/work'
 
 export default {
   components: {

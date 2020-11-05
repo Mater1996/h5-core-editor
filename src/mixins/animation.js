@@ -3,7 +3,7 @@
  * @Date: 2019-11-24 18:51:58
  * @LastEditors : Please set LastEditors
  * @LastEditTime : 2020-11-02 09:46:13
- * @FilePath: /luban-h5/front-end/h5/src/components/core/mixins/animation.js
+ * @FilePath: /luban-h5/front-end/h5/src/components/@/mixins/animation.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description:
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved

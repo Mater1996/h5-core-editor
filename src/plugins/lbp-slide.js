@@ -3,7 +3,7 @@
  * @Date: 2019-11-23 12:35:21
  * @LastEditors : Please set LastEditors
  * @LastEditTime : 2020-10-28 16:07:05
- * @FilePath: /luban-h5/front-end/h5/src/components/core/plugins/lbp-slide.js
+ * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-slide.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: #!zh: 轮播图组件 #!en slide component
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved

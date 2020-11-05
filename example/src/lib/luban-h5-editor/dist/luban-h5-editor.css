@@ -29009,11 +29009,12 @@ li.ant-tree-treenode-disabled > .ant-tree-node-content-wrapper:hover {
 /**
  * 编辑器中间的画布
  */
+#canvas-outer-wrapper {
+  padding: 60px 16px 24px; }
+
 .canvas-wrapper {
   position: relative;
-  top: 60px;
   width: 375px;
-  min-height: 568px;
   margin: 0 auto;
   background: #fff;
   border: 1px solid #e7e7e7; }
@@ -29023,9 +29024,24 @@ li.ant-tree-treenode-disabled > .ant-tree-node-content-wrapper:hover {
 .mode-toggle-wrapper {
   position: fixed;
   z-index: 999;
-  top: 80px;
-  left: calc(50% - 120px);
+  top: 24px;
+  left: calc(50% - 147px);
   text-align: center; }
+
+.contextmenu__horizontal-menus {
+  height: 32px;
+  line-height: 32px;
+  border: none;
+  border-top: 1px solid #eee; }
+  .contextmenu__horizontal-menus__item {
+    padding: 0 4px 4px; }
+
+.contextmenu__vertical-menus {
+  border: none; }
+  .contextmenu__vertical-menus__item {
+    height: 22px !important;
+    line-height: 22px !important;
+    margin: 0; }
 
 .hidden {
   display: none !important; }
@@ -29141,21 +29157,6 @@ li.ant-tree-treenode-disabled > .ant-tree-node-content-wrapper:hover {
 
 .props-config-form .ant-form-item {
   margin-bottom: 12px; }
-
-.contextmenu__horizontal-menus {
-  height: 32px;
-  line-height: 32px;
-  border: none;
-  border-top: 1px solid #eee; }
-  .contextmenu__horizontal-menus__item {
-    padding: 0 4px 4px; }
-
-.contextmenu__vertical-menus {
-  border: none; }
-  .contextmenu__vertical-menus__item {
-    height: 22px !important;
-    line-height: 22px !important;
-    margin: 0; }
 
 .lbc-video iframe {
   width: 100%;

@@ -2,17 +2,17 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-27 15:04:59
- * @LastEditTime : 2020-11-04 10:20:50
+ * @LastEditTime : 2020-11-04 14:26:47
  * @Description :
  */
-import { mapState, mapActions } from "vuex";
-import { Layout, Radio } from "ant-design-vue";
+import { mapState, mapActions } from 'vuex'
+import { Layout, Radio } from 'ant-design-vue'
 
-import RenderEditCanvas from "./edit";
-import RenderPreviewCanvas from "./preview";
+import RenderEditCanvas from './edit'
+import RenderPreviewCanvas from './preview'
 
 export default {
-  name: "EditorCanvas",
+  name: 'EditorCanvas',
   components: {
     [Radio.Button.name]: Radio.Button,
     [Radio.Group.name]: Radio.Group,
@@ -23,28 +23,38 @@ export default {
     isPreviewMode: false
   }),
   computed: {
-    ...mapState("editor", {
-      editingPage: state => state.editingPage,
-      editingElement: state => state.editingElement,
+    ...mapState('editor', {
       elements: state => state.editingPage.elements,
       pages: state => state.work.pages,
       work: state => state.work,
       scaleRate: state => state.scaleRate
-    })
+    }),
+    canvasStyle() {
+      return {
+        height: `${this.work.height}px`
+      }
+    },
+    layoutStyle() {
+      return {
+        transform: `scale(${this.scaleRate})`,
+        'transform-origin': 'center top',
+        overflow: 'auto'
+      }
+    }
   },
   methods: {
-    ...mapActions("editor", ["setEditingElement"]),
+    ...mapActions('editor', ['setEditingElement']),
     handleToggleMode(isPreviewMode) {
-      this.isPreviewMode = isPreviewMode;
+      this.isPreviewMode = isPreviewMode
       if (isPreviewMode) {
         // 当切换到预览模式的时候，清空当前编辑元素
-        this.setEditingElement(); // 相当于  setEditingElement(null)
+        this.setEditingElement() // 相当于  setEditingElement(null)
       }
     }
   },
   render(h) {
     return (
-      <a-layout id="canvas-outer-wrapper" style={{ "margin-bottom": "24px" }}>
+      <a-layout id="canvas-outer-wrapper">
         <a-radio-group
           class="mode-toggle-wrapper"
           size="small"
@@ -53,24 +63,14 @@ export default {
         >
           {/* 编辑模式、预览模式 */}
           <a-radio-button label={false} value={false}>
-            {this.$t("editor.centerPanel.mode.edit")}
+            {this.$t('editor.centerPanel.mode.edit')}
           </a-radio-button>
           <a-radio-button label={true} value={true}>
-            {this.$t("editor.centerPanel.mode.preview")}
+            {this.$t('editor.centerPanel.mode.preview')}
           </a-radio-button>
         </a-radio-group>
-        <a-layout-content
-          style={{
-            transform: `scale(${this.scaleRate})`,
-            "transform-origin": "center top"
-          }}
-        >
-          <div
-            class="canvas-wrapper"
-            style={{
-              height: `${this.work.height}px`
-            }}
-          >
+        <a-layout-content style={this.layoutStyle}>
+          <div class="canvas-wrapper" style={this.canvasStyle}>
             {this.isPreviewMode ? (
               <RenderPreviewCanvas elements={this.elements} />
             ) : (
@@ -79,6 +79,6 @@ export default {
           </div>
         </a-layout-content>
       </a-layout>
-    );
+    )
   }
-};
+}

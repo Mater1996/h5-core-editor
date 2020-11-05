@@ -120,8 +120,7 @@ module.exports = args => {
       alias({
         resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
         entries: {
-          '@': __dirname + '/src',
-          core: __dirname + '/src'
+          '@': __dirname + '/src'
         }
       }),
       image({

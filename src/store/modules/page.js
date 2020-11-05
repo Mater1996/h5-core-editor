@@ -10,7 +10,7 @@
  */
 import { message } from 'ant-design-vue'
 
-import Page from 'core/models/page'
+import Page from '@/models/page'
 
 // actions
 export const actions = {

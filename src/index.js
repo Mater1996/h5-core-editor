@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-04 09:45:44
+ * @LastEditTime : 2020-11-04 15:09:20
  * @Description :
  */
 import 'animate.css/animate.css'
@@ -10,15 +10,14 @@ import 'font-awesome/css/font-awesome.min.css'
 import 'ant-design-vue/dist/antd.css'
 import { Layout } from 'ant-design-vue'
 
-import 'core/support/index.js'
-import 'core/styles/index.scss'
-import FixedTools from 'core/editor/fixed-tools/index'
-import EditorRightPanel from 'core/editor/right-panel/index'
-import EditorCanvas from 'core/editor/canvas/index'
-import EditorLeftPanel from 'core/editor/left-panel/index'
-import AdjustLineV from 'core/support/adjust-line/vertical'
-import store from 'core/store/index'
-import i18n from 'core/locales/index'
+import '@/styles/index.scss'
+import FixedTools from '@/editor/fixed-tools/index'
+import EditorRightPanel from '@/editor/right-panel/index'
+import EditorCanvas from '@/editor/canvas/index'
+import EditorLeftPanel from '@/editor/left-panel/index'
+import AdjustLineV from '@/support/adjust-line/vertical'
+import store from '@/store/index'
+import i18n from '@/locales/index'
 import '@/plugins/index'
 
 const CoreEditor = {
@@ -40,6 +39,7 @@ const CoreEditor = {
     work: {
       handler(newWork) {
         if (newWork) {
+          console.log('work', newWork)
           this.$store.commit('editor/setWork', newWork)
           this.$store.commit('editor/setEditingPage')
         }
@@ -59,7 +59,7 @@ const CoreEditor = {
       return this.$store.state.editor.work
     }
   },
-  render(h) {
+  render() {
     return (
       this.work.id && (
         <a-layout>

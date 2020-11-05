@@ -1,4 +1,4 @@
-import NodeWrapper from 'core/preview/node-wrapper.js'
+import NodeWrapper from '@/preview/node-wrapper.js'
 /**
  * 预览模块
  * preview h5 work module

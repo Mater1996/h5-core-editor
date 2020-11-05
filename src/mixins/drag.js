@@ -3,7 +3,7 @@
  * @Date: 2020-05-17 17:21:04
  * @LastEditors : Please set LastEditors
  * @LastEditTime : 2020-10-28 09:22:04
- * @FilePath: /luban-h5/front-end/h5/src/components/core/mixins/drag.js
+ * @FilePath: /luban-h5/front-end/h5/src/components/@/mixins/drag.js
  * @Github: https://github.com/ly525/luban-h5
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  * @Description:

@@ -5,7 +5,7 @@
  * @LastEditTime : 2020-11-02 09:46:24
  * @Description :
  */
-import Element from 'core/models/element'
+import Element from '@/models/element'
 import { swapZindex, getVM } from '@/utils/element'
 import EventBus from "@/bus"
 // actions

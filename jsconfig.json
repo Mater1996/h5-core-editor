@@ -6,7 +6,6 @@
     "module": "commonjs",
     "paths": {
       "@/*": ["./src/*"],
-      "core/*": ["./src/*"],
     }
   },
   "include": ["src/**/*"],

@@ -1,9 +1,9 @@
 import ShortcutButton from "./shortcut-button";
 import UsageTip from "./usage-tip";
 import LoadNpmPlugins from "./load-npm-plugins.vue";
-import langMixin from "core/mixins/i18n";
-import dragMixin from "core/mixins/drag";
-import loadPluginsMixin from "core/plugins/index";
+import langMixin from "@/mixins/i18n";
+import dragMixin from "@/mixins/drag";
+import loadPluginsMixin from "@/plugins/index";
 import { mapActions } from "vuex";
 import { Row, Col } from "ant-design-vue";
 

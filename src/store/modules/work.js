@@ -1,6 +1,6 @@
-import Element from 'core/models/element'
-import Page from 'core/models/page'
-import Work from 'core/models/work'
+import Element from '@/models/element'
+import Page from '@/models/page'
+import Work from '@/models/work'
 
 export const actions = {
   updateWork ({ commit, state }, payload = {}) {
