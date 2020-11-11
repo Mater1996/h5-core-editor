@@ -1,16 +1,23 @@
+/*
+ * @author : Mater
+ * @Email : bxh8640@gmail.com
+ * @Date : 2020-11-02 16:12:09
+ * @LastEditTime : 2020-11-10 15:08:53
+ * @Description :
+ */
 import PropTypes from '@/utils/commom-props'
 import Parser from '@/utils/excel-parser'
 import './styles/news-list.scss'
 
 export default {
-  extra: {
-    defaultStyle: {
-      width: 375,
-      height: 256
-    }
-  },
   name: 'lbp-news-list',
   props: {
+    width: {
+      default: 120
+    },
+    height: {
+      default: 120
+    },
     dataset: PropTypes.excel({
       defaultValue: () => [
         ['新闻标题', '摘要', '链接', '日期', '来源'],

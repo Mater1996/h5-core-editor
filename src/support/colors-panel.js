@@ -2,15 +2,14 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-04 10:07:47
+ * @LastEditTime : 2020-11-06 17:47:10
  * @Description :
  */
 export default {
-  name: "colors-panel",
+  name: 'colors-panel',
   props: {
     value: {
-      type: [Array, String],
-      default: () => []
+      type: [Array, String]
     }
   },
   render() {
@@ -18,17 +17,17 @@ export default {
       <div>
         {Array.isArray(this.value) ? (
           this.value.map((v, index) => {
-            <input
+            ;<input
               size="small"
               type="color"
               autocomplete
               value={v}
               onChange={e => {
-                const colors = this.value.slice(0);
-                colors[index] = e.target.value;
-                this.$emit("change", colors);
+                const colors = this.value.slice(0)
+                colors[index] = e.target.value
+                this.$emit('change', colors)
               }}
-            />;
+            />
           })
         ) : (
           <input
@@ -37,11 +36,11 @@ export default {
             autocomplete
             value={this.value}
             onChange={e => {
-              this.$emit("change", e.target.value);
+              this.$emit('change', e.target.value)
             }}
           />
         )}
       </div>
-    );
+    )
   }
-};
+}

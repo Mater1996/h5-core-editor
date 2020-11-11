@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-02 10:02:53
+ * @LastEditTime : 2020-11-06 19:26:24
  * @Description :
  */
 import RenderShortcutsPanel from "./shortcuts-panel/index";
@@ -29,7 +29,7 @@ export default {
             key="plugin-list"
             tab={this.$t("editor.sidebar.components")}
           >
-            <RenderShortcutsPanel />
+            <RenderShortcutsPanel onAdd={this.$listeners.add}/>
           </a-tab-pane>
           <a-tab-pane key="page-manager" tab={this.$t("editor.sidebar.pages")}>
             <RenderPageManager />

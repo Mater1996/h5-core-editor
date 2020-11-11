@@ -1,3 +1,10 @@
+/*
+ * @author : Mater
+ * @Email : bxh8640@gmail.com
+ * @Date : 2020-11-02 16:12:09
+ * @LastEditTime : 2020-11-05 18:02:38
+ * @Description :
+ */
 export function contains (root, n) {
   let node = n
   while (node) {
@@ -55,7 +62,8 @@ export function renderWaterMark ({
     z-index:${zIndex};
     pointer-events:none;
     background-repeat:repeat;
-    background-image:url('${base64Url}')`
+    background-image:url('${base64Url}');
+    user-select: none`
 
   watermarkDiv.setAttribute('style', styleStr)
 

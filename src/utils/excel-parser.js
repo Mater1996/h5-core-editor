@@ -66,7 +66,7 @@ export default class Parser {
    * @param {Object} BinaryMatrix
    * @returns {Object} ExcelDataType
    */
-  static binaryMatrix2excel (binaryMatrix) {
+  static binaryMatrix2excel (binaryMatrix = []) {
     const excelData = binaryMatrix.map((row, rowIndex) => {
       // cells: {
       //   0: { text: item.x },

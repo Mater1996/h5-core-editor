@@ -2,16 +2,15 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-27 15:04:59
- * @LastEditTime : 2020-10-28 09:23:44
+ * @LastEditTime : 2020-11-11 10:27:57
  * @Description :
  */
 import PropTypes from '@/utils/commom-props'
 
-import placeholderImg from './lbp-picture-placeholder.png' // issue #34
 export default {
   name: 'lbp-picture',
   render () {
-    return <img src={this.imgSrc || placeholderImg} style={{ objectFit: this.fillType }} alt="" srcset="" width="100%" />
+    return <img src={this.imgSrc} style={{ objectFit: this.fillType }} alt="" srcset="" width="100%" />
   },
   props: {
     imgSrc: PropTypes.string({ label: '图片地址' }),
@@ -32,8 +31,5 @@ export default {
         }
       }
     }
-  },
-  data: () => ({
-    placeholderImg
-  })
+  }
 }

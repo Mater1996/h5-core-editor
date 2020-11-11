@@ -9,19 +9,15 @@ import Map from './Map'
 import MapMixin from './mixin'
 
 export default {
-  // extra.defaultStyle：组件的额外自定义配置，以拖拽组件到画布上为例
-  // 按钮默认的样式可能是: { width: 100px, height: 40px }
-  // 但地图可能是希望更大一些的默认样式，比如：{ width: 320px, height: 180px }
-  // 就可以通过 extra.defaultStyle 来实现自定义样式需求
-  extra: {
-    defaultStyle: {
-      width: 375,
-      height: 180
-    }
-  },
   name: 'lbp-qq-map',
   mixins: [MapMixin], // loadMap、setMarker
   props: {
+    width: {
+      default: 120
+    },
+    height: {
+      default: 120
+    },
     labelContent: PropTypes.string({ label: '地址名称', defaultValue: '' }), // 标签内容
     zoomLevel: PropTypes.number({ label: '缩放层级', defaultValue: 12, visible: false }),
     // https://lbs.qq.com/dev/console/key/manage

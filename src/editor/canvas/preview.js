@@ -1,30 +1,41 @@
+/*
+ * @author : Mater
+ * @Email : bxh8640@gmail.com
+ * @Date : 2020-11-02 16:12:09
+ * @LastEditTime : 2020-11-05 09:30:05
+ * @Description :
+ */
 import NodeWrapper from '@/preview/node-wrapper.js'
 /**
  * 预览模块
  * preview h5 work module
  */
 export default {
-  props: ['elements', 'height'],
+  props: ['data'],
   components: {
     NodeWrapper
   },
-  methods: {
-    renderPreview (h, elements) {
-      const pageWrapperStyle = { height: this.height || '100%', position: 'relative' }
-      return (
-        <div style={pageWrapperStyle}>
-          {
-            elements.map((element, index) => {
-              return <node-wrapper element={element}>
-                {h(element.name, element.getPreviewData({ position: 'static' }))}
-              </node-wrapper>
-            })
-          }
-        </div>
-      )
+  computed: {
+    elements() {
+      return this.data.elements
     }
   },
-  render (h) {
-    return this.renderPreview(h, this.elements)
+  created () {
+    console.log(this.data);
+  },
+  render(h) {
+    const pageWrapperStyle = {
+      height: this.height || '100%',
+      position: 'relative'
+    }
+    return (
+      <div style={pageWrapperStyle}>
+        {this.elements.map((element) => (
+          <node-wrapper element={element}>
+            {h(element.name, element.getPreviewData({ position: 'static' }))}
+          </node-wrapper>
+        ))}
+      </div>
+    )
   }
 }

@@ -9,12 +9,6 @@ function sum (arr = [], key) {
 
 export default {
   name: 'lbp-table',
-  extra: {
-    defaultStyle: {
-      width: 375,
-      height: 150
-    }
-  },
   data: () => ({
     mainTableWrapperEle: null,
     mainTableEle: null,
@@ -22,6 +16,12 @@ export default {
     fixedTableEle: null
   }),
   props: {
+    width: {
+      default: 120
+    },
+    height: {
+      default: 120
+    },
     theme: PropTypes.string({ defaultValue: '', label: '主题', visible: false }),
     columnWidth: PropTypes.number({ label: '每列宽度(px)', defaultValue: 100 }),
     freezeCount: PropTypes.number({ label: '冻结列数(px)', defaultValue: 0 }),

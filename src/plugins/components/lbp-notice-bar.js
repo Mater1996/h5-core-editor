@@ -2,7 +2,7 @@
  * @Author: ly525
  * @Date: 2020-05-14 08:09:44
  * @LastEditors : Please set LastEditors
- * @LastEditTime : 2020-11-03 10:16:58
+ * @LastEditTime : 2020-11-10 15:09:00
  * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-notice-bar.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
@@ -14,14 +14,14 @@ import { NoticeBar } from 'vant'
 import 'vant/lib/notice-bar/style'
 
 export default {
-  extra: {
-    defaultStyle: {
-      width: 300,
-      height: 30
-    }
-  },
   name: 'lbp-notice-bar',
   props: {
+    width: {
+      default: 120
+    },
+    height: {
+      default: 120
+    },
     text: PropTypes.string({
       defaultValue: '请填写内容，如果过长，将会在手机上滚动显示',
       label: '公告',

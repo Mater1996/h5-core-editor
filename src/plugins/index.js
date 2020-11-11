@@ -1,23 +1,20 @@
-import Vue from 'vue'
-
-import LbpButton from '@/plugins/lbp-button'
-import LbpPicture from '@/plugins/lbp-picture'
-import LbpVideo from '@/plugins/lbp-video'
-import LbpText from '@/plugins/lbp-text'
-import LbpFormInput from '@/plugins/lbp-form-input'
-import LbpFormButton from '@/plugins/lbp-form-button'
-import LbpFormRadioGroup from '@/plugins/lbp-form-radio-group'
-import LbpFormCheckboxGroup from '@/plugins/lbp-form-checkbox-group'
-import LbpBackground from '@/plugins/lbp-background'
-import LbpSlide from '@/plugins/lbp-slide'
-import LbpBgMusic from '@/plugins/lbp-bg-music'
-import LbpNoticeBar from '@/plugins/lbp-notice-bar'
-import LbpRate from '@/plugins/lbp-rate'
-import LbpQQMap from '@/plugins/lbp-qq-map/src'
-import LbpLineChart from '@/plugins/charts/line'
-import LbpTable from '@/plugins/lbp-table'
-import LbpNewsList from '@/plugins/lbp-news-list'
-// import LbpTabs from '@/components/plugins/lbp-tabs'
+import LbpButton from '@/plugins/components/lbp-button'
+import LbpPicture from '@/plugins/components/lbp-picture'
+import LbpVideo from '@/plugins/components/lbp-video'
+import LbpText from '@/plugins/components/lbp-text'
+import LbpFormInput from '@/plugins/components/lbp-form-input'
+import LbpFormButton from '@/plugins/components/lbp-form-button'
+import LbpFormRadioGroup from '@/plugins/components/lbp-form-radio-group'
+import LbpFormCheckboxGroup from '@/plugins/components/lbp-form-checkbox-group'
+import LbpBackground from '@/plugins/components/lbp-background'
+import LbpSlide from '@/plugins/components/lbp-slide'
+import LbpBgMusic from '@/plugins/components/lbp-bg-music'
+import LbpNoticeBar from '@/plugins/components/lbp-notice-bar'
+import LbpRate from '@/plugins/components/lbp-rate'
+import LbpQQMap from '@/plugins/components/lbp-qq-map/src'
+import LbpLineChart from '@/plugins/components/charts/line'
+import LbpTable from '@/plugins/components/lbp-table'
+import LbpNewsList from '@/plugins/components/lbp-news-list'
 
 export const pluginsList = [
   {
@@ -101,17 +98,6 @@ export const pluginsList = [
     visible: true,
     name: LbpNoticeBar.name
   },
-  // {
-  //   title: '标签页',
-  //   i18nTitle: {
-  //     'en-US': 'Tabs',
-  //     'zh-CN': '标签页'
-  //   },
-  //   icon: 'tab',
-  //   component: LbpTabs,
-  //   visible: true,
-  //   name: LbpTabs.name
-  // },
   {
     title: '评分',
     i18nTitle: {
@@ -166,7 +152,6 @@ export const pluginsList = [
     component: LbpSlide,
     visible: true,
     name: LbpSlide.name
-    // disabled: true
   },
   {
     i18nTitle: {
@@ -178,7 +163,6 @@ export const pluginsList = [
     component: LbpQQMap,
     visible: true,
     name: LbpQQMap.name
-    // disabled: true
   },
   {
     i18nTitle: {
@@ -306,19 +290,11 @@ export const pluginsList = [
   }
 ]
 
-export default {
-  data: () => ({
-    pluginsList
-  }),
-  methods: {
-    mixinPlugins2Editor () {
-      pluginsList.forEach(plugin => {
-        // 全局注册组件，便于以后扩展自定义脚本，注释原来的局部注册：this.$options.components[plugin.name] = plugin.component
-        Vue.component(plugin.name, plugin.component)
-      })
-    }
-  },
-  created () {
-    this.mixinPlugins2Editor()
-  }
-}
+const pluginsMap = {}
+
+pluginsList.forEach(v => {
+  pluginsMap[v.name] = v.component
+})
+
+export { pluginsMap }
+export default pluginsList

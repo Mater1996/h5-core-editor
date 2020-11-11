@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 14:39:39
- * @LastEditTime : 2020-11-04 10:12:29
+ * @LastEditTime : 2020-11-06 19:09:36
  * @Description :
  */
 const path = require('path')
@@ -64,7 +64,6 @@ const globals = {
   papaparse: 'papaparse',
   echarts: 'echarts',
   qrcode: 'qrcode',
-  'v-click-outside': 'v-click-outside',
   'vue-matomo': 'vue-matomo'
 }
 
@@ -88,7 +87,6 @@ const external = [
   'echarts',
   'font-awesome',
   'qrcode',
-  'v-click-outside',
   'vue-matomo'
 ]
 

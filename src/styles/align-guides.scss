@@ -3,6 +3,14 @@
  * #!en: align objects with guides
  */
 
+.luban-auxiliary-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
 // 垂直对齐参考线
 .v-line {
   position: absolute;

@@ -10,27 +10,20 @@ const dataSourceLayout = {
 }
 
 export default {
-  boolean: ({ label = '开关', defaultValue = false, props = {}, visible = true } = {}) => ({
+  boolean: ({
+    label = '开关',
+    defaultValue = false,
+    props = {},
+    visible = true
+  } = {}) => ({
     type: Boolean,
     default: defaultValue,
-    /**
-     *
-     * !#zh: 是否在属性配置面板显示
-     * !#en: whether visible in props config panel
-     *
-     * 正常情况下都是显示在右侧属性面板中，支持用户配置的
-     *
-     * 但有些属性是不希望 暴露给用户进行配置的，
-     * 比如：editorMode(edit/preview) 当前编辑器模式(编辑模式/预览模式)，
-     * 这些是系统注入到组件中，不希望用户进行配置的
-     *
-     */
     visible,
     editor: {
       type: 'a-switch',
       label,
       props
-    },
+    }
   }),
   required: {
     type: Boolean,
@@ -48,29 +41,31 @@ export default {
    * The value of an <input> element of type color is always a DOMString which contains a 7-character string specifying an RGB color in hexadecimal format.
    *
    */
-  color: ({ label = '文字颜色', defaultValue = '#000000', visible = true } = {}) => ({
+  color: ({
+    label = '文字颜色',
+    defaultValue = '#000000',
+    visible = true
+  } = {}) => ({
     type: String,
-    // 注意，根据 MDN 文档，颜色选择器的 value 只能是：# + 6个16进制字符串
-    // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color#Value
-    // The value of an <input> element of type color is always a DOMString which contains a 7-character string specifying an RGB color in hexadecimal format.
     default: defaultValue,
     visible,
     editor: {
       type: 'colors-panel',
       label,
-      // !#zh 为编辑组件指定 props
       props: {
         size: 'mini',
         showAlpha: true
       },
       require: true
-    },
+    }
   }),
-  colors: ({ label = '颜色面板', defaultValue = () => [], layout = dataSourceLayout, visible = true } = {}) => ({
+  colors: ({
+    label = '颜色面板',
+    defaultValue = () => [],
+    layout = dataSourceLayout,
+    visible = true
+  } = {}) => ({
     type: Array,
-    // 注意，根据 MDN 文档，颜色选择器的 value 只能是：# + 6个16进制字符串
-    // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color#Value
-    // The value of an <input> element of type color is always a DOMString which contains a 7-character string specifying an RGB color in hexadecimal format.
     default: defaultValue,
     visible,
     editor: {
@@ -83,12 +78,17 @@ export default {
       },
       layout,
       require: true
-    },
+    }
   }),
   /**
    * 数值类型 默认编辑器
    */
-  number: ({ label = '数值', defaultValue = 10, props = defaultNumberInputProp, visible = true } = {}) => ({
+  number: ({
+    label = '数值',
+    defaultValue = 10,
+    props = defaultNumberInputProp,
+    visible = true
+  } = {}) => ({
     type: Number,
     default: defaultValue,
     visible,
@@ -107,7 +107,14 @@ export default {
    * 2. a-textarea
    * 3. 富文本编辑器
    */
-  string: ({ label = '按钮文字', defaultValue = '按钮', component = 'a-input', props = {}, extra, visible = true } = {}) => ({
+  string: ({
+    label = '按钮文字',
+    defaultValue = '按钮',
+    component = 'a-input',
+    props = {},
+    extra,
+    visible = true
+  } = {}) => ({
     type: String,
     default: defaultValue,
     visible,
@@ -119,7 +126,11 @@ export default {
       extra
     }
   }),
-  textAlign: ({ label = '文字对齐', defaultValue = 'center', visible = true } = {}) => ({
+  textAlign: ({
+    label = '文字对齐',
+    defaultValue = 'center',
+    visible = true
+  } = {}) => ({
     type: String,
     default: defaultValue,
     visible,
@@ -131,10 +142,12 @@ export default {
   }),
   textOptions: ({
     label = '选项列表',
-    defaultValue = () => [{
-      label: 'label1',
-      value: 'value1'
-    }],
+    defaultValue = () => [
+      {
+        label: 'label1',
+        value: 'value1'
+      }
+    ],
     visible = true
   } = {}) => ({
     type: Array,
@@ -158,7 +171,12 @@ export default {
   /**
    * 数据源组件
    */
-  excel: ({ label = '数据源', defaultValue = [], layout = dataSourceLayout, visible = true } = {}) => ({
+  excel: ({
+    label = '数据源',
+    defaultValue = [],
+    layout = dataSourceLayout,
+    visible = true
+  } = {}) => ({
     type: Array,
     default: defaultValue,
     visible,
@@ -168,7 +186,13 @@ export default {
       layout
     }
   }),
-  select: ({ valueType = String, label = '选项', defaultValue = [],  visible = true, options = [] } = {}) => ({
+  select: ({
+    valueType = String,
+    label = '选项',
+    defaultValue = [],
+    visible = true,
+    options = []
+  } = {}) => ({
     type: valueType,
     default: defaultValue,
     visible,
@@ -176,8 +200,8 @@ export default {
       type: 'a-select',
       label,
       props: {
-        options,
+        options
       }
     }
-  }),
+  })
 }

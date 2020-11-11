@@ -1,3 +1,10 @@
+/*
+ * @author : Mater
+ * @Email : bxh8640@gmail.com
+ * @Date : 2020-11-02 16:12:09
+ * @LastEditTime : 2020-11-10 15:09:15
+ * @Description :
+ */
 import VeLine from 'v-charts/lib/line.common'
 import VeRadar from 'v-charts/lib/radar.common'
 import VePie from 'v-charts/lib/pie.common'
@@ -13,15 +20,15 @@ import Parser from '@/utils/excel-parser'
 // const title = str => str.slice(0, 1).toUpperCase() + str.slice(1)
 
 export default {
-  extra: {
-    defaultStyle: {
-      width: 375,
-      height: 400
-    }
-  },
   name: 'lbp-line-chart',
   // mixins: [ChartMixin],
   props: {
+    width: {
+      default: 120
+    },
+    height: {
+      default: 120
+    },
     dataset: PropTypes.excel({
       defaultValue: () => [
         ['日期', '销售量'],

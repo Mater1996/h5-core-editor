@@ -1,17 +1,16 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('ant-design-vue'), require('vuex'), require('hotkeys-js'), require('lodash'), require('vue'), require('x-data-spreadsheet'), require('papaparse'), require('v-click-outside'), require('vue-quill-editor'), require('vant'), require('resize-detector'), require('vue-i18n')) :
-  typeof define === 'function' && define.amd ? define(['ant-design-vue', 'vuex', 'hotkeys-js', 'lodash', 'vue', 'x-data-spreadsheet', 'papaparse', 'v-click-outside', 'vue-quill-editor', 'vant', 'resize-detector', 'vue-i18n'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['luban-h5-editor'] = factory(global['ant-design-vue'], global.Vuex, global.hotkeys, global.lodash, global.Vue, global.x_spreadsheet, global.papaparse, global['v-click-outside'], global.VueQuillEditor, global.vant, global.resizeDetector, global.VueI18n));
-}(this, (function (antDesignVue, Vuex, hotkeys, lodash, Vue, Spreadsheet, Papa, vClickOutside, vueQuillEditor, vant, resizeDetector, VueI18n) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('ant-design-vue'), require('vuex'), require('hotkeys-js'), require('lodash'), require('x-data-spreadsheet'), require('papaparse'), require('vue'), require('vue-quill-editor'), require('vant'), require('resize-detector'), require('vue-i18n')) :
+  typeof define === 'function' && define.amd ? define(['ant-design-vue', 'vuex', 'hotkeys-js', 'lodash', 'x-data-spreadsheet', 'papaparse', 'vue', 'vue-quill-editor', 'vant', 'resize-detector', 'vue-i18n'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['luban-h5-editor'] = factory(global['ant-design-vue'], global.Vuex, global.hotkeys, global.lodash, global.x_spreadsheet, global.papaparse, global.Vue, global.VueQuillEditor, global.vant, global.resizeDetector, global.VueI18n));
+}(this, (function (antDesignVue, Vuex, hotkeys, lodash, Spreadsheet, Papa, Vue, vueQuillEditor, vant, resizeDetector, VueI18n) { 'use strict';
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
   var Vuex__default = /*#__PURE__*/_interopDefaultLegacy(Vuex);
   var hotkeys__default = /*#__PURE__*/_interopDefaultLegacy(hotkeys);
-  var Vue__default = /*#__PURE__*/_interopDefaultLegacy(Vue);
   var Spreadsheet__default = /*#__PURE__*/_interopDefaultLegacy(Spreadsheet);
   var Papa__default = /*#__PURE__*/_interopDefaultLegacy(Papa);
-  var vClickOutside__default = /*#__PURE__*/_interopDefaultLegacy(vClickOutside);
+  var Vue__default = /*#__PURE__*/_interopDefaultLegacy(Vue);
   var VueI18n__default = /*#__PURE__*/_interopDefaultLegacy(VueI18n);
 
   var fails = function (exec) {
@@ -1933,152 +1932,6 @@
 
   function _extends(){return _extends=Object.assign||function(a){for(var b,c=1;c<arguments.length;c++)for(var d in b=arguments[c],b)Object.prototype.hasOwnProperty.call(b,d)&&(a[d]=b[d]);return a},_extends.apply(this,arguments)}var normalMerge=["attrs","props","domProps"],toArrayMerge=["class","style","directives"],functionalMerge=["on","nativeOn"],mergeJsxProps=function(a){return a.reduce(function(c,a){for(var b in a)if(!c[b])c[b]=a[b];else if(-1!==normalMerge.indexOf(b))c[b]=_extends({},c[b],a[b]);else if(-1!==toArrayMerge.indexOf(b)){var d=c[b]instanceof Array?c[b]:[c[b]],e=a[b]instanceof Array?a[b]:[a[b]];c[b]=d.concat(e);}else if(-1!==functionalMerge.indexOf(b)){for(var f in a[b])if(c[b][f]){var g=c[b][f]instanceof Array?c[b][f]:[c[b][f]],h=a[b][f]instanceof Array?a[b][f]:[a[b][f]];c[b][f]=g.concat(h);}else c[b][f]=a[b][f];}else if("hook"==b)for(var i in a[b])c[b][i]=c[b][i]?mergeFn(c[b][i],a[b][i]):a[b][i];else c[b]=a[b];return c},{})},mergeFn=function(a,b){return function(){a&&a.apply(this,arguments),b&&b.apply(this,arguments);}};var helper=mergeJsxProps;
 
-  var TO_STRING_TAG$1 = wellKnownSymbol('toStringTag');
-  var test = {};
-
-  test[TO_STRING_TAG$1] = 'z';
-
-  var toStringTagSupport = String(test) === '[object z]';
-
-  var TO_STRING_TAG$2 = wellKnownSymbol('toStringTag');
-  // ES3 wrong here
-  var CORRECT_ARGUMENTS = classofRaw(function () { return arguments; }()) == 'Arguments';
-
-  // fallback for IE11 Script Access Denied error
-  var tryGet = function (it, key) {
-    try {
-      return it[key];
-    } catch (error) { /* empty */ }
-  };
-
-  // getting tag from ES6+ `Object.prototype.toString`
-  var classof = toStringTagSupport ? classofRaw : function (it) {
-    var O, tag, result;
-    return it === undefined ? 'Undefined' : it === null ? 'Null'
-      // @@toStringTag case
-      : typeof (tag = tryGet(O = Object(it), TO_STRING_TAG$2)) == 'string' ? tag
-      // builtinTag case
-      : CORRECT_ARGUMENTS ? classofRaw(O)
-      // ES3 arguments fallback
-      : (result = classofRaw(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : result;
-  };
-
-  // `Object.prototype.toString` method implementation
-  // https://tc39.github.io/ecma262/#sec-object.prototype.tostring
-  var objectToString = toStringTagSupport ? {}.toString : function toString() {
-    return '[object ' + classof(this) + ']';
-  };
-
-  // `Object.prototype.toString` method
-  // https://tc39.github.io/ecma262/#sec-object.prototype.tostring
-  if (!toStringTagSupport) {
-    redefine(Object.prototype, 'toString', objectToString, { unsafe: true });
-  }
-
-  // `RegExp.prototype.flags` getter implementation
-  // https://tc39.github.io/ecma262/#sec-get-regexp.prototype.flags
-  var regexpFlags = function () {
-    var that = anObject(this);
-    var result = '';
-    if (that.global) result += 'g';
-    if (that.ignoreCase) result += 'i';
-    if (that.multiline) result += 'm';
-    if (that.dotAll) result += 's';
-    if (that.unicode) result += 'u';
-    if (that.sticky) result += 'y';
-    return result;
-  };
-
-  var TO_STRING = 'toString';
-  var RegExpPrototype = RegExp.prototype;
-  var nativeToString = RegExpPrototype[TO_STRING];
-
-  var NOT_GENERIC = fails(function () { return nativeToString.call({ source: 'a', flags: 'b' }) != '/a/b'; });
-  // FF44- RegExp#toString has a wrong name
-  var INCORRECT_NAME = nativeToString.name != TO_STRING;
-
-  // `RegExp.prototype.toString` method
-  // https://tc39.github.io/ecma262/#sec-regexp.prototype.tostring
-  if (NOT_GENERIC || INCORRECT_NAME) {
-    redefine(RegExp.prototype, TO_STRING, function toString() {
-      var R = anObject(this);
-      var p = String(R.source);
-      var rf = R.flags;
-      var f = String(rf === undefined && R instanceof RegExp && !('flags' in RegExpPrototype) ? regexpFlags.call(R) : rf);
-      return '/' + p + '/' + f;
-    }, { unsafe: true });
-  }
-
-  var styleKey = 'commonStyle';
-  /**
-   *
-
-   * 获取组件中的 「componentsForPropsEditor」对象
-   * @param {String} elementName
-   *
-   * 可以查看下面的组件 Demo
-   {
-    name: 'lbp-button',
-    props: {
-      color: {
-        default: 'red',
-        editor: {
-          type: 'custom-color-editor'
-        }
-      }
-    },
-    componentsForPropsEditor: {
-      'custom-color-editor': {
-        render() {
-          return <input type="color" />
-        }
-      }
-    }
-   }
-   */
-
-  function getComponentsForPropsEditor(elementName) {
-    var Ctor = Vue__default['default'].component(elementName); // TODO 为何直接 return new Ctor() 并将其赋值给 vuex 的 state 会报错：Cannot convert a Symbol value to a string
-
-    return new Ctor().$options.componentsForPropsEditor;
-  }
-  function getVM(pluginName) {
-    var Ctor = Vue__default['default'].component(pluginName);
-    return new Ctor();
-  }
-  function swapZindex(x, y) {
-    var tmp = y[styleKey].zindex;
-    y[styleKey].zindex = x[styleKey].zindex;
-    x[styleKey].zindex = tmp;
-  }
-  /**
-   * !#zh 将 px 转换为 rem
-   * @param {Number} px
-   */
-
-  function px2Rem(px) {
-    var rem = px * 2 / 100 + 'rem';
-    return rem;
-  }
-  /**
-   *
-   * @param {Number} px 元素的某个属性的像素值，比如 height
-   * @param {Boolean} isToRem 是否将 px 转换为 rem
-   */
-
-
-  function parsePx(px) {
-    var isRem = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-    if (isRem) return px2Rem(px);
-    return "".concat(px, "px");
-  }
-  var genUUID = function genUUID() {
-    // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-  };
-
-  var EventBus = new Vue__default['default'](); // event bus
-
   var HAS_SPECIES_SUPPORT$3 = arrayMethodHasSpeciesSupport('slice');
   var USES_TO_LENGTH$4 = arrayMethodUsesToLength('slice', { ACCESSORS: true, 0: 0, 1: 2 });
 
@@ -2121,17 +1974,14 @@
    * @author : Mater
    * @Email : bxh8640@gmail.com
    * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-04 10:07:47
+   * @LastEditTime : 2020-11-06 17:47:10
    * @Description :
    */
   var colorsPanel = {
-    name: "colors-panel",
+    name: 'colors-panel',
     props: {
       value: {
-        type: [Array, String],
-        default: function _default() {
-          return [];
-        }
+        type: [Array, String]
       }
     },
     render: function render() {
@@ -2154,7 +2004,7 @@
 
               colors[index] = e.target.value;
 
-              _this.$emit("change", colors);
+              _this.$emit('change', colors);
             }
           }
         });
@@ -2169,7 +2019,7 @@
         },
         "on": {
           "change": function change(e) {
-            _this.$emit("change", e.target.value);
+            _this.$emit('change', e.target.value);
           }
         }
       })]);
@@ -2373,7 +2223,8 @@
 
     }, {
       key: "binaryMatrix2excel",
-      value: function binaryMatrix2excel(binaryMatrix) {
+      value: function binaryMatrix2excel() {
+        var binaryMatrix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
         var excelData = binaryMatrix.map(function (row, rowIndex) {
           // cells: {
           //   0: { text: item.x },
@@ -2594,27 +2445,21 @@
     }
   };
 
-  /**
-   * 后续学习资料：https://github.com/myliang/x-spreadsheet/issues/159
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-02 16:12:09
+   * @LastEditTime : 2020-11-10 19:42:27
+   * @Description :
    */
-  //   [1, 2, 3, 4],
-  //   [5, 6, 7, 8],
-  //   [9, 10, 11, 12]
-  // ]
-
   var lbsExcelEditor = {
     name: 'lbs-excel-editor',
     props: {
       value: {
-        type: Array,
-        // default: () => getDefaultTableMatrix()
-        default: function _default() {
-          return [];
-        }
+        type: Array
       },
       formatter: {
-        type: Function,
-        default: Parser.excel2BinaryMatrix
+        type: Function
       }
     },
     computed: {
@@ -2828,25 +2673,39 @@
         type: String,
         default: 'horizontal'
       },
-      // 优先级更高的当前编辑元素
-      realEditingElement: {
+      config: {
         type: Object,
         default: function _default() {
-          return null;
+          return {};
+        }
+      },
+      value: {
+        type: Object,
+        default: function _default() {
+          return {};
         }
       }
     },
-    computed: _objectSpread$1(_objectSpread$1({}, Vuex.mapState('editor', {
-      stateEditingElement: function stateEditingElement(state) {
-        return state.editingElement;
+    watch: {
+      config: function config() {
+        var _this = this;
+
+        // config 需要重新render
+        setTimeout(function () {
+          _this.form.setFieldsValue(_this.value);
+        });
       }
-    })), {}, {
-      customEditorName: function customEditorName() {
-        return "".concat(this.editingElement.name, "-custom-editor");
-      },
-      editingElement: function editingElement() {
-        return this.realEditingElement || this.stateEditingElement;
-      },
+    },
+    created: function created() {
+      var _this2 = this;
+
+      this.form = this.$form.createForm(this, {
+        onFieldsChange: function onFieldsChange() {
+          _this2.$emit('change', _this2.form.getFieldsValue());
+        }
+      });
+    },
+    computed: {
       formItemLayout: function formItemLayout() {
         this.layout === 'horizontal' ? {
           labelCol: {
@@ -2858,119 +2717,47 @@
           }
         } : {};
       }
-    }),
-    methods: _objectSpread$1(_objectSpread$1({}, Vuex.mapActions('editor', ['setEditingElement'])), {}, {
-      loadCustomEditorForPlugin: function loadCustomEditorForPlugin() {
-        this.loadCustomEditorFlag = false;
-        if (!this.editingElement) return;
-
-        if (Vue__default['default'].component(this.customEditorName)) {
-          this.loadCustomEditorFlag = true;
-        }
-      },
-
-      /**
-       * 将插件属性的 自定义增强编辑器注入 属性编辑面板中
-       */
-      mixinEnhancedPropsEditor: function mixinEnhancedPropsEditor(editingElement) {
-        if (!this.componentsForPropsEditor) return;
-
-        for (var key in this.componentsForPropsEditor) {
-          if (this.$options.components[key]) return;
-          this.$options.components[key] = this.componentsForPropsEditor[key];
-        }
-      },
-
-      /**
-       *
-       * propKey: e.g:'color'
-       * propConfig: {
-       *  editor: {},
-       *  default: 'red'
-       * }
-       */
-      renderPropFormItem: function renderPropFormItem(h, _ref) {
-        var propKey = _ref.propKey,
-            propConfig = _ref.propConfig;
-        var _this$editingElement$ = this.editingElement.pluginProps,
-            pluginProps = _this$editingElement$ === void 0 ? [] : _this$editingElement$;
-        var editor = propConfig.editor;
-        var editorType = editor.type === 'a-switch' ? 'checked' : 'value';
-        var data = {
-          props: _objectSpread$1(_objectSpread$1({}, editor.props || {}), {}, defineProperty$1({}, editorType, pluginProps[propKey])),
-          on: {
-            change: function change(e) {
-              console.log('change123'); // fixme: update plugin props in vuex with dispatch
-
-              pluginProps[propKey] = e.target ? e.target.value : e;
-            }
-          }
-        };
-        var formItemData = {
-          props: _objectSpread$1(_objectSpread$1({}, this.formItemLayout), {}, {
-            label: editor.label
-          }, editor.layout)
-        };
-        return h("a-form-item", helper([{}, formItemData]), [editor.extra && h("div", {
-          "slot": "extra"
-        }, [typeof editor.extra === 'function' ? editor.extra(h) : editor.extra]), h(editor.type, data)]);
-      },
-      renderPropsEditorPanel: function renderPropsEditorPanel(h, editingElement) {
-        var _this = this;
-
-        var vm = getVM(editingElement.name);
-        var props = vm.$options.props;
-        return h("a-form", {
-          "ref": "form",
-          "attrs": {
-            "size": "mini",
-            "layout": this.layout
-          },
-          "class": "props-config-form"
-        }, [// plugin-custom-editor
-        this.loadCustomEditorFlag && h(this.customEditorName, {
-          props: {
-            elementProps: editingElement.pluginProps
-          }
-        }), Object.entries(props).filter(function (_ref2) {
-          var _ref3 = slicedToArray(_ref2, 2),
-              propKey = _ref3[0],
-              propConfig = _ref3[1];
-
-          // 1. 如果开发者给 某个prop 显式指定了 visible 属性，则取开发者指定的值；
-          // 2. 否则取默认值：true，即默认在属性面板显示该属性
-          // 3. 组件的某些属性是不需要显示在 配置编辑器的，比如：editorMode(编辑模式/预览模式)，因为这个是鲁班编辑器默认注入到每个组件的，无须显示出来
-          var isVisible = propConfig.hasOwnProperty('visible') ? propConfig.visible : true;
-          return isVisible && propConfig.editor && !propConfig.editor.custom;
-        }).map(function (_ref4) {
-          var _ref5 = slicedToArray(_ref4, 2),
-              propKey = _ref5[0],
-              propConfig = _ref5[1];
-
-          return _this.renderPropFormItem(h, {
-            propKey: propKey,
-            propConfig: propConfig
-          });
-        })]);
-      },
-      renderWorkGlobalPropsPanel: function renderWorkGlobalPropsPanel(h) {
-        return h("RenderWorkMode");
-      }
-    }),
-    render: function render(h) {
-      var ele = this.editingElement;
-      if (!ele) return '请选择一个元素';
-      this.mixinEnhancedPropsEditor(ele);
-      return this.renderPropsEditorPanel(h, ele);
     },
-    created: function created() {
-      var _this2 = this;
+    methods: {
+      renderPropFormItem: function renderPropFormItem(propName, propConfig) {
+        var h = this.$createElement;
+        var editor = propConfig.editor;
+        if (!editor) return;
+        var formItemData = {
+          props: _objectSpread$1(_objectSpread$1(_objectSpread$1({}, this.formItemLayout), editor.layout), {}, {
+            label: editor.label
+          })
+        };
+        return h("a-form-item", helper([{}, formItemData]), [h(editor.type, helper([{
+          "directives": [{
+            name: "decorator",
+            value: [propName]
+          }]
+        }, {
+          "props": editor.props
+        }]))]);
+      }
+    },
+    render: function render() {
+      var _this3 = this;
 
-      EventBus.$on('setEditingElement', function (ele) {
-        _this2.loadCustomEditorForPlugin();
+      var h = arguments[0];
+      var configEntries = Object.entries(this.config);
+      return h("a-form", {
+        "attrs": {
+          "form": this.form,
+          "size": "mini",
+          "layout": this.layout,
+          "initialValue": this.value
+        },
+        "class": "props-config-form"
+      }, [configEntries.map(function (_ref) {
+        var _ref2 = slicedToArray(_ref, 2),
+            propName = _ref2[0],
+            propConfig = _ref2[1];
 
-        _this2.componentsForPropsEditor = getComponentsForPropsEditor(ele.name);
-      });
+        return _this3.renderPropFormItem(propName, propConfig);
+      })]);
     }
   };
 
@@ -3020,6 +2807,20 @@
         }
       })]);
     }
+  };
+
+  // `RegExp.prototype.flags` getter implementation
+  // https://tc39.github.io/ecma262/#sec-get-regexp.prototype.flags
+  var regexpFlags = function () {
+    var that = anObject(this);
+    var result = '';
+    if (that.global) result += 'g';
+    if (that.ignoreCase) result += 'i';
+    if (that.multiline) result += 'm';
+    if (that.dotAll) result += 's';
+    if (that.unicode) result += 'u';
+    if (that.sticky) result += 'y';
+    return result;
   };
 
   // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError,
@@ -3715,6 +3516,8 @@
     return obj;
   }, {});
 
+  var EventBus = new Vue__default['default'](); // event bus
+
   var _components$5;
 
   function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -4266,6 +4069,14 @@
     }
   });
 
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-02 16:12:09
+   * @LastEditTime : 2020-11-06 14:56:14
+   * @Description :
+   */
+
   /**
     * 页面模式，枚举值
     * h5_swipper 翻页H5
@@ -4273,7 +4084,9 @@
    */
   var PAGE_MODE = {
     SWIPPER_PAGE: 'h5_swipper',
-    LONG_PAGE: 'h5_long_page'
+    LONG_PAGE: 'h5_long_page',
+    WIDTH: 375,
+    HEIGHT: 667
   };
   var PAGE_MODE_LABEL = {
     SWIPPER_PAGE: '翻页H5',
@@ -4485,29 +4298,63 @@
 
   var _components$7;
   var EditorRightPanel = {
+    name: 'ElementPropsEditor',
     components: (_components$7 = {}, defineProperty$1(_components$7, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$1(_components$7, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$1(_components$7, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), _components$7),
-    name: "ElementPropsEditor",
     props: {
       width: {
         type: Number,
         default: 375
+      },
+      element: {
+        type: Object,
+        default: function _default() {
+          return {};
+        }
+      }
+    },
+    computed: {
+      editPropsConfig: function editPropsConfig() {
+        var element = this.element;
+        var vm = element && element.vm;
+        return this.getPropsWithEditor(vm && vm.$options.props || {});
+      },
+      editPropsValue: function editPropsValue() {
+        var element = this.element,
+            editPropsConfig = this.editPropsConfig;
+        var editPropsConfigKeys = Object.keys(editPropsConfig);
+        var props = element ? element.props : {};
+        var propsValue = {};
+        editPropsConfigKeys.forEach(function (key) {
+          propsValue[key] = props[key];
+        });
+        return propsValue;
       }
     },
     data: function data() {
       return {
-        activeTabKey: "页面"
+        activeTabKey: '属性'
       };
     },
     methods: {
-      /**
-       * #!zh: 设置 页面图tab 作为 active tab
-       * #!en: set background(bg) tab as active tab
-       */
       setActiveTab: function setActiveTab(activeTabKey) {
         this.activeTabKey = activeTabKey;
+      },
+      getPropsWithEditor: function getPropsWithEditor(props) {
+        var propsWithEditor = {};
+        Object.entries(props).forEach(function (_ref) {
+          var _ref2 = slicedToArray(_ref, 2),
+              key = _ref2[0],
+              value = _ref2[1];
+
+          if (value.editor) {
+            propsWithEditor[key] = value;
+          }
+        });
+        return propsWithEditor;
       }
     },
-    render: function render(h) {
+    render: function render() {
+      var h = arguments[0];
       return h("a-layout-sider", {
         "attrs": {
           "width": this.width,
@@ -4515,8 +4362,8 @@
           "theme": "light"
         },
         "style": {
-          background: "#fff",
-          padding: "0 12px 0 12px"
+          background: '#fff',
+          padding: '0 12px 0 12px'
         }
       }, [h("a-tabs", {
         "style": "height: 100%;",
@@ -4532,42 +4379,91 @@
         "key": "属性"
       }, [h("span", {
         "slot": "tab"
-      }, [this.$t("editor.editPanel.tab.prop")]), h(RenderPropsEditor)]), h("a-tab-pane", {
+      }, [this.$t('editor.editPanel.tab.prop')]), h(RenderPropsEditor, {
+        "attrs": {
+          "config": this.editPropsConfig,
+          "value": this.editPropsValue
+        },
+        "on": {
+          "change": this.$listeners.propsChange
+        }
+      })]), h("a-tab-pane", {
         "attrs": {
           "label": "动画",
-          "tab": this.$t("editor.editPanel.tab.animation")
+          "tab": this.$t('editor.editPanel.tab.animation')
         },
         "key": "动画"
       }, [h(RenderAnimationEditor)]), h("a-tab-pane", {
         "attrs": {
           "label": "动作",
-          "tab": this.$t("editor.editPanel.tab.action")
+          "tab": this.$t('editor.editPanel.tab.action')
         },
         "key": "动作"
-      }, [this.activeTabKey === "动作" && h(RenderActionEditor)]), h("a-tab-pane", {
+      }, [this.activeTabKey === '动作' && h(RenderActionEditor)]), h("a-tab-pane", {
         "attrs": {
           "label": "脚本",
-          "tab": this.$t("editor.editPanel.tab.script")
+          "tab": this.$t('editor.editPanel.tab.script')
         },
         "key": "脚本"
       }, [h(RenderScriptEditor)]), h("a-tab-pane", {
         "attrs": {
           "label": "页面",
-          "tab": this.$t("editor.editPanel.tab.page")
+          "tab": this.$t('editor.editPanel.tab.page')
         },
         "key": "页面"
-      }, [this.activeTabKey === "页面" && h(RenderBackgroundEditor)])])]);
-    },
-    created: function created() {
-      var _this = this;
-
-      EventBus.$on("setEditingElement", function (_ref) {
-        var name = _ref.name;
-
-        _this.setActiveTab(name === "lbp-background" ? "页面" : "属性");
-      });
+      }, [this.activeTabKey === '页面' && h(RenderBackgroundEditor)])])]);
     }
   };
+
+  var nativeAssign = Object.assign;
+  var defineProperty$6 = Object.defineProperty;
+
+  // `Object.assign` method
+  // https://tc39.github.io/ecma262/#sec-object.assign
+  var objectAssign = !nativeAssign || fails(function () {
+    // should have correct order of operations (Edge bug)
+    if (descriptors && nativeAssign({ b: 1 }, nativeAssign(defineProperty$6({}, 'a', {
+      enumerable: true,
+      get: function () {
+        defineProperty$6(this, 'b', {
+          value: 3,
+          enumerable: false
+        });
+      }
+    }), { b: 2 })).b !== 1) return true;
+    // should work with symbols and should have deterministic property order (V8 bug)
+    var A = {};
+    var B = {};
+    // eslint-disable-next-line no-undef
+    var symbol = Symbol();
+    var alphabet = 'abcdefghijklmnopqrst';
+    A[symbol] = 7;
+    alphabet.split('').forEach(function (chr) { B[chr] = chr; });
+    return nativeAssign({}, A)[symbol] != 7 || objectKeys(nativeAssign({}, B)).join('') != alphabet;
+  }) ? function assign(target, source) { // eslint-disable-line no-unused-vars
+    var T = toObject(target);
+    var argumentsLength = arguments.length;
+    var index = 1;
+    var getOwnPropertySymbols = objectGetOwnPropertySymbols.f;
+    var propertyIsEnumerable = objectPropertyIsEnumerable.f;
+    while (argumentsLength > index) {
+      var S = indexedObject(arguments[index++]);
+      var keys = getOwnPropertySymbols ? objectKeys(S).concat(getOwnPropertySymbols(S)) : objectKeys(S);
+      var length = keys.length;
+      var j = 0;
+      var key;
+      while (length > j) {
+        key = keys[j++];
+        if (!descriptors || propertyIsEnumerable.call(S, key)) T[key] = S[key];
+      }
+    } return T;
+  } : nativeAssign;
+
+  // `Object.assign` method
+  // https://tc39.github.io/ecma262/#sec-object.assign
+  _export({ target: 'Object', stat: true, forced: Object.assign !== objectAssign }, {
+    assign: objectAssign
+  });
 
   var IS_CONCAT_SPREADABLE = wellKnownSymbol('isConcatSpreadable');
   var MAX_SAFE_INTEGER$1 = 0x1FFFFFFFFFFFFF;
@@ -4617,187 +4513,8 @@
     }
   });
 
-  function _arrayWithoutHoles(arr) {
-    if (Array.isArray(arr)) return arrayLikeToArray(arr);
-  }
-
-  var arrayWithoutHoles = _arrayWithoutHoles;
-
-  function _iterableToArray(iter) {
-    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
-  }
-
-  var iterableToArray = _iterableToArray;
-
-  function _nonIterableSpread() {
-    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-  }
-
-  var nonIterableSpread = _nonIterableSpread;
-
-  function _toConsumableArray(arr) {
-    return arrayWithoutHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableSpread();
-  }
-
-  var toConsumableArray = _toConsumableArray;
-
-  var nativeJoin = [].join;
-
-  var ES3_STRINGS = indexedObject != Object;
-  var STRICT_METHOD$3 = arrayMethodIsStrict('join', ',');
-
-  // `Array.prototype.join` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.join
-  _export({ target: 'Array', proto: true, forced: ES3_STRINGS || !STRICT_METHOD$3 }, {
-    join: function join(separator) {
-      return nativeJoin.call(toIndexedObject(this), separator === undefined ? ',' : separator);
-    }
-  });
-
-  var MATCH = wellKnownSymbol('match');
-
-  // `IsRegExp` abstract operation
-  // https://tc39.github.io/ecma262/#sec-isregexp
-  var isRegexp = function (it) {
-    var isRegExp;
-    return isObject(it) && ((isRegExp = it[MATCH]) !== undefined ? !!isRegExp : classofRaw(it) == 'RegExp');
-  };
-
-  var SPECIES$4 = wellKnownSymbol('species');
-
-  // `SpeciesConstructor` abstract operation
-  // https://tc39.github.io/ecma262/#sec-speciesconstructor
-  var speciesConstructor = function (O, defaultConstructor) {
-    var C = anObject(O).constructor;
-    var S;
-    return C === undefined || (S = anObject(C)[SPECIES$4]) == undefined ? defaultConstructor : aFunction$1(S);
-  };
-
-  var arrayPush = [].push;
-  var min$3 = Math.min;
-  var MAX_UINT32 = 0xFFFFFFFF;
-
-  // babel-minify transpiles RegExp('x', 'y') -> /x/y and it causes SyntaxError
-  var SUPPORTS_Y = !fails(function () { return !RegExp(MAX_UINT32, 'y'); });
-
-  // @@split logic
-  fixRegexpWellKnownSymbolLogic('split', 2, function (SPLIT, nativeSplit, maybeCallNative) {
-    var internalSplit;
-    if (
-      'abbc'.split(/(b)*/)[1] == 'c' ||
-      'test'.split(/(?:)/, -1).length != 4 ||
-      'ab'.split(/(?:ab)*/).length != 2 ||
-      '.'.split(/(.?)(.?)/).length != 4 ||
-      '.'.split(/()()/).length > 1 ||
-      ''.split(/.?/).length
-    ) {
-      // based on es5-shim implementation, need to rework it
-      internalSplit = function (separator, limit) {
-        var string = String(requireObjectCoercible(this));
-        var lim = limit === undefined ? MAX_UINT32 : limit >>> 0;
-        if (lim === 0) return [];
-        if (separator === undefined) return [string];
-        // If `separator` is not a regex, use native split
-        if (!isRegexp(separator)) {
-          return nativeSplit.call(string, separator, lim);
-        }
-        var output = [];
-        var flags = (separator.ignoreCase ? 'i' : '') +
-                    (separator.multiline ? 'm' : '') +
-                    (separator.unicode ? 'u' : '') +
-                    (separator.sticky ? 'y' : '');
-        var lastLastIndex = 0;
-        // Make `global` and avoid `lastIndex` issues by working with a copy
-        var separatorCopy = new RegExp(separator.source, flags + 'g');
-        var match, lastIndex, lastLength;
-        while (match = regexpExec.call(separatorCopy, string)) {
-          lastIndex = separatorCopy.lastIndex;
-          if (lastIndex > lastLastIndex) {
-            output.push(string.slice(lastLastIndex, match.index));
-            if (match.length > 1 && match.index < string.length) arrayPush.apply(output, match.slice(1));
-            lastLength = match[0].length;
-            lastLastIndex = lastIndex;
-            if (output.length >= lim) break;
-          }
-          if (separatorCopy.lastIndex === match.index) separatorCopy.lastIndex++; // Avoid an infinite loop
-        }
-        if (lastLastIndex === string.length) {
-          if (lastLength || !separatorCopy.test('')) output.push('');
-        } else output.push(string.slice(lastLastIndex));
-        return output.length > lim ? output.slice(0, lim) : output;
-      };
-    // Chakra, V8
-    } else if ('0'.split(undefined, 0).length) {
-      internalSplit = function (separator, limit) {
-        return separator === undefined && limit === 0 ? [] : nativeSplit.call(this, separator, limit);
-      };
-    } else internalSplit = nativeSplit;
-
-    return [
-      // `String.prototype.split` method
-      // https://tc39.github.io/ecma262/#sec-string.prototype.split
-      function split(separator, limit) {
-        var O = requireObjectCoercible(this);
-        var splitter = separator == undefined ? undefined : separator[SPLIT];
-        return splitter !== undefined
-          ? splitter.call(separator, O, limit)
-          : internalSplit.call(String(O), separator, limit);
-      },
-      // `RegExp.prototype[@@split]` method
-      // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@split
-      //
-      // NOTE: This cannot be properly polyfilled in engines that don't support
-      // the 'y' flag.
-      function (regexp, limit) {
-        var res = maybeCallNative(internalSplit, regexp, this, limit, internalSplit !== nativeSplit);
-        if (res.done) return res.value;
-
-        var rx = anObject(regexp);
-        var S = String(this);
-        var C = speciesConstructor(rx, RegExp);
-
-        var unicodeMatching = rx.unicode;
-        var flags = (rx.ignoreCase ? 'i' : '') +
-                    (rx.multiline ? 'm' : '') +
-                    (rx.unicode ? 'u' : '') +
-                    (SUPPORTS_Y ? 'y' : 'g');
-
-        // ^(? + rx + ) is needed, in combination with some S slicing, to
-        // simulate the 'y' flag.
-        var splitter = new C(SUPPORTS_Y ? rx : '^(?:' + rx.source + ')', flags);
-        var lim = limit === undefined ? MAX_UINT32 : limit >>> 0;
-        if (lim === 0) return [];
-        if (S.length === 0) return regexpExecAbstract(splitter, S) === null ? [S] : [];
-        var p = 0;
-        var q = 0;
-        var A = [];
-        while (q < S.length) {
-          splitter.lastIndex = SUPPORTS_Y ? q : 0;
-          var z = regexpExecAbstract(splitter, SUPPORTS_Y ? S : S.slice(q));
-          var e;
-          if (
-            z === null ||
-            (e = min$3(toLength(splitter.lastIndex + (SUPPORTS_Y ? 0 : q)), S.length)) === p
-          ) {
-            q = advanceStringIndex(S, q, unicodeMatching);
-          } else {
-            A.push(S.slice(p, q));
-            if (A.length === lim) return A;
-            for (var i = 1; i <= z.length - 1; i++) {
-              A.push(z[i]);
-              if (A.length === lim) return A;
-            }
-            q = p = e;
-          }
-        }
-        A.push(S.slice(p));
-        return A;
-      }
-    ];
-  }, !SUPPORTS_Y);
-
   var max$3 = Math.max;
-  var min$4 = Math.min;
+  var min$3 = Math.min;
   var floor$1 = Math.floor;
   var SUBSTITUTION_SYMBOLS = /\$([$&'`]|\d\d?|<[^>]*>)/g;
   var SUBSTITUTION_SYMBOLS_NO_NAMED = /\$([$&'`]|\d\d?)/g;
@@ -4862,7 +4579,7 @@
           result = results[i];
 
           var matched = String(result[0]);
-          var position = max$3(min$4(toInteger(result.index), S.length), 0);
+          var position = max$3(min$3(toInteger(result.index), S.length), 0);
           var captures = [];
           // NOTE: This is equivalent to
           //   captures = result.slice(1).map(maybeToString)
@@ -4982,548 +4699,525 @@
     }
   };
 
-  function ownKeys$8(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) return arrayLikeToArray(arr);
+  }
 
-  function _objectSpread$7(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$8(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$8(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  var arrayWithoutHoles = _arrayWithoutHoles;
+
+  function _iterableToArray(iter) {
+    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+  }
+
+  var iterableToArray = _iterableToArray;
+
+  function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  var nonIterableSpread = _nonIterableSpread;
+
+  function _toConsumableArray(arr) {
+    return arrayWithoutHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableSpread();
+  }
+
+  var toConsumableArray = _toConsumableArray;
+
   /**
-   * #!zh: 上下左右 对应的 东南西北
-   * #!en: top(north)、bottom(south)、left(west)、right(east)
+   * 增加范围node 以限制触发点击外部的 区域范围
    */
+  var HANDLERS_PROPERTY = '__v-click-outside';
+  var HAS_WINDOWS = typeof window !== 'undefined';
+  var HAS_NAVIGATOR = typeof navigator !== 'undefined';
+  var IS_TOUCH = HAS_WINDOWS && ('ontouchstart' in window || HAS_NAVIGATOR && navigator.msMaxTouchPoints > 0);
+  var EVENTS = IS_TOUCH ? ['touchstart'] : ['click'];
 
-  var directionKey = {
-    t: 'n',
-    b: 's',
-    l: 'w',
-    r: 'e'
-  }; // #!zh: 四个边角、两条中线上的点
+  function processDirectiveArguments(bindingValue) {
+    var isFunction = typeof bindingValue === 'function';
 
-  var points = ['lt', 'rt', 'lb', 'rb', 'l', 'r', 't', 'b'];
+    if (!isFunction && _typeof_1(bindingValue) !== 'object') {
+      throw new Error('v-click-outside: Binding value must be a function or an object');
+    }
+
+    return {
+      handler: isFunction ? bindingValue : bindingValue.handler,
+      middleware: bindingValue.middleware || function (item) {
+        return item;
+      },
+      events: bindingValue.events || EVENTS,
+      isActive: !(bindingValue.isActive === false),
+      detectIframe: !(bindingValue.detectIframe === false),
+      capture: !!bindingValue.capture,
+      scopeNode: bindingValue.scopeNode || document.documentElement
+    };
+  }
+
+  function execHandler(_ref) {
+    var event = _ref.event,
+        handler = _ref.handler,
+        middleware = _ref.middleware;
+
+    if (middleware(event)) {
+      handler && handler(event);
+    }
+  }
+
+  function onFauxIframeClick(_ref2) {
+    var el = _ref2.el,
+        event = _ref2.event,
+        handler = _ref2.handler,
+        middleware = _ref2.middleware;
+    // Note: on firefox clicking on iframe triggers blur, but only on
+    //       next event loop it becomes document.activeElement
+    // https://stackoverflow.com/q/2381336#comment61192398_23231136
+    setTimeout(function () {
+      var _document = document,
+          activeElement = _document.activeElement;
+
+      if (activeElement && activeElement.tagName === 'IFRAME' && !el.contains(activeElement)) {
+        execHandler({
+          event: event,
+          handler: handler,
+          middleware: middleware
+        });
+      }
+    }, 0);
+  }
+
+  function onEvent(_ref3) {
+    var el = _ref3.el,
+        event = _ref3.event,
+        handler = _ref3.handler,
+        middleware = _ref3.middleware,
+        scopeNode = _ref3.scopeNode;
+    // Note: composedPath is not supported on IE and Edge, more information here:
+    //       https://developer.mozilla.org/en-US/docs/Web/API/Event/composedPath
+    //       In the meanwhile, we are using el.contains for those browsers, not
+    //       the ideal solution, but using IE or EDGE is not ideal either.
+    var path = event.path || event.composedPath && event.composedPath();
+    var isClickOutside = path ? path.indexOf(el) < 0 && path.indexOf(scopeNode) > -1 : !el.contains(event.target) && scopeNode.contains(event.target);
+
+    if (!isClickOutside) {
+      return;
+    }
+
+    execHandler({
+      event: event,
+      handler: handler,
+      middleware: middleware
+    });
+  }
+
+  function bind(el, _ref4) {
+    var value = _ref4.value;
+
+    var _processDirectiveArgu = processDirectiveArguments(value),
+        events = _processDirectiveArgu.events,
+        _handler = _processDirectiveArgu.handler,
+        middleware = _processDirectiveArgu.middleware,
+        isActive = _processDirectiveArgu.isActive,
+        detectIframe = _processDirectiveArgu.detectIframe,
+        capture = _processDirectiveArgu.capture,
+        scopeNode = _processDirectiveArgu.scopeNode;
+
+    if (!isActive || !_handler) {
+      return;
+    }
+
+    el[HANDLERS_PROPERTY] = events.map(function (eventName) {
+      return {
+        event: eventName,
+        srcTarget: document.documentElement,
+        handler: function handler(event) {
+          return onEvent({
+            el: el,
+            event: event,
+            handler: _handler,
+            middleware: middleware,
+            scopeNode: scopeNode
+          });
+        },
+        capture: capture
+      };
+    });
+
+    if (detectIframe) {
+      var detectIframeEvent = {
+        event: 'blur',
+        srcTarget: window,
+        handler: function handler(event) {
+          return onFauxIframeClick({
+            el: el,
+            event: event,
+            handler: _handler,
+            middleware: middleware
+          });
+        },
+        capture: capture
+      };
+      el[HANDLERS_PROPERTY] = [].concat(toConsumableArray(el[HANDLERS_PROPERTY]), [detectIframeEvent]);
+    }
+
+    el[HANDLERS_PROPERTY].forEach(function (_ref5) {
+      var event = _ref5.event,
+          srcTarget = _ref5.srcTarget,
+          handler = _ref5.handler;
+      return setTimeout(function () {
+        // Note: More info about this implementation can be found here:
+        //       https://github.com/ndelvalle/v-click-outside/issues/137
+        if (!el[HANDLERS_PROPERTY]) {
+          return;
+        }
+
+        srcTarget.addEventListener(event, handler, capture);
+      }, 0);
+    });
+  }
+
+  function unbind(el) {
+    var handlers = el[HANDLERS_PROPERTY] || [];
+    handlers.forEach(function (_ref6) {
+      var event = _ref6.event,
+          srcTarget = _ref6.srcTarget,
+          handler = _ref6.handler,
+          capture = _ref6.capture;
+      return srcTarget.removeEventListener(event, handler, capture);
+    });
+    delete el[HANDLERS_PROPERTY];
+  }
+
+  function update(el, _ref7) {
+    var value = _ref7.value,
+        oldValue = _ref7.oldValue;
+
+    if (JSON.stringify(value) === JSON.stringify(oldValue)) {
+      return;
+    }
+
+    unbind(el);
+    bind(el, {
+      value: value
+    });
+  }
+
+  var directive = {
+    bind: bind,
+    update: update,
+    unbind: unbind
+  };
+  var vClickOutside = HAS_WINDOWS ? directive : {};
+
+  var points = ['lt', 'rt', 'lb', 'rb', 'lm', 'rm', 'tm', 'bm'];
+  var id$1 = 0;
   var Shape = {
     mixins: [animationMixin],
-    props: ['defaultPosition', 'active', 'handleMousedownProp', 'handleElementMoveProp', 'handlePointMoveProp', 'handleElementMouseUpProp', 'handlePointMouseUpProp', 'element'],
+    directives: {
+      clickOutside: vClickOutside
+    },
+    props: {
+      width: {
+        type: Number,
+        default: 0
+      },
+      height: {
+        type: Number,
+        default: 0
+      },
+      left: {
+        type: Number,
+        default: 0
+      },
+      top: {
+        type: Number,
+        default: 0
+      },
+      disable: {
+        type: Boolean,
+        default: false
+      }
+    },
+    data: function data() {
+      return {
+        rect: {
+          width: this.width,
+          height: this.height,
+          left: this.left,
+          top: this.top
+        },
+        startY: 0,
+        startX: 0,
+        point: '',
+        active: false,
+        vcoConfig: {}
+      };
+    },
+    mounted: function mounted() {
+      this.vcoConfig = {
+        events: ['mousedown'],
+        handler: this.onClickOutside,
+        scopeNode: document.querySelector('.page-render')
+      };
+    },
     computed: {
-      position: function position() {
-        return _objectSpread$7({}, this.defaultPosition);
+      shapeStyle: function shapeStyle() {
+        var _this$rect = this.rect,
+            left = _this$rect.left,
+            top = _this$rect.top,
+            width = _this$rect.width,
+            height = _this$rect.height;
+        return {
+          left: "".concat(left, "px"),
+          top: "".concat(top, "px"),
+          width: "".concat(width, "px"),
+          height: "".concat(height, "px")
+        };
+      },
+      ltPointStyle: function ltPointStyle() {
+        return {
+          left: "".concat(0, "px"),
+          top: "".concat(0, "px")
+        };
+      },
+      rtPointStyle: function rtPointStyle() {
+        var width = this.rect.width;
+        return {
+          left: "".concat(width, "px"),
+          top: "".concat(0, "px")
+        };
+      },
+      lbPointStyle: function lbPointStyle() {
+        var height = this.rect.height;
+        return {
+          left: "".concat(0, "px"),
+          top: "".concat(height, "px")
+        };
+      },
+      rbPointStyle: function rbPointStyle() {
+        var _this$rect2 = this.rect,
+            width = _this$rect2.width,
+            height = _this$rect2.height;
+        return {
+          left: "".concat(width, "px"),
+          top: "".concat(height, "px")
+        };
+      },
+      lmPointStyle: function lmPointStyle() {
+        var height = this.rect.height;
+        return {
+          left: "".concat(0, "px"),
+          top: "".concat(height / 2, "px")
+        };
+      },
+      rmPointStyle: function rmPointStyle() {
+        var _this$rect3 = this.rect,
+            width = _this$rect3.width,
+            height = _this$rect3.height;
+        return {
+          left: "".concat(width, "px"),
+          top: "".concat(height / 2, "px")
+        };
+      },
+      tmPointStyle: function tmPointStyle() {
+        var width = this.rect.width;
+        return {
+          left: "".concat(width / 2, "px"),
+          top: "".concat(0, "px")
+        };
+      },
+      bmPointStyle: function bmPointStyle() {
+        var _this$rect4 = this.rect,
+            width = _this$rect4.width,
+            height = _this$rect4.height;
+        return {
+          left: "".concat(width / 2, "px"),
+          top: "".concat(height, "px")
+        };
+      }
+    },
+    watch: {
+      rect: {
+        handler: function handler(newValue) {
+          this.$emit('change', newValue);
+        },
+        deep: true
       }
     },
     methods: {
-      /**
-       * 通过方位计算样式，主要是 top、left、鼠标样式
-       */
-      getPointStyle: function getPointStyle(point) {
-        var isWrapElement = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-        var pos = this.position;
-        var top = pos.top; // !#zh 减4是为了让元素能够处于 border 的中间
-
-        var left = pos.left;
-        var height = pos.height;
-        var width = pos.width;
-        var hasT = /t/.test(point);
-        var hasB = /b/.test(point);
-        var hasL = /l/.test(point);
-        var hasR = /r/.test(point);
-        var newLeft = 0;
-        var newTop = 0;
-
-        if (point.length === 2) {
-          newLeft = hasL ? 0 : width;
-          newTop = hasT ? 0 : height;
-        } else {
-          // !#zh 上下点，宽度固定在中间
-          if (hasT || hasB) {
-            newLeft = width / 2;
-            newTop = hasT ? 0 : height;
-          } // !#zh 左右点，高度固定在中间
-
-
-          if (hasL || hasR) {
-            newLeft = hasL ? 0 : width;
-            newTop = height / 2;
-          }
-        }
-
-        var style = {
-          marginLeft: hasL || hasR ? '-3px' : 0,
-          marginTop: hasT || hasB ? '-3px' : 0,
-          left: "".concat(newLeft + (isWrapElement ? 0 : left), "px"),
-          top: "".concat(newTop + (isWrapElement ? 0 : top), "px"),
-          cursor: point.split('').reverse().map(function (m) {
-            return directionKey[m];
-          }).join('') + '-resize'
-        };
-        return style;
+      setActive: function setActive(active) {
+        if (this.active === active) return;
+        active ? this.$emit('active', active) : this.$emit('deactive', active);
+        this.active = active;
       },
-
-      /**
-       * !#zh 主要目的是：阻止冒泡
-       */
-      handleWrapperClick: function handleWrapperClick(e) {
-        e.stopPropagation();
+      onClickOutside: function onClickOutside() {
+        this.setActive(false);
+      },
+      addWidth: function addWidth(width) {
+        var currentWidth = this.rect.width;
+        var nextWidth = currentWidth + width;
+        if (nextWidth < 0) nextWidth = 0;
+        return this.rect.width = nextWidth;
+      },
+      addHeight: function addHeight(height) {
+        var currentHeight = this.rect.height;
+        var nextHeight = currentHeight + height;
+        if (nextHeight < 0) nextHeight = 0;
+        return this.rect.height = nextHeight;
+      },
+      addLeft: function addLeft(left) {
+        var _this$rect5 = this.rect,
+            currentLeft = _this$rect5.left,
+            currentWidth = _this$rect5.width;
+        left = currentWidth > left ? left : currentWidth;
+        var nextLeft = currentLeft + left;
+        if (nextLeft < 0) nextLeft = 0;
+        return this.rect.left = nextLeft;
+      },
+      addTop: function addTop(top) {
+        var _this$rect6 = this.rect,
+            currentTop = _this$rect6.top,
+            currentHeight = _this$rect6.height;
+        top = currentHeight > top ? top : currentHeight;
+        var nextTop = currentTop + top;
+        if (nextTop < 0) nextTop = 0;
+        return this.rect.top = nextTop;
+      },
+      handleShapeDown: function handleShapeDown(e) {
+        this.setActive(true);
+        this.startY = e.clientY;
+        this.startX = e.clientX;
+        document.addEventListener('mousemove', this.handleShapeMove);
+        document.addEventListener('mouseup', this.handleShapeUp);
+      },
+      handleShapeMove: function handleShapeMove(e) {
         e.preventDefault();
+        var distanceX = e.clientX - this.startX;
+        var distanceY = e.clientY - this.startY;
+        this.startX = e.clientX;
+        this.startY = e.clientY;
+        this.addLeft(distanceX);
+        this.addTop(distanceY);
       },
-      mousedownForMark: function mousedownForMark(point, downEvent) {
+      handleShapeUp: function handleShapeUp() {
+        document.removeEventListener('mousemove', this.handleShapeMove);
+        document.removeEventListener('mouseup', this.handleShapeUp);
+      },
+      handlePointDown: function handlePointDown(point, e) {
+        this.startY = e.clientY;
+        this.startX = e.clientX;
+        this.point = point;
+        document.addEventListener('mousemove', this.handlePointMove);
+        document.addEventListener('mouseup', this.handlePointUp);
+      },
+      handlePointMove: function handlePointMove(e) {
         var _this = this;
 
-        downEvent.stopPropagation();
-        downEvent.preventDefault(); // Let's stop this event.
+        var effect = [/l/, /t/, /r/, /b/].map(function (v) {
+          return v.test(_this.point);
+        });
 
-        var pos = _objectSpread$7({}, this.position);
+        var _effect = slicedToArray(effect, 4),
+            effectLeft = _effect[0],
+            effectTop = _effect[1],
+            effectWidth = _effect[2],
+            effectHeight = _effect[3];
 
-        var height = pos.height;
-        var width = pos.width;
-        var top = pos.top;
-        var left = pos.left;
-        var startX = downEvent.clientX;
-        var startY = downEvent.clientY;
-
-        var move = function move(moveEvent) {
-          var currX = moveEvent.clientX;
-          var currY = moveEvent.clientY;
-          var disY = currY - startY;
-          var disX = currX - startX;
-          var hasT = /t/.test(point);
-          var hasB = /b/.test(point);
-          var hasL = /l/.test(point);
-          var hasR = /r/.test(point);
-          var newHeight = +height + (hasT ? -disY : hasB ? disY : 0);
-          var newWidth = +width + (hasL ? -disX : hasR ? disX : 0);
-          pos.height = newHeight > 0 ? newHeight : 0;
-          pos.width = newWidth > 0 ? newWidth : 0;
-          pos.left = +left + (hasL ? disX : 0);
-          pos.top = +top + (hasT ? disY : 0);
-
-          _this.handlePointMoveProp(pos);
-        };
-
-        var up = function up() {
-          _this.handlePointMouseUpProp();
-
-          document.removeEventListener('mousemove', move);
-          document.removeEventListener('mouseup', up);
-        };
-
-        document.addEventListener('mousemove', move);
-        document.addEventListener('mouseup', up);
+        var distanceX = e.clientX - this.startX;
+        var distanceY = e.clientY - this.startY;
+        this.startX = e.clientX;
+        this.startY = e.clientY;
+        effectLeft && this.addLeft(distanceX);
+        effectLeft && this.addWidth(-distanceX);
+        effectTop && this.addTop(distanceY);
+        effectTop && this.addHeight(-distanceY);
+        effectWidth && this.addWidth(distanceX);
+        effectHeight && this.addHeight(distanceY);
       },
-
-      /**
-       * !#zh 给 当前选中元素 添加鼠标移动相关事件
-       *
-       * @param {mouseEvent} e
-       */
-      mousedownForElement: function mousedownForElement(e) {
-        var _this2 = this;
-
-        var pos = _objectSpread$7({}, this.position);
-
-        var startY = e.clientY;
-        var startX = e.clientX;
-        var startTop = pos.top;
-        var startLeft = pos.left;
-
-        var move = function move(moveEvent) {
-          // !#zh 移动的时候，不需要向后代元素传递事件，只需要单纯的移动就OK
-          moveEvent.stopPropagation();
-          moveEvent.preventDefault();
-          var currX = moveEvent.clientX;
-          var currY = moveEvent.clientY;
-          pos.top = currY - startY + startTop;
-          pos.left = currX - startX + startLeft;
-
-          _this2.handleElementMoveProp(pos);
-        };
-
-        var up = function up(moveEvent) {
-          _this2.handleElementMouseUpProp();
-
-          document.removeEventListener('mousemove', move, true);
-          document.removeEventListener('mouseup', up, true);
-        };
-
-        document.addEventListener('mousemove', move, true);
-        document.addEventListener('mouseup', up, true);
-      },
-      handleMousedown: function handleMousedown(e) {
-        if (this.handleMousedownProp) {
-          this.handleMousedownProp();
-          this.mousedownForElement(e, this.element);
-        }
-      },
-
-      /**
-       * !#en: delete element with keyboard
-       * !#zh: 键盘快捷键删除元素
-       *
-       * TODO: 增加 确认删除 拦截操作
-       */
-      handleDeleteByKeyboard: function handleDeleteByKeyboard(event) {
-        var key = event.keyCode || event.charCode;
-
-        if (key === 8 || key === 46) {
-          this.$emit('delete');
-        }
-      },
-
-      /**
-       * detect key pressed on keyboard
-       * 检测键盘按键 按下行为
-       *
-       * 支持如下行为：
-       * - Backspace/Delete 快速删除元素
-       */
-      handleKeyPressed: function handleKeyPressed(e) {
-        this.handleDeleteByKeyboard(e);
+      handlePointUp: function handlePointUp() {
+        document.removeEventListener('mousemove', this.handlePointMove);
+        document.removeEventListener('mouseup', this.handlePointUp);
       }
     },
-    render: function render(h) {
-      var _this3 = this;
+    render: function render() {
+      var _this2 = this;
 
+      var h = arguments[0];
       return h("div", {
         "attrs": {
-          "tabIndex": "0"
+          "tabindex": "0",
+          "data-id": id$1++
         },
-        "on": {
-          "keydown": this.handleKeyPressed,
-          "click": this.handleWrapperClick,
-          "mousedown": this.handleMousedown
-        },
-        "class": {
+        "directives": [{
+          name: "click-outside",
+          value: this.vcoConfig
+        }],
+        "style": this.shapeStyle,
+        "class": ['shape__wrapper', {
           'shape__wrapper-active': this.active
-        }
-      }, [this.active && points.map(function (point) {
-        var pointStyle = _this3.getPointStyle(point);
-
+        }],
+        "on": {
+          "mousedown": this.handleShapeDown
+        },
+        "ref": "shape"
+      }, [h("div", {
+        "class": "content"
+      }, [this.$slots.default]), h("div", {
+        "class": "control"
+      }, [points.map(function (v) {
         return h("div", {
-          "key": point,
-          "attrs": {
-            "data-point": point
-          },
-          "style": pointStyle,
+          "directives": [{
+            name: "show",
+            value: _this2.active
+          }],
+          "style": _this2["".concat(v, "PointStyle")],
           "class": "shape__scale-point",
+          "attrs": {
+            "data-point": v
+          },
           "on": {
-            "mousedown": _this3.mousedownForMark.bind(_this3, point)
+            "mousedown": _this2.handlePointDown.bind(_this2, v)
           }
         });
-      }), this.$slots.default]);
+      })])]);
     }
   };
 
-  var $includes = arrayIncludes.includes;
-
-
-
-  var USES_TO_LENGTH$8 = arrayMethodUsesToLength('indexOf', { ACCESSORS: true, 1: 0 });
-
-  // `Array.prototype.includes` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.includes
-  _export({ target: 'Array', proto: true, forced: !USES_TO_LENGTH$8 }, {
-    includes: function includes(el /* , fromIndex = 0 */) {
-      return $includes(this, el, arguments.length > 1 ? arguments[1] : undefined);
-    }
-  });
-
-  // https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
-  addToUnscopables('includes');
-
-  var SPECIES$5 = wellKnownSymbol('species');
-
-  var setSpecies = function (CONSTRUCTOR_NAME) {
-    var Constructor = getBuiltIn(CONSTRUCTOR_NAME);
-    var defineProperty = objectDefineProperty.f;
-
-    if (descriptors && Constructor && !Constructor[SPECIES$5]) {
-      defineProperty(Constructor, SPECIES$5, {
-        configurable: true,
-        get: function () { return this; }
-      });
-    }
-  };
-
-  var defineProperty$6 = objectDefineProperty.f;
-  var getOwnPropertyNames$1 = objectGetOwnPropertyNames.f;
-
-
-
-
-
-  var setInternalState$1 = internalState.set;
-
-
-
-  var MATCH$1 = wellKnownSymbol('match');
-  var NativeRegExp = global_1.RegExp;
-  var RegExpPrototype$1 = NativeRegExp.prototype;
-  var re1 = /a/g;
-  var re2 = /a/g;
-
-  // "new" should create a new object, old webkit bug
-  var CORRECT_NEW = new NativeRegExp(re1) !== re1;
-
-  var UNSUPPORTED_Y$2 = regexpStickyHelpers.UNSUPPORTED_Y;
-
-  var FORCED$2 = descriptors && isForced_1('RegExp', (!CORRECT_NEW || UNSUPPORTED_Y$2 || fails(function () {
-    re2[MATCH$1] = false;
-    // RegExp constructor can alter flags and IsRegExp works correct with @@match
-    return NativeRegExp(re1) != re1 || NativeRegExp(re2) == re2 || NativeRegExp(re1, 'i') != '/a/i';
-  })));
-
-  // `RegExp` constructor
-  // https://tc39.github.io/ecma262/#sec-regexp-constructor
-  if (FORCED$2) {
-    var RegExpWrapper = function RegExp(pattern, flags) {
-      var thisIsRegExp = this instanceof RegExpWrapper;
-      var patternIsRegExp = isRegexp(pattern);
-      var flagsAreUndefined = flags === undefined;
-      var sticky;
-
-      if (!thisIsRegExp && patternIsRegExp && pattern.constructor === RegExpWrapper && flagsAreUndefined) {
-        return pattern;
-      }
-
-      if (CORRECT_NEW) {
-        if (patternIsRegExp && !flagsAreUndefined) pattern = pattern.source;
-      } else if (pattern instanceof RegExpWrapper) {
-        if (flagsAreUndefined) flags = regexpFlags.call(pattern);
-        pattern = pattern.source;
-      }
-
-      if (UNSUPPORTED_Y$2) {
-        sticky = !!flags && flags.indexOf('y') > -1;
-        if (sticky) flags = flags.replace(/y/g, '');
-      }
-
-      var result = inheritIfRequired(
-        CORRECT_NEW ? new NativeRegExp(pattern, flags) : NativeRegExp(pattern, flags),
-        thisIsRegExp ? this : RegExpPrototype$1,
-        RegExpWrapper
-      );
-
-      if (UNSUPPORTED_Y$2 && sticky) setInternalState$1(result, { sticky: sticky });
-
-      return result;
-    };
-    var proxy = function (key) {
-      key in RegExpWrapper || defineProperty$6(RegExpWrapper, key, {
-        configurable: true,
-        get: function () { return NativeRegExp[key]; },
-        set: function (it) { NativeRegExp[key] = it; }
-      });
-    };
-    var keys$2 = getOwnPropertyNames$1(NativeRegExp);
-    var index = 0;
-    while (keys$2.length > index) proxy(keys$2[index++]);
-    RegExpPrototype$1.constructor = RegExpWrapper;
-    RegExpWrapper.prototype = RegExpPrototype$1;
-    redefine(global_1, 'RegExp', RegExpWrapper);
-  }
-
-  // https://tc39.github.io/ecma262/#sec-get-regexp-@@species
-  setSpecies('RegExp');
-
-  var notARegexp = function (it) {
-    if (isRegexp(it)) {
-      throw TypeError("The method doesn't accept regular expressions");
-    } return it;
-  };
-
-  var MATCH$2 = wellKnownSymbol('match');
-
-  var correctIsRegexpLogic = function (METHOD_NAME) {
-    var regexp = /./;
-    try {
-      '/./'[METHOD_NAME](regexp);
-    } catch (e) {
-      try {
-        regexp[MATCH$2] = false;
-        return '/./'[METHOD_NAME](regexp);
-      } catch (f) { /* empty */ }
-    } return false;
-  };
-
-  // `String.prototype.includes` method
-  // https://tc39.github.io/ecma262/#sec-string.prototype.includes
-  _export({ target: 'String', proto: true, forced: !correctIsRegexpLogic('includes') }, {
-    includes: function includes(searchString /* , position = 0 */) {
-      return !!~String(requireObjectCoercible(this))
-        .indexOf(notARegexp(searchString), arguments.length > 1 ? arguments[1] : undefined);
-    }
-  });
-
-  var _components$8;
-
-  function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$8(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$9(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$9(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-  function isRegExp(value) {
-    return value instanceof RegExp;
-  } // 垂直菜单
-
-
-  var contextmenuOptions = [{
-    i18nLabel: "editor.centerPanel.contextMenu.copy",
-    label: "复制",
-    value: "copy"
-  }, {
-    i18nLabel: "editor.centerPanel.contextMenu.delete",
-    label: "删除",
-    value: "delete"
-  },
-  /**
-   * contextMenu 白名单，只有匹配白名单列表里的元素，才会显示该选项
-   * 支持正则、数组
-   * 数组：[ElementName]
-   * 正则：RegExp
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-06 10:50:05
+   * @LastEditTime : 2020-11-06 14:44:50
+   * @Description :
    */
-  {
-    i18nLabel: "editor.centerPanel.contextMenu.showOnlyButton",
-    label: "showOnlyButton",
-    value: "showOnlyButton",
-    elementWhiteList: ["lbp-button"]
-  },
-  /**
-   * contextMenu 黑名单，在黑名单列表里的元素，不会显示该选项
-   * 支持正则、数组
-   * 数组：[ElementName]
-   * 正则：RegExp
-   */
-  {
-    i18nLabel: "editor.centerPanel.contextMenu.showExcludePicture",
-    label: "showExcludePicture",
-    value: "showExcludePicture",
-    elementBlackList: /^lbp-picture/
-  }]; // 水平菜单
-
-  var zindexContextMenu = [{
-    i18nLabel: "editor.centerPanel.contextMenu.moveToTop",
-    label: "置顶",
-    value: "move2Top"
-  }, {
-    i18nLabel: "editor.centerPanel.contextMenu.moveToBottom",
-    label: "置底",
-    value: "move2Bottom"
-  }, {
-    i18nLabel: "editor.centerPanel.contextMenu.moveUp",
-    label: "上移",
-    value: "addZindex"
-  }, {
-    i18nLabel: "editor.centerPanel.contextMenu.moveDown",
-    label: "下移",
-    value: "minusZindex"
-  }];
-  var ContextMenu = {
-    components: (_components$8 = {}, defineProperty$1(_components$8, antDesignVue.Menu.name, antDesignVue.Menu), defineProperty$1(_components$8, antDesignVue.Menu.Item.name, antDesignVue.Menu.Item), defineProperty$1(_components$8, antDesignVue.Card.name, antDesignVue.Card), _components$8),
-    computed: _objectSpread$8(_objectSpread$8({}, Vuex.mapState("editor", ["editingElement", "work"])), {}, {
-      /**
-       * 做一下扩展，提供：黑白名单，来针对某些特定组件，展示特定右键菜单
-       *
-       */
-      filteredOptions: function filteredOptions() {
-        var elementName = this.editingElement.name;
-        var filteredOptions = contextmenuOptions.filter(function (option) {
-          var wl = option.elementWhiteList;
-          var bl = option.elementBlackList;
-
-          if (wl) {
-            if (Array.isArray(wl)) return wl.includes(elementName);
-            if (isRegExp(wl)) return wl.test(elementName);
-          }
-
-          if (bl) {
-            if (Array.isArray(bl)) return !bl.includes(elementName);
-            if (isRegExp(bl)) return !bl.test(elementName);
-          }
-
-          return true;
-        });
-        return filteredOptions;
-      }
-    }),
+  var AuxiliayLine = {
     props: {
-      position: {
+      width: {
+        type: Number,
+        default: 0
+      },
+      height: {
+        type: Number,
+        default: 0
+      },
+      data: {
         type: Array,
         default: function _default() {
           return [];
         }
       }
     },
-    methods: {
-      handleSelectMenu: function handleSelectMenu(_ref) {
-        var item = _ref.item,
-            key = _ref.key,
-            selectedKeys = _ref.selectedKeys;
-        this.$emit("select", {
-          item: item,
-          key: key,
-          selectedKeys: selectedKeys
-        }); // elementManager({ type: key })
-      }
-    },
-    render: function render(h) {
-      var _this = this;
-
-      return h("a-card", {
-        "attrs": {
-          "bodyStyle": {
-            padding: "4px"
-          }
-        },
-        "class": "contextmenu"
-      }, [h("a-menu", {
-        "attrs": {
-          "inlineIndent": 4,
-          "mode": "inline"
-        },
-        "on": {
-          "select": this.handleSelectMenu
-        },
-        "class": "contextmenu__vertical-menus"
-      }, [this.filteredOptions.map(function (option) {
-        return h("a-menu-item", {
-          "key": option.value,
-          "attrs": {
-            "data-command": option.value
-          },
-          "class": "contextmenu__vertical-menus__item"
-        }, [_this.$t(option.i18nLabel)]);
-      })]), h("a-menu", {
-        "attrs": {
-          "mode": "horizontal"
-        },
-        "on": {
-          "select": this.handleSelectMenu
-        },
-        "class": "contextmenu__horizontal-menus"
-      }, [zindexContextMenu.map(function (option) {
-        return h("a-menu-item", {
-          "key": option.value,
-          "attrs": {
-            "data-command": option.value
-          },
-          "class": "contextmenu__horizontal-menus__item"
-        }, [_this.$t(option.i18nLabel)]);
-      })])]);
-    }
-  };
-
-  var _components$9;
-
-  function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$9(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var RenderEditCanvas = {
-    components: (_components$9 = {}, defineProperty$1(_components$9, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$1(_components$9, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), _components$9),
-    props: ['elements', 'handleClickElementProp', 'handleClickCanvasProp'],
     data: function data() {
       return {
         vLines: [],
-        hLines: [],
-        contextmenuPos: []
+        hLines: []
       };
     },
-    computed: _objectSpread$9({}, Vuex.mapState('editor', ['editingElement', 'work'])),
-    methods: _objectSpread$9(_objectSpread$9({}, Vuex.mapActions('editor', ['setEditingElement', 'setElementPosition', 'setElementShape', 'recordElementRect', 'elementManager', 'updateWork'])), {}, {
-      // generate vertical line
+    watch: {
+      data: {
+        handler: 'calcVHLine',
+        deep: true
+      }
+    },
+    methods: {
       drawVLine: function drawVLine(newLeft) {
         this.vLines = [{
           left: newLeft
@@ -5532,7 +5226,6 @@
       clearVLine: function clearVLine() {
         this.vLines = [];
       },
-      // generate horizontal line
       drawHLine: function drawHLine(newTop) {
         this.hLines = [{
           top: newTop
@@ -5541,47 +5234,45 @@
       clearHLine: function clearHLine() {
         this.hLines = [];
       },
-      calcVHLine: function calcVHLine(isPointMove) {
+      genBorder: function genBorder(_ref) {
+        var left = _ref.left,
+            top = _ref.top,
+            width = _ref.width,
+            height = _ref.height;
+        return [[left + width, left + width / 2, left], [top + height, top + height / 2, top]];
+      },
+      calcVHLine: function calcVHLine() {
         var _this = this;
 
-        var uuid = this.editingElement.uuid;
-        var referElements = this.elements.filter(function (e) {
-          return e.uuid !== uuid;
-        });
         var referElementsXCoords = [];
         var referElementsYCoords = [];
-        referElements.forEach(function (e) {
-          var width = e.commonStyle.width;
-          var left = e.commonStyle.left;
-          var height = e.commonStyle.height;
-          var top = e.commonStyle.top;
-          referElementsXCoords = [].concat(toConsumableArray(referElementsXCoords), [left, left + width / 2, left + width]);
-          referElementsYCoords = [].concat(toConsumableArray(referElementsYCoords), [top, top + height / 2, top + height]);
-        }); // e代表 editingElement
-
-        var eleft = this.editingElement.commonStyle.left;
-        var etop = this.editingElement.commonStyle.top;
-        var ewidth = this.editingElement.commonStyle.width;
-        var eheight = this.editingElement.commonStyle.height;
-        var exCoords = [eleft + ewidth, eleft + ewidth / 2, eleft];
-        var eyCoords = [etop + eheight, etop + eheight / 2, etop];
         var hasVLine = false;
         var hasHLine = false;
+        this.data.forEach(function (e) {
+          var _this$genBorder = _this.genBorder(e),
+              _this$genBorder2 = slicedToArray(_this$genBorder, 2),
+              xCoords = _this$genBorder2[0],
+              yCoords = _this$genBorder2[1];
+
+          referElementsXCoords.push.apply(referElementsXCoords, toConsumableArray(xCoords));
+          referElementsYCoords.push.apply(referElementsYCoords, toConsumableArray(yCoords));
+        });
+
+        var _this$genBorder3 = this.genBorder({
+          left: 0,
+          top: 0,
+          width: this.width,
+          height: this.height
+        }),
+            _this$genBorder4 = slicedToArray(_this$genBorder3, 2),
+            exCoords = _this$genBorder4[0],
+            eyCoords = _this$genBorder4[1];
+
         exCoords.forEach(function (eX) {
           referElementsXCoords.forEach(function (referX) {
             var offset = referX - eX;
 
             if (Math.abs(offset) <= 5) {
-              if (isPointMove) {
-                _this.setElementPosition({
-                  width: ewidth + offset
-                });
-              } else {
-                _this.setElementPosition({
-                  left: eleft + offset
-                });
-              }
-
               _this.drawVLine(referX);
 
               hasVLine = true;
@@ -5593,16 +5284,6 @@
             var offset = referY - eY;
 
             if (Math.abs(offset) <= 5) {
-              if (isPointMove) {
-                _this.setElementPosition({
-                  height: eheight + offset
-                });
-              } else {
-                _this.setElementPosition({
-                  top: etop + offset
-                });
-              }
-
               _this.drawHLine(referY);
 
               hasHLine = true;
@@ -5617,171 +5298,13 @@
         if (!hasHLine) {
           this.clearHLine();
         }
-      },
-
-      /**
-       * #!zh: 在元素移动过程中，计算和生成辅助线
-       */
-      handleElementMove: function handleElementMove(pos) {
-        this.setElementPosition(pos);
-        this.calcVHLine(false);
-      },
-      handlePointMove: function handlePointMove(pos) {
-        this.setElementPosition(pos);
-        this.calcVHLine(true);
-      },
-      bindContextMenu: function bindContextMenu(e) {
-        // 优化右击菜单的显示，去除冗余的无效逻辑
-        var _this$$el$getBounding = this.$el.getBoundingClientRect(),
-            x = _this$$el$getBounding.x,
-            y = _this$$el$getBounding.y;
-
-        this.contextmenuPos = [e.clientX - x, e.clientY - y];
-      },
-      hideContextMenu: function hideContextMenu() {
-        this.contextmenuPos = [];
-      },
-      handleClickCanvas: function handleClickCanvas(e) {
-        if (!e.target.classList.contains('element-on-edit-canvas')) {
-          this.setEditingElement();
-        }
-      },
-
-      /**
-       * 更新作品高度
-       * @param {Number} height
-       */
-      updateWorkHeight: function updateWorkHeight(height) {
-        this.updateWork({
-          height: height
-        });
-      },
-
-      /**
-       * TODO 封装 adjust editor scale 组件
-       * scale: height/width
-       * @param {MouseEvent} e
-       */
-      mousedownForAdjustLine: function mousedownForAdjustLine(e) {
-        var _this2 = this;
-
-        var startY = e.clientY;
-        var startHeight = this.work.height;
-        var canvasOuterWrapper = document.querySelector('#canvas-outer-wrapper .ant-layout');
-
-        var move = function move(moveEvent) {
-          // !#zh 移动的时候，不需要向后代元素传递事件，只需要单纯的移动就OK
-          moveEvent.stopPropagation();
-          moveEvent.preventDefault();
-          var currY = moveEvent.clientY;
-          var moveHeight = currY - startY;
-          var currentHeight = moveHeight + startHeight;
-
-          _this2.updateWorkHeight(currentHeight);
-
-          if (canvasOuterWrapper) canvasOuterWrapper.scrollTop = canvasOuterWrapper.scrollHeight;
-        };
-
-        var up = function up() {
-          document.removeEventListener('mousemove', move, true);
-          document.removeEventListener('mouseup', up, true);
-        };
-
-        document.addEventListener('mousemove', move, true);
-        document.addEventListener('mouseup', up, true);
       }
-    }),
+    },
     render: function render() {
-      var _this3 = this;
-
       var h = arguments[0];
-      var elements = this.elements;
       return h("div", {
-        "style": {
-          height: '100%',
-          position: 'relative'
-        },
-        "on": {
-          "click": function click(e) {
-            _this3.hideContextMenu();
-
-            _this3.handleClickCanvas(e);
-          },
-          "contextmenu": function contextmenu(e) {
-            e.preventDefault();
-            e.stopPropagation();
-          }
-        }
-      }, [elements.map(function (element, index) {
-        if (element.name === 'lbp-background') {
-          return h("lbp-background", helper([{}, element.getProps()]));
-        }
-
-        var data = {
-          style: {
-            width: '100%',
-            height: '100%'
-          },
-          class: 'element-on-edit-canvas',
-          props: _objectSpread$9(_objectSpread$9({}, element.getProps()), {}, {
-            // #6 #3,
-            editorMode: 'edit'
-          }),
-          on: {
-            input: function input(_ref) {
-              var value = _ref.value,
-                  pluginName = _ref.pluginName;
-
-              if (pluginName === 'lbp-text') {
-                element.pluginProps.text = value;
-              }
-            }
-          }
-        };
-        return h(Shape, {
-          "on": {
-            "delete": function _delete() {
-              return _this3.elementManager({
-                type: 'delete'
-              });
-            }
-          },
-          "style": element.getStyle({
-            position: 'absolute'
-          }),
-          "attrs": {
-            "defaultPosition": element.commonStyle,
-            "element": element,
-            "active": _this3.editingElement === element,
-            "handleMousedownProp": function handleMousedownProp() {
-              _this3.hideContextMenu();
-
-              _this3.setEditingElement(element);
-            },
-            "handlePointMoveProp": _this3.handlePointMove,
-            "handleElementMoveProp": _this3.handleElementMove,
-            "handleElementMouseUpProp": function handleElementMouseUpProp() {
-              _this3.clearHLine();
-
-              _this3.clearVLine();
-
-              _this3.recordElementRect();
-            },
-            "handlePointMouseUpProp": function handlePointMouseUpProp() {
-              _this3.clearHLine();
-
-              _this3.clearVLine();
-
-              _this3.recordElementRect();
-            }
-          },
-          "nativeOn": {
-            "contextmenu": function contextmenu(e) {
-              _this3.bindContextMenu(e);
-            }
-          }
-        }, [h(element.name, helper([{}, data]))]);
-      }), this.vLines.map(function (line) {
+        "class": "luban-auxiliary-line"
+      }, [this.vLines.map(function (line) {
         return h("div", {
           "class": "v-line",
           "style": {
@@ -5795,607 +5318,86 @@
             top: "".concat(line.top, "px")
           }
         });
-      }), this.contextmenuPos.length ? h(ContextMenu, {
-        "style": {
-          left: this.contextmenuPos[0] + 'px',
-          top: this.contextmenuPos[1] + 'px',
-          userSelect: 'none',
-          position: 'absolute',
-          zIndex: 999
-        },
-        "on": {
-          "select": function select(_ref2) {
-            var item = _ref2.item,
-                key = _ref2.key,
-                selectedKeys = _ref2.selectedKeys;
-
-            _this3.elementManager({
-              type: key
-            });
-
-            _this3.hideContextMenu();
-          },
-          "hideMenu": this.hideContextMenu
-        }
-      }) : null, h("div", {
-        "style": {
-          position: 'absolute',
-          top: "".concat(this.work.height, "px"),
-          width: '100%'
-        }
-      }, [h("div", {
-        "class": "adjust-line-wrapper adjust-line-wrapper-h"
-      }, [h("div", {
-        "class": "adjust-line adjust-line-h"
-      }), h("div", {
-        "class": "adjust-button",
-        "on": {
-          "mousedown": this.mousedownForAdjustLine
-        }
-      }, [h("div", {
-        "class": "indicator"
-      })]), h("div", {
-        "class": "adjust-tip"
-      }, [h("span", ["375 x"]), h("a-input-number", {
-        "attrs": {
-          "size": "small",
-          "value": this.work.height
-        },
-        "style": "margin: 0 4px; width:60px;",
-        "on": {
-          "change": function change(height) {
-            _this3.updateWork({
-              height: height
-            });
-          }
-        }
-      }), h("span", ["px"])])])])]);
+      })]);
     }
   };
 
-  var NodeWrapper = {
-    mixins: [animationMixin],
-    props: ['element'],
-    mounted: function mounted() {
-      this.runAnimations();
-    },
-    render: function render(h) {
-      return h("div", {
-        "style": this.element.getStyle({
-          position: 'absolute'
-        })
-      }, [this.$slots.default]);
-    }
-  };
+  function ownKeys$8(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  /**
-   * 预览模块
-   * preview h5 work module
-   */
-
-  var RenderPreviewCanvas = {
-    props: ['elements', 'height'],
-    components: {
-      NodeWrapper: NodeWrapper
-    },
-    methods: {
-      renderPreview: function renderPreview(h, elements) {
-        var pageWrapperStyle = {
-          height: this.height || '100%',
-          position: 'relative'
-        };
-        return h("div", {
-          "style": pageWrapperStyle
-        }, [elements.map(function (element, index) {
-          return h("node-wrapper", {
-            "attrs": {
-              "element": element
-            }
-          }, [h(element.name, element.getPreviewData({
-            position: 'static'
-          }))]);
-        })]);
-      }
-    },
-    render: function render(h) {
-      return this.renderPreview(h, this.elements);
-    }
-  };
-
-  var _components$a;
-
-  function ownKeys$b(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$a(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$b(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var EditorCanvas = {
-    name: 'EditorCanvas',
-    components: (_components$a = {}, defineProperty$1(_components$a, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$1(_components$a, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$1(_components$a, antDesignVue.Layout.name, antDesignVue.Layout), defineProperty$1(_components$a, antDesignVue.Layout.Content.name, antDesignVue.Layout), _components$a),
-    data: function data() {
-      return {
-        isPreviewMode: false
-      };
-    },
-    computed: _objectSpread$a(_objectSpread$a({}, Vuex.mapState('editor', {
-      elements: function elements(state) {
-        return state.editingPage.elements;
-      },
-      pages: function pages(state) {
-        return state.work.pages;
-      },
-      work: function work(state) {
-        return state.work;
-      },
-      scaleRate: function scaleRate(state) {
-        return state.scaleRate;
-      }
-    })), {}, {
-      canvasStyle: function canvasStyle() {
-        return {
-          height: "".concat(this.work.height, "px")
-        };
-      },
-      layoutStyle: function layoutStyle() {
-        return {
-          transform: "scale(".concat(this.scaleRate, ")"),
-          'transform-origin': 'center top',
-          overflow: 'auto'
-        };
-      }
-    }),
-    methods: _objectSpread$a(_objectSpread$a({}, Vuex.mapActions('editor', ['setEditingElement'])), {}, {
-      handleToggleMode: function handleToggleMode(isPreviewMode) {
-        this.isPreviewMode = isPreviewMode;
-
-        if (isPreviewMode) {
-          // 当切换到预览模式的时候，清空当前编辑元素
-          this.setEditingElement(); // 相当于  setEditingElement(null)
-        }
-      }
-    }),
-    render: function render(h) {
-      return h("a-layout", {
-        "attrs": {
-          "id": "canvas-outer-wrapper"
-        }
-      }, [h("a-radio-group", {
-        "class": "mode-toggle-wrapper",
-        "attrs": {
-          "size": "small",
-          "value": this.isPreviewMode
-        },
-        "on": {
-          "input": this.handleToggleMode
-        }
-      }, [h("a-radio-button", {
-        "attrs": {
-          "label": false,
-          "value": false
-        }
-      }, [this.$t('editor.centerPanel.mode.edit')]), h("a-radio-button", {
-        "attrs": {
-          "label": true,
-          "value": true
-        }
-      }, [this.$t('editor.centerPanel.mode.preview')])]), h("a-layout-content", {
-        "style": this.layoutStyle
-      }, [h("div", {
-        "class": "canvas-wrapper",
-        "style": this.canvasStyle
-      }, [this.isPreviewMode ? h(RenderPreviewCanvas, {
-        "attrs": {
-          "elements": this.elements
-        }
-      }) : h(RenderEditCanvas, {
-        "class": "edit-mode",
-        "attrs": {
-          "elements": this.elements
-        }
-      })])])]);
-    }
-  };
-
-  var ShortcutButton = {
-    functional: true,
-    props: {
-      faIcon: {
-        required: true,
-        type: String
-      },
-      title: {
-        required: true,
-        type: String
-      },
-      clickFn: {
-        required: false,
-        type: Function,
-        default: function _default() {}
-      },
-      mousedownFn: {
-        required: false,
-        type: Function,
-        default: function _default() {}
-      },
-      disabled: {
-        type: Boolean,
-        default: false
-      }
-    },
-    render: function render(h, _ref) {
-      var props = _ref.props,
-          listeners = _ref.listeners,
-          slots = _ref.slots;
-      return h("button", {
-        "class": "shortcut-button",
-        "on": {
-          "click": props.clickFn,
-          "mousedown": props.mousedownFn
-        },
-        "attrs": {
-          "disabled": props.disabled
-        }
-      }, [h("i", {
-        "class": ['shortcut-icon', 'fa', "fa-".concat(props.faIcon)],
-        "attrs": {
-          "aria-hidden": 'true'
-        }
-      }), h("span", [props.title])]);
-    }
-  };
-
-  var UsageTip = {
-    components: defineProperty$1({}, antDesignVue.Icon.name, antDesignVue.Icon),
-    render: function render() {
-      var h = arguments[0];
-      return h("div", {
-        "class": "plugin-usage-tip "
-      }, [h("a-icon", {
-        "attrs": {
-          "type": "info-circle"
-        }
-      }), h("i18n", {
-        "attrs": {
-          "path": "editor.tip.componentUsage",
-          "tag": "span"
-        },
-        "class": "ml-1"
-      }, [h("strong", [this.$t("editor.tip.click")]), this.$t("editor.tip.click")])]);
-    }
-  };
-
-  var _components$b;
-
-  function ownKeys$c(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$b(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$c(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$c(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var script$1 = {
-    components: (_components$b = {}, defineProperty$1(_components$b, antDesignVue.Modal.name, antDesignVue.Modal), defineProperty$1(_components$b, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$1(_components$b, antDesignVue.Button.name, antDesignVue.Button), _components$b),
-    data: function data() {
-      return {
-        visible: false,
-        confirmLoading: false,
-        text: JSON.stringify([{
-          package: '@luban-h5/lbp-slide',
-          version: '0.0.7',
-          name: 'lbp-slide',
-          icon: 'photo',
-          i18nTitle: {
-            'en-US': 'Carousel',
-            'zh-CN': '轮播图'
-          },
-          title: '轮播图',
-          visible: true
-        }], null, 2)
-      };
-    },
-    methods: {
-      showModal: function showModal() {
-        this.visible = true;
-      },
-      handleOk: function handleOk(e) {
-        var createjs = window.createjs; // eslint-disable-next-line no-new-func
-
-        var npmPackages = new Function("return ".concat(this.text).replace('\n', ''))();
-        npmPackages = npmPackages.map(function (pluginInfo) {
-          return _objectSpread$b(_objectSpread$b({}, pluginInfo), {}, {
-            // src: `https://cdn.jsdelivr.net/npm/${pluginInfo}/dist/${pluginInfo.name}.umd.js`
-            // src: `https://unpkg.com/${pluginInfo}/dist/${pluginName}.umd.js`
-            src: "https://cdn.jsdelivr.net/npm/".concat(pluginInfo.package, "@").concat(pluginInfo.version, "/dist/").concat(pluginInfo.name, ".umd.js")
-          });
-        });
-        var queue = new createjs.LoadQueue();
-        queue.on('fileload', handleFileLoad, this);
-        queue.on('complete', handleComplete, this);
-        queue.loadManifest(npmPackages);
-
-        function handleComplete(e) {
-          // 可以直接使用 this 的原因： query。on 最后一个参数用来做做 bind this 操作
-          this.visible = false;
-          this.confirmLoading = false;
-          this.$emit('loadComplete', npmPackages);
-        }
-
-        function handleFileLoad(event) {
-          var name = event.item.name;
-          Vue__default['default'].component(name, window[name]);
-        }
-      },
-      handleCancel: function handleCancel(e) {
-        this.visible = false;
-      }
-    }
-  };
-
-  /* script */
-  const __vue_script__$1 = script$1;
-
-  /* template */
-  var __vue_render__$1 = function() {
-    var _vm = this;
-    var _h = _vm.$createElement;
-    var _c = _vm._self._c || _h;
-    return _c(
-      "div",
-      { staticStyle: { "text-align": "center" } },
-      [
-        _c(
-          "a-button",
-          {
-            staticStyle: { "margin-top": "16px" },
-            attrs: { type: "primary" },
-            on: { click: _vm.showModal }
-          },
-          [_vm._v("配置 NPM 组件列表")]
-        ),
-        _vm._v(" "),
-        _c(
-          "a-modal",
-          {
-            attrs: {
-              title: "NPM 组件列表配置信息",
-              visible: _vm.visible,
-              confirmLoading: _vm.confirmLoading
-            },
-            on: { ok: _vm.handleOk, cancel: _vm.handleCancel }
-          },
-          [
-            _c(
-              "div",
-              [
-                _c("a-textarea", {
-                  attrs: { placeholder: "Basic usage", rows: 20 },
-                  model: {
-                    value: _vm.text,
-                    callback: function($$v) {
-                      _vm.text = $$v;
-                    },
-                    expression: "text"
-                  }
-                })
-              ],
-              1
-            )
-          ]
-        )
-      ],
-      1
-    )
-  };
-  var __vue_staticRenderFns__$1 = [];
-  __vue_render__$1._withStripped = true;
-
-    /* style */
-    const __vue_inject_styles__$1 = undefined;
-    /* scoped */
-    const __vue_scope_id__$1 = undefined;
-    /* module identifier */
-    const __vue_module_identifier__$1 = undefined;
-    /* functional template */
-    const __vue_is_functional_template__$1 = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-    /* style inject shadow dom */
-    
-
-    
-    const __vue_component__$1 = /*#__PURE__*/normalizeComponent(
-      { render: __vue_render__$1, staticRenderFns: __vue_staticRenderFns__$1 },
-      __vue_inject_styles__$1,
-      __vue_script__$1,
-      __vue_scope_id__$1,
-      __vue_is_functional_template__$1,
-      __vue_module_identifier__$1,
-      false,
-      undefined,
-      undefined,
-      undefined
-    );
-
-  function ownKeys$d(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$c(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$d(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$d(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var langMixin = {
-    computed: _objectSpread$c({}, Vuex.mapState({
-      currentLang: function currentLang(state) {
-        return state.i18n.lang;
-      }
-    })),
-    methods: _objectSpread$c(_objectSpread$c({}, Vuex.mapActions('i18n', ['SetLang'])), {}, {
-      setLang: function setLang(lang) {
-        this.SetLang(lang);
-      }
-    })
-  };
-
-  function ownKeys$e(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$d(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$e(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$e(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$7(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$8(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$8(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   /*
-   * @Author: ly525
-   * @Date: 2020-05-17 17:21:04
-   * @LastEditors : Please set LastEditors
-   * @LastEditTime : 2020-10-28 09:22:04
-   * @FilePath: /luban-h5/front-end/h5/src/components/@/mixins/drag.js
-   * @Github: https://github.com/ly525/luban-h5
-   * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
-   * @Description:
-   *  组件拖拽至画布功能
-   *  其中部分代码参考自：https://github.com/hakubox/haku-form-design，已经征得作者同意，目的是后续考虑做 tab 之类的嵌套容器
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-02 16:12:09
+   * @LastEditTime : 2020-11-11 09:47:48
+   * @Description :
    */
-  var dragDom = null;
-  var dragConfig = {
-    isPreDrag: false,
-    // 准备拖拽
-    isDrag: false,
-    // 正式拖拽
-    origin: {
-      clientY: 0,
-      // 鼠标按下时候时候值
-      clientX: 0,
-      layerX: 0,
-      // 鼠标.x 相对于元素左上角.left 的偏移
-      layerY: 0 // 鼠标.y 相对于元素左上角.top  的偏移
-
-    }
+  var defaultProps = {
+    top: 0,
+    left: 0,
+    width: 100,
+    height: 40
   };
 
-  var Drag = /*#__PURE__*/function () {
-    function Drag(options) {
-      classCallCheck(this, Drag);
+  var Element = /*#__PURE__*/function () {
+    function Element() {
+      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+          _ref$name = _ref.name,
+          name = _ref$name === void 0 ? '' : _ref$name,
+          _ref$uuid = _ref.uuid,
+          uuid = _ref$uuid === void 0 ? +new Date() : _ref$uuid,
+          _ref$isRem = _ref.isRem,
+          isRem = _ref$isRem === void 0 ? false : _ref$isRem,
+          _ref$events = _ref.events,
+          events = _ref$events === void 0 ? [] : _ref$events,
+          _ref$animations = _ref.animations,
+          animations = _ref$animations === void 0 ? [] : _ref$animations,
+          _ref$props = _ref.props,
+          props = _ref$props === void 0 ? {} : _ref$props,
+          _ref$disabled = _ref.disabled,
+          disabled = _ref$disabled === void 0 ? false : _ref$disabled,
+          _ref$vm = _ref.vm,
+          vm = _ref$vm === void 0 ? null : _ref$vm;
 
-      this.mousedown = options.mousedown;
-      this.mousemove = options.mousemove;
-      this.mouseup = options.mouseup;
-      this._mousedown = this._mousedown.bind(this);
-      this._mousemove = this._mousemove.bind(this);
-      this._mouseup = this._mouseup.bind(this);
+      classCallCheck(this, Element);
+
+      this.name = name;
+      this.uuid = uuid;
+      this.props = Object.assign(_objectSpread$7({}, defaultProps), props);
+      this.events = events;
+      this.animations = animations;
+      this.isRem = isRem;
+      this.vm = vm;
+      this.disabled = disabled;
     }
 
-    createClass(Drag, [{
-      key: "start",
-      value: function start(e) {
-        this._mousedown(e);
+    createClass(Element, [{
+      key: "clone",
+      value: function clone() {
+        var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            _ref2$zIndex = _ref2.zIndex,
+            zIndex = _ref2$zIndex === void 0 ? this.zIndex + 1 : _ref2$zIndex;
+
+        return new Element({
+          zIndex: zIndex,
+          name: this.name,
+          pluginProps: this.pluginProps,
+          commonStyle: _objectSpread$7(_objectSpread$7({}, this.commonStyle), {}, {
+            top: this.commonStyle.top + 20,
+            left: this.commonStyle.left + 20
+          })
+        });
       }
     }, {
-      key: "_mousedown",
-      value: function _mousedown(e) {
-        this.mousedown(e);
-        this.toggleListener('add');
-      }
-    }, {
-      key: "_mousemove",
-      value: function _mousemove(e) {
-        this.mousemove(e);
-      }
-    }, {
-      key: "_mouseup",
-      value: function _mouseup(e) {
-        this.mouseup(e);
-        this.toggleListener('remove');
-      }
-    }, {
-      key: "toggleListener",
-      value: function toggleListener(action) {
-        document["".concat(action, "EventListener")]('mousemove', this._mousemove);
-        document["".concat(action, "EventListener")]('mouseup', this._mouseup);
+      key: "setVm",
+      value: function setVm(vm) {
+        this.vm = vm;
       }
     }]);
 
-    return Drag;
+    return Element;
   }();
-
-  var dragMixin = {
-    data: function data() {
-      return {};
-    },
-    methods: {
-      /**
-       *
-       * @param {*} element shortcutItem
-       * @param {*} e
-       */
-      handleDragStartFromMixin: function handleDragStartFromMixin(element, e) {
-        // https://developer.mozilla.org/zh-CN/docs/Web/API/event.button
-        // 0 为 左键点击.
-        if (e.button !== 0) return;
-
-        if (dragDom) {
-          document.body.removeChild(dragDom);
-          dragDom = null;
-        }
-
-        this.dragElement = element;
-        dragDom = e.target.cloneNode(true);
-        document.body.appendChild(dragDom);
-        new Drag({
-          mousedown: this.mousedown,
-          mousemove: this.mousemove,
-          mouseup: this.mouseup
-        }).start(e);
-      },
-
-      /**
-       *
-       * @param {*} e
-       */
-      mousedown: function mousedown(e) {
-        // 鼠标.x 相对于元素左上角 的偏移
-        var layerX = e.layerX,
-            layerY = e.layerY;
-        dragConfig.origin.layerX = layerX;
-        dragConfig.origin.layerY = layerY;
-        dragConfig.origin.clientX = e.clientX;
-        dragConfig.origin.clientY = e.clientY;
-        dragDom.style.position = 'absolute';
-        dragDom.style.left = e.clientX - layerX + 'px';
-        dragDom.style.top = e.clientY - layerY + 'px';
-        dragDom.classList.add('dragging-dom-ele', 'hidden');
-        dragConfig.isPreDrag = true;
-      },
-
-      /** 组件拖拽中 */
-      mousemove: function mousemove(e) {
-        dragDom.classList.remove('hidden');
-        var _dragConfig$origin = dragConfig.origin,
-            layerX = _dragConfig$origin.layerX,
-            layerY = _dragConfig$origin.layerY;
-        dragDom.style.left = e.clientX - layerX + 'px';
-        dragDom.style.top = e.clientY - layerY + 'px';
-      },
-      mouseup: function mouseup(e) {
-        var _dragConfig$origin2 = dragConfig.origin,
-            layerX = _dragConfig$origin2.layerX,
-            layerY = _dragConfig$origin2.layerY;
-        document.body.removeChild(dragDom);
-        dragDom = null;
-        var canMousedown = this.checkCanMousedown(e, {
-          minOffset: 10
-        });
-        if (!canMousedown) return;
-        var canvasWrapper = document.querySelector('.canvas-wrapper');
-        var position = canvasWrapper.getBoundingClientRect();
-        this.dragElement && this.clone(_objectSpread$d(_objectSpread$d({}, this.dragElement), {}, {
-          dragStyle: {
-            left: e.clientX - layerX - position.left,
-            top: e.clientY - layerY - position.top
-          }
-        }));
-      },
-      checkCanMousedown: function checkCanMousedown(e, _ref) {
-        var minOffsetX = _ref.minOffsetX,
-            minOffsetY = _ref.minOffsetY,
-            minOffset = _ref.minOffset;
-        var offsetX = e.clientX - dragConfig.origin.clientX;
-        var offsetY = e.clientY - dragConfig.origin.clientY;
-        return offsetX >= (minOffsetX || minOffset) || offsetY >= (minOffsetY || minOffset);
-      }
-    },
-    updated: function updated() {
-      console.log('updated');
-    }
-  };
 
   var defaultNumberInputProp = {// step: 1,
     // min: 0,
@@ -6425,19 +5427,6 @@
       return {
         type: Boolean,
         default: defaultValue,
-
-        /**
-         *
-         * !#zh: 是否在属性配置面板显示
-         * !#en: whether visible in props config panel
-         *
-         * 正常情况下都是显示在右侧属性面板中，支持用户配置的
-         *
-         * 但有些属性是不希望 暴露给用户进行配置的，
-         * 比如：editorMode(edit/preview) 当前编辑器模式(编辑模式/预览模式)，
-         * 这些是系统注入到组件中，不希望用户进行配置的
-         *
-         */
         visible: visible,
         editor: {
           type: 'a-switch',
@@ -6474,15 +5463,11 @@
 
       return {
         type: String,
-        // 注意，根据 MDN 文档，颜色选择器的 value 只能是：# + 6个16进制字符串
-        // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color#Value
-        // The value of an <input> element of type color is always a DOMString which contains a 7-character string specifying an RGB color in hexadecimal format.
         default: defaultValue,
         visible: visible,
         editor: {
           type: 'colors-panel',
           label: label,
-          // !#zh 为编辑组件指定 props
           props: {
             size: 'mini',
             showAlpha: true
@@ -6506,9 +5491,6 @@
 
       return {
         type: Array,
-        // 注意，根据 MDN 文档，颜色选择器的 value 只能是：# + 6个16进制字符串
-        // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color#Value
-        // The value of an <input> element of type color is always a DOMString which contains a 7-character string specifying an RGB color in hexadecimal format.
         default: defaultValue,
         visible: visible,
         editor: {
@@ -6705,7 +5687,6 @@
     }
   };
 
-  // https://github.com/luban-h5-components/plugin-common-props
   var LbpButton = {
     render: function render() {
       var h = arguments[0];
@@ -6727,7 +5708,9 @@
         borderColor: borderColor,
         borderRadius: borderRadius + 'px',
         borderWidth: borderWidth + 'px',
-        textDecoration: 'none'
+        textDecoration: 'none',
+        width: "".concat(this.width, "px"),
+        height: "".concat(this.height, "px")
       };
       return h("button", {
         "style": style
@@ -6735,6 +5718,14 @@
     },
     name: 'lbp-button',
     props: {
+      width: {
+        type: Number,
+        default: 120
+      },
+      height: {
+        type: Number,
+        default: 40
+      },
       text: PropTypes.string(),
       vertical: PropTypes.boolean(),
       backgroundColor: PropTypes.color({
@@ -6766,23 +5757,20 @@
     }
   };
 
-  var placeholderImg = "lbp-picture-placeholder.png";
-
   /*
    * @author : Mater
    * @Email : bxh8640@gmail.com
    * @Date : 2020-10-27 15:04:59
-   * @LastEditTime : 2020-10-28 09:23:44
+   * @LastEditTime : 2020-11-11 10:27:57
    * @Description :
    */
-
   var LbpPicture = {
     name: 'lbp-picture',
     render: function render() {
       var h = arguments[0];
       return h("img", {
         "attrs": {
-          "src": this.imgSrc || placeholderImg,
+          "src": this.imgSrc,
           "alt": "",
           "srcset": "",
           "width": "100%"
@@ -6822,11 +5810,6 @@
           }
         }
       }
-    },
-    data: function data() {
-      return {
-        placeholderImg: placeholderImg
-      };
     }
   };
 
@@ -6930,9 +5913,14 @@
     componentsForPropsEditor: {}
   };
 
+  var vClickOutside_umd = createCommonjsModule(function (module, exports) {
+  !function(e,n){module.exports=n();}(commonjsGlobal,function(){var e="undefined"!=typeof window,n="undefined"!=typeof navigator,t=e&&("ontouchstart"in window||n&&navigator.msMaxTouchPoints>0)?["touchstart"]:["click"];function i(e){var n=e.event,t=e.handler;(0, e.middleware)(n)&&t(n);}function r(e,n){var r=function(e){var n="function"==typeof e;if(!n&&"object"!=typeof e)throw new Error("v-click-outside: Binding value must be a function or an object");return {handler:n?e:e.handler,middleware:e.middleware||function(e){return e},events:e.events||t,isActive:!(!1===e.isActive),detectIframe:!(!1===e.detectIframe)}}(n.value),d=r.handler,o=r.middleware,a=r.detectIframe;if(r.isActive){if(e["__v-click-outside"]=r.events.map(function(n){return {event:n,srcTarget:document.documentElement,handler:function(n){return function(e){var n=e.el,t=e.event,r=e.handler,d=e.middleware,o=t.path||t.composedPath&&t.composedPath();(o?o.indexOf(n)<0:!n.contains(t.target))&&i({event:t,handler:r,middleware:d});}({el:e,event:n,handler:d,middleware:o})}}}),a){var c={event:"blur",srcTarget:window,handler:function(n){return function(e){var n=e.el,t=e.event,r=e.handler,d=e.middleware;setTimeout(function(){var e=document.activeElement;e&&"IFRAME"===e.tagName&&!n.contains(e)&&i({event:t,handler:r,middleware:d});},0);}({el:e,event:n,handler:d,middleware:o})}};e["__v-click-outside"]=[].concat(e["__v-click-outside"],[c]);}e["__v-click-outside"].forEach(function(n){var t=n.event,i=n.srcTarget,r=n.handler;return setTimeout(function(){e["__v-click-outside"]&&i.addEventListener(t,r,!1);},0)});}}function d(e){(e["__v-click-outside"]||[]).forEach(function(e){return e.srcTarget.removeEventListener(e.event,e.handler,!1)}),delete e["__v-click-outside"];}var o=e?{bind:r,update:function(e,n){var t=n.value,i=n.oldValue;JSON.stringify(t)!==JSON.stringify(i)&&(d(e),r(e,{value:t}));},unbind:d}:{};return {install:function(e){e.directive("click-outside",o);},directive:o}});
+
+  });
+
   var LbpText = {
     directives: {
-      clickOutside: vClickOutside__default['default'].directive
+      clickOutside: vClickOutside_umd.directive
     },
     render: function render(h) {
       var _this = this;
@@ -7251,8 +6239,7 @@
             var message = req.status === 200 ? '提交成功' : '提交失败';
             self.$message.info(message);
           }
-        }; // #!zh: vuex.module.editor.setWork 中定义
-
+        };
 
         var workId = window.__work.id; // TODO #!zh: 可以动态配置表单提交地址
 
@@ -7261,6 +6248,112 @@
       }
     }
   };
+
+  var nativeJoin = [].join;
+
+  var ES3_STRINGS = indexedObject != Object;
+  var STRICT_METHOD$3 = arrayMethodIsStrict('join', ',');
+
+  // `Array.prototype.join` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.join
+  _export({ target: 'Array', proto: true, forced: ES3_STRINGS || !STRICT_METHOD$3 }, {
+    join: function join(separator) {
+      return nativeJoin.call(toIndexedObject(this), separator === undefined ? ',' : separator);
+    }
+  });
+
+  var TO_STRING_TAG$1 = wellKnownSymbol('toStringTag');
+  var test = {};
+
+  test[TO_STRING_TAG$1] = 'z';
+
+  var toStringTagSupport = String(test) === '[object z]';
+
+  var TO_STRING_TAG$2 = wellKnownSymbol('toStringTag');
+  // ES3 wrong here
+  var CORRECT_ARGUMENTS = classofRaw(function () { return arguments; }()) == 'Arguments';
+
+  // fallback for IE11 Script Access Denied error
+  var tryGet = function (it, key) {
+    try {
+      return it[key];
+    } catch (error) { /* empty */ }
+  };
+
+  // getting tag from ES6+ `Object.prototype.toString`
+  var classof = toStringTagSupport ? classofRaw : function (it) {
+    var O, tag, result;
+    return it === undefined ? 'Undefined' : it === null ? 'Null'
+      // @@toStringTag case
+      : typeof (tag = tryGet(O = Object(it), TO_STRING_TAG$2)) == 'string' ? tag
+      // builtinTag case
+      : CORRECT_ARGUMENTS ? classofRaw(O)
+      // ES3 arguments fallback
+      : (result = classofRaw(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : result;
+  };
+
+  // `Object.prototype.toString` method implementation
+  // https://tc39.github.io/ecma262/#sec-object.prototype.tostring
+  var objectToString = toStringTagSupport ? {}.toString : function toString() {
+    return '[object ' + classof(this) + ']';
+  };
+
+  // `Object.prototype.toString` method
+  // https://tc39.github.io/ecma262/#sec-object.prototype.tostring
+  if (!toStringTagSupport) {
+    redefine(Object.prototype, 'toString', objectToString, { unsafe: true });
+  }
+
+  var TO_STRING = 'toString';
+  var RegExpPrototype = RegExp.prototype;
+  var nativeToString = RegExpPrototype[TO_STRING];
+
+  var NOT_GENERIC = fails(function () { return nativeToString.call({ source: 'a', flags: 'b' }) != '/a/b'; });
+  // FF44- RegExp#toString has a wrong name
+  var INCORRECT_NAME = nativeToString.name != TO_STRING;
+
+  // `RegExp.prototype.toString` method
+  // https://tc39.github.io/ecma262/#sec-regexp.prototype.tostring
+  if (NOT_GENERIC || INCORRECT_NAME) {
+    redefine(RegExp.prototype, TO_STRING, function toString() {
+      var R = anObject(this);
+      var p = String(R.source);
+      var rf = R.flags;
+      var f = String(rf === undefined && R instanceof RegExp && !('flags' in RegExpPrototype) ? regexpFlags.call(R) : rf);
+      return '/' + p + '/' + f;
+    }, { unsafe: true });
+  }
+
+  var styleKey = 'commonStyle';
+  function getVM(pluginName) {
+    var Ctor = Vue__default['default'].component(pluginName);
+    return new Ctor();
+  }
+  function swapZindex(x, y) {
+    var tmp = y[styleKey].zindex;
+    y[styleKey].zindex = x[styleKey].zindex;
+    x[styleKey].zindex = tmp;
+  }
+  var genUUID = function genUUID() {
+    // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  };
+  /**
+   * Get the default value of a prop.
+   * copy with vue source code
+   */
+
+  function getPropDefaultValue(vm, prop) {
+    // no default, return undefined
+    if (!prop.hasOwnProperty('default')) {
+      return undefined;
+    }
+
+    var def = prop.default; // call factory function for non-Function types
+    // a value is Function if its prototype is function even across different execution context
+
+    return typeof def === 'function' ? def.call(vm) : def;
+  }
 
   var LbpFormRadio = {
     name: 'lbp-form-radio',
@@ -7356,14 +6449,14 @@
   }
 
   var LbpFormRadioGroup = {
-    extra: {
-      defaultStyle: {
-        width: 120,
-        height: 120
-      }
-    },
     name: 'lbp-form-radio-group',
     props: {
+      width: {
+        default: 120
+      },
+      height: {
+        default: 120
+      },
       aliasName: PropTypes.string({
         defaultValue: "\u6807\u9898\u6F14\u793A",
         label: '填写标题'
@@ -7477,39 +6570,94 @@
     }
   };
 
+  var $includes = arrayIncludes.includes;
+
+
+
+  var USES_TO_LENGTH$8 = arrayMethodUsesToLength('indexOf', { ACCESSORS: true, 1: 0 });
+
+  // `Array.prototype.includes` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.includes
+  _export({ target: 'Array', proto: true, forced: !USES_TO_LENGTH$8 }, {
+    includes: function includes(el /* , fromIndex = 0 */) {
+      return $includes(this, el, arguments.length > 1 ? arguments[1] : undefined);
+    }
+  });
+
+  // https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
+  addToUnscopables('includes');
+
+  var MATCH = wellKnownSymbol('match');
+
+  // `IsRegExp` abstract operation
+  // https://tc39.github.io/ecma262/#sec-isregexp
+  var isRegexp = function (it) {
+    var isRegExp;
+    return isObject(it) && ((isRegExp = it[MATCH]) !== undefined ? !!isRegExp : classofRaw(it) == 'RegExp');
+  };
+
+  var notARegexp = function (it) {
+    if (isRegexp(it)) {
+      throw TypeError("The method doesn't accept regular expressions");
+    } return it;
+  };
+
+  var MATCH$1 = wellKnownSymbol('match');
+
+  var correctIsRegexpLogic = function (METHOD_NAME) {
+    var regexp = /./;
+    try {
+      '/./'[METHOD_NAME](regexp);
+    } catch (e) {
+      try {
+        regexp[MATCH$1] = false;
+        return '/./'[METHOD_NAME](regexp);
+      } catch (f) { /* empty */ }
+    } return false;
+  };
+
+  // `String.prototype.includes` method
+  // https://tc39.github.io/ecma262/#sec-string.prototype.includes
+  _export({ target: 'String', proto: true, forced: !correctIsRegexpLogic('includes') }, {
+    includes: function includes(searchString /* , position = 0 */) {
+      return !!~String(requireObjectCoercible(this))
+        .indexOf(notARegexp(searchString), arguments.length > 1 ? arguments[1] : undefined);
+    }
+  });
+
   function getDefaultItems$1() {
     // defaultItems.slice(0)[0] === defaultItems.slice(0)[0] -> true
     // Object.assign(defaultItems)[0] === Object.assign(defaultItems)[0] -> true
     // clone = (val) => JSON.parse(JSON.stringify(val))
     // clone(defaultItems)[0] === clone(defaultItems)[0] -> false
     var defaultItems = [{
-      value: "选项A"
+      value: '选项A'
     }, {
-      value: "选项B"
+      value: '选项B'
     }, {
-      value: "选项C"
+      value: '选项C'
     }];
     return defaultItems;
   }
 
   var LbpFormCheckboxGroup = {
-    extra: {
-      defaultStyle: {
-        width: 120,
-        height: 120
-      }
-    },
-    name: "lbp-form-checkbox-group",
+    name: 'lbp-form-checkbox-group',
     components: {
       LbpFormRadio: LbpFormRadio
     },
     props: {
+      width: {
+        default: 120
+      },
+      height: {
+        default: 120
+      },
       aliasName: PropTypes.string({
-        defaultValue: "标题演示",
-        label: "填写标题"
+        defaultValue: '标题演示',
+        label: '填写标题'
       }),
       items: PropTypes.textOptions({
-        label: "选项列表",
+        label: '选项列表',
         defaultValue: function defaultValue() {
           return getDefaultItems$1();
         }
@@ -7517,43 +6665,43 @@
       // TODO 抽离 radio-group 至 common-props
       type: {
         type: String,
-        default: "checkbox",
+        default: 'checkbox',
         editor: {
-          type: "a-radio-group",
-          label: "选择模式",
+          type: 'a-radio-group',
+          label: '选择模式',
           require: true,
           props: {
             options: [{
-              label: "单选",
-              value: "radio"
+              label: '单选',
+              value: 'radio'
             }, {
-              label: "多选",
-              value: "checkbox"
+              label: '多选',
+              value: 'checkbox'
             }],
-            name: "mode"
+            name: 'mode'
           }
         }
       }
     },
     data: function data() {
       return {
-        value: this.type === "radio" ? "" : [],
+        value: this.type === 'radio' ? '' : [],
         uuid: undefined
       };
     },
     computed: {
       value_: function value_() {
-        if (this.type === "radio") {
+        if (this.type === 'radio') {
           return this.value;
         } else {
           var value = Array.isArray(this.value) && this.value || [];
-          return value.join(",");
+          return value.join(',');
         }
       }
     },
     watch: {
       type: function type(_type) {
-        this.value = _type === "radio" ? "" : [];
+        this.value = _type === 'radio' ? '' : [];
       }
     },
     mounted: function mounted() {
@@ -7565,11 +6713,11 @@
        */
       onChange: function onChange(val) {
         switch (this.type) {
-          case "radio":
+          case 'radio':
             this.toggleRadio(val);
             break;
 
-          case "checkbox":
+          case 'checkbox':
             this.toggleCheckbox(val);
             break;
         }
@@ -7606,7 +6754,7 @@
           "attrs": {
             "vertical": true,
             "value": item.value,
-            "checked": _this.type === "radio" ? _this.value === item.value : _this.value.includes(item.value),
+            "checked": _this.type === 'radio' ? _this.value === item.value : _this.value.includes(item.value),
             "aliasName": _this.uuid,
             "type": _this.type
           },
@@ -7659,7 +6807,7 @@
     var base64Url = canvas.toDataURL();
     var wmEl = document.querySelector('.luban_h5__wm');
     var watermarkDiv = wmEl || document.createElement('div');
-    var styleStr = "\n    transform: rotate(".concat(rotate, "deg);\n    position:absolute;\n    top:0;\n    left:0;\n    width:100%;\n    height:100%;\n    z-index:").concat(zIndex, ";\n    pointer-events:none;\n    background-repeat:repeat;\n    background-image:url('").concat(base64Url, "')");
+    var styleStr = "\n    transform: rotate(".concat(rotate, "deg);\n    position:absolute;\n    top:0;\n    left:0;\n    width:100%;\n    height:100%;\n    z-index:").concat(zIndex, ";\n    pointer-events:none;\n    background-repeat:repeat;\n    background-image:url('").concat(base64Url, "');\n    user-select: none");
     watermarkDiv.setAttribute('style', styleStr);
 
     if (!wmEl) {
@@ -7669,9 +6817,9 @@
     }
   }
 
-  function ownKeys$f(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$e(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$f(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$f(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$8(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$9(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$9(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var LbpBackground = {
     name: 'lbp-background',
     props: {
@@ -7718,14 +6866,14 @@
       };
 
       if (this.imgSrc) {
-        style = _objectSpread$e(_objectSpread$e({}, style), {}, {
+        style = _objectSpread$8(_objectSpread$8({}, style), {}, {
           'background-size': 'cover',
           'background-position': '50% 50%',
           'background-origin': 'content-box',
           'background-image': "url(".concat(this.imgSrc, ")")
         });
       } else {
-        style = _objectSpread$e(_objectSpread$e({}, style), {}, {
+        style = _objectSpread$8(_objectSpread$8({}, style), {}, {
           backgroundColor: this.backgroundColor
         });
       }
@@ -7894,21 +7042,21 @@
    * @Author: ly525
    * @Date: 2020-05-14 08:09:44
    * @LastEditors : Please set LastEditors
-   * @LastEditTime : 2020-11-03 10:16:58
+   * @LastEditTime : 2020-11-10 15:09:00
    * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-notice-bar.js
    * @Github: https://github.com/ly525/luban-h5
    * @Description: Do not edit
    * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
    */
   var LbpNoticeBar = {
-    extra: {
-      defaultStyle: {
-        width: 300,
-        height: 30
-      }
-    },
     name: 'lbp-notice-bar',
     props: {
+      width: {
+        default: 120
+      },
+      height: {
+        default: 120
+      },
       text: PropTypes.string({
         defaultValue: '请填写内容，如果过长，将会在手机上滚动显示',
         label: '公告',
@@ -8042,6 +7190,20 @@
     return target;
   };
 
+  var SPECIES$4 = wellKnownSymbol('species');
+
+  var setSpecies = function (CONSTRUCTOR_NAME) {
+    var Constructor = getBuiltIn(CONSTRUCTOR_NAME);
+    var defineProperty = objectDefineProperty.f;
+
+    if (descriptors && Constructor && !Constructor[SPECIES$4]) {
+      defineProperty(Constructor, SPECIES$4, {
+        configurable: true,
+        get: function () { return this; }
+      });
+    }
+  };
+
   var anInstance = function (it, Constructor, name) {
     if (!(it instanceof Constructor)) {
       throw TypeError('Incorrect ' + (name ? name + ' ' : '') + 'invocation');
@@ -8152,6 +7314,16 @@
       exec(object);
     } catch (error) { /* empty */ }
     return ITERATION_SUPPORT;
+  };
+
+  var SPECIES$5 = wellKnownSymbol('species');
+
+  // `SpeciesConstructor` abstract operation
+  // https://tc39.github.io/ecma262/#sec-speciesconstructor
+  var speciesConstructor = function (O, defaultConstructor) {
+    var C = anObject(O).constructor;
+    var S;
+    return C === undefined || (S = anObject(C)[SPECIES$5]) == undefined ? defaultConstructor : aFunction$1(S);
   };
 
   var engineIsIos = /(iphone|ipod|ipad).*applewebkit/i.test(engineUserAgent);
@@ -8392,7 +7564,7 @@
   var SPECIES$6 = wellKnownSymbol('species');
   var PROMISE = 'Promise';
   var getInternalState$1 = internalState.get;
-  var setInternalState$2 = internalState.set;
+  var setInternalState$1 = internalState.set;
   var getInternalPromiseState = internalState.getterFor(PROMISE);
   var PromiseConstructor = nativePromiseConstructor;
   var TypeError$1 = global_1.TypeError;
@@ -8412,7 +7584,7 @@
   var UNHANDLED = 2;
   var Internal, OwnPromiseCapability, PromiseWrapper, nativeThen;
 
-  var FORCED$3 = isForced_1(PROMISE, function () {
+  var FORCED$2 = isForced_1(PROMISE, function () {
     var GLOBAL_CORE_JS_PROMISE = inspectSource(PromiseConstructor) !== String(PromiseConstructor);
     if (!GLOBAL_CORE_JS_PROMISE) {
       // V8 6.6 (Node 10 and Chrome 66) have a bug with resolving custom thenables
@@ -8436,7 +7608,7 @@
     return !(promise.then(function () { /* empty */ }) instanceof FakePromise);
   });
 
-  var INCORRECT_ITERATION = FORCED$3 || !checkCorrectnessOfIteration(function (iterable) {
+  var INCORRECT_ITERATION = FORCED$2 || !checkCorrectnessOfIteration(function (iterable) {
     PromiseConstructor.all(iterable)['catch'](function () { /* empty */ });
   });
 
@@ -8537,7 +7709,7 @@
     });
   };
 
-  var bind = function (fn, promise, state, unwrap) {
+  var bind$1 = function (fn, promise, state, unwrap) {
     return function (value) {
       fn(promise, state, value, unwrap);
     };
@@ -8564,8 +7736,8 @@
           var wrapper = { done: false };
           try {
             then.call(value,
-              bind(internalResolve, promise, wrapper, state),
-              bind(internalReject, promise, wrapper, state)
+              bind$1(internalResolve, promise, wrapper, state),
+              bind$1(internalReject, promise, wrapper, state)
             );
           } catch (error) {
             internalReject(promise, wrapper, error, state);
@@ -8582,7 +7754,7 @@
   };
 
   // constructor polyfill
-  if (FORCED$3) {
+  if (FORCED$2) {
     // 25.4.3.1 Promise(executor)
     PromiseConstructor = function Promise(executor) {
       anInstance(this, PromiseConstructor, PROMISE);
@@ -8590,14 +7762,14 @@
       Internal.call(this);
       var state = getInternalState$1(this);
       try {
-        executor(bind(internalResolve, this, state), bind(internalReject, this, state));
+        executor(bind$1(internalResolve, this, state), bind$1(internalReject, this, state));
       } catch (error) {
         internalReject(this, state, error);
       }
     };
     // eslint-disable-next-line no-unused-vars
     Internal = function Promise(executor) {
-      setInternalState$2(this, {
+      setInternalState$1(this, {
         type: PROMISE,
         done: false,
         notified: false,
@@ -8632,8 +7804,8 @@
       var promise = new Internal();
       var state = getInternalState$1(promise);
       this.promise = promise;
-      this.resolve = bind(internalResolve, promise, state);
-      this.reject = bind(internalReject, promise, state);
+      this.resolve = bind$1(internalResolve, promise, state);
+      this.reject = bind$1(internalReject, promise, state);
     };
     newPromiseCapability.f = newPromiseCapability$1 = function (C) {
       return C === PromiseConstructor || C === PromiseWrapper
@@ -8663,7 +7835,7 @@
     }
   }
 
-  _export({ global: true, wrap: true, forced: FORCED$3 }, {
+  _export({ global: true, wrap: true, forced: FORCED$2 }, {
     Promise: PromiseConstructor
   });
 
@@ -8673,7 +7845,7 @@
   PromiseWrapper = getBuiltIn(PROMISE);
 
   // statics
-  _export({ target: PROMISE, stat: true, forced: FORCED$3 }, {
+  _export({ target: PROMISE, stat: true, forced: FORCED$2 }, {
     // `Promise.reject` method
     // https://tc39.github.io/ecma262/#sec-promise.reject
     reject: function reject(r) {
@@ -8683,7 +7855,7 @@
     }
   });
 
-  _export({ target: PROMISE, stat: true, forced:  FORCED$3 }, {
+  _export({ target: PROMISE, stat: true, forced:  FORCED$2 }, {
     // `Promise.resolve` method
     // https://tc39.github.io/ecma262/#sec-promise.resolve
     resolve: function resolve(x) {
@@ -8803,21 +7975,17 @@
     }
   };
 
-  var script$2 = {
-    // extra.defaultStyle：组件的额外自定义配置，以拖拽组件到画布上为例
-    // 按钮默认的样式可能是: { width: 100px, height: 40px }
-    // 但地图可能是希望更大一些的默认样式，比如：{ width: 320px, height: 180px }
-    // 就可以通过 extra.defaultStyle 来实现自定义样式需求
-    extra: {
-      defaultStyle: {
-        width: 375,
-        height: 180
-      }
-    },
+  var script$1 = {
     name: 'lbp-qq-map',
     mixins: [MapMixin],
     // loadMap、setMarker
     props: {
+      width: {
+        default: 120
+      },
+      height: {
+        default: 120
+      },
       labelContent: PropTypes.string({
         label: '地址名称',
         defaultValue: ''
@@ -8943,10 +8111,10 @@
   };
 
   /* script */
-  const __vue_script__$2 = script$2;
+  const __vue_script__$1 = script$1;
 
   /* template */
-  var __vue_render__$2 = function() {
+  var __vue_render__$1 = function() {
     var _vm = this;
     var _h = _vm.$createElement;
     var _c = _vm._self._c || _h;
@@ -8958,17 +8126,17 @@
       })
     ])
   };
-  var __vue_staticRenderFns__$2 = [];
-  __vue_render__$2._withStripped = true;
+  var __vue_staticRenderFns__$1 = [];
+  __vue_render__$1._withStripped = true;
 
     /* style */
-    const __vue_inject_styles__$2 = undefined;
+    const __vue_inject_styles__$1 = undefined;
     /* scoped */
-    const __vue_scope_id__$2 = undefined;
+    const __vue_scope_id__$1 = undefined;
     /* module identifier */
-    const __vue_module_identifier__$2 = undefined;
+    const __vue_module_identifier__$1 = undefined;
     /* functional template */
-    const __vue_is_functional_template__$2 = false;
+    const __vue_is_functional_template__$1 = false;
     /* style inject */
     
     /* style inject SSR */
@@ -8977,13 +8145,13 @@
     
 
     
-    const __vue_component__$2 = /*#__PURE__*/normalizeComponent(
-      { render: __vue_render__$2, staticRenderFns: __vue_staticRenderFns__$2 },
-      __vue_inject_styles__$2,
-      __vue_script__$2,
-      __vue_scope_id__$2,
-      __vue_is_functional_template__$2,
-      __vue_module_identifier__$2,
+    const __vue_component__$1 = /*#__PURE__*/normalizeComponent(
+      { render: __vue_render__$1, staticRenderFns: __vue_staticRenderFns__$1 },
+      __vue_inject_styles__$1,
+      __vue_script__$1,
+      __vue_scope_id__$1,
+      __vue_is_functional_template__$1,
+      __vue_module_identifier__$1,
       false,
       undefined,
       undefined,
@@ -10227,7 +9395,7 @@
    */
 
 
-  function bind$1(func, context) {
+  function bind$2(func, context) {
     var args = nativeSlice$1.call(arguments, 2);
     return function () {
       return func.apply(context, args.concat(nativeSlice$1.call(arguments)));
@@ -10469,7 +9637,7 @@
     // Although util.each can be performed on this hashMap directly, user
     // should not use the exposed keys, who are prefixed.
     each: function (cb, context) {
-      context !== void 0 && (cb = bind$1(cb, context));
+      context !== void 0 && (cb = bind$2(cb, context));
       /* eslint-disable guard-for-in */
 
       for (var key in this.data) {
@@ -10523,7 +9691,7 @@
   var reduce_1 = reduce;
   var filter_1 = filter;
   var find_1 = find;
-  var bind_1 = bind$1;
+  var bind_1 = bind$2;
   var curry_1 = curry;
   var isArray_1 = isArray$2;
   var isFunction_1 = isFunction$1;
@@ -10858,7 +10026,7 @@
    */
 
 
-  function min$5(out, v1, v2) {
+  function min$4(out, v1, v2) {
     out[0] = Math.min(v1[0], v2[0]);
     out[1] = Math.min(v1[1], v2[1]);
     return out;
@@ -10900,7 +10068,7 @@
   var negate_1 = negate;
   var lerp_1 = lerp;
   var applyTransform_1 = applyTransform;
-  var min_1 = min$5;
+  var min_1 = min$4;
   var max_1 = max$4;
 
   var vector = {
@@ -15223,7 +14391,7 @@
    * @extends {module:zrender/mixin/Transformable}
    * @extends {module:zrender/mixin/Eventful}
    */
-  var Element = function (opts) {
+  var Element$1 = function (opts) {
     // jshint ignore:line
     Transformable_1.call(this, opts);
     Eventful_1.call(this, opts);
@@ -15236,7 +14404,7 @@
     this.id = opts.id || guid();
   };
 
-  Element.prototype = {
+  Element$1.prototype = {
     /**
      * 元素类型
      * Element type
@@ -15470,10 +14638,10 @@
       }
     }
   };
-  util.mixin(Element, Animatable_1);
-  util.mixin(Element, Transformable_1);
-  util.mixin(Element, Eventful_1);
-  var _default$d = Element;
+  util.mixin(Element$1, Animatable_1);
+  util.mixin(Element$1, Transformable_1);
+  util.mixin(Element$1, Eventful_1);
+  var _default$d = Element$1;
   var Element_1 = _default$d;
 
   /**
@@ -23543,7 +22711,7 @@
   //     Z: 1
   // };
 
-  var min$6 = [];
+  var min$5 = [];
   var max$5 = [];
   var min2 = [];
   var max2 = [];
@@ -24049,7 +23217,7 @@
      * @return {module:zrender/core/BoundingRect}
      */
     getBoundingRect: function () {
-      min$6[0] = min$6[1] = min2[0] = min2[1] = Number.MAX_VALUE;
+      min$5[0] = min$5[1] = min2[0] = min2[1] = Number.MAX_VALUE;
       max$5[0] = max$5[1] = max2[0] = max2[1] = -Number.MAX_VALUE;
       var data = this.data;
       var xi = 0;
@@ -24143,16 +23311,16 @@
         } // Union
 
 
-        vector.min(min$6, min$6, min2);
+        vector.min(min$5, min$5, min2);
         vector.max(max$5, max$5, max2);
       } // No data
 
 
       if (i === 0) {
-        min$6[0] = min$6[1] = max$5[0] = max$5[1] = 0;
+        min$5[0] = min$5[1] = max$5[0] = max$5[1] = 0;
       }
 
-      return new BoundingRect_1(min$6[0], min$6[1], max$5[0] - min$6[0], max$5[1] - min$6[1]);
+      return new BoundingRect_1(min$5[0], min$5[1], max$5[0] - min$5[0], max$5[1] - min$5[1]);
     },
 
     /**
@@ -55031,7 +54199,7 @@
   */
   var inner$9 = makeInner$9();
   var clone$7 = util.clone;
-  var bind$2 = util.bind;
+  var bind$3 = util.bind;
   /**
    * Base axis pointer class in 2D.
    * Implemenents {module:echarts/component/axis/IAxisPointer}.
@@ -55288,9 +54456,9 @@
             // Fot mobile devicem, prevent screen slider on the button.
             event.stop(e.event);
           },
-          onmousedown: bind$2(this._onHandleDragMove, this, 0, 0),
-          drift: bind$2(this._onHandleDragMove, this),
-          ondragend: bind$2(this._onHandleDragEnd, this)
+          onmousedown: bind$3(this._onHandleDragMove, this, 0, 0),
+          drift: bind$3(this._onHandleDragMove, this),
+          ondragend: bind$3(this._onHandleDragEnd, this)
         });
         zr.add(handle);
       }
@@ -56817,7 +55985,7 @@
   * specific language governing permissions and limitations
   * under the License.
   */
-  var bind$3 = util.bind;
+  var bind$4 = util.bind;
   var each$q = util.each;
   var parsePercent$5 = number.parsePercent;
   var proxyRect = new graphic.Rect({
@@ -56902,7 +56070,7 @@
     _initGlobalListener: function () {
       var tooltipModel = this._tooltipModel;
       var triggerOn = tooltipModel.get('triggerOn');
-      globalListener.register('itemTooltip', this._api, bind$3(function (currTrigger, e, dispatchAction) {
+      globalListener.register('itemTooltip', this._api, bind$4(function (currTrigger, e, dispatchAction) {
         // If 'none', it is not controlled by mouse totally.
         if (triggerOn !== 'none') {
           if (triggerOn.indexOf(currTrigger) >= 0) {
@@ -57281,7 +56449,7 @@
       if (formatter && typeof formatter === 'string') {
         html = format$1.formatTpl(formatter, params, true);
       } else if (typeof formatter === 'function') {
-        var callback = bind$3(function (cbTicket, html) {
+        var callback = bind$4(function (cbTicket, html) {
           if (cbTicket === this._ticket) {
             tooltipContent.setContent(html, markers, tooltipModel);
 
@@ -59507,7 +58675,7 @@
     return options;
   };
 
-  var index$1 = _extends$2({}, Core, {
+  var index = _extends$2({}, Core, {
     name: 'VeLine',
     data: function data() {
       this.chartHandler = line$1;
@@ -59515,7 +58683,7 @@
     }
   });
 
-  var line_common = index$1;
+  var line_common = index;
 
   /*
   * Licensed to the Apache Software Foundation (ASF) under one
@@ -61245,7 +60413,7 @@
     return target;
   };
 
-  var index$2 = _extends$3({}, Core$1, {
+  var index$1 = _extends$3({}, Core$1, {
     name: 'VeRadar',
     data: function data() {
       this.chartHandler = radar$1;
@@ -61253,7 +60421,7 @@
     }
   });
 
-  var radar_common = index$2;
+  var radar_common = index$1;
 
   /*
   * Licensed to the Apache Software Foundation (ASF) under one
@@ -62947,7 +62115,7 @@
     return options;
   };
 
-  var index$3 = _extends$4({}, Core$2, {
+  var index$2 = _extends$4({}, Core$2, {
     name: 'VePie',
     data: function data() {
       this.chartHandler = pie$1;
@@ -62955,7 +62123,7 @@
     }
   });
 
-  var pie_common = index$3;
+  var pie_common = index$2;
 
   /*
   * Licensed to the Apache Software Foundation (ASF) under one
@@ -64456,7 +63624,7 @@
     return options;
   };
 
-  var index$4 = _extends$5({}, Core$3, {
+  var index$3 = _extends$5({}, Core$3, {
     name: 'VeHistogram',
     data: function data() {
       this.chartHandler = histogram;
@@ -64464,7 +63632,7 @@
     }
   });
 
-  var histogram_common = index$4;
+  var histogram_common = index$3;
 
   /*
   * Licensed to the Apache Software Foundation (ASF) under one
@@ -65365,7 +64533,7 @@
     return target;
   };
 
-  var index$5 = _extends$6({}, Core$4, {
+  var index$4 = _extends$6({}, Core$4, {
     name: 'VeFunnel',
     data: function data() {
       this.chartHandler = funnel$1;
@@ -65373,7 +64541,7 @@
     }
   });
 
-  var funnel_common = index$5;
+  var funnel_common = index$4;
 
   /*
   * Licensed to the Apache Software Foundation (ASF) under one
@@ -67883,16 +67051,24 @@
     opt.markArea = opt.markArea || {};
   });
 
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-02 16:12:09
+   * @LastEditTime : 2020-11-10 15:09:15
+   * @Description :
+   */
+
   var LbpLineChart = {
-    extra: {
-      defaultStyle: {
-        width: 375,
-        height: 400
-      }
-    },
     name: 'lbp-line-chart',
     // mixins: [ChartMixin],
     props: {
+      width: {
+        default: 120
+      },
+      height: {
+        default: 120
+      },
       dataset: PropTypes.excel({
         defaultValue: function defaultValue() {
           return [['日期', '销售量'], ['1月1日', 123], ['1月2日', 1223], ['1月3日', 2123], ['1月4日', 4123], ['1月5日', 3123], ['1月6日', 7123]];
@@ -67981,12 +67157,6 @@
 
   var LbpTable = {
     name: 'lbp-table',
-    extra: {
-      defaultStyle: {
-        width: 375,
-        height: 150
-      }
-    },
     data: function data() {
       return {
         mainTableWrapperEle: null,
@@ -67996,6 +67166,12 @@
       };
     },
     props: {
+      width: {
+        default: 120
+      },
+      height: {
+        default: 120
+      },
       theme: PropTypes.string({
         defaultValue: '',
         label: '主题',
@@ -68109,14 +67285,14 @@
   };
 
   var LbpNewsList = {
-    extra: {
-      defaultStyle: {
-        width: 375,
-        height: 256
-      }
-    },
     name: 'lbp-news-list',
     props: {
+      width: {
+        default: 120
+      },
+      height: {
+        default: 120
+      },
       dataset: PropTypes.excel({
         defaultValue: function defaultValue() {
           return [['新闻标题', '摘要', '链接', '日期', '来源'], ['1 . 鲁班H5 可视化搭建平台！', '鲁班H5-是一款基于常见业务组件，通过拖拽的形式，生成页面的可视化搭建系统；我们的初心也是希望能通过工程化的手段，提高简单H5页面的制作效率', 'https://luban-h5.com/', '2020-01-01', '鲁班H5'], ['2 . 鲁班H5-开源的可视化搭建平台！', 'en: web design tool || mobile page builder/editor || mini webflow for mobile page. zh: 类似易企秀的H5制作、建站工具、可视化搭建系统.', 'https://github.com/ly525/luban-h5', '2020-01-01', '鲁班H5(github)']];
@@ -68245,18 +67421,7 @@
     component: LbpNoticeBar,
     visible: true,
     name: LbpNoticeBar.name
-  }, // {
-  //   title: '标签页',
-  //   i18nTitle: {
-  //     'en-US': 'Tabs',
-  //     'zh-CN': '标签页'
-  //   },
-  //   icon: 'tab',
-  //   component: LbpTabs,
-  //   visible: true,
-  //   name: LbpTabs.name
-  // },
-  {
+  }, {
     title: '评分',
     i18nTitle: {
       'en-US': 'Rate',
@@ -68305,8 +67470,7 @@
     icon: 'photo',
     component: LbpSlide,
     visible: true,
-    name: LbpSlide.name // disabled: true
-
+    name: LbpSlide.name
   }, {
     i18nTitle: {
       'en-US': 'Map',
@@ -68314,10 +67478,9 @@
     },
     title: '地图',
     icon: 'map-o',
-    component: __vue_component__$2,
+    component: __vue_component__$1,
     visible: true,
-    name: __vue_component__$2.name // disabled: true
-
+    name: __vue_component__$1.name
   }, {
     i18nTitle: {
       'en-US': 'Video',
@@ -68432,138 +67595,934 @@
     visible: true,
     name: LbpNewsList.name
   }];
-  var loadPluginsMixin = {
-    data: function data() {
-      return {
-        pluginsList: pluginsList
-      };
-    },
-    methods: {
-      mixinPlugins2Editor: function mixinPlugins2Editor() {
-        pluginsList.forEach(function (plugin) {
-          // 全局注册组件，便于以后扩展自定义脚本，注释原来的局部注册：this.$options.components[plugin.name] = plugin.component
-          Vue__default['default'].component(plugin.name, plugin.component);
-        });
+  var pluginsMap = {};
+  pluginsList.forEach(function (v) {
+    pluginsMap[v.name] = v.component;
+  });
+
+  var ElementRender = {
+    props: {
+      element: {
+        type: Element,
+        require: true
       }
     },
-    created: function created() {
-      this.mixinPlugins2Editor();
+    mounted: function mounted() {
+      this.element.vm = this.$refs['element'];
+    },
+    render: function render(h) {
+      var element = this.element;
+      return h(pluginsMap[element.name], {
+        props: element.props,
+        ref: 'element'
+      });
     }
   };
 
-  var _components$c;
+  var defineProperty$8 = objectDefineProperty.f;
+  var getOwnPropertyNames$1 = objectGetOwnPropertyNames.f;
 
-  function ownKeys$g(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$f(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$g(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$g(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+
+
+  var setInternalState$2 = internalState.set;
+
+
+
+  var MATCH$2 = wellKnownSymbol('match');
+  var NativeRegExp = global_1.RegExp;
+  var RegExpPrototype$1 = NativeRegExp.prototype;
+  var re1 = /a/g;
+  var re2 = /a/g;
+
+  // "new" should create a new object, old webkit bug
+  var CORRECT_NEW = new NativeRegExp(re1) !== re1;
+
+  var UNSUPPORTED_Y$2 = regexpStickyHelpers.UNSUPPORTED_Y;
+
+  var FORCED$3 = descriptors && isForced_1('RegExp', (!CORRECT_NEW || UNSUPPORTED_Y$2 || fails(function () {
+    re2[MATCH$2] = false;
+    // RegExp constructor can alter flags and IsRegExp works correct with @@match
+    return NativeRegExp(re1) != re1 || NativeRegExp(re2) == re2 || NativeRegExp(re1, 'i') != '/a/i';
+  })));
+
+  // `RegExp` constructor
+  // https://tc39.github.io/ecma262/#sec-regexp-constructor
+  if (FORCED$3) {
+    var RegExpWrapper = function RegExp(pattern, flags) {
+      var thisIsRegExp = this instanceof RegExpWrapper;
+      var patternIsRegExp = isRegexp(pattern);
+      var flagsAreUndefined = flags === undefined;
+      var sticky;
+
+      if (!thisIsRegExp && patternIsRegExp && pattern.constructor === RegExpWrapper && flagsAreUndefined) {
+        return pattern;
+      }
+
+      if (CORRECT_NEW) {
+        if (patternIsRegExp && !flagsAreUndefined) pattern = pattern.source;
+      } else if (pattern instanceof RegExpWrapper) {
+        if (flagsAreUndefined) flags = regexpFlags.call(pattern);
+        pattern = pattern.source;
+      }
+
+      if (UNSUPPORTED_Y$2) {
+        sticky = !!flags && flags.indexOf('y') > -1;
+        if (sticky) flags = flags.replace(/y/g, '');
+      }
+
+      var result = inheritIfRequired(
+        CORRECT_NEW ? new NativeRegExp(pattern, flags) : NativeRegExp(pattern, flags),
+        thisIsRegExp ? this : RegExpPrototype$1,
+        RegExpWrapper
+      );
+
+      if (UNSUPPORTED_Y$2 && sticky) setInternalState$2(result, { sticky: sticky });
+
+      return result;
+    };
+    var proxy = function (key) {
+      key in RegExpWrapper || defineProperty$8(RegExpWrapper, key, {
+        configurable: true,
+        get: function () { return NativeRegExp[key]; },
+        set: function (it) { NativeRegExp[key] = it; }
+      });
+    };
+    var keys$2 = getOwnPropertyNames$1(NativeRegExp);
+    var index$5 = 0;
+    while (keys$2.length > index$5) proxy(keys$2[index$5++]);
+    RegExpPrototype$1.constructor = RegExpWrapper;
+    RegExpWrapper.prototype = RegExpPrototype$1;
+    redefine(global_1, 'RegExp', RegExpWrapper);
+  }
+
+  // https://tc39.github.io/ecma262/#sec-get-regexp-@@species
+  setSpecies('RegExp');
+
+  var _components$8;
+
+  function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$9(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+  function isRegExp(value) {
+    return value instanceof RegExp;
+  } // 垂直菜单
+
+
+  var contextmenuOptions = [{
+    i18nLabel: "editor.centerPanel.contextMenu.copy",
+    label: "复制",
+    value: "copy"
+  }, {
+    i18nLabel: "editor.centerPanel.contextMenu.delete",
+    label: "删除",
+    value: "delete"
+  },
+  /**
+   * contextMenu 白名单，只有匹配白名单列表里的元素，才会显示该选项
+   * 支持正则、数组
+   * 数组：[ElementName]
+   * 正则：RegExp
+   */
+  {
+    i18nLabel: "editor.centerPanel.contextMenu.showOnlyButton",
+    label: "showOnlyButton",
+    value: "showOnlyButton",
+    elementWhiteList: ["lbp-button"]
+  },
+  /**
+   * contextMenu 黑名单，在黑名单列表里的元素，不会显示该选项
+   * 支持正则、数组
+   * 数组：[ElementName]
+   * 正则：RegExp
+   */
+  {
+    i18nLabel: "editor.centerPanel.contextMenu.showExcludePicture",
+    label: "showExcludePicture",
+    value: "showExcludePicture",
+    elementBlackList: /^lbp-picture/
+  }]; // 水平菜单
+
+  var zindexContextMenu = [{
+    i18nLabel: "editor.centerPanel.contextMenu.moveToTop",
+    label: "置顶",
+    value: "move2Top"
+  }, {
+    i18nLabel: "editor.centerPanel.contextMenu.moveToBottom",
+    label: "置底",
+    value: "move2Bottom"
+  }, {
+    i18nLabel: "editor.centerPanel.contextMenu.moveUp",
+    label: "上移",
+    value: "addZindex"
+  }, {
+    i18nLabel: "editor.centerPanel.contextMenu.moveDown",
+    label: "下移",
+    value: "minusZindex"
+  }];
+  ({
+    components: (_components$8 = {}, defineProperty$1(_components$8, antDesignVue.Menu.name, antDesignVue.Menu), defineProperty$1(_components$8, antDesignVue.Menu.Item.name, antDesignVue.Menu.Item), defineProperty$1(_components$8, antDesignVue.Card.name, antDesignVue.Card), _components$8),
+    computed: _objectSpread$9(_objectSpread$9({}, Vuex.mapState("editor", ["editingElement", "work"])), {}, {
+      /**
+       * 做一下扩展，提供：黑白名单，来针对某些特定组件，展示特定右键菜单
+       *
+       */
+      filteredOptions: function filteredOptions() {
+        var elementName = this.editingElement.name;
+        var filteredOptions = contextmenuOptions.filter(function (option) {
+          var wl = option.elementWhiteList;
+          var bl = option.elementBlackList;
+
+          if (wl) {
+            if (Array.isArray(wl)) return wl.includes(elementName);
+            if (isRegExp(wl)) return wl.test(elementName);
+          }
+
+          if (bl) {
+            if (Array.isArray(bl)) return !bl.includes(elementName);
+            if (isRegExp(bl)) return !bl.test(elementName);
+          }
+
+          return true;
+        });
+        return filteredOptions;
+      }
+    }),
+    props: {
+      position: {
+        type: Array,
+        default: function _default() {
+          return [];
+        }
+      }
+    },
+    methods: {
+      handleSelectMenu: function handleSelectMenu(_ref) {
+        var item = _ref.item,
+            key = _ref.key,
+            selectedKeys = _ref.selectedKeys;
+        this.$emit("select", {
+          item: item,
+          key: key,
+          selectedKeys: selectedKeys
+        }); // elementManager({ type: key })
+      }
+    },
+    render: function render(h) {
+      var _this = this;
+
+      return h("a-card", {
+        "attrs": {
+          "bodyStyle": {
+            padding: "4px"
+          }
+        },
+        "class": "contextmenu"
+      }, [h("a-menu", {
+        "attrs": {
+          "inlineIndent": 4,
+          "mode": "inline"
+        },
+        "on": {
+          "select": this.handleSelectMenu
+        },
+        "class": "contextmenu__vertical-menus"
+      }, [this.filteredOptions.map(function (option) {
+        return h("a-menu-item", {
+          "key": option.value,
+          "attrs": {
+            "data-command": option.value
+          },
+          "class": "contextmenu__vertical-menus__item"
+        }, [_this.$t(option.i18nLabel)]);
+      })]), h("a-menu", {
+        "attrs": {
+          "mode": "horizontal"
+        },
+        "on": {
+          "select": this.handleSelectMenu
+        },
+        "class": "contextmenu__horizontal-menus"
+      }, [zindexContextMenu.map(function (option) {
+        return h("a-menu-item", {
+          "key": option.value,
+          "attrs": {
+            "data-command": option.value
+          },
+          "class": "contextmenu__horizontal-menus__item"
+        }, [_this.$t(option.i18nLabel)]);
+      })])]);
+    }
+  });
+
+  var AdjustHeight = {
+    props: {
+      height: {
+        type: Number,
+        default: 0
+      }
+    },
+    components: defineProperty$1({}, antDesignVue.InputNumber.name, antDesignVue.InputNumber),
+    methods: {
+      /**
+       * 更新作品高度
+       * @param {Number} height
+       */
+      updateWorkHeight: function updateWorkHeight(height) {
+        this.$emit('change', height);
+      },
+
+      /**
+       * TODO 封装 adjust editor scale 组件
+       * scale: height/width
+       * @param {MouseEvent} e
+       */
+      mousedownForAdjustLine: function mousedownForAdjustLine(e) {
+        var _this = this;
+
+        var startY = e.clientY;
+        var startHeight = this.height;
+        var canvasOuterWrapper = document.querySelector('#canvas-outer-wrapper .ant-layout');
+
+        var move = function move(moveEvent) {
+          // !#zh 移动的时候，不需要向后代元素传递事件，只需要单纯的移动就OK
+          moveEvent.stopPropagation();
+          moveEvent.preventDefault();
+          var currY = moveEvent.clientY;
+          var moveHeight = currY - startY;
+          var currentHeight = moveHeight + startHeight;
+
+          _this.updateWorkHeight(currentHeight);
+
+          if (canvasOuterWrapper) canvasOuterWrapper.scrollTop = canvasOuterWrapper.scrollHeight;
+        };
+
+        var up = function up() {
+          document.removeEventListener('mousemove', move, true);
+          document.removeEventListener('mouseup', up, true);
+        };
+
+        document.addEventListener('mousemove', move, true);
+        document.addEventListener('mouseup', up, true);
+      }
+    },
+    render: function render() {
+      var _this2 = this;
+
+      var h = arguments[0];
+      return h("div", {
+        "style": {
+          position: 'absolute',
+          bottom: "0px",
+          width: '100%',
+          transform: 'translateY(100%)'
+        }
+      }, [h("div", {
+        "class": "adjust-line-wrapper adjust-line-wrapper-h"
+      }, [h("div", {
+        "class": "adjust-line adjust-line-h"
+      }), h("div", {
+        "class": "adjust-button",
+        "on": {
+          "mousedown": this.mousedownForAdjustLine
+        }
+      }, [h("div", {
+        "class": "indicator"
+      })]), h("div", {
+        "class": "adjust-tip"
+      }, [h("span", ["375 x"]), h("a-input-number", {
+        "attrs": {
+          "size": "small",
+          "value": this.height
+        },
+        "style": "margin: 0 4px; width:60px;",
+        "on": {
+          "change": function change(height) {
+            _this2.updateWork({
+              height: height
+            });
+          }
+        }
+      }), h("span", ["px"])])])]);
+    }
+  };
+
+  var _components$9;
+  var EditorCanvas = {
+    components: (_components$9 = {}, defineProperty$1(_components$9, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$1(_components$9, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$1(_components$9, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$1(_components$9, antDesignVue.Layout.name, antDesignVue.Layout), defineProperty$1(_components$9, antDesignVue.Layout.Content.name, antDesignVue.Layout), _components$9),
+    props: ['data'],
+    data: function data() {
+      return {
+        contextmenuPos: [],
+        activeElement: null,
+        auxiliayVisible: false
+      };
+    },
+    computed: {
+      elements: function elements() {
+        console.log('[pageRender]', this.data);
+        return this.data.elements || [];
+      },
+      elementsRect: function elementsRect() {
+        return this.elements.map(function (_ref) {
+          var props = _ref.props;
+          return props;
+        });
+      },
+      pageStyle: function pageStyle() {
+        return {
+          width: "".concat(this.data.width, "px"),
+          height: "".concat(this.data.height, "px"),
+          position: 'relative'
+        };
+      }
+    },
+    methods: {
+      bindContextMenu: function bindContextMenu(e) {
+        var _this$$el$getBounding = this.$el.getBoundingClientRect(),
+            x = _this$$el$getBounding.x,
+            y = _this$$el$getBounding.y;
+
+        this.contextmenuPos = [e.clientX - x, e.clientY - y];
+      },
+      hideContextMenu: function hideContextMenu() {
+        this.contextmenuPos = [];
+      },
+      handleElementActive: function handleElementActive(activeElement) {
+        console.log('active');
+        this.activeElement = activeElement;
+        this.$emit('active', activeElement);
+      },
+      handleElementDeactive: function handleElementDeactive(deactiveElement) {
+        console.log('deactive');
+
+        if (deactiveElement === this.activeElement) {
+          this.activeElement = null;
+        }
+
+        this.$emit('deactive', deactiveElement);
+      },
+      updateActiveElement: function updateActiveElement(props) {
+        this.activeElement && Object.assign(this.activeElement.props, props);
+      },
+      addElement: function addElement(component) {
+        var props = {};
+        var name = component.name,
+            propsDefine = component.props;
+        Object.entries(propsDefine).forEach(function (_ref2) {
+          var _ref3 = slicedToArray(_ref2, 2),
+              key = _ref3[0],
+              prop = _ref3[1];
+
+          props[key] = getPropDefaultValue(null, prop);
+        });
+        this.elements.push(new Element({
+          name: name,
+          props: props
+        }));
+      },
+      handleElementRectChange: function handleElementRectChange(props) {
+        this.updateActiveElement(props);
+      },
+      handlePageHeightChange: function handlePageHeightChange(height) {
+        this.data.height = height;
+      },
+      hideAuxiliay: function hideAuxiliay() {
+        this.auxiliayVisible = false;
+      },
+      showAuxiliay: function showAuxiliay() {
+        this.auxiliayVisible = true;
+      }
+    },
+    render: function render() {
+      var _this = this;
+
+      var h = arguments[0];
+      var elements = this.elements;
+      return h("a-layout", {
+        "attrs": {
+          "id": "canvas-outer-wrapper"
+        }
+      }, [h("a-layout-content", [h("div", {
+        "class": "canvas-wrapper"
+      }, [h("div", {
+        "class": "page-render",
+        "style": this.pageStyle,
+        "on": {
+          "mouseup": this.hideAuxiliay,
+          "mousedown": this.showAuxiliay
+        }
+      }, [h(AuxiliayLine, {
+        "attrs": {
+          "data": this.elementsRect,
+          "width": this.data.width,
+          "height": this.data.height
+        },
+        "directives": [{
+          name: "show",
+          value: this.auxiliayVisible
+        }]
+      }), h("div", {
+        "class": "elements"
+      }, [elements.map(function (element) {
+        return h(Shape, helper([{}, {
+          "props": element.props
+        }, {
+          "on": {
+            "active": function active() {
+              return _this.handleElementActive(element);
+            },
+            "deactive": function deactive() {
+              return _this.handleElementDeactive(element);
+            },
+            "change": _this.handleElementRectChange
+          }
+        }]), [h(ElementRender, {
+          "attrs": {
+            "element": element
+          }
+        })]);
+      })])]), h(AdjustHeight, {
+        "attrs": {
+          "height": this.data.height
+        },
+        "on": {
+          "change": this.handlePageHeightChange
+        }
+      })])])]);
+    }
+  };
+
+  var ShortcutButton = {
+    functional: true,
+    props: {
+      faIcon: {
+        required: true,
+        type: String
+      },
+      title: {
+        required: true,
+        type: String
+      },
+      clickFn: {
+        required: false,
+        type: Function,
+        default: function _default() {}
+      },
+      mousedownFn: {
+        required: false,
+        type: Function,
+        default: function _default() {}
+      },
+      disabled: {
+        type: Boolean,
+        default: false
+      }
+    },
+    render: function render(h, _ref) {
+      var props = _ref.props,
+          listeners = _ref.listeners,
+          slots = _ref.slots;
+      return h("button", {
+        "class": "shortcut-button",
+        "on": {
+          "click": props.clickFn,
+          "mousedown": props.mousedownFn
+        },
+        "attrs": {
+          "disabled": props.disabled
+        }
+      }, [h("i", {
+        "class": ['shortcut-icon', 'fa', "fa-".concat(props.faIcon)],
+        "attrs": {
+          "aria-hidden": 'true'
+        }
+      }), h("span", [props.title])]);
+    }
+  };
+
+  var UsageTip = {
+    components: defineProperty$1({}, antDesignVue.Icon.name, antDesignVue.Icon),
+    render: function render() {
+      var h = arguments[0];
+      return h("div", {
+        "class": "plugin-usage-tip "
+      }, [h("a-icon", {
+        "attrs": {
+          "type": "info-circle"
+        }
+      }), h("i18n", {
+        "attrs": {
+          "path": "editor.tip.componentUsage",
+          "tag": "span"
+        },
+        "class": "ml-1"
+      }, [h("strong", [this.$t("editor.tip.click")]), this.$t("editor.tip.click")])]);
+    }
+  };
+
+  var _components$a;
+
+  function ownKeys$b(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$a(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$b(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  var script$2 = {
+    components: (_components$a = {}, defineProperty$1(_components$a, antDesignVue.Modal.name, antDesignVue.Modal), defineProperty$1(_components$a, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$1(_components$a, antDesignVue.Button.name, antDesignVue.Button), _components$a),
+    data: function data() {
+      return {
+        visible: false,
+        confirmLoading: false,
+        text: JSON.stringify([{
+          package: '@luban-h5/lbp-slide',
+          version: '0.0.7',
+          name: 'lbp-slide',
+          icon: 'photo',
+          i18nTitle: {
+            'en-US': 'Carousel',
+            'zh-CN': '轮播图'
+          },
+          title: '轮播图',
+          visible: true
+        }], null, 2)
+      };
+    },
+    methods: {
+      showModal: function showModal() {
+        this.visible = true;
+      },
+      handleOk: function handleOk(e) {
+        var createjs = window.createjs; // eslint-disable-next-line no-new-func
+
+        var npmPackages = new Function("return ".concat(this.text).replace('\n', ''))();
+        npmPackages = npmPackages.map(function (pluginInfo) {
+          return _objectSpread$a(_objectSpread$a({}, pluginInfo), {}, {
+            // src: `https://cdn.jsdelivr.net/npm/${pluginInfo}/dist/${pluginInfo.name}.umd.js`
+            // src: `https://unpkg.com/${pluginInfo}/dist/${pluginName}.umd.js`
+            src: "https://cdn.jsdelivr.net/npm/".concat(pluginInfo.package, "@").concat(pluginInfo.version, "/dist/").concat(pluginInfo.name, ".umd.js")
+          });
+        });
+        var queue = new createjs.LoadQueue();
+        queue.on('fileload', handleFileLoad, this);
+        queue.on('complete', handleComplete, this);
+        queue.loadManifest(npmPackages);
+
+        function handleComplete(e) {
+          // 可以直接使用 this 的原因： query。on 最后一个参数用来做做 bind this 操作
+          this.visible = false;
+          this.confirmLoading = false;
+          this.$emit('loadComplete', npmPackages);
+        }
+
+        function handleFileLoad(event) {
+          var name = event.item.name;
+          Vue__default['default'].component(name, window[name]);
+        }
+      },
+      handleCancel: function handleCancel(e) {
+        this.visible = false;
+      }
+    }
+  };
+
+  /* script */
+  const __vue_script__$2 = script$2;
+
+  /* template */
+  var __vue_render__$2 = function() {
+    var _vm = this;
+    var _h = _vm.$createElement;
+    var _c = _vm._self._c || _h;
+    return _c(
+      "div",
+      { staticStyle: { "text-align": "center" } },
+      [
+        _c(
+          "a-button",
+          {
+            staticStyle: { "margin-top": "16px" },
+            attrs: { type: "primary" },
+            on: { click: _vm.showModal }
+          },
+          [_vm._v("配置 NPM 组件列表")]
+        ),
+        _vm._v(" "),
+        _c(
+          "a-modal",
+          {
+            attrs: {
+              title: "NPM 组件列表配置信息",
+              visible: _vm.visible,
+              confirmLoading: _vm.confirmLoading
+            },
+            on: { ok: _vm.handleOk, cancel: _vm.handleCancel }
+          },
+          [
+            _c(
+              "div",
+              [
+                _c("a-textarea", {
+                  attrs: { placeholder: "Basic usage", rows: 20 },
+                  model: {
+                    value: _vm.text,
+                    callback: function($$v) {
+                      _vm.text = $$v;
+                    },
+                    expression: "text"
+                  }
+                })
+              ],
+              1
+            )
+          ]
+        )
+      ],
+      1
+    )
+  };
+  var __vue_staticRenderFns__$2 = [];
+  __vue_render__$2._withStripped = true;
+
+    /* style */
+    const __vue_inject_styles__$2 = undefined;
+    /* scoped */
+    const __vue_scope_id__$2 = undefined;
+    /* module identifier */
+    const __vue_module_identifier__$2 = undefined;
+    /* functional template */
+    const __vue_is_functional_template__$2 = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+    /* style inject shadow dom */
+    
+
+    
+    const __vue_component__$2 = /*#__PURE__*/normalizeComponent(
+      { render: __vue_render__$2, staticRenderFns: __vue_staticRenderFns__$2 },
+      __vue_inject_styles__$2,
+      __vue_script__$2,
+      __vue_scope_id__$2,
+      __vue_is_functional_template__$2,
+      __vue_module_identifier__$2,
+      false,
+      undefined,
+      undefined,
+      undefined
+    );
+
+  function ownKeys$c(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$b(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$c(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$c(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  var langMixin = {
+    computed: _objectSpread$b({}, Vuex.mapState({
+      currentLang: function currentLang(state) {
+        return state.i18n.lang;
+      }
+    })),
+    methods: _objectSpread$b(_objectSpread$b({}, Vuex.mapActions('i18n', ['SetLang'])), {}, {
+      setLang: function setLang(lang) {
+        this.SetLang(lang);
+      }
+    })
+  };
+
+  function ownKeys$d(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$c(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$d(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$d(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+  /*
+   * @Author: ly525
+   * @Date: 2020-05-17 17:21:04
+   * @LastEditors : Please set LastEditors
+   * @LastEditTime : 2020-10-28 09:22:04
+   * @FilePath: /luban-h5/front-end/h5/src/components/@/mixins/drag.js
+   * @Github: https://github.com/ly525/luban-h5
+   * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
+   * @Description:
+   *  组件拖拽至画布功能
+   *  其中部分代码参考自：https://github.com/hakubox/haku-form-design，已经征得作者同意，目的是后续考虑做 tab 之类的嵌套容器
+   */
+  var dragDom = null;
+  var dragConfig = {
+    isPreDrag: false,
+    // 准备拖拽
+    isDrag: false,
+    // 正式拖拽
+    origin: {
+      clientY: 0,
+      // 鼠标按下时候时候值
+      clientX: 0,
+      layerX: 0,
+      // 鼠标.x 相对于元素左上角.left 的偏移
+      layerY: 0 // 鼠标.y 相对于元素左上角.top  的偏移
+
+    }
+  };
+
+  var Drag = /*#__PURE__*/function () {
+    function Drag(options) {
+      classCallCheck(this, Drag);
+
+      this.mousedown = options.mousedown;
+      this.mousemove = options.mousemove;
+      this.mouseup = options.mouseup;
+      this._mousedown = this._mousedown.bind(this);
+      this._mousemove = this._mousemove.bind(this);
+      this._mouseup = this._mouseup.bind(this);
+    }
+
+    createClass(Drag, [{
+      key: "start",
+      value: function start(e) {
+        this._mousedown(e);
+      }
+    }, {
+      key: "_mousedown",
+      value: function _mousedown(e) {
+        this.mousedown(e);
+        this.toggleListener('add');
+      }
+    }, {
+      key: "_mousemove",
+      value: function _mousemove(e) {
+        this.mousemove(e);
+      }
+    }, {
+      key: "_mouseup",
+      value: function _mouseup(e) {
+        this.mouseup(e);
+        this.toggleListener('remove');
+      }
+    }, {
+      key: "toggleListener",
+      value: function toggleListener(action) {
+        document["".concat(action, "EventListener")]('mousemove', this._mousemove);
+        document["".concat(action, "EventListener")]('mouseup', this._mouseup);
+      }
+    }]);
+
+    return Drag;
+  }();
+
+  var dragMixin = {
+    data: function data() {
+      return {};
+    },
+    methods: {
+      /**
+       *
+       * @param {*} element shortcutItem
+       * @param {*} e
+       */
+      handleDragStartFromMixin: function handleDragStartFromMixin(element, e) {
+        // https://developer.mozilla.org/zh-CN/docs/Web/API/event.button
+        // 0 为 左键点击.
+        if (e.button !== 0) return;
+
+        if (dragDom) {
+          document.body.removeChild(dragDom);
+          dragDom = null;
+        }
+
+        this.dragElement = element;
+        dragDom = e.target.cloneNode(true);
+        document.body.appendChild(dragDom);
+        new Drag({
+          mousedown: this.mousedown,
+          mousemove: this.mousemove,
+          mouseup: this.mouseup
+        }).start(e);
+      },
+
+      /**
+       *
+       * @param {*} e
+       */
+      mousedown: function mousedown(e) {
+        // 鼠标.x 相对于元素左上角 的偏移
+        var layerX = e.layerX,
+            layerY = e.layerY;
+        dragConfig.origin.layerX = layerX;
+        dragConfig.origin.layerY = layerY;
+        dragConfig.origin.clientX = e.clientX;
+        dragConfig.origin.clientY = e.clientY;
+        dragDom.style.position = 'absolute';
+        dragDom.style.left = e.clientX - layerX + 'px';
+        dragDom.style.top = e.clientY - layerY + 'px';
+        dragDom.classList.add('dragging-dom-ele', 'hidden');
+        dragConfig.isPreDrag = true;
+      },
+
+      /** 组件拖拽中 */
+      mousemove: function mousemove(e) {
+        dragDom.classList.remove('hidden');
+        var _dragConfig$origin = dragConfig.origin,
+            layerX = _dragConfig$origin.layerX,
+            layerY = _dragConfig$origin.layerY;
+        dragDom.style.left = e.clientX - layerX + 'px';
+        dragDom.style.top = e.clientY - layerY + 'px';
+      },
+      mouseup: function mouseup(e) {
+        var _dragConfig$origin2 = dragConfig.origin,
+            layerX = _dragConfig$origin2.layerX,
+            layerY = _dragConfig$origin2.layerY;
+        document.body.removeChild(dragDom);
+        dragDom = null;
+        var canMousedown = this.checkCanMousedown(e, {
+          minOffset: 10
+        });
+        if (!canMousedown) return;
+        var canvasWrapper = document.querySelector('.canvas-wrapper');
+        var position = canvasWrapper.getBoundingClientRect();
+        this.dragElement && this.clone(_objectSpread$c(_objectSpread$c({}, this.dragElement), {}, {
+          dragStyle: {
+            left: e.clientX - layerX - position.left,
+            top: e.clientY - layerY - position.top
+          }
+        }));
+      },
+      checkCanMousedown: function checkCanMousedown(e, _ref) {
+        var minOffsetX = _ref.minOffsetX,
+            minOffsetY = _ref.minOffsetY,
+            minOffset = _ref.minOffset;
+        var offsetX = e.clientX - dragConfig.origin.clientX;
+        var offsetY = e.clientY - dragConfig.origin.clientY;
+        return offsetX >= (minOffsetX || minOffset) || offsetY >= (minOffsetY || minOffset);
+      }
+    },
+    updated: function updated() {
+      console.log('updated');
+    }
+  };
+
+  var _components$b;
+
+  function ownKeys$e(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$d(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$e(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$e(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var RenderShortcutsPanel = {
-    name: "shotcuts-panle",
-    components: (_components$c = {}, defineProperty$1(_components$c, antDesignVue.Row.name, antDesignVue.Row), defineProperty$1(_components$c, antDesignVue.Col.name, antDesignVue.Col), _components$c),
-    mixins: [langMixin, dragMixin, loadPluginsMixin],
+    name: 'shotcuts-panle',
+    components: (_components$b = {}, defineProperty$1(_components$b, antDesignVue.Row.name, antDesignVue.Row), defineProperty$1(_components$b, antDesignVue.Col.name, antDesignVue.Col), _components$b),
+    mixins: [langMixin, dragMixin],
     data: function data() {
       return {
         npmPackages: []
       };
     },
-    methods: _objectSpread$f(_objectSpread$f({}, Vuex.mapActions("editor", ["elementManager", "pageManager", "saveWork", "setEditingPage"])), {}, {
-      /**
-       * !#zh 点击插件，copy 其基础数据到组件树（中间画布）
-       * #!en click the plugin shortcut, create new Element with the plugin's meta data
-       * pluginInfo {Object}: 插件列表中的基础数据, {name}=pluginInfo
-       *
-       * shortcutItem: PluginListItem = {
-        name: String,
-        shortcutProps: {}
-       }
-       */
+    methods: _objectSpread$d(_objectSpread$d({}, Vuex.mapActions('editor', ['elementManager'])), {}, {
       clone: function clone(shortcutItem) {
-        this.elementManager({
-          type: "add",
-          value: shortcutItem
-        });
+        this.$emit('add', shortcutItem);
       }
-      /**
-       * #!zh 渲染多个插件的快捷方式
-       * #!en render shortcuts for multi plugins
-       * @param {Object} group: {children, title, icon}
-       */
-      // renderMultiShortcuts (group) {
-      //   const plugins = group.children
-      //   return <a-popover
-      //     placement="bottom"
-      //     class="shortcust-button"
-      //     trigger="hover">
-      //     <a-row slot="content" gutter={20} style={{ width: '400px' }}>
-      //       {
-      //         plugins.sort().map(item => (
-      //           <a-col span={6}>
-      //             <ShortcutButton
-      //               clickFn={this.onClickShortcut.bind(this, item)}
-      //               title={item.title}
-      //               faIcon={item.icon}
-      //             />
-      //           </a-col>
-      //         ))
-      //       }
-      //     </a-row>
-      //     <ShortcutButton
-      //       title={group.title}
-      //       faIcon={group.icon}
-      //     />
-      //   </a-popover>
-      // },
-
-      /**
-       * #!zh: 渲染单个插件的快捷方式
-       * #!en: render shortcut for single plugin
-       * @param {Object} group: {children, title, icon}
-       */
-      // renderSingleShortcut ({ children }) {
-      //   const [plugin] = children
-      //   return <ShortcutButton
-      //     clickFn={this.onClickShortcut.bind(this, plugin)}
-      //     title={plugin.title}
-      //     faIcon={plugin.icon}
-      //   />
-      // },
-
-      /**
-       * #!zh: 在左侧或顶部导航上显示可用的组件快捷方式，用户点击/拖拽之后，即可将其添加到中间画布上
-       * #!en: render shortcust at the sidebar or the header. if user click/drag the shortcut, the related plugin will be added to the canvas
-       * @param {Object} group: {children, title, icon}
-       */
-      // renderShortCutsPanel (groups) {
-      //   return (
-      //     <a-row gutter={20}>
-      //       {
-      //         groups.sort().map(group => (
-      //           <a-col span={12} style={{ marginTop: '10px' }}>
-      //             {
-      //               group.children.length === 1
-      //                 ? this.renderSingleShortcut(group)
-      //                 : this.renderMultiShortcuts(group)
-      //             }
-      //           </a-col>
-      //         ))
-      //       }
-      //     </a-row>
-      //   )
-      // }
-
     }),
-
-    /**
-     * #!zh: 在左侧或顶部导航上显示可用的组件快捷方式，用户点击/拖拽之后，即可将其添加到中间画布上
-     * #!en: render shortcust at the sidebar or the header.
-     * if user click/drag the shortcut, the related plugin will be added to the canvas
-     */
     render: function render(h) {
       var _this = this;
 
-      // return this.renderShortCutsPanel(this.groups)
       return h("a-row", {
         "style": "max-height: calc(100vh - 150px);overflow-y: scroll; padding-bottom: 24px"
-      }, [h(UsageTip), [].concat(this.pluginsList, this.npmPackages).filter(function (plugin) {
+      }, [h(UsageTip), [].concat(pluginsList, this.npmPackages).filter(function (plugin) {
         return plugin.visible;
       }).map(function (plugin) {
         return h("a-col", {
@@ -68571,7 +68530,7 @@
             "span": 12
           },
           "style": {
-            marginTop: "10px"
+            marginTop: '10px'
           }
         }, [h(ShortcutButton, {
           "attrs": {
@@ -68582,7 +68541,7 @@
             "disabled": plugin.disabled
           }
         })]);
-      }), h(__vue_component__$1, {
+      }), h(__vue_component__$2, {
         "on": {
           "loadComplete": function loadComplete(npmPackages) {
             _this.npmPackages = npmPackages;
@@ -68592,9 +68551,9 @@
     }
   };
 
-  var _components$d;
+  var _components$c;
   var PageTitleEditor = {
-    components: (_components$d = {}, defineProperty$1(_components$d, antDesignVue.Popconfirm.name, antDesignVue.Popconfirm), defineProperty$1(_components$d, antDesignVue.Input.name, antDesignVue.Input), defineProperty$1(_components$d, antDesignVue.Icon.name, antDesignVue.Icon), _components$d),
+    components: (_components$c = {}, defineProperty$1(_components$c, antDesignVue.Popconfirm.name, antDesignVue.Popconfirm), defineProperty$1(_components$c, antDesignVue.Input.name, antDesignVue.Input), defineProperty$1(_components$c, antDesignVue.Icon.name, antDesignVue.Icon), _components$c),
     props: ["page", "pageIndex"],
     data: function data() {
       return {
@@ -68654,9 +68613,9 @@
     }
   };
 
-  var _components$e;
+  var _components$d;
   var PageTitleMenu = {
-    components: (_components$e = {}, defineProperty$1(_components$e, antDesignVue.Dropdown.name, antDesignVue.Dropdown), defineProperty$1(_components$e, antDesignVue.Menu.name, antDesignVue.Menu), defineProperty$1(_components$e, antDesignVue.Menu.Item.name, antDesignVue.Menu.Item), defineProperty$1(_components$e, antDesignVue.Icon.name, antDesignVue.Icon), _components$e),
+    components: (_components$d = {}, defineProperty$1(_components$d, antDesignVue.Dropdown.name, antDesignVue.Dropdown), defineProperty$1(_components$d, antDesignVue.Menu.name, antDesignVue.Menu), defineProperty$1(_components$d, antDesignVue.Menu.Item.name, antDesignVue.Menu.Item), defineProperty$1(_components$d, antDesignVue.Icon.name, antDesignVue.Icon), _components$d),
     render: function render() {
       var _this = this;
 
@@ -68736,9 +68695,9 @@
     }
   };
 
-  function ownKeys$h(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$f(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$g(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$h(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$h(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$e(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$f(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$f(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var RenderPageManager = {
     name: 'page-manager',
     components: defineProperty$1({}, antDesignVue.Button.name, antDesignVue.Button),
@@ -68748,7 +68707,7 @@
 
       };
     },
-    computed: _objectSpread$g({}, Vuex.mapState('editor', {
+    computed: _objectSpread$e({}, Vuex.mapState('editor', {
       editingPage: function editingPage(state) {
         return state.editingPage;
       },
@@ -68756,7 +68715,7 @@
         return state.work.pages;
       }
     })),
-    methods: _objectSpread$g(_objectSpread$g({}, Vuex.mapActions('editor', ['elementManager', 'pageManager', 'saveWork', 'setEditingPage'])), {}, {
+    methods: _objectSpread$e(_objectSpread$e({}, Vuex.mapActions('editor', ['elementManager', 'pageManager', 'saveWork', 'setEditingPage'])), {}, {
       onSelectMenuItem: function onSelectMenuItem(menuKey) {
         this.pageManager({
           type: menuKey
@@ -68833,9 +68792,9 @@
     }
   };
 
-  function ownKeys$i(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$g(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$h(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$i(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$i(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$f(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$g(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$g(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   function getTreeNode(ele) {
     return {
@@ -68847,7 +68806,7 @@
 
   var script$3 = {
     name: 'page-tree',
-    computed: _objectSpread$h(_objectSpread$h({}, Vuex.mapState('editor', {
+    computed: _objectSpread$f(_objectSpread$f({}, Vuex.mapState('editor', {
       elements: function elements(state) {
         return state.editingPage.elements;
       }
@@ -68918,9 +68877,9 @@
       undefined
     );
 
-  var _components$f;
+  var _components$e;
   var EditorLeftPanel = {
-    components: (_components$f = {}, defineProperty$1(_components$f, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$1(_components$f, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$1(_components$f, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), _components$f),
+    components: (_components$e = {}, defineProperty$1(_components$e, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$1(_components$e, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$1(_components$e, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), _components$e),
     name: "EditorLeftPanel",
     render: function render(h) {
       return h("a-layout-sider", {
@@ -68942,7 +68901,11 @@
         "attrs": {
           "tab": this.$t("editor.sidebar.components")
         }
-      }, [h(RenderShortcutsPanel)]), h("a-tab-pane", {
+      }, [h(RenderShortcutsPanel, {
+        "on": {
+          "add": this.$listeners.add
+        }
+      })]), h("a-tab-pane", {
         "key": "page-manager",
         "attrs": {
           "tab": this.$t("editor.sidebar.pages")
@@ -69034,7 +68997,7 @@
     });
   };
 
-  var defineProperty$8 = objectDefineProperty.f;
+  var defineProperty$9 = objectDefineProperty.f;
 
 
   var NativeSymbol = global_1.Symbol;
@@ -69061,7 +69024,7 @@
     var symbolToString = symbolPrototype.toString;
     var native = String(NativeSymbol('test')) == 'Symbol(test)';
     var regexp = /^Symbol\((.*)\)[^)]+$/;
-    defineProperty$8(symbolPrototype, 'description', {
+    defineProperty$9(symbolPrototype, 'description', {
       configurable: true,
       get: function description() {
         var symbol = isObject(this) ? this.valueOf() : this;
@@ -69077,260 +69040,91 @@
     });
   }
 
-  function ownKeys$j(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$i(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$j(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$j(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-  var disabledPluginsForEditMode = ['lbp-form-input', 'lbp-form-button', 'lbp-video'];
-
-  var cloneObj = function cloneObj(value) {
-    return JSON.parse(JSON.stringify(value));
-  };
-
-  var defaultStyle = {
-    top: 100,
-    left: 100,
-    width: 100,
-    height: 40,
-    zindex: 1,
-    textAlign: 'center',
-    color: '#000000',
-    backgroundColor: 'rgba(255, 255, 255, 0)',
-    fontSize: 14
-  };
-
-  var Element$1 = /*#__PURE__*/function () {
-    function Element(ele) {
-      var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-          _ref$isRem = _ref.isRem,
-          isRem = _ref$isRem === void 0 ? false : _ref$isRem;
-
-      classCallCheck(this, Element);
-
-      this.name = ele.name;
-      this.uuid = ele.uuid || +new Date();
-      /**
-       * #!zh:
-       * 之前版本代码：https://github.com/ly525/luban-h5/blob/a7875cbc73c0d18bc2459985ca3ce1d4dc44f141/front-end/h5/src/components/@/models/element.js#L21
-       * 1.之前的版本为：this.pluginProps = {}, 改为下面的版本
-       * 是因为要支持[复制画布上的元素]，所以需要先使用 ele.pluginProps 进行初始化（也就是拷贝之前的元素的值）
-       *
-       * 2. 移除 this.init() 原因是：如果是 复制元素，则 init 会把 copy 的值重新覆盖为初始值，copy 无效
-       *
-       * 3. 为何需要 clone，因为会有 element.clone() 以及 page.clone()，
-       *    element.pluginProps 和 elementcommonStyle 是引用类型，如果不做 deep_clone 可能会出现意外错误
-       */
-
-      this.pluginProps = this.getPluginProps(ele);
-      this.commonStyle = this.getCommonStyle(ele);
-      this.events = [];
-      this.animations = ele.animations || [];
-      this.isRem = isRem;
-    }
-
-    createClass(Element, [{
-      key: "getCommonStyle",
-      value: function getCommonStyle(ele) {
-        if (_typeof_1(ele.commonStyle) === 'object') {
-          return cloneObj(ele.commonStyle);
-        }
-
-        return _objectSpread$i(_objectSpread$i(_objectSpread$i({}, defaultStyle), {}, {
-          zindex: ele.zindex
-        }, ele.extra && ele.extra.defaultStyle), ele.dragStyle);
-      }
-    }, {
-      key: "getPluginProps",
-      value: function getPluginProps(ele) {
-        if (_typeof_1(ele.pluginProps) === 'object') {
-          return cloneObj(_objectSpread$i(_objectSpread$i({}, ele.pluginProps), {}, {
-            uuid: this.uuid
-          }));
-        }
-
-        return this.getDefaultPluginProps(ele);
-      } // init prop of plugin
-
-    }, {
-      key: "getDefaultPluginProps",
-      value: function getDefaultPluginProps(ele) {
-        var _ele$props = ele.props,
-            props = _ele$props === void 0 ? {} : _ele$props,
-            _ele$shortcutProps = ele.shortcutProps,
-            shortcutProps = _ele$shortcutProps === void 0 ? {} : _ele$shortcutProps;
-        var pluginProps = {
-          uuid: this.uuid
-        };
-        Object.keys(props).forEach(function (key) {
-          var defaultValue = props[key].default;
-          pluginProps[key] = typeof defaultValue === 'function' ? defaultValue() : defaultValue;
-        });
-        pluginProps = _objectSpread$i(_objectSpread$i({}, pluginProps), shortcutProps);
-        return pluginProps;
-      }
-    }, {
-      key: "getStyle",
-      value: function getStyle() {
-        var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            _ref2$position = _ref2.position,
-            position = _ref2$position === void 0 ? 'static' : _ref2$position;
-
-        if (this.name === 'lbp-background') {
-          return {
-            width: '100%',
-            height: '100%'
-          };
-        }
-
-        var pluginProps = this.pluginProps;
-        var commonStyle = this.commonStyle;
-        var style = {
-          top: parsePx(pluginProps.top || commonStyle.top, this.isRem),
-          left: parsePx(pluginProps.left || commonStyle.left, this.isRem),
-          width: parsePx(pluginProps.width || commonStyle.width, this.isRem),
-          height: parsePx(pluginProps.height || commonStyle.height, this.isRem),
-          fontSize: parsePx(pluginProps.fontSize || commonStyle.fontSize, this.isRem),
-          color: pluginProps.color || commonStyle.color,
-          // backgroundColor: pluginProps.backgroundColor || commonStyle.backgroundColor,
-          textAlign: pluginProps.textAlign || commonStyle.textAlign,
-          'z-index': commonStyle.zindex,
-          position: position
-        };
-        return style;
-      }
-    }, {
-      key: "getProps",
-      value: function getProps() {
-        var _ref3 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            _ref3$mode = _ref3.mode,
-            mode = _ref3$mode === void 0 ? 'edit' : _ref3$mode;
-
-        return _objectSpread$i(_objectSpread$i({}, this.pluginProps), {}, {
-          disabled: disabledPluginsForEditMode.includes(this.name) && mode === 'edit'
-        });
-      }
-    }, {
-      key: "getClass",
-      value: function getClass() {}
-    }, {
-      key: "getData",
-      value: function getData() {}
-    }, {
-      key: "getAttrs",
-      value: function getAttrs() {
-        var attrs = {
-          'data-uuid': this.uuid
-        };
-
-        if (this.animations.length > 0) {
-          var animation = this.animations[0];
-          attrs['data-swiper-animation'] = animation.type; // "fadeIn"
-
-          attrs['data-duration'] = "".concat(animation.duration, "s"); // ".5s"
-
-          attrs['data-delay'] = "".concat(animation.delay, "s"); // "1s"
-        }
-
-        return attrs;
-      }
-    }, {
-      key: "getPreviewData",
-      value: function getPreviewData() {
-        var _ref4 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            _ref4$position = _ref4.position,
-            position = _ref4$position === void 0 ? 'static' : _ref4$position,
-            _ref4$mode = _ref4.mode,
-            mode = _ref4$mode === void 0 ? 'preview' : _ref4$mode;
-
-        var style = this.getStyle({
-          position: position
-        });
-        var data = {
-          style: style,
-          props: this.getProps({
-            mode: mode
-          }),
-          attrs: this.getAttrs()
-        };
-        return data;
-      }
-    }, {
-      key: "clone",
-      value: function clone() {
-        var _ref5 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            _ref5$zindex = _ref5.zindex,
-            zindex = _ref5$zindex === void 0 ? this.commonStyle.zindex + 1 : _ref5$zindex;
-
-        return new Element({
-          zindex: zindex,
-          name: this.name,
-          pluginProps: this.pluginProps,
-          commonStyle: _objectSpread$i(_objectSpread$i({}, this.commonStyle), {}, {
-            top: this.commonStyle.top + 20,
-            left: this.commonStyle.left + 20
-          })
-        });
-      }
-    }]);
-
-    return Element;
-  }();
-
   var Page = /*#__PURE__*/function () {
     function Page() {
-      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+          _ref$uuid = _ref.uuid,
+          uuid = _ref$uuid === void 0 ? +new Date() : _ref$uuid,
+          _ref$title = _ref.title,
+          title = _ref$title === void 0 ? '' : _ref$title,
+          _ref$elements = _ref.elements,
+          elements = _ref$elements === void 0 ? [] : _ref$elements,
+          _ref$height = _ref.height,
+          height = _ref$height === void 0 ? PAGE_MODE.HEIGHT : _ref$height,
+          _ref$width = _ref.width,
+          width = _ref$width === void 0 ? PAGE_MODE.WIDTH : _ref$width,
+          _ref$page_mode = _ref.page_mode,
+          page_mode = _ref$page_mode === void 0 ? PAGE_MODE.SWIPPER_PAGE : _ref$page_mode;
 
       classCallCheck(this, Page);
 
-      this.uuid = page.uuid || +new Date();
-      this.title = page.title || '';
-      this.elements = page.elements || [new Element$1(LbpBackground)];
+      this.uuid = uuid;
+      this.title = title;
+      this.width = width >= 0 ? width : PAGE_MODE.WIDTH;
+      this.height = height >= 0 ? height : PAGE_MODE.HEIGHT;
+      this.page_mode = page_mode;
+      this.elements = this.genElements(elements);
     }
 
     createClass(Page, [{
       key: "clone",
       value: function clone() {
         var elements = this.elements.map(function (element) {
-          return new Element$1(element);
+          return new Element(element);
         });
         return new Page({
           title: this.title,
           elements: elements
         });
       }
+    }, {
+      key: "genElements",
+      value: function genElements() {
+        var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+        return Array.isArray(elements) && elements.length > 0 ? elements.map(function (v) {
+          return new Element(v);
+        }) : [new Element(LbpBackground)];
+      }
     }]);
 
     return Page;
   }();
 
-  var Work = function Work() {
-    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-        id = _ref.id,
-        _ref$title = _ref.title,
-        title = _ref$title === void 0 ? '标题' : _ref$title,
-        _ref$pages = _ref.pages,
-        pages = _ref$pages === void 0 ? [] : _ref$pages,
-        _ref$description = _ref.description,
-        description = _ref$description === void 0 ? '描述' : _ref$description,
-        is_publish = _ref.is_publish,
-        is_template = _ref.is_template,
-        _ref$height = _ref.height,
-        height = _ref$height === void 0 ? 667 : _ref$height,
-        _ref$page_mode = _ref.page_mode,
-        page_mode = _ref$page_mode === void 0 ? PAGE_MODE.SWIPPER_PAGE : _ref$page_mode;
+  var Work = /*#__PURE__*/function () {
+    function Work() {
+      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+          id = _ref.id,
+          _ref$title = _ref.title,
+          title = _ref$title === void 0 ? '标题' : _ref$title,
+          _ref$description = _ref.description,
+          description = _ref$description === void 0 ? '描述' : _ref$description,
+          _ref$pages = _ref.pages,
+          pages = _ref$pages === void 0 ? [] : _ref$pages,
+          is_publish = _ref.is_publish,
+          is_template = _ref.is_template;
 
-    classCallCheck(this, Work);
+      classCallCheck(this, Work);
 
-    this.id = id;
-    this.title = title;
-    this.description = description;
-    this.pages = pages.length > 0 ? pages : [new Page()];
-    this.cover_image_url = '';
-    this.is_publish = !!is_publish;
-    this.is_template = false;
-    this.height = height >= 0 ? height : 667;
-    this.page_mode = page_mode;
-  };
+      this.id = id;
+      this.title = title;
+      this.description = description;
+      this.pages = this.genPages(pages);
+      this.cover_image_url = '';
+      this.is_publish = !!is_publish;
+      this.is_template = !!is_template;
+    }
+
+    createClass(Work, [{
+      key: "genPages",
+      value: function genPages(pages) {
+        return Array.isArray(pages) && pages.length > 0 ? pages.map(function (v) {
+          return new Page(v);
+        }) : [new Page()];
+      }
+    }]);
+
+    return Work;
+  }();
 
   // actions
   var actions = {
@@ -69436,9 +69230,9 @@
     }
   };
 
-  function ownKeys$k(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$h(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$j(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$k(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$k(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$g(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$h(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$h(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   var actions$2 = {
     setEditingElement: function setEditingElement(_ref, payload) {
@@ -69470,7 +69264,7 @@
       state.editingElement = payload;
     },
     setElementCommonStyle: function setElementCommonStyle(state, payload) {
-      state.editingElement.commonStyle = _objectSpread$j(_objectSpread$j({}, state.editingElement.commonStyle), payload);
+      state.editingElement.commonStyle = _objectSpread$g(_objectSpread$g({}, state.editingElement.commonStyle), payload);
     },
     elementManager: function elementManager(state, _ref6) {
       var type = _ref6.type,
@@ -69487,7 +69281,7 @@
 
           vm.$options.dragStyle = value.dragStyle; // {left: Number, top: Number}
 
-          var element = new Element$1(vm.$options);
+          var element = new Element(vm.$options);
           elements.push(element);
           break;
 
@@ -69575,9 +69369,9 @@
     }
   });
 
-  function ownKeys$l(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$i(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$k(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$l(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$l(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$h(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$i(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$i(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var actions$3 = {
     updateWork: function updateWork(_ref) {
       var commit = _ref.commit,
@@ -69585,7 +69379,7 @@
       var payload = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       // update work with strapi
-      var work = _objectSpread$k(_objectSpread$k({}, state.work), payload);
+      var work = _objectSpread$h(_objectSpread$h({}, state.work), payload);
 
       commit('setWork', work);
     }
@@ -69613,7 +69407,7 @@
       window.__work = work;
       work.pages = work.pages.map(function (page) {
         page.elements = page.elements.map(function (element) {
-          return new Element$1(element);
+          return new Element(element);
         });
         return new Page(page);
       });
@@ -69634,9 +69428,9 @@
     }
   };
 
-  function ownKeys$m(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$j(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$l(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$m(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$m(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$i(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$j(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$j(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var state = {
     works: [],
     work: new Work(),
@@ -69654,10 +69448,10 @@
 
   var getters = {}; // actions
 
-  var actions$4 = _objectSpread$l(_objectSpread$l(_objectSpread$l(_objectSpread$l({}, actions$2), actions$1), actions$3), actions); // mutations
+  var actions$4 = _objectSpread$i(_objectSpread$i(_objectSpread$i(_objectSpread$i({}, actions$2), actions$1), actions$3), actions); // mutations
 
 
-  var mutations$4 = _objectSpread$l(_objectSpread$l(_objectSpread$l(_objectSpread$l({}, mutations$2), mutations$1), mutations$3), mutations);
+  var mutations$4 = _objectSpread$i(_objectSpread$i(_objectSpread$i(_objectSpread$i({}, mutations$2), mutations$1), mutations$3), mutations);
 
   var editor = {
     namespaced: true,
@@ -69895,13 +69689,13 @@
     }
   };
 
-  function ownKeys$n(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$k(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$m(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$n(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$n(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$j(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$k(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$k(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   Vue__default['default'].use(VueI18n__default['default']);
   var messages = {
-    "en-US": _objectSpread$m({}, enUSLang),
-    "zh-CN": _objectSpread$m({}, zhCNLang)
+    "en-US": _objectSpread$j({}, enUSLang),
+    "zh-CN": _objectSpread$j({}, zhCNLang)
   };
   var defaultLang = "zh-CN";
   var i18n = new VueI18n__default['default']({
@@ -69981,53 +69775,81 @@
 
   var CoreEditor = {
     name: 'CoreEditor',
+    components: defineProperty$1({}, antDesignVue.Layout.name, antDesignVue.Layout),
     store: store$2,
     i18n: i18n,
     props: {
-      work: {
+      data: {
         type: Object,
         default: function _default() {
           return {};
         }
       }
     },
-    components: defineProperty$1({}, antDesignVue.Layout.name, antDesignVue.Layout),
+    data: function data() {
+      return {
+        work: {},
+        pageIndex: 0,
+        propsPanelWidth: 375,
+        activeElement: null
+      };
+    },
     watch: {
-      work: {
-        handler: function handler(newWork) {
-          if (newWork) {
-            console.log('work', newWork);
-            this.$store.commit('editor/setWork', newWork);
-            this.$store.commit('editor/setEditingPage');
-          }
+      data: {
+        handler: function handler(data) {
+          this.work = new Work(data);
         },
         immediate: true
       }
     },
-    data: function data() {
-      return {
-        previewDialogVisible: false,
-        propsPanelWidth: 375
-      };
+    computed: {
+      currentPage: function currentPage() {
+        var _this$work$pages = this.work.pages,
+            pages = _this$work$pages === void 0 ? [] : _this$work$pages;
+        return pages[this.pageIndex];
+      }
     },
     methods: {
-      handlePreview: function handlePreview() {
-        this.previewDialogVisible = true;
-      },
       getData: function getData() {
         return this.$store.state.editor.work;
+      },
+      handleElementActive: function handleElementActive(element) {
+        this.activeElement = element;
+      },
+      handleElementDeactive: function handleElementDeactive(deactiveElement) {
+        if (deactiveElement === this.activeElement) {
+          this.activeElement = null;
+        }
+      },
+      handlePropsChange: function handlePropsChange(value) {
+        this.$refs['editor'].updateActiveElement(value);
+      },
+      handleAddElement: function handleAddElement(_ref) {
+        var component = _ref.component;
+        this.$refs['editor'].addElement(component);
       }
     },
     render: function render() {
       var _this = this;
 
       var h = arguments[0];
-      return this.work.id && h("a-layout", [h("a-layout", {
+      return h("a-layout", [h("a-layout", {
         "style": {
           height: '100%'
         }
-      }, [h(EditorLeftPanel), h(EditorCanvas, {
-        "ref": "editor"
+      }, [h(EditorLeftPanel, {
+        "on": {
+          "add": this.handleAddElement
+        }
+      }), h(EditorCanvas, {
+        "ref": "editor",
+        "attrs": {
+          "data": this.currentPage
+        },
+        "on": {
+          "active": this.handleElementActive,
+          "deactive": this.handleElementDeactive
+        }
       }), h(AdjustLineV, {
         "on": {
           "lineMove": function lineMove(offset) {
@@ -70036,11 +69858,15 @@
         }
       }), h(FixedTools), h(EditorRightPanel, {
         "attrs": {
-          "width": this.propsPanelWidth
+          "width": this.propsPanelWidth,
+          "element": this.activeElement
+        },
+        "on": {
+          "propsChange": this.handlePropsChange
         }
       })])]);
     }
-  }; // Vue install, Vue.use 会调用该方法。
+  };
 
   CoreEditor.install = function (Vue) {
     Vue.component(CoreEditor.name, CoreEditor);

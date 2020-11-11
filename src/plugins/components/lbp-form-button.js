@@ -1,3 +1,10 @@
+/*
+ * @author : Mater
+ * @Email : bxh8640@gmail.com
+ * @Date : 2020-11-02 16:12:09
+ * @LastEditTime : 2020-11-10 19:51:59
+ * @Description :
+ */
 // https://github.com/luban-h5-components/plugin-common-props
 import PropTypes from '@/utils/commom-props'
 
@@ -65,8 +72,6 @@ export default {
           self.$message.info(message)
         }
       }
-
-      // #!zh: vuex.module.editor.setWork 中定义
       const workId = window.__work.id
       // TODO #!zh: 可以动态配置表单提交地址
       req.open('post', `/works/form/submit/${workId}`, true)

@@ -2,44 +2,12 @@ import Vue from 'vue'
 
 const styleKey = 'commonStyle'
 
-/**
- *
-
- * 获取组件中的 「componentsForPropsEditor」对象
- * @param {String} elementName
- *
- * 可以查看下面的组件 Demo
- {
-  name: 'lbp-button',
-  props: {
-    color: {
-      default: 'red',
-      editor: {
-        type: 'custom-color-editor'
-      }
-    }
-  },
-  componentsForPropsEditor: {
-    'custom-color-editor': {
-      render() {
-        return <input type="color" />
-      }
-    }
-  }
- }
- */
-export function getComponentsForPropsEditor (elementName) {
-  const Ctor = Vue.component(elementName)
-  // TODO 为何直接 return new Ctor() 并将其赋值给 vuex 的 state 会报错：Cannot convert a Symbol value to a string
-  return new Ctor().$options.componentsForPropsEditor
-}
-
-export function getVM (pluginName) {
+export function getVM(pluginName) {
   const Ctor = Vue.component(pluginName)
   return new Ctor()
 }
 
-export function swapZindex (x, y) {
+export function swapZindex(x, y) {
   const tmp = y[styleKey].zindex
   y[styleKey].zindex = x[styleKey].zindex
   x[styleKey].zindex = tmp
@@ -49,7 +17,7 @@ export function swapZindex (x, y) {
  * !#zh 将 px 转换为 rem
  * @param {Number} px
  */
-function px2Rem (px) {
+function px2Rem(px) {
   const rem = (px * 2) / 100 + 'rem'
   return rem
 }
@@ -59,12 +27,34 @@ function px2Rem (px) {
  * @param {Number} px 元素的某个属性的像素值，比如 height
  * @param {Boolean} isToRem 是否将 px 转换为 rem
  */
-export function parsePx (px, isRem = false) {
+export function parsePx(px, isRem = false) {
   if (isRem) return px2Rem(px)
   return `${px}px`
 }
 
 export const genUUID = () => {
   // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
-  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+  return (
+    Math.random()
+      .toString(36)
+      .substring(2, 15) +
+    Math.random()
+      .toString(36)
+      .substring(2, 15)
+  )
+}
+/**
+ * Get the default value of a prop.
+ * copy with vue source code
+ */
+
+export function getPropDefaultValue(vm, prop) {
+  // no default, return undefined
+  if (!prop.hasOwnProperty('default')) {
+    return undefined
+  }
+  const def = prop.default
+  // call factory function for non-Function types
+  // a value is Function if its prototype is function even across different execution context
+  return typeof def === 'function' ? def.call(vm) : def
 }

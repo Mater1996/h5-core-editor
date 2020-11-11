@@ -1,4 +1,5 @@
 import animationMixin from '@/mixins/animation.js'
+import vClickOutside from '@/directive/v-click-outside'
 
 /**
  * #!zh: 上下左右 对应的 东南西北
@@ -11,198 +12,237 @@ const directionKey = {
   r: 'e'
 }
 
-// #!zh: 四个边角、两条中线上的点
-const points = ['lt', 'rt', 'lb', 'rb', 'l', 'r', 't', 'b']
+const points = ['lt', 'rt', 'lb', 'rb', 'lm', 'rm', 'tm', 'bm']
+
+var id = 0
 
 export default {
   mixins: [animationMixin],
-  props: [
-    'defaultPosition',
-    'active',
-    'handleMousedownProp',
-    'handleElementMoveProp',
-    'handlePointMoveProp',
-    'handleElementMouseUpProp',
-    'handlePointMouseUpProp',
-    'element'
-  ],
+  directives: {
+    clickOutside: vClickOutside
+  },
+  props: {
+    width: {
+      type: Number,
+      default: 0
+    },
+    height: {
+      type: Number,
+      default: 0
+    },
+    left: {
+      type: Number,
+      default: 0
+    },
+    top: {
+      type: Number,
+      default: 0
+    },
+    disable: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      rect: {
+        width: this.width,
+        height: this.height,
+        left: this.left,
+        top: this.top
+      },
+      startY: 0,
+      startX: 0,
+      point: '',
+      active: false,
+      vcoConfig: {}
+    }
+  },
+  mounted() {
+    this.vcoConfig = {
+      events: ['mousedown'],
+      handler: this.onClickOutside,
+      scopeNode: document.querySelector('.page-render')
+    }
+  },
   computed: {
-    position() {
-      return { ...this.defaultPosition }
+    shapeStyle() {
+      const { left, top, width, height } = this.rect
+      return {
+        left: `${left}px`,
+        top: `${top}px`,
+        width: `${width}px`,
+        height: `${height}px`
+      }
+    },
+    ltPointStyle() {
+      return {
+        left: `${0}px`,
+        top: `${0}px`
+      }
+    },
+    rtPointStyle() {
+      const { width } = this.rect
+      return {
+        left: `${width}px`,
+        top: `${0}px`
+      }
+    },
+    lbPointStyle() {
+      const { height } = this.rect
+      return {
+        left: `${0}px`,
+        top: `${height}px`
+      }
+    },
+    rbPointStyle() {
+      const { width, height } = this.rect
+      return {
+        left: `${width}px`,
+        top: `${height}px`
+      }
+    },
+    lmPointStyle() {
+      const { height } = this.rect
+      return {
+        left: `${0}px`,
+        top: `${height / 2}px`
+      }
+    },
+    rmPointStyle() {
+      const { width, height } = this.rect
+      return {
+        left: `${width}px`,
+        top: `${height / 2}px`
+      }
+    },
+    tmPointStyle() {
+      const { width } = this.rect
+      return {
+        left: `${width / 2}px`,
+        top: `${0}px`
+      }
+    },
+    bmPointStyle() {
+      const { width, height } = this.rect
+      return {
+        left: `${width / 2}px`,
+        top: `${height}px`
+      }
+    }
+  },
+  watch: {
+    rect: {
+      handler(newValue) {
+        this.$emit('change', newValue)
+      },
+      deep: true
     }
   },
   methods: {
-    /**
-     * 通过方位计算样式，主要是 top、left、鼠标样式
-     */
-    getPointStyle(point, isWrapElement = true) {
-      const pos = this.position
-      const top = pos.top // !#zh 减4是为了让元素能够处于 border 的中间
-      const left = pos.left
-      const height = pos.height
-      const width = pos.width
-      let hasT = /t/.test(point)
-      let hasB = /b/.test(point)
-      let hasL = /l/.test(point)
-      let hasR = /r/.test(point)
-      let newLeft = 0
-      let newTop = 0
-      if (point.length === 2) {
-        newLeft = hasL ? 0 : width
-        newTop = hasT ? 0 : height
-      } else {
-        // !#zh 上下点，宽度固定在中间
-        if (hasT || hasB) {
-          newLeft = width / 2
-          newTop = hasT ? 0 : height
-        }
-        // !#zh 左右点，高度固定在中间
-        if (hasL || hasR) {
-          newLeft = hasL ? 0 : width
-          newTop = height / 2
-        }
-      }
-      const style = {
-        marginLeft: hasL || hasR ? '-3px' : 0,
-        marginTop: hasT || hasB ? '-3px' : 0,
-        left: `${newLeft + (isWrapElement ? 0 : left)}px`,
-        top: `${newTop + (isWrapElement ? 0 : top)}px`,
-        cursor:
-          point
-            .split('')
-            .reverse()
-            .map(m => directionKey[m])
-            .join('') + '-resize'
-      }
-      return style
+    setActive(active) {
+      if (this.active === active) return
+      active ? this.$emit('active', active) : this.$emit('deactive', active)
+      this.active = active
     },
-    /**
-     * !#zh 主要目的是：阻止冒泡
-     */
-    handleWrapperClick(e) {
-      e.stopPropagation()
+    onClickOutside() {
+      this.setActive(false)
+    },
+    addWidth(width) {
+      const currentWidth = this.rect.width
+      let nextWidth = currentWidth + width
+      if (nextWidth < 0) nextWidth = 0
+      return (this.rect.width = nextWidth)
+    },
+    addHeight(height) {
+      const currentHeight = this.rect.height
+      let nextHeight = currentHeight + height
+      if (nextHeight < 0) nextHeight = 0
+      return (this.rect.height = nextHeight)
+    },
+    addLeft(left) {
+      const { left: currentLeft, width: currentWidth } = this.rect
+      left = currentWidth > left ? left : currentWidth
+      let nextLeft = currentLeft + left
+      if (nextLeft < 0) nextLeft = 0
+      return (this.rect.left = nextLeft)
+    },
+    addTop(top) {
+      const { top: currentTop, height: currentHeight } = this.rect
+      top = currentHeight > top ? top : currentHeight
+      let nextTop = currentTop + top
+      if (nextTop < 0) nextTop = 0
+      return (this.rect.top = nextTop)
+    },
+    handleShapeDown(e) {
+      this.setActive(true)
+      this.startY = e.clientY
+      this.startX = e.clientX
+      document.addEventListener('mousemove', this.handleShapeMove)
+      document.addEventListener('mouseup', this.handleShapeUp)
+    },
+    handleShapeMove(e) {
       e.preventDefault()
+      const distanceX = e.clientX - this.startX
+      const distanceY = e.clientY - this.startY
+      this.startX = e.clientX
+      this.startY = e.clientY
+      this.addLeft(distanceX)
+      this.addTop(distanceY)
     },
-    mousedownForMark(point, downEvent) {
-      downEvent.stopPropagation()
-      downEvent.preventDefault() // Let's stop this event.
-      const pos = { ...this.position }
-      let height = pos.height
-      let width = pos.width
-      let top = pos.top
-      let left = pos.left
-      let startX = downEvent.clientX
-      let startY = downEvent.clientY
-      let move = moveEvent => {
-        let currX = moveEvent.clientX
-        let currY = moveEvent.clientY
-        let disY = currY - startY
-        let disX = currX - startX
-        let hasT = /t/.test(point)
-        let hasB = /b/.test(point)
-        let hasL = /l/.test(point)
-        let hasR = /r/.test(point)
-        let newHeight = +height + (hasT ? -disY : hasB ? disY : 0)
-        let newWidth = +width + (hasL ? -disX : hasR ? disX : 0)
-        pos.height = newHeight > 0 ? newHeight : 0
-        pos.width = newWidth > 0 ? newWidth : 0
-        pos.left = +left + (hasL ? disX : 0)
-        pos.top = +top + (hasT ? disY : 0)
-        this.handlePointMoveProp(pos)
-      }
-      let up = () => {
-        this.handlePointMouseUpProp()
-        document.removeEventListener('mousemove', move)
-        document.removeEventListener('mouseup', up)
-      }
-      document.addEventListener('mousemove', move)
-      document.addEventListener('mouseup', up)
+    handleShapeUp() {
+      document.removeEventListener('mousemove', this.handleShapeMove)
+      document.removeEventListener('mouseup', this.handleShapeUp)
     },
-    /**
-     * !#zh 给 当前选中元素 添加鼠标移动相关事件
-     *
-     * @param {mouseEvent} e
-     */
-    mousedownForElement(e) {
-      const pos = { ...this.position }
-      let startY = e.clientY
-      let startX = e.clientX
-      let startTop = pos.top
-      let startLeft = pos.left
-
-      let move = moveEvent => {
-        // !#zh 移动的时候，不需要向后代元素传递事件，只需要单纯的移动就OK
-        moveEvent.stopPropagation()
-        moveEvent.preventDefault()
-
-        let currX = moveEvent.clientX
-        let currY = moveEvent.clientY
-        pos.top = currY - startY + startTop
-        pos.left = currX - startX + startLeft
-        this.handleElementMoveProp(pos)
-      }
-
-      let up = moveEvent => {
-        this.handleElementMouseUpProp()
-        document.removeEventListener('mousemove', move, true)
-        document.removeEventListener('mouseup', up, true)
-      }
-
-      document.addEventListener('mousemove', move, true)
-      document.addEventListener('mouseup', up, true)
+    handlePointDown(point, e) {
+      this.startY = e.clientY
+      this.startX = e.clientX
+      this.point = point
+      document.addEventListener('mousemove', this.handlePointMove)
+      document.addEventListener('mouseup', this.handlePointUp)
     },
-    handleMousedown(e) {
-      if (this.handleMousedownProp) {
-        this.handleMousedownProp()
-        this.mousedownForElement(e, this.element)
-      }
+    handlePointMove(e) {
+      const effect = [/l/, /t/, /r/, /b/].map(v => v.test(this.point))
+      const [effectLeft, effectTop, effectWidth, effectHeight] = effect
+      const distanceX = e.clientX - this.startX
+      const distanceY = e.clientY - this.startY
+      this.startX = e.clientX
+      this.startY = e.clientY
+      effectLeft && this.addLeft(distanceX)
+      effectLeft && this.addWidth(-distanceX)
+      effectTop && this.addTop(distanceY)
+      effectTop && this.addHeight(-distanceY)
+      effectWidth && this.addWidth(distanceX)
+      effectHeight && this.addHeight(distanceY)
     },
-    /**
-     * !#en: delete element with keyboard
-     * !#zh: 键盘快捷键删除元素
-     *
-     * TODO: 增加 确认删除 拦截操作
-     */
-    handleDeleteByKeyboard(event) {
-      const key = event.keyCode || event.charCode
-      if (key === 8 || key === 46) {
-        this.$emit('delete')
-      }
-    },
-    /**
-     * detect key pressed on keyboard
-     * 检测键盘按键 按下行为
-     *
-     * 支持如下行为：
-     * - Backspace/Delete 快速删除元素
-     */
-    handleKeyPressed(e) {
-      this.handleDeleteByKeyboard(e)
+    handlePointUp() {
+      document.removeEventListener('mousemove', this.handlePointMove)
+      document.removeEventListener('mouseup', this.handlePointUp)
     }
   },
-  render(h) {
+  render() {
     return (
       <div
-        tabIndex="0"
-        onKeydown={this.handleKeyPressed}
-        onClick={this.handleWrapperClick}
-        onMousedown={this.handleMousedown}
-        class={{ 'shape__wrapper-active': this.active }}
+        tabindex="0"
+        v-click-outside={this.vcoConfig}
+        style={this.shapeStyle}
+        class={['shape__wrapper', { 'shape__wrapper-active': this.active }]}
+        data-id={id++}
+        onMousedown={this.handleShapeDown}
+        ref="shape"
       >
-        {this.active &&
-          points.map(point => {
-            const pointStyle = this.getPointStyle(point)
-            return (
-              <div
-                key={point}
-                data-point={point}
-                style={pointStyle}
-                class="shape__scale-point"
-                onMousedown={this.mousedownForMark.bind(this, point)}
-              ></div>
-            )
-          })}
-        {this.$slots.default}
+        <div class="content">{this.$slots.default}</div>
+        <div class="control">
+          {points.map(v => (
+            <div
+              v-show={this.active}
+              style={this[`${v}PointStyle`]}
+              class="shape__scale-point"
+              data-point={v}
+              onMousedown={this.handlePointDown.bind(this, v)}
+            ></div>
+          ))}
+        </div>
       </div>
     )
   }

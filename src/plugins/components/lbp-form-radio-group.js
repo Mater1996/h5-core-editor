@@ -1,8 +1,8 @@
 /*
  * @Author: ly525
  * @Date: 2019-11-23 12:35:43
- * @LastEditors: ly525
- * @LastEditTime: 2020-10-10 23:33:03
+ * @LastEditors : Please set LastEditors
+ * @LastEditTime : 2020-11-10 15:08:45
  * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-form-radio-group.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: 表单单选组组件 #!en: radio group component
@@ -33,14 +33,14 @@ function getDefaultItems () {
 }
 
 export default {
-  extra: {
-    defaultStyle: {
-      width: 120,
-      height: 120
-    }
-  },
   name: 'lbp-form-radio-group',
   props: {
+    width: {
+      default: 120
+    },
+    height: {
+      default: 120
+    },
     aliasName: PropTypes.string({
       defaultValue: `标题演示`,
       label: '填写标题'
