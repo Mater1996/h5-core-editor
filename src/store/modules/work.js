@@ -1,6 +1,13 @@
-import Element from '@/models/element'
-import Page from '@/models/page'
-import Work from '@/models/work'
+/*
+ * @author : Mater
+ * @Email : bxh8640@gmail.com
+ * @Date : 2020-11-02 16:12:09
+ * @LastEditTime : 2020-11-12 09:18:26
+ * @Description :
+ */
+import CoreEditor from '@/core'
+import Page from '@/editor/models/page'
+import Work from '@/editor/models/work'
 
 export const actions = {
   updateWork ({ commit, state }, payload = {}) {
@@ -26,7 +33,7 @@ export const mutations = {
   setWork (state, work) {
     window.__work = work
     work.pages = work.pages.map(page => {
-      page.elements = page.elements.map(element => new Element(element))
+      page.elements = page.elements.map(element => new CoreEditor.Element(element))
       return new Page(page)
     })
     state.work = new Work(work)

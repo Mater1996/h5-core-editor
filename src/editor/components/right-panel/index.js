@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-11 11:24:14
+ * @LastEditTime : 2020-11-12 09:48:52
  * @Description : 右侧panel为修改 props， events, animations 等属性
  */
 import RenderPropsEditor from './props'
@@ -10,6 +10,7 @@ import RenderScriptEditor from './script'
 import RenderAnimationEditor from './animation'
 import RenderActionEditor from './action'
 import RenderBackgroundEditor from './background'
+import pluginsControl from '@/plugins'
 import { Layout, Tabs } from 'ant-design-vue'
 
 export default {
@@ -32,8 +33,12 @@ export default {
   computed: {
     editPropsConfig() {
       const { element } = this
-      const vm = element && element.vm
-      return this.getPropsWithEditor((vm && vm.$options.props) || {})
+      if (element && element.name) {
+        const { component } = pluginsControl.getPlugin(element.name)
+        return this.getPropsWithEditor(component.props)
+      } else {
+        return {}
+      }
     },
     editPropsValue() {
       const { element, editPropsConfig } = this

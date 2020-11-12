@@ -12,7 +12,7 @@ import {
 import colorsPanel from '@/support/colors-panel'
 import lbsTextAlign from '@/support/text-align'
 import lbsExcelEditor from '@/support/excel'
-import lbpSlideCustomEditor from '@/plugins/components/lbp-slide__editor'
+import lbpSlideCustomEditor from '@/support/lbp-slide__editor'
 
 export default {
   components: {

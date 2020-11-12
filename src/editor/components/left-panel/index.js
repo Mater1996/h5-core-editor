@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-06 19:26:24
+ * @LastEditTime : 2020-11-11 14:45:05
  * @Description :
  */
 import RenderShortcutsPanel from "./shortcuts-panel/index";
@@ -22,9 +22,9 @@ export default {
       <a-layout-sider
         width="240"
         theme="light"
-        style={{ background: "#fff", padding: "12px" }}
+        style={{ background: "#fff", padding: "12px", height: '100%', 'overflow': 'auto' }}
       >
-        <a-tabs style="height: 100%;" tabBarGutter={10}>
+        <a-tabs tabBarGutter={10}>
           <a-tab-pane
             key="plugin-list"
             tab={this.$t("editor.sidebar.components")}

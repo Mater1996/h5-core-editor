@@ -1,17 +1,17 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('ant-design-vue'), require('vuex'), require('hotkeys-js'), require('lodash'), require('x-data-spreadsheet'), require('papaparse'), require('vue'), require('vue-quill-editor'), require('vant'), require('resize-detector'), require('vue-i18n')) :
-  typeof define === 'function' && define.amd ? define(['ant-design-vue', 'vuex', 'hotkeys-js', 'lodash', 'x-data-spreadsheet', 'papaparse', 'vue', 'vue-quill-editor', 'vant', 'resize-detector', 'vue-i18n'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['luban-h5-editor'] = factory(global['ant-design-vue'], global.Vuex, global.hotkeys, global.lodash, global.x_spreadsheet, global.papaparse, global.Vue, global.VueQuillEditor, global.vant, global.resizeDetector, global.VueI18n));
-}(this, (function (antDesignVue, Vuex, hotkeys, lodash, Spreadsheet, Papa, Vue, vueQuillEditor, vant, resizeDetector, VueI18n) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('ant-design-vue'), require('vue-quill-editor'), require('vue'), require('vant'), require('resize-detector'), require('vuex'), require('lodash'), require('vue-i18n'), require('hotkeys-js'), require('x-data-spreadsheet'), require('papaparse')) :
+  typeof define === 'function' && define.amd ? define(['ant-design-vue', 'vue-quill-editor', 'vue', 'vant', 'resize-detector', 'vuex', 'lodash', 'vue-i18n', 'hotkeys-js', 'x-data-spreadsheet', 'papaparse'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['luban-h5-editor'] = factory(global['ant-design-vue'], global.VueQuillEditor, global.Vue, global.vant, global.resizeDetector, global.Vuex, global.lodash, global.VueI18n, global.hotkeys, global.x_spreadsheet, global.papaparse));
+}(this, (function (antDesignVue, vueQuillEditor, Vue, vant, resizeDetector, Vuex, lodash, VueI18n, hotkeys, Spreadsheet, Papa) { 'use strict';
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
+  var Vue__default = /*#__PURE__*/_interopDefaultLegacy(Vue);
   var Vuex__default = /*#__PURE__*/_interopDefaultLegacy(Vuex);
+  var VueI18n__default = /*#__PURE__*/_interopDefaultLegacy(VueI18n);
   var hotkeys__default = /*#__PURE__*/_interopDefaultLegacy(hotkeys);
   var Spreadsheet__default = /*#__PURE__*/_interopDefaultLegacy(Spreadsheet);
   var Papa__default = /*#__PURE__*/_interopDefaultLegacy(Papa);
-  var Vue__default = /*#__PURE__*/_interopDefaultLegacy(Vue);
-  var VueI18n__default = /*#__PURE__*/_interopDefaultLegacy(VueI18n);
 
   var fails = function (exec) {
     try {
@@ -150,23 +150,6 @@
       }
     });
   }
-
-  function _defineProperty(obj, key, value) {
-    if (key in obj) {
-      Object.defineProperty(obj, key, {
-        value: value,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      });
-    } else {
-      obj[key] = value;
-    }
-
-    return obj;
-  }
-
-  var defineProperty$1 = _defineProperty;
 
   var nativePropertyIsEnumerable = {}.propertyIsEnumerable;
   var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
@@ -597,6 +580,47 @@
     }
   };
 
+  var aFunction$1 = function (it) {
+    if (typeof it != 'function') {
+      throw TypeError(String(it) + ' is not a function');
+    } return it;
+  };
+
+  // optional / simple context binding
+  var functionBindContext = function (fn, that, length) {
+    aFunction$1(fn);
+    if (that === undefined) return fn;
+    switch (length) {
+      case 0: return function () {
+        return fn.call(that);
+      };
+      case 1: return function (a) {
+        return fn.call(that, a);
+      };
+      case 2: return function (a, b) {
+        return fn.call(that, a, b);
+      };
+      case 3: return function (a, b, c) {
+        return fn.call(that, a, b, c);
+      };
+    }
+    return function (/* ...args */) {
+      return fn.apply(that, arguments);
+    };
+  };
+
+  // `ToObject` abstract operation
+  // https://tc39.github.io/ecma262/#sec-toobject
+  var toObject = function (argument) {
+    return Object(requireObjectCoercible(argument));
+  };
+
+  // `IsArray` abstract operation
+  // https://tc39.github.io/ecma262/#sec-isarray
+  var isArray = Array.isArray || function isArray(arg) {
+    return classofRaw(arg) == 'Array';
+  };
+
   var nativeSymbol = !!Object.getOwnPropertySymbols && !fails(function () {
     // Chrome 38 Symbol has incorrect toString conversion
     // eslint-disable-next-line no-undef
@@ -609,16 +633,403 @@
     // eslint-disable-next-line no-undef
     && typeof Symbol.iterator == 'symbol';
 
-  // `IsArray` abstract operation
-  // https://tc39.github.io/ecma262/#sec-isarray
-  var isArray = Array.isArray || function isArray(arg) {
-    return classofRaw(arg) == 'Array';
+  var WellKnownSymbolsStore = shared('wks');
+  var Symbol$1 = global_1.Symbol;
+  var createWellKnownSymbol = useSymbolAsUid ? Symbol$1 : Symbol$1 && Symbol$1.withoutSetter || uid;
+
+  var wellKnownSymbol = function (name) {
+    if (!has(WellKnownSymbolsStore, name)) {
+      if (nativeSymbol && has(Symbol$1, name)) WellKnownSymbolsStore[name] = Symbol$1[name];
+      else WellKnownSymbolsStore[name] = createWellKnownSymbol('Symbol.' + name);
+    } return WellKnownSymbolsStore[name];
   };
 
-  // `ToObject` abstract operation
-  // https://tc39.github.io/ecma262/#sec-toobject
-  var toObject = function (argument) {
-    return Object(requireObjectCoercible(argument));
+  var SPECIES = wellKnownSymbol('species');
+
+  // `ArraySpeciesCreate` abstract operation
+  // https://tc39.github.io/ecma262/#sec-arrayspeciescreate
+  var arraySpeciesCreate = function (originalArray, length) {
+    var C;
+    if (isArray(originalArray)) {
+      C = originalArray.constructor;
+      // cross-realm fallback
+      if (typeof C == 'function' && (C === Array || isArray(C.prototype))) C = undefined;
+      else if (isObject(C)) {
+        C = C[SPECIES];
+        if (C === null) C = undefined;
+      }
+    } return new (C === undefined ? Array : C)(length === 0 ? 0 : length);
+  };
+
+  var push = [].push;
+
+  // `Array.prototype.{ forEach, map, filter, some, every, find, findIndex }` methods implementation
+  var createMethod$1 = function (TYPE) {
+    var IS_MAP = TYPE == 1;
+    var IS_FILTER = TYPE == 2;
+    var IS_SOME = TYPE == 3;
+    var IS_EVERY = TYPE == 4;
+    var IS_FIND_INDEX = TYPE == 6;
+    var NO_HOLES = TYPE == 5 || IS_FIND_INDEX;
+    return function ($this, callbackfn, that, specificCreate) {
+      var O = toObject($this);
+      var self = indexedObject(O);
+      var boundFunction = functionBindContext(callbackfn, that, 3);
+      var length = toLength(self.length);
+      var index = 0;
+      var create = specificCreate || arraySpeciesCreate;
+      var target = IS_MAP ? create($this, length) : IS_FILTER ? create($this, 0) : undefined;
+      var value, result;
+      for (;length > index; index++) if (NO_HOLES || index in self) {
+        value = self[index];
+        result = boundFunction(value, index, O);
+        if (TYPE) {
+          if (IS_MAP) target[index] = result; // map
+          else if (result) switch (TYPE) {
+            case 3: return true;              // some
+            case 5: return value;             // find
+            case 6: return index;             // findIndex
+            case 2: push.call(target, value); // filter
+          } else if (IS_EVERY) return false;  // every
+        }
+      }
+      return IS_FIND_INDEX ? -1 : IS_SOME || IS_EVERY ? IS_EVERY : target;
+    };
+  };
+
+  var arrayIteration = {
+    // `Array.prototype.forEach` method
+    // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
+    forEach: createMethod$1(0),
+    // `Array.prototype.map` method
+    // https://tc39.github.io/ecma262/#sec-array.prototype.map
+    map: createMethod$1(1),
+    // `Array.prototype.filter` method
+    // https://tc39.github.io/ecma262/#sec-array.prototype.filter
+    filter: createMethod$1(2),
+    // `Array.prototype.some` method
+    // https://tc39.github.io/ecma262/#sec-array.prototype.some
+    some: createMethod$1(3),
+    // `Array.prototype.every` method
+    // https://tc39.github.io/ecma262/#sec-array.prototype.every
+    every: createMethod$1(4),
+    // `Array.prototype.find` method
+    // https://tc39.github.io/ecma262/#sec-array.prototype.find
+    find: createMethod$1(5),
+    // `Array.prototype.findIndex` method
+    // https://tc39.github.io/ecma262/#sec-array.prototype.findIndex
+    findIndex: createMethod$1(6)
+  };
+
+  var engineUserAgent = getBuiltIn('navigator', 'userAgent') || '';
+
+  var process = global_1.process;
+  var versions = process && process.versions;
+  var v8 = versions && versions.v8;
+  var match, version;
+
+  if (v8) {
+    match = v8.split('.');
+    version = match[0] + match[1];
+  } else if (engineUserAgent) {
+    match = engineUserAgent.match(/Edge\/(\d+)/);
+    if (!match || match[1] >= 74) {
+      match = engineUserAgent.match(/Chrome\/(\d+)/);
+      if (match) version = match[1];
+    }
+  }
+
+  var engineV8Version = version && +version;
+
+  var SPECIES$1 = wellKnownSymbol('species');
+
+  var arrayMethodHasSpeciesSupport = function (METHOD_NAME) {
+    // We can't use this feature detection in V8 since it causes
+    // deoptimization and serious performance degradation
+    // https://github.com/zloirock/core-js/issues/677
+    return engineV8Version >= 51 || !fails(function () {
+      var array = [];
+      var constructor = array.constructor = {};
+      constructor[SPECIES$1] = function () {
+        return { foo: 1 };
+      };
+      return array[METHOD_NAME](Boolean).foo !== 1;
+    });
+  };
+
+  var defineProperty$1 = Object.defineProperty;
+  var cache = {};
+
+  var thrower = function (it) { throw it; };
+
+  var arrayMethodUsesToLength = function (METHOD_NAME, options) {
+    if (has(cache, METHOD_NAME)) return cache[METHOD_NAME];
+    if (!options) options = {};
+    var method = [][METHOD_NAME];
+    var ACCESSORS = has(options, 'ACCESSORS') ? options.ACCESSORS : false;
+    var argument0 = has(options, 0) ? options[0] : thrower;
+    var argument1 = has(options, 1) ? options[1] : undefined;
+
+    return cache[METHOD_NAME] = !!method && !fails(function () {
+      if (ACCESSORS && !descriptors) return true;
+      var O = { length: -1 };
+
+      if (ACCESSORS) defineProperty$1(O, 1, { enumerable: true, get: thrower });
+      else O[1] = 1;
+
+      method.call(O, argument0, argument1);
+    });
+  };
+
+  var $map = arrayIteration.map;
+
+
+
+  var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('map');
+  // FF49- issue
+  var USES_TO_LENGTH = arrayMethodUsesToLength('map');
+
+  // `Array.prototype.map` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.map
+  // with adding support of @@species
+  _export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT || !USES_TO_LENGTH }, {
+    map: function map(callbackfn /* , thisArg */) {
+      return $map(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
+    }
+  });
+
+  function _arrayLikeToArray(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+
+    for (var i = 0, arr2 = new Array(len); i < len; i++) {
+      arr2[i] = arr[i];
+    }
+
+    return arr2;
+  }
+
+  var arrayLikeToArray = _arrayLikeToArray;
+
+  function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) return arrayLikeToArray(arr);
+  }
+
+  var arrayWithoutHoles = _arrayWithoutHoles;
+
+  function _iterableToArray(iter) {
+    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+  }
+
+  var iterableToArray = _iterableToArray;
+
+  function _unsupportedIterableToArray(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(o);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return arrayLikeToArray(o, minLen);
+  }
+
+  var unsupportedIterableToArray = _unsupportedIterableToArray;
+
+  function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  var nonIterableSpread = _nonIterableSpread;
+
+  function _toConsumableArray(arr) {
+    return arrayWithoutHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableSpread();
+  }
+
+  var toConsumableArray = _toConsumableArray;
+
+  function _defineProperty(obj, key, value) {
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+
+    return obj;
+  }
+
+  var defineProperty$2 = _defineProperty;
+
+  var arrayMethodIsStrict = function (METHOD_NAME, argument) {
+    var method = [][METHOD_NAME];
+    return !!method && fails(function () {
+      // eslint-disable-next-line no-useless-call,no-throw-literal
+      method.call(null, argument || function () { throw 1; }, 1);
+    });
+  };
+
+  var $forEach = arrayIteration.forEach;
+
+
+
+  var STRICT_METHOD = arrayMethodIsStrict('forEach');
+  var USES_TO_LENGTH$1 = arrayMethodUsesToLength('forEach');
+
+  // `Array.prototype.forEach` method implementation
+  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
+  var arrayForEach = (!STRICT_METHOD || !USES_TO_LENGTH$1) ? function forEach(callbackfn /* , thisArg */) {
+    return $forEach(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
+  } : [].forEach;
+
+  // `Array.prototype.forEach` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
+  _export({ target: 'Array', proto: true, forced: [].forEach != arrayForEach }, {
+    forEach: arrayForEach
+  });
+
+  // iterable DOM collections
+  // flag - `iterable` interface - 'entries', 'keys', 'values', 'forEach' methods
+  var domIterables = {
+    CSSRuleList: 0,
+    CSSStyleDeclaration: 0,
+    CSSValueList: 0,
+    ClientRectList: 0,
+    DOMRectList: 0,
+    DOMStringList: 0,
+    DOMTokenList: 1,
+    DataTransferItemList: 0,
+    FileList: 0,
+    HTMLAllCollection: 0,
+    HTMLCollection: 0,
+    HTMLFormElement: 0,
+    HTMLSelectElement: 0,
+    MediaList: 0,
+    MimeTypeArray: 0,
+    NamedNodeMap: 0,
+    NodeList: 1,
+    PaintRequestList: 0,
+    Plugin: 0,
+    PluginArray: 0,
+    SVGLengthList: 0,
+    SVGNumberList: 0,
+    SVGPathSegList: 0,
+    SVGPointList: 0,
+    SVGStringList: 0,
+    SVGTransformList: 0,
+    SourceBufferList: 0,
+    StyleSheetList: 0,
+    TextTrackCueList: 0,
+    TextTrackList: 0,
+    TouchList: 0
+  };
+
+  for (var COLLECTION_NAME in domIterables) {
+    var Collection = global_1[COLLECTION_NAME];
+    var CollectionPrototype = Collection && Collection.prototype;
+    // some Chrome versions have non-configurable methods on DOMTokenList
+    if (CollectionPrototype && CollectionPrototype.forEach !== arrayForEach) try {
+      createNonEnumerableProperty(CollectionPrototype, 'forEach', arrayForEach);
+    } catch (error) {
+      CollectionPrototype.forEach = arrayForEach;
+    }
+  }
+
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+
+  var classCallCheck = _classCallCheck;
+
+  function _defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  function _createClass(Constructor, protoProps, staticProps) {
+    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) _defineProperties(Constructor, staticProps);
+    return Constructor;
+  }
+
+  var createClass = _createClass;
+
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-11 19:49:19
+   * @LastEditTime : 2020-11-12 09:32:42
+   * @Description :
+   */
+  var LbpPlugin = function LbpPlugin() {
+    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+        name = _ref.name,
+        _ref$i18nTitle = _ref.i18nTitle,
+        i18nTitle = _ref$i18nTitle === void 0 ? {} : _ref$i18nTitle,
+        title = _ref.title,
+        icon = _ref.icon,
+        visible = _ref.visible,
+        component = _ref.component;
+
+    classCallCheck(this, LbpPlugin);
+
+    this.name = name;
+    this.i18nTitle = i18nTitle;
+    this.title = title;
+    this.icon = icon;
+    this.visible = visible;
+    this.component = component;
+  };
+
+  var aPossiblePrototype = function (it) {
+    if (!isObject(it) && it !== null) {
+      throw TypeError("Can't set " + String(it) + ' as a prototype');
+    } return it;
+  };
+
+  // `Object.setPrototypeOf` method
+  // https://tc39.github.io/ecma262/#sec-object.setprototypeof
+  // Works with __proto__ only. Old v8 can't work with null proto objects.
+  /* eslint-disable no-proto */
+  var objectSetPrototypeOf = Object.setPrototypeOf || ('__proto__' in {} ? function () {
+    var CORRECT_SETTER = false;
+    var test = {};
+    var setter;
+    try {
+      setter = Object.getOwnPropertyDescriptor(Object.prototype, '__proto__').set;
+      setter.call(test, []);
+      CORRECT_SETTER = test instanceof Array;
+    } catch (error) { /* empty */ }
+    return function setPrototypeOf(O, proto) {
+      anObject(O);
+      aPossiblePrototype(proto);
+      if (CORRECT_SETTER) setter.call(O, proto);
+      else O.__proto__ = proto;
+      return O;
+    };
+  }() : undefined);
+
+  // makes subclassing work correct for wrapped built-ins
+  var inheritIfRequired = function ($this, dummy, Wrapper) {
+    var NewTarget, NewTargetPrototype;
+    if (
+      // it can work only with native `setPrototypeOf`
+      objectSetPrototypeOf &&
+      // we haven't completely correct pre-ES6 way for getting `new.target`, so use this
+      typeof (NewTarget = dummy.constructor) == 'function' &&
+      NewTarget !== Wrapper &&
+      isObject(NewTargetPrototype = NewTarget.prototype) &&
+      NewTargetPrototype !== Wrapper.prototype
+    ) objectSetPrototypeOf($this, NewTargetPrototype);
+    return $this;
   };
 
   // `Object.keys` method
@@ -712,1016 +1123,6 @@
     return Properties === undefined ? result : objectDefineProperties(result, Properties);
   };
 
-  var nativeGetOwnPropertyNames = objectGetOwnPropertyNames.f;
-
-  var toString$1 = {}.toString;
-
-  var windowNames = typeof window == 'object' && window && Object.getOwnPropertyNames
-    ? Object.getOwnPropertyNames(window) : [];
-
-  var getWindowNames = function (it) {
-    try {
-      return nativeGetOwnPropertyNames(it);
-    } catch (error) {
-      return windowNames.slice();
-    }
-  };
-
-  // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
-  var f$5 = function getOwnPropertyNames(it) {
-    return windowNames && toString$1.call(it) == '[object Window]'
-      ? getWindowNames(it)
-      : nativeGetOwnPropertyNames(toIndexedObject(it));
-  };
-
-  var objectGetOwnPropertyNamesExternal = {
-  	f: f$5
-  };
-
-  var WellKnownSymbolsStore = shared('wks');
-  var Symbol$1 = global_1.Symbol;
-  var createWellKnownSymbol = useSymbolAsUid ? Symbol$1 : Symbol$1 && Symbol$1.withoutSetter || uid;
-
-  var wellKnownSymbol = function (name) {
-    if (!has(WellKnownSymbolsStore, name)) {
-      if (nativeSymbol && has(Symbol$1, name)) WellKnownSymbolsStore[name] = Symbol$1[name];
-      else WellKnownSymbolsStore[name] = createWellKnownSymbol('Symbol.' + name);
-    } return WellKnownSymbolsStore[name];
-  };
-
-  var f$6 = wellKnownSymbol;
-
-  var wellKnownSymbolWrapped = {
-  	f: f$6
-  };
-
-  var defineProperty$2 = objectDefineProperty.f;
-
-  var defineWellKnownSymbol = function (NAME) {
-    var Symbol = path.Symbol || (path.Symbol = {});
-    if (!has(Symbol, NAME)) defineProperty$2(Symbol, NAME, {
-      value: wellKnownSymbolWrapped.f(NAME)
-    });
-  };
-
-  var defineProperty$3 = objectDefineProperty.f;
-
-
-
-  var TO_STRING_TAG = wellKnownSymbol('toStringTag');
-
-  var setToStringTag = function (it, TAG, STATIC) {
-    if (it && !has(it = STATIC ? it : it.prototype, TO_STRING_TAG)) {
-      defineProperty$3(it, TO_STRING_TAG, { configurable: true, value: TAG });
-    }
-  };
-
-  var aFunction$1 = function (it) {
-    if (typeof it != 'function') {
-      throw TypeError(String(it) + ' is not a function');
-    } return it;
-  };
-
-  // optional / simple context binding
-  var functionBindContext = function (fn, that, length) {
-    aFunction$1(fn);
-    if (that === undefined) return fn;
-    switch (length) {
-      case 0: return function () {
-        return fn.call(that);
-      };
-      case 1: return function (a) {
-        return fn.call(that, a);
-      };
-      case 2: return function (a, b) {
-        return fn.call(that, a, b);
-      };
-      case 3: return function (a, b, c) {
-        return fn.call(that, a, b, c);
-      };
-    }
-    return function (/* ...args */) {
-      return fn.apply(that, arguments);
-    };
-  };
-
-  var SPECIES = wellKnownSymbol('species');
-
-  // `ArraySpeciesCreate` abstract operation
-  // https://tc39.github.io/ecma262/#sec-arrayspeciescreate
-  var arraySpeciesCreate = function (originalArray, length) {
-    var C;
-    if (isArray(originalArray)) {
-      C = originalArray.constructor;
-      // cross-realm fallback
-      if (typeof C == 'function' && (C === Array || isArray(C.prototype))) C = undefined;
-      else if (isObject(C)) {
-        C = C[SPECIES];
-        if (C === null) C = undefined;
-      }
-    } return new (C === undefined ? Array : C)(length === 0 ? 0 : length);
-  };
-
-  var push = [].push;
-
-  // `Array.prototype.{ forEach, map, filter, some, every, find, findIndex }` methods implementation
-  var createMethod$1 = function (TYPE) {
-    var IS_MAP = TYPE == 1;
-    var IS_FILTER = TYPE == 2;
-    var IS_SOME = TYPE == 3;
-    var IS_EVERY = TYPE == 4;
-    var IS_FIND_INDEX = TYPE == 6;
-    var NO_HOLES = TYPE == 5 || IS_FIND_INDEX;
-    return function ($this, callbackfn, that, specificCreate) {
-      var O = toObject($this);
-      var self = indexedObject(O);
-      var boundFunction = functionBindContext(callbackfn, that, 3);
-      var length = toLength(self.length);
-      var index = 0;
-      var create = specificCreate || arraySpeciesCreate;
-      var target = IS_MAP ? create($this, length) : IS_FILTER ? create($this, 0) : undefined;
-      var value, result;
-      for (;length > index; index++) if (NO_HOLES || index in self) {
-        value = self[index];
-        result = boundFunction(value, index, O);
-        if (TYPE) {
-          if (IS_MAP) target[index] = result; // map
-          else if (result) switch (TYPE) {
-            case 3: return true;              // some
-            case 5: return value;             // find
-            case 6: return index;             // findIndex
-            case 2: push.call(target, value); // filter
-          } else if (IS_EVERY) return false;  // every
-        }
-      }
-      return IS_FIND_INDEX ? -1 : IS_SOME || IS_EVERY ? IS_EVERY : target;
-    };
-  };
-
-  var arrayIteration = {
-    // `Array.prototype.forEach` method
-    // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
-    forEach: createMethod$1(0),
-    // `Array.prototype.map` method
-    // https://tc39.github.io/ecma262/#sec-array.prototype.map
-    map: createMethod$1(1),
-    // `Array.prototype.filter` method
-    // https://tc39.github.io/ecma262/#sec-array.prototype.filter
-    filter: createMethod$1(2),
-    // `Array.prototype.some` method
-    // https://tc39.github.io/ecma262/#sec-array.prototype.some
-    some: createMethod$1(3),
-    // `Array.prototype.every` method
-    // https://tc39.github.io/ecma262/#sec-array.prototype.every
-    every: createMethod$1(4),
-    // `Array.prototype.find` method
-    // https://tc39.github.io/ecma262/#sec-array.prototype.find
-    find: createMethod$1(5),
-    // `Array.prototype.findIndex` method
-    // https://tc39.github.io/ecma262/#sec-array.prototype.findIndex
-    findIndex: createMethod$1(6)
-  };
-
-  var $forEach = arrayIteration.forEach;
-
-  var HIDDEN = sharedKey('hidden');
-  var SYMBOL = 'Symbol';
-  var PROTOTYPE$1 = 'prototype';
-  var TO_PRIMITIVE = wellKnownSymbol('toPrimitive');
-  var setInternalState = internalState.set;
-  var getInternalState = internalState.getterFor(SYMBOL);
-  var ObjectPrototype = Object[PROTOTYPE$1];
-  var $Symbol = global_1.Symbol;
-  var $stringify = getBuiltIn('JSON', 'stringify');
-  var nativeGetOwnPropertyDescriptor$1 = objectGetOwnPropertyDescriptor.f;
-  var nativeDefineProperty$1 = objectDefineProperty.f;
-  var nativeGetOwnPropertyNames$1 = objectGetOwnPropertyNamesExternal.f;
-  var nativePropertyIsEnumerable$1 = objectPropertyIsEnumerable.f;
-  var AllSymbols = shared('symbols');
-  var ObjectPrototypeSymbols = shared('op-symbols');
-  var StringToSymbolRegistry = shared('string-to-symbol-registry');
-  var SymbolToStringRegistry = shared('symbol-to-string-registry');
-  var WellKnownSymbolsStore$1 = shared('wks');
-  var QObject = global_1.QObject;
-  // Don't use setters in Qt Script, https://github.com/zloirock/core-js/issues/173
-  var USE_SETTER = !QObject || !QObject[PROTOTYPE$1] || !QObject[PROTOTYPE$1].findChild;
-
-  // fallback for old Android, https://code.google.com/p/v8/issues/detail?id=687
-  var setSymbolDescriptor = descriptors && fails(function () {
-    return objectCreate(nativeDefineProperty$1({}, 'a', {
-      get: function () { return nativeDefineProperty$1(this, 'a', { value: 7 }).a; }
-    })).a != 7;
-  }) ? function (O, P, Attributes) {
-    var ObjectPrototypeDescriptor = nativeGetOwnPropertyDescriptor$1(ObjectPrototype, P);
-    if (ObjectPrototypeDescriptor) delete ObjectPrototype[P];
-    nativeDefineProperty$1(O, P, Attributes);
-    if (ObjectPrototypeDescriptor && O !== ObjectPrototype) {
-      nativeDefineProperty$1(ObjectPrototype, P, ObjectPrototypeDescriptor);
-    }
-  } : nativeDefineProperty$1;
-
-  var wrap = function (tag, description) {
-    var symbol = AllSymbols[tag] = objectCreate($Symbol[PROTOTYPE$1]);
-    setInternalState(symbol, {
-      type: SYMBOL,
-      tag: tag,
-      description: description
-    });
-    if (!descriptors) symbol.description = description;
-    return symbol;
-  };
-
-  var isSymbol = useSymbolAsUid ? function (it) {
-    return typeof it == 'symbol';
-  } : function (it) {
-    return Object(it) instanceof $Symbol;
-  };
-
-  var $defineProperty = function defineProperty(O, P, Attributes) {
-    if (O === ObjectPrototype) $defineProperty(ObjectPrototypeSymbols, P, Attributes);
-    anObject(O);
-    var key = toPrimitive(P, true);
-    anObject(Attributes);
-    if (has(AllSymbols, key)) {
-      if (!Attributes.enumerable) {
-        if (!has(O, HIDDEN)) nativeDefineProperty$1(O, HIDDEN, createPropertyDescriptor(1, {}));
-        O[HIDDEN][key] = true;
-      } else {
-        if (has(O, HIDDEN) && O[HIDDEN][key]) O[HIDDEN][key] = false;
-        Attributes = objectCreate(Attributes, { enumerable: createPropertyDescriptor(0, false) });
-      } return setSymbolDescriptor(O, key, Attributes);
-    } return nativeDefineProperty$1(O, key, Attributes);
-  };
-
-  var $defineProperties = function defineProperties(O, Properties) {
-    anObject(O);
-    var properties = toIndexedObject(Properties);
-    var keys = objectKeys(properties).concat($getOwnPropertySymbols(properties));
-    $forEach(keys, function (key) {
-      if (!descriptors || $propertyIsEnumerable.call(properties, key)) $defineProperty(O, key, properties[key]);
-    });
-    return O;
-  };
-
-  var $create = function create(O, Properties) {
-    return Properties === undefined ? objectCreate(O) : $defineProperties(objectCreate(O), Properties);
-  };
-
-  var $propertyIsEnumerable = function propertyIsEnumerable(V) {
-    var P = toPrimitive(V, true);
-    var enumerable = nativePropertyIsEnumerable$1.call(this, P);
-    if (this === ObjectPrototype && has(AllSymbols, P) && !has(ObjectPrototypeSymbols, P)) return false;
-    return enumerable || !has(this, P) || !has(AllSymbols, P) || has(this, HIDDEN) && this[HIDDEN][P] ? enumerable : true;
-  };
-
-  var $getOwnPropertyDescriptor = function getOwnPropertyDescriptor(O, P) {
-    var it = toIndexedObject(O);
-    var key = toPrimitive(P, true);
-    if (it === ObjectPrototype && has(AllSymbols, key) && !has(ObjectPrototypeSymbols, key)) return;
-    var descriptor = nativeGetOwnPropertyDescriptor$1(it, key);
-    if (descriptor && has(AllSymbols, key) && !(has(it, HIDDEN) && it[HIDDEN][key])) {
-      descriptor.enumerable = true;
-    }
-    return descriptor;
-  };
-
-  var $getOwnPropertyNames = function getOwnPropertyNames(O) {
-    var names = nativeGetOwnPropertyNames$1(toIndexedObject(O));
-    var result = [];
-    $forEach(names, function (key) {
-      if (!has(AllSymbols, key) && !has(hiddenKeys, key)) result.push(key);
-    });
-    return result;
-  };
-
-  var $getOwnPropertySymbols = function getOwnPropertySymbols(O) {
-    var IS_OBJECT_PROTOTYPE = O === ObjectPrototype;
-    var names = nativeGetOwnPropertyNames$1(IS_OBJECT_PROTOTYPE ? ObjectPrototypeSymbols : toIndexedObject(O));
-    var result = [];
-    $forEach(names, function (key) {
-      if (has(AllSymbols, key) && (!IS_OBJECT_PROTOTYPE || has(ObjectPrototype, key))) {
-        result.push(AllSymbols[key]);
-      }
-    });
-    return result;
-  };
-
-  // `Symbol` constructor
-  // https://tc39.github.io/ecma262/#sec-symbol-constructor
-  if (!nativeSymbol) {
-    $Symbol = function Symbol() {
-      if (this instanceof $Symbol) throw TypeError('Symbol is not a constructor');
-      var description = !arguments.length || arguments[0] === undefined ? undefined : String(arguments[0]);
-      var tag = uid(description);
-      var setter = function (value) {
-        if (this === ObjectPrototype) setter.call(ObjectPrototypeSymbols, value);
-        if (has(this, HIDDEN) && has(this[HIDDEN], tag)) this[HIDDEN][tag] = false;
-        setSymbolDescriptor(this, tag, createPropertyDescriptor(1, value));
-      };
-      if (descriptors && USE_SETTER) setSymbolDescriptor(ObjectPrototype, tag, { configurable: true, set: setter });
-      return wrap(tag, description);
-    };
-
-    redefine($Symbol[PROTOTYPE$1], 'toString', function toString() {
-      return getInternalState(this).tag;
-    });
-
-    redefine($Symbol, 'withoutSetter', function (description) {
-      return wrap(uid(description), description);
-    });
-
-    objectPropertyIsEnumerable.f = $propertyIsEnumerable;
-    objectDefineProperty.f = $defineProperty;
-    objectGetOwnPropertyDescriptor.f = $getOwnPropertyDescriptor;
-    objectGetOwnPropertyNames.f = objectGetOwnPropertyNamesExternal.f = $getOwnPropertyNames;
-    objectGetOwnPropertySymbols.f = $getOwnPropertySymbols;
-
-    wellKnownSymbolWrapped.f = function (name) {
-      return wrap(wellKnownSymbol(name), name);
-    };
-
-    if (descriptors) {
-      // https://github.com/tc39/proposal-Symbol-description
-      nativeDefineProperty$1($Symbol[PROTOTYPE$1], 'description', {
-        configurable: true,
-        get: function description() {
-          return getInternalState(this).description;
-        }
-      });
-      {
-        redefine(ObjectPrototype, 'propertyIsEnumerable', $propertyIsEnumerable, { unsafe: true });
-      }
-    }
-  }
-
-  _export({ global: true, wrap: true, forced: !nativeSymbol, sham: !nativeSymbol }, {
-    Symbol: $Symbol
-  });
-
-  $forEach(objectKeys(WellKnownSymbolsStore$1), function (name) {
-    defineWellKnownSymbol(name);
-  });
-
-  _export({ target: SYMBOL, stat: true, forced: !nativeSymbol }, {
-    // `Symbol.for` method
-    // https://tc39.github.io/ecma262/#sec-symbol.for
-    'for': function (key) {
-      var string = String(key);
-      if (has(StringToSymbolRegistry, string)) return StringToSymbolRegistry[string];
-      var symbol = $Symbol(string);
-      StringToSymbolRegistry[string] = symbol;
-      SymbolToStringRegistry[symbol] = string;
-      return symbol;
-    },
-    // `Symbol.keyFor` method
-    // https://tc39.github.io/ecma262/#sec-symbol.keyfor
-    keyFor: function keyFor(sym) {
-      if (!isSymbol(sym)) throw TypeError(sym + ' is not a symbol');
-      if (has(SymbolToStringRegistry, sym)) return SymbolToStringRegistry[sym];
-    },
-    useSetter: function () { USE_SETTER = true; },
-    useSimple: function () { USE_SETTER = false; }
-  });
-
-  _export({ target: 'Object', stat: true, forced: !nativeSymbol, sham: !descriptors }, {
-    // `Object.create` method
-    // https://tc39.github.io/ecma262/#sec-object.create
-    create: $create,
-    // `Object.defineProperty` method
-    // https://tc39.github.io/ecma262/#sec-object.defineproperty
-    defineProperty: $defineProperty,
-    // `Object.defineProperties` method
-    // https://tc39.github.io/ecma262/#sec-object.defineproperties
-    defineProperties: $defineProperties,
-    // `Object.getOwnPropertyDescriptor` method
-    // https://tc39.github.io/ecma262/#sec-object.getownpropertydescriptors
-    getOwnPropertyDescriptor: $getOwnPropertyDescriptor
-  });
-
-  _export({ target: 'Object', stat: true, forced: !nativeSymbol }, {
-    // `Object.getOwnPropertyNames` method
-    // https://tc39.github.io/ecma262/#sec-object.getownpropertynames
-    getOwnPropertyNames: $getOwnPropertyNames,
-    // `Object.getOwnPropertySymbols` method
-    // https://tc39.github.io/ecma262/#sec-object.getownpropertysymbols
-    getOwnPropertySymbols: $getOwnPropertySymbols
-  });
-
-  // Chrome 38 and 39 `Object.getOwnPropertySymbols` fails on primitives
-  // https://bugs.chromium.org/p/v8/issues/detail?id=3443
-  _export({ target: 'Object', stat: true, forced: fails(function () { objectGetOwnPropertySymbols.f(1); }) }, {
-    getOwnPropertySymbols: function getOwnPropertySymbols(it) {
-      return objectGetOwnPropertySymbols.f(toObject(it));
-    }
-  });
-
-  // `JSON.stringify` method behavior with symbols
-  // https://tc39.github.io/ecma262/#sec-json.stringify
-  if ($stringify) {
-    var FORCED_JSON_STRINGIFY = !nativeSymbol || fails(function () {
-      var symbol = $Symbol();
-      // MS Edge converts symbol values to JSON as {}
-      return $stringify([symbol]) != '[null]'
-        // WebKit converts symbol values to JSON as null
-        || $stringify({ a: symbol }) != '{}'
-        // V8 throws on boxed symbols
-        || $stringify(Object(symbol)) != '{}';
-    });
-
-    _export({ target: 'JSON', stat: true, forced: FORCED_JSON_STRINGIFY }, {
-      // eslint-disable-next-line no-unused-vars
-      stringify: function stringify(it, replacer, space) {
-        var args = [it];
-        var index = 1;
-        var $replacer;
-        while (arguments.length > index) args.push(arguments[index++]);
-        $replacer = replacer;
-        if (!isObject(replacer) && it === undefined || isSymbol(it)) return; // IE8 returns string on undefined
-        if (!isArray(replacer)) replacer = function (key, value) {
-          if (typeof $replacer == 'function') value = $replacer.call(this, key, value);
-          if (!isSymbol(value)) return value;
-        };
-        args[1] = replacer;
-        return $stringify.apply(null, args);
-      }
-    });
-  }
-
-  // `Symbol.prototype[@@toPrimitive]` method
-  // https://tc39.github.io/ecma262/#sec-symbol.prototype-@@toprimitive
-  if (!$Symbol[PROTOTYPE$1][TO_PRIMITIVE]) {
-    createNonEnumerableProperty($Symbol[PROTOTYPE$1], TO_PRIMITIVE, $Symbol[PROTOTYPE$1].valueOf);
-  }
-  // `Symbol.prototype[@@toStringTag]` property
-  // https://tc39.github.io/ecma262/#sec-symbol.prototype-@@tostringtag
-  setToStringTag($Symbol, SYMBOL);
-
-  hiddenKeys[HIDDEN] = true;
-
-  var engineUserAgent = getBuiltIn('navigator', 'userAgent') || '';
-
-  var process = global_1.process;
-  var versions = process && process.versions;
-  var v8 = versions && versions.v8;
-  var match, version;
-
-  if (v8) {
-    match = v8.split('.');
-    version = match[0] + match[1];
-  } else if (engineUserAgent) {
-    match = engineUserAgent.match(/Edge\/(\d+)/);
-    if (!match || match[1] >= 74) {
-      match = engineUserAgent.match(/Chrome\/(\d+)/);
-      if (match) version = match[1];
-    }
-  }
-
-  var engineV8Version = version && +version;
-
-  var SPECIES$1 = wellKnownSymbol('species');
-
-  var arrayMethodHasSpeciesSupport = function (METHOD_NAME) {
-    // We can't use this feature detection in V8 since it causes
-    // deoptimization and serious performance degradation
-    // https://github.com/zloirock/core-js/issues/677
-    return engineV8Version >= 51 || !fails(function () {
-      var array = [];
-      var constructor = array.constructor = {};
-      constructor[SPECIES$1] = function () {
-        return { foo: 1 };
-      };
-      return array[METHOD_NAME](Boolean).foo !== 1;
-    });
-  };
-
-  var defineProperty$4 = Object.defineProperty;
-  var cache = {};
-
-  var thrower = function (it) { throw it; };
-
-  var arrayMethodUsesToLength = function (METHOD_NAME, options) {
-    if (has(cache, METHOD_NAME)) return cache[METHOD_NAME];
-    if (!options) options = {};
-    var method = [][METHOD_NAME];
-    var ACCESSORS = has(options, 'ACCESSORS') ? options.ACCESSORS : false;
-    var argument0 = has(options, 0) ? options[0] : thrower;
-    var argument1 = has(options, 1) ? options[1] : undefined;
-
-    return cache[METHOD_NAME] = !!method && !fails(function () {
-      if (ACCESSORS && !descriptors) return true;
-      var O = { length: -1 };
-
-      if (ACCESSORS) defineProperty$4(O, 1, { enumerable: true, get: thrower });
-      else O[1] = 1;
-
-      method.call(O, argument0, argument1);
-    });
-  };
-
-  var $filter = arrayIteration.filter;
-
-
-
-  var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('filter');
-  // Edge 14- issue
-  var USES_TO_LENGTH = arrayMethodUsesToLength('filter');
-
-  // `Array.prototype.filter` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.filter
-  // with adding support of @@species
-  _export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT || !USES_TO_LENGTH }, {
-    filter: function filter(callbackfn /* , thisArg */) {
-      return $filter(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
-    }
-  });
-
-  var arrayMethodIsStrict = function (METHOD_NAME, argument) {
-    var method = [][METHOD_NAME];
-    return !!method && fails(function () {
-      // eslint-disable-next-line no-useless-call,no-throw-literal
-      method.call(null, argument || function () { throw 1; }, 1);
-    });
-  };
-
-  var $forEach$1 = arrayIteration.forEach;
-
-
-
-  var STRICT_METHOD = arrayMethodIsStrict('forEach');
-  var USES_TO_LENGTH$1 = arrayMethodUsesToLength('forEach');
-
-  // `Array.prototype.forEach` method implementation
-  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
-  var arrayForEach = (!STRICT_METHOD || !USES_TO_LENGTH$1) ? function forEach(callbackfn /* , thisArg */) {
-    return $forEach$1(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
-  } : [].forEach;
-
-  // `Array.prototype.forEach` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
-  _export({ target: 'Array', proto: true, forced: [].forEach != arrayForEach }, {
-    forEach: arrayForEach
-  });
-
-  var $map = arrayIteration.map;
-
-
-
-  var HAS_SPECIES_SUPPORT$1 = arrayMethodHasSpeciesSupport('map');
-  // FF49- issue
-  var USES_TO_LENGTH$2 = arrayMethodUsesToLength('map');
-
-  // `Array.prototype.map` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.map
-  // with adding support of @@species
-  _export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$1 || !USES_TO_LENGTH$2 }, {
-    map: function map(callbackfn /* , thisArg */) {
-      return $map(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
-    }
-  });
-
-  var nativeGetOwnPropertyDescriptor$2 = objectGetOwnPropertyDescriptor.f;
-
-
-  var FAILS_ON_PRIMITIVES = fails(function () { nativeGetOwnPropertyDescriptor$2(1); });
-  var FORCED = !descriptors || FAILS_ON_PRIMITIVES;
-
-  // `Object.getOwnPropertyDescriptor` method
-  // https://tc39.github.io/ecma262/#sec-object.getownpropertydescriptor
-  _export({ target: 'Object', stat: true, forced: FORCED, sham: !descriptors }, {
-    getOwnPropertyDescriptor: function getOwnPropertyDescriptor(it, key) {
-      return nativeGetOwnPropertyDescriptor$2(toIndexedObject(it), key);
-    }
-  });
-
-  var createProperty = function (object, key, value) {
-    var propertyKey = toPrimitive(key);
-    if (propertyKey in object) objectDefineProperty.f(object, propertyKey, createPropertyDescriptor(0, value));
-    else object[propertyKey] = value;
-  };
-
-  // `Object.getOwnPropertyDescriptors` method
-  // https://tc39.github.io/ecma262/#sec-object.getownpropertydescriptors
-  _export({ target: 'Object', stat: true, sham: !descriptors }, {
-    getOwnPropertyDescriptors: function getOwnPropertyDescriptors(object) {
-      var O = toIndexedObject(object);
-      var getOwnPropertyDescriptor = objectGetOwnPropertyDescriptor.f;
-      var keys = ownKeys(O);
-      var result = {};
-      var index = 0;
-      var key, descriptor;
-      while (keys.length > index) {
-        descriptor = getOwnPropertyDescriptor(O, key = keys[index++]);
-        if (descriptor !== undefined) createProperty(result, key, descriptor);
-      }
-      return result;
-    }
-  });
-
-  var FAILS_ON_PRIMITIVES$1 = fails(function () { objectKeys(1); });
-
-  // `Object.keys` method
-  // https://tc39.github.io/ecma262/#sec-object.keys
-  _export({ target: 'Object', stat: true, forced: FAILS_ON_PRIMITIVES$1 }, {
-    keys: function keys(it) {
-      return objectKeys(toObject(it));
-    }
-  });
-
-  // iterable DOM collections
-  // flag - `iterable` interface - 'entries', 'keys', 'values', 'forEach' methods
-  var domIterables = {
-    CSSRuleList: 0,
-    CSSStyleDeclaration: 0,
-    CSSValueList: 0,
-    ClientRectList: 0,
-    DOMRectList: 0,
-    DOMStringList: 0,
-    DOMTokenList: 1,
-    DataTransferItemList: 0,
-    FileList: 0,
-    HTMLAllCollection: 0,
-    HTMLCollection: 0,
-    HTMLFormElement: 0,
-    HTMLSelectElement: 0,
-    MediaList: 0,
-    MimeTypeArray: 0,
-    NamedNodeMap: 0,
-    NodeList: 1,
-    PaintRequestList: 0,
-    Plugin: 0,
-    PluginArray: 0,
-    SVGLengthList: 0,
-    SVGNumberList: 0,
-    SVGPathSegList: 0,
-    SVGPointList: 0,
-    SVGStringList: 0,
-    SVGTransformList: 0,
-    SourceBufferList: 0,
-    StyleSheetList: 0,
-    TextTrackCueList: 0,
-    TextTrackList: 0,
-    TouchList: 0
-  };
-
-  for (var COLLECTION_NAME in domIterables) {
-    var Collection = global_1[COLLECTION_NAME];
-    var CollectionPrototype = Collection && Collection.prototype;
-    // some Chrome versions have non-configurable methods on DOMTokenList
-    if (CollectionPrototype && CollectionPrototype.forEach !== arrayForEach) try {
-      createNonEnumerableProperty(CollectionPrototype, 'forEach', arrayForEach);
-    } catch (error) {
-      CollectionPrototype.forEach = arrayForEach;
-    }
-  }
-
-  var HAS_SPECIES_SUPPORT$2 = arrayMethodHasSpeciesSupport('splice');
-  var USES_TO_LENGTH$3 = arrayMethodUsesToLength('splice', { ACCESSORS: true, 0: 0, 1: 2 });
-
-  var max$1 = Math.max;
-  var min$2 = Math.min;
-  var MAX_SAFE_INTEGER = 0x1FFFFFFFFFFFFF;
-  var MAXIMUM_ALLOWED_LENGTH_EXCEEDED = 'Maximum allowed length exceeded';
-
-  // `Array.prototype.splice` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.splice
-  // with adding support of @@species
-  _export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$2 || !USES_TO_LENGTH$3 }, {
-    splice: function splice(start, deleteCount /* , ...items */) {
-      var O = toObject(this);
-      var len = toLength(O.length);
-      var actualStart = toAbsoluteIndex(start, len);
-      var argumentsLength = arguments.length;
-      var insertCount, actualDeleteCount, A, k, from, to;
-      if (argumentsLength === 0) {
-        insertCount = actualDeleteCount = 0;
-      } else if (argumentsLength === 1) {
-        insertCount = 0;
-        actualDeleteCount = len - actualStart;
-      } else {
-        insertCount = argumentsLength - 2;
-        actualDeleteCount = min$2(max$1(toInteger(deleteCount), 0), len - actualStart);
-      }
-      if (len + insertCount - actualDeleteCount > MAX_SAFE_INTEGER) {
-        throw TypeError(MAXIMUM_ALLOWED_LENGTH_EXCEEDED);
-      }
-      A = arraySpeciesCreate(O, actualDeleteCount);
-      for (k = 0; k < actualDeleteCount; k++) {
-        from = actualStart + k;
-        if (from in O) createProperty(A, k, O[from]);
-      }
-      A.length = actualDeleteCount;
-      if (insertCount < actualDeleteCount) {
-        for (k = actualStart; k < len - actualDeleteCount; k++) {
-          from = k + actualDeleteCount;
-          to = k + insertCount;
-          if (from in O) O[to] = O[from];
-          else delete O[to];
-        }
-        for (k = len; k > len - actualDeleteCount + insertCount; k--) delete O[k - 1];
-      } else if (insertCount > actualDeleteCount) {
-        for (k = len - actualDeleteCount; k > actualStart; k--) {
-          from = k + actualDeleteCount - 1;
-          to = k + insertCount - 1;
-          if (from in O) O[to] = O[from];
-          else delete O[to];
-        }
-      }
-      for (k = 0; k < insertCount; k++) {
-        O[k + actualStart] = arguments[k + 2];
-      }
-      O.length = len - actualDeleteCount + insertCount;
-      return A;
-    }
-  });
-
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
-
-  var classCallCheck = _classCallCheck;
-
-  function _defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
-
-  function _createClass(Constructor, protoProps, staticProps) {
-    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) _defineProperties(Constructor, staticProps);
-    return Constructor;
-  }
-
-  var createClass = _createClass;
-
-  var UndoRedoHistory = /*#__PURE__*/function () {
-    function UndoRedoHistory() {
-      classCallCheck(this, UndoRedoHistory);
-
-      defineProperty$1(this, "store", void 0);
-
-      defineProperty$1(this, "history", []);
-
-      defineProperty$1(this, "currentIndex", -1);
-    }
-
-    createClass(UndoRedoHistory, [{
-      key: "init",
-      value: function init(store) {
-        this.store = store;
-      }
-    }, {
-      key: "addState",
-      value: function addState(state) {
-        // may be we have to remove redo steps
-        if (this.currentIndex + 1 < this.history.length) {
-          this.history.splice(this.currentIndex + 1);
-        }
-
-        this.history.push(state);
-        this.currentIndex++;
-      }
-    }, {
-      key: "undo",
-      value: function undo() {
-        if (!this.canUndo) return;
-        var prevState = this.history[this.currentIndex - 1]; // take a copy of the history state
-        // because it would be changed during store mutations
-        // what would corrupt the undo-redo-history
-        // (same on redo)
-
-        this.store.replaceState(lodash.cloneDeep(prevState));
-        this.currentIndex--;
-      }
-    }, {
-      key: "redo",
-      value: function redo() {
-        if (!this.canRedo) return;
-        var nextState = this.history[this.currentIndex + 1];
-        this.store.replaceState(lodash.cloneDeep(nextState));
-        this.currentIndex++;
-      }
-    }, {
-      key: "canUndo",
-      get: function get() {
-        return this.currentIndex > 0;
-      }
-    }, {
-      key: "canRedo",
-      get: function get() {
-        return this.history.length > this.currentIndex + 1;
-      }
-    }]);
-
-    return UndoRedoHistory;
-  }();
-
-  var undoRedoHistory = new UndoRedoHistory();
-
-  var fixedTools = [{
-    i18nTooltip: 'editor.fixedTool.undo',
-    icon: 'mail-reply',
-    action: function action() {
-      return undoRedoHistory.undo();
-    },
-    hotkey: 'ctrl&z,⌘&z',
-    hotkeyTooltip: '(ctrl+z)'
-  }, {
-    i18nTooltip: 'editor.fixedTool.redo',
-    icon: 'mail-forward',
-    action: function action() {
-      return undoRedoHistory.redo();
-    },
-    hotkey: 'ctrl&y,⌘&u',
-    hotkeyTooltip: '(ctrl+y)'
-  }, {
-    i18nTooltip: 'editor.fixedTool.preview',
-    icon: 'eye',
-    action: function action() {
-      this.previewDialogVisible = true;
-    }
-  }, {
-    i18nTooltip: 'editor.fixedTool.copyCurrentPage',
-    icon: 'copy',
-    action: function action() {
-      this.pageManager({
-        type: 'copy'
-      });
-    },
-    hotkey: 'ctrl&c,⌘&c'
-  }, {
-    i18nTooltip: 'editor.fixedTool.copyCurrentElement',
-    icon: 'copy',
-    action: function action() {
-      this.elementManager({
-        type: 'copy'
-      });
-    }
-  }, {
-    i18nTooltip: 'editor.fixedTool.importPSD',
-    text: 'Ps',
-    icon: '',
-    // 优先级: icon > text > i18nTooltip
-    action: '',
-    disabled: true
-  }, {
-    i18nTooltip: 'editor.fixedTool.zoomOut',
-    icon: 'plus',
-    action: function action() {
-      this.updateScaleRate(0.25);
-    },
-    hotkey: 'ctrl&=,⌘&=',
-    hotkeyTooltip: '(ctrl +)'
-  }, {
-    i18nTooltip: 'editor.fixedTool.zoomIn',
-    icon: 'minus',
-    action: function action() {
-      this.updateScaleRate(-0.25);
-    },
-    hotkey: 'ctrl&-,⌘&-',
-    hotkeyTooltip: '(ctrl -)'
-  }, {
-    i18nTooltip: 'editor.fixedTool.issues',
-    icon: 'question',
-    action: function action() {
-      window.open('https://github.com/ly525/luban-h5/issues/110');
-    }
-  }];
-
-  var _components;
-
-  function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var FixedTools = {
-    components: (_components = {}, defineProperty$1(_components, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$1(_components, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$1(_components, antDesignVue.Tooltip.name, antDesignVue.Tooltip), defineProperty$1(_components, antDesignVue.Button.name, antDesignVue.Button), _components),
-    computed: _objectSpread({}, Vuex.mapState("editor", {
-      scaleRate: function scaleRate(state) {
-        return state.scaleRate;
-      }
-    })),
-    methods: _objectSpread({}, Vuex.mapActions("editor", ["pageManager", "elementManager", "updateScaleRate"])),
-    render: function render() {
-      var _this = this;
-
-      var h = arguments[0];
-      return h("a-layout-sider", {
-        "attrs": {
-          "width": "40",
-          "theme": "light"
-        },
-        "style": {
-          background: "#fff",
-          border: "1px solid #eee"
-        }
-      }, [h("a-button-group", {
-        "style": {
-          display: "flex",
-          flexDirection: "column"
-        }
-      }, [fixedTools.map(function (tool) {
-        return h("a-tooltip", {
-          "attrs": {
-            "effect": "dark",
-            "placement": "left",
-            "title": _this.$t(tool.i18nTooltip, {
-              hotkey: tool.hotkeyTooltip
-            })
-          }
-        }, [h("a-button", {
-          "attrs": {
-            "block": true,
-            "type": "link",
-            "size": "small",
-            "disabled": !!tool.disabled
-          },
-          "class": "transparent-bg",
-          "style": {
-            height: "40px",
-            color: "#000"
-          },
-          "on": {
-            "click": function click() {
-              return tool.action && tool.action.call(_this);
-            }
-          }
-        }, [tool.icon ? h("i", {
-          "class": ["shortcut-icon", "fa", "fa-".concat(tool.icon)],
-          "attrs": {
-            "aria-hidden": "true"
-          }
-        }) : tool.text || _this.$t(tool.i18nTooltip)]), tool.icon === "minus" && h("div", {
-          "style": {
-            fontSize: "12px",
-            textAlign: "center"
-          }
-        }, [_this.scaleRate * 100, "%"])]);
-      })])]);
-    },
-    mounted: function mounted() {
-      var _this2 = this;
-
-      fixedTools.map(function (tool) {
-        tool.hotkey && hotkeys__default['default'](tool.hotkey, {
-          splitKey: "&"
-        }, function (event, handler) {
-          event.preventDefault();
-          event.stopPropagation();
-          tool.action && tool.action.call(_this2);
-        });
-      });
-    }
-  };
-
-  var aPossiblePrototype = function (it) {
-    if (!isObject(it) && it !== null) {
-      throw TypeError("Can't set " + String(it) + ' as a prototype');
-    } return it;
-  };
-
-  // `Object.setPrototypeOf` method
-  // https://tc39.github.io/ecma262/#sec-object.setprototypeof
-  // Works with __proto__ only. Old v8 can't work with null proto objects.
-  /* eslint-disable no-proto */
-  var objectSetPrototypeOf = Object.setPrototypeOf || ('__proto__' in {} ? function () {
-    var CORRECT_SETTER = false;
-    var test = {};
-    var setter;
-    try {
-      setter = Object.getOwnPropertyDescriptor(Object.prototype, '__proto__').set;
-      setter.call(test, []);
-      CORRECT_SETTER = test instanceof Array;
-    } catch (error) { /* empty */ }
-    return function setPrototypeOf(O, proto) {
-      anObject(O);
-      aPossiblePrototype(proto);
-      if (CORRECT_SETTER) setter.call(O, proto);
-      else O.__proto__ = proto;
-      return O;
-    };
-  }() : undefined);
-
-  // makes subclassing work correct for wrapped built-ins
-  var inheritIfRequired = function ($this, dummy, Wrapper) {
-    var NewTarget, NewTargetPrototype;
-    if (
-      // it can work only with native `setPrototypeOf`
-      objectSetPrototypeOf &&
-      // we haven't completely correct pre-ES6 way for getting `new.target`, so use this
-      typeof (NewTarget = dummy.constructor) == 'function' &&
-      NewTarget !== Wrapper &&
-      isObject(NewTargetPrototype = NewTarget.prototype) &&
-      NewTargetPrototype !== Wrapper.prototype
-    ) objectSetPrototypeOf($this, NewTargetPrototype);
-    return $this;
-  };
-
   // a string of all valid unicode whitespaces
   // eslint-disable-next-line max-len
   var whitespaces = '\u0009\u000A\u000B\u000C\u000D\u0020\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF';
@@ -1754,7 +1155,7 @@
 
   var getOwnPropertyNames = objectGetOwnPropertyNames.f;
   var getOwnPropertyDescriptor$2 = objectGetOwnPropertyDescriptor.f;
-  var defineProperty$5 = objectDefineProperty.f;
+  var defineProperty$3 = objectDefineProperty.f;
   var trim = stringTrim.trim;
 
   var NUMBER = 'Number';
@@ -1812,3592 +1213,13 @@
       'MIN_SAFE_INTEGER,parseFloat,parseInt,isInteger'
     ).split(','), j = 0, key; keys$1.length > j; j++) {
       if (has(NativeNumber, key = keys$1[j]) && !has(NumberWrapper, key)) {
-        defineProperty$5(NumberWrapper, key, getOwnPropertyDescriptor$2(NativeNumber, key));
+        defineProperty$3(NumberWrapper, key, getOwnPropertyDescriptor$2(NativeNumber, key));
       }
     }
     NumberWrapper.prototype = NumberPrototype;
     NumberPrototype.constructor = NumberWrapper;
     redefine(global_1, NUMBER, NumberWrapper);
   }
-
-  var propertyIsEnumerable = objectPropertyIsEnumerable.f;
-
-  // `Object.{ entries, values }` methods implementation
-  var createMethod$3 = function (TO_ENTRIES) {
-    return function (it) {
-      var O = toIndexedObject(it);
-      var keys = objectKeys(O);
-      var length = keys.length;
-      var i = 0;
-      var result = [];
-      var key;
-      while (length > i) {
-        key = keys[i++];
-        if (!descriptors || propertyIsEnumerable.call(O, key)) {
-          result.push(TO_ENTRIES ? [key, O[key]] : O[key]);
-        }
-      }
-      return result;
-    };
-  };
-
-  var objectToArray = {
-    // `Object.entries` method
-    // https://tc39.github.io/ecma262/#sec-object.entries
-    entries: createMethod$3(true),
-    // `Object.values` method
-    // https://tc39.github.io/ecma262/#sec-object.values
-    values: createMethod$3(false)
-  };
-
-  var $entries = objectToArray.entries;
-
-  // `Object.entries` method
-  // https://tc39.github.io/ecma262/#sec-object.entries
-  _export({ target: 'Object', stat: true }, {
-    entries: function entries(O) {
-      return $entries(O);
-    }
-  });
-
-  function _arrayWithHoles(arr) {
-    if (Array.isArray(arr)) return arr;
-  }
-
-  var arrayWithHoles = _arrayWithHoles;
-
-  function _iterableToArrayLimit(arr, i) {
-    if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
-    var _arr = [];
-    var _n = true;
-    var _d = false;
-    var _e = undefined;
-
-    try {
-      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-        _arr.push(_s.value);
-
-        if (i && _arr.length === i) break;
-      }
-    } catch (err) {
-      _d = true;
-      _e = err;
-    } finally {
-      try {
-        if (!_n && _i["return"] != null) _i["return"]();
-      } finally {
-        if (_d) throw _e;
-      }
-    }
-
-    return _arr;
-  }
-
-  var iterableToArrayLimit = _iterableToArrayLimit;
-
-  function _arrayLikeToArray(arr, len) {
-    if (len == null || len > arr.length) len = arr.length;
-
-    for (var i = 0, arr2 = new Array(len); i < len; i++) {
-      arr2[i] = arr[i];
-    }
-
-    return arr2;
-  }
-
-  var arrayLikeToArray = _arrayLikeToArray;
-
-  function _unsupportedIterableToArray(o, minLen) {
-    if (!o) return;
-    if (typeof o === "string") return arrayLikeToArray(o, minLen);
-    var n = Object.prototype.toString.call(o).slice(8, -1);
-    if (n === "Object" && o.constructor) n = o.constructor.name;
-    if (n === "Map" || n === "Set") return Array.from(o);
-    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return arrayLikeToArray(o, minLen);
-  }
-
-  var unsupportedIterableToArray = _unsupportedIterableToArray;
-
-  function _nonIterableRest() {
-    throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-  }
-
-  var nonIterableRest = _nonIterableRest;
-
-  function _slicedToArray(arr, i) {
-    return arrayWithHoles(arr) || iterableToArrayLimit(arr, i) || unsupportedIterableToArray(arr, i) || nonIterableRest();
-  }
-
-  var slicedToArray = _slicedToArray;
-
-  function _extends(){return _extends=Object.assign||function(a){for(var b,c=1;c<arguments.length;c++)for(var d in b=arguments[c],b)Object.prototype.hasOwnProperty.call(b,d)&&(a[d]=b[d]);return a},_extends.apply(this,arguments)}var normalMerge=["attrs","props","domProps"],toArrayMerge=["class","style","directives"],functionalMerge=["on","nativeOn"],mergeJsxProps=function(a){return a.reduce(function(c,a){for(var b in a)if(!c[b])c[b]=a[b];else if(-1!==normalMerge.indexOf(b))c[b]=_extends({},c[b],a[b]);else if(-1!==toArrayMerge.indexOf(b)){var d=c[b]instanceof Array?c[b]:[c[b]],e=a[b]instanceof Array?a[b]:[a[b]];c[b]=d.concat(e);}else if(-1!==functionalMerge.indexOf(b)){for(var f in a[b])if(c[b][f]){var g=c[b][f]instanceof Array?c[b][f]:[c[b][f]],h=a[b][f]instanceof Array?a[b][f]:[a[b][f]];c[b][f]=g.concat(h);}else c[b][f]=a[b][f];}else if("hook"==b)for(var i in a[b])c[b][i]=c[b][i]?mergeFn(c[b][i],a[b][i]):a[b][i];else c[b]=a[b];return c},{})},mergeFn=function(a,b){return function(){a&&a.apply(this,arguments),b&&b.apply(this,arguments);}};var helper=mergeJsxProps;
-
-  var HAS_SPECIES_SUPPORT$3 = arrayMethodHasSpeciesSupport('slice');
-  var USES_TO_LENGTH$4 = arrayMethodUsesToLength('slice', { ACCESSORS: true, 0: 0, 1: 2 });
-
-  var SPECIES$2 = wellKnownSymbol('species');
-  var nativeSlice = [].slice;
-  var max$2 = Math.max;
-
-  // `Array.prototype.slice` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.slice
-  // fallback for not array-like ES3 strings and DOM objects
-  _export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$3 || !USES_TO_LENGTH$4 }, {
-    slice: function slice(start, end) {
-      var O = toIndexedObject(this);
-      var length = toLength(O.length);
-      var k = toAbsoluteIndex(start, length);
-      var fin = toAbsoluteIndex(end === undefined ? length : end, length);
-      // inline `ArraySpeciesCreate` for usage native `Array#slice` where it's possible
-      var Constructor, result, n;
-      if (isArray(O)) {
-        Constructor = O.constructor;
-        // cross-realm fallback
-        if (typeof Constructor == 'function' && (Constructor === Array || isArray(Constructor.prototype))) {
-          Constructor = undefined;
-        } else if (isObject(Constructor)) {
-          Constructor = Constructor[SPECIES$2];
-          if (Constructor === null) Constructor = undefined;
-        }
-        if (Constructor === Array || Constructor === undefined) {
-          return nativeSlice.call(O, k, fin);
-        }
-      }
-      result = new (Constructor === undefined ? Array : Constructor)(max$2(fin - k, 0));
-      for (n = 0; k < fin; k++, n++) if (k in O) createProperty(result, n, O[k]);
-      result.length = n;
-      return result;
-    }
-  });
-
-  /*
-   * @author : Mater
-   * @Email : bxh8640@gmail.com
-   * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-06 17:47:10
-   * @Description :
-   */
-  var colorsPanel = {
-    name: 'colors-panel',
-    props: {
-      value: {
-        type: [Array, String]
-      }
-    },
-    render: function render() {
-      var _this = this;
-
-      var h = arguments[0];
-      return h("div", [Array.isArray(this.value) ? this.value.map(function (v, index) {
-        h("input", {
-          "attrs": {
-            "size": "small",
-            "type": "color",
-            "autocomplete": true
-          },
-          "domProps": {
-            "value": v
-          },
-          "on": {
-            "change": function change(e) {
-              var colors = _this.value.slice(0);
-
-              colors[index] = e.target.value;
-
-              _this.$emit('change', colors);
-            }
-          }
-        });
-      }) : h("input", {
-        "attrs": {
-          "size": "small",
-          "type": "color",
-          "autocomplete": true
-        },
-        "domProps": {
-          "value": this.value
-        },
-        "on": {
-          "change": function change(e) {
-            _this.$emit('change', e.target.value);
-          }
-        }
-      })]);
-    }
-  };
-
-  var _components$1;
-  var lbsTextAlign = {
-    name: 'lbs-text-align',
-    components: (_components$1 = {}, defineProperty$1(_components$1, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$1(_components$1, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$1(_components$1, antDesignVue.Tooltip.name, antDesignVue.Tooltip), _components$1),
-    render: function render(h) {
-      var _this = this;
-
-      return h("div", {
-        "class": "wrap"
-      }, [h("a-radio-group", {
-        "attrs": {
-          "size": "small",
-          "value": this.value
-        },
-        "on": {
-          "change": function change(value) {
-            _this.$emit('change', value);
-
-            _this.$emit('input', value);
-          }
-        }
-      }, [this.textAlignTabs.map(function (item) {
-        return h("a-tooltip", {
-          "attrs": {
-            "effect": "dark",
-            "placement": "top",
-            "title": item.label
-          },
-          "key": item.value
-        }, [h("a-radio-button", {
-          "attrs": {
-            "value": item.value
-          }
-        }, [h("i", {
-          "class": ['fa', 'fa-align-' + item.value],
-          "attrs": {
-            "aria-hidden": "true"
-          }
-        })])]);
-      })])]);
-    },
-    props: {
-      value: {
-        type: [String, Number]
-      }
-    },
-    data: function data() {
-      return {
-        textAlignTabs: [{
-          label: '左对齐',
-          value: 'left'
-        }, {
-          label: '居中对齐',
-          value: 'center'
-        }, {
-          label: '右对齐',
-          value: 'right'
-        }]
-      };
-    }
-  };
-
-  var $values = objectToArray.values;
-
-  // `Object.values` method
-  // https://tc39.github.io/ecma262/#sec-object.values
-  _export({ target: 'Object', stat: true }, {
-    values: function values(O) {
-      return $values(O);
-    }
-  });
-
-  var non = '\u200B\u0085\u180E';
-
-  // check that a method works with the correct list
-  // of whitespaces and has a correct name
-  var stringTrimForced = function (METHOD_NAME) {
-    return fails(function () {
-      return !!whitespaces[METHOD_NAME]() || non[METHOD_NAME]() != non || whitespaces[METHOD_NAME].name !== METHOD_NAME;
-    });
-  };
-
-  var $trim = stringTrim.trim;
-
-
-  // `String.prototype.trim` method
-  // https://tc39.github.io/ecma262/#sec-string.prototype.trim
-  _export({ target: 'String', proto: true, forced: stringTrimForced('trim') }, {
-    trim: function trim() {
-      return $trim(this);
-    }
-  });
-
-  var _typeof_1 = createCommonjsModule(function (module) {
-  function _typeof(obj) {
-    "@babel/helpers - typeof";
-
-    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-      module.exports = _typeof = function _typeof(obj) {
-        return typeof obj;
-      };
-    } else {
-      module.exports = _typeof = function _typeof(obj) {
-        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-      };
-    }
-
-    return _typeof(obj);
-  }
-
-  module.exports = _typeof;
-  });
-
-  /**
-   *
-   declare module ExcelRows {
-    export interface cell {
-        text: string;
-    }
-    export interface Cells {
-      0: cell;
-      1: cell;
-      2: cell;
-    }
-    export interface ExcelRows {
-      cells: Cells;
-    }
-  }
-   */
-
-  /**
-    *
-    BinaryMatrix = [
-      [any, any, any, ...],
-      [any, any, any, ...],
-      [any, any, any, ...],
-    ]
-
-    ExcelDataType = [
-      {
-        cells: {
-          0: { text: any },
-          1: { text: any },
-          2: { text: any }
-        }
-      },
-      {
-        cells: {
-          0: { text: any },
-          1: { text: any },
-          2: { text: any }
-        }
-      },
-    ]
-    */
-  var Parser = /*#__PURE__*/function () {
-    function Parser() {
-      classCallCheck(this, Parser);
-    }
-
-    createClass(Parser, null, [{
-      key: "dataset2excel",
-
-      /**
-       *
-       * @param {*} dataset ExcelDataType
-       */
-      value: function dataset2excel(dataset) {
-        return dataset.map(function (item) {
-          return {
-            cells: {
-              0: {
-                text: item.x
-              },
-              1: {
-                text: item.y
-              },
-              2: {
-                text: item.s
-              }
-            }
-          };
-        });
-      }
-      /**
-       *
-        [
-          [1,2,3,4],
-          [5,6,7,8],
-          [9,10,11,12]
-        ]
-       * @param {Object} BinaryMatrix
-       * @returns {Object} ExcelDataType
-       */
-
-    }, {
-      key: "binaryMatrix2excel",
-      value: function binaryMatrix2excel() {
-        var binaryMatrix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-        var excelData = binaryMatrix.map(function (row, rowIndex) {
-          // cells: {
-          //   0: { text: item.x },
-          //   1: { text: item.y },
-          //   2: { text: item.s }
-          // }
-          var cells = {};
-          row.forEach(function (cellValue, cellIndex) {
-            cells[cellIndex] = {
-              text: cellValue
-            };
-          });
-          return {
-            cells: cells
-          };
-        });
-        return excelData;
-      }
-    }, {
-      key: "excel2chartDataSet",
-      value: function excel2chartDataSet(excelData) {
-        var rowsArray = Object.values(excelData.rows).filter(function (item) {
-          return _typeof_1(item) === 'object';
-        });
-        var dataset = rowsArray.map(function (row) {
-          var _Object$values$map = Object.values(row.cells).map(function (item) {
-            return item.text;
-          }),
-              _Object$values$map2 = slicedToArray(_Object$values$map, 3),
-              x = _Object$values$map2[0],
-              y = _Object$values$map2[1],
-              s = _Object$values$map2[2];
-
-          return {
-            x: x,
-            y: y,
-            s: s
-          };
-        });
-        return dataset;
-      }
-    }, {
-      key: "excel2BinaryMatrix",
-      value: function excel2BinaryMatrix(excelData) {
-        var rowsArray = Object.values(excelData.rows).filter(function (item) {
-          return _typeof_1(item) === 'object';
-        });
-        var dataset = rowsArray.map(function (row) {
-          // [1,2,3,4]
-          var cells = Object.values(row.cells).map(function (item) {
-            return item.text;
-          });
-          return cells;
-        });
-        console.log('dataset', dataset);
-        return dataset;
-      }
-      /**
-      *
-      * @param {Array} csvArray
-      *    [
-             ['日期', '销售量'],
-             ["1月1日",123],
-             ["1月2日",1223],
-             ["1月3日",2123],
-             ["1月4日",4123],
-             ["1月5日",3123],
-             ["1月6日",7123]
-           ]
-      * @returns {Object}
-         {
-           columns: ['日期', '销售量'],
-           rows:[
-             { '日期': '1月1日', '销售量': 123 },
-             { '日期': '1月2日', '销售量': 1223 },
-             { '日期': '1月3日', '销售量': 2123 },
-             { '日期': '1月4日', '销售量': 4123 },
-             { '日期': '1月5日', '销售量': 3123 },
-             { '日期': '1月6日', '销售量': 7123 }
-           ]
-         }
-      */
-
-    }, {
-      key: "csv2VChartJson",
-      value: function csv2VChartJson(csvArray) {
-        var columns = csvArray[0];
-        var rows = csvArray.slice(1);
-        var json = {
-          columns: columns,
-          rows: rows.map(function (row, index) {
-            var obj = {};
-            columns.forEach(function (col, colIndex) {
-              obj[col.trim()] = row[colIndex];
-            });
-            return obj;
-          })
-        };
-        return json;
-      }
-    }]);
-
-    return Parser;
-  }();
-
-  var $indexOf = arrayIncludes.indexOf;
-
-
-
-  var nativeIndexOf = [].indexOf;
-
-  var NEGATIVE_ZERO = !!nativeIndexOf && 1 / [1].indexOf(1, -0) < 0;
-  var STRICT_METHOD$1 = arrayMethodIsStrict('indexOf');
-  var USES_TO_LENGTH$5 = arrayMethodUsesToLength('indexOf', { ACCESSORS: true, 1: 0 });
-
-  // `Array.prototype.indexOf` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.indexof
-  _export({ target: 'Array', proto: true, forced: NEGATIVE_ZERO || !STRICT_METHOD$1 || !USES_TO_LENGTH$5 }, {
-    indexOf: function indexOf(searchElement /* , fromIndex = 0 */) {
-      return NEGATIVE_ZERO
-        // convert -0 to +0
-        ? nativeIndexOf.apply(this, arguments) || 0
-        : $indexOf(this, searchElement, arguments.length > 1 ? arguments[1] : undefined);
-    }
-  });
-
-  var validFileMimeTypes = ['text/csv', 'text/x-csv', 'application/vnd.ms-excel', 'text/plain'];
-  var CsvImport = {
-    name: 'lbs-csv-import',
-    methods: {
-      checkMimeType: function checkMimeType(type) {
-        return validFileMimeTypes.indexOf(type) > -1;
-      },
-      validFileMimeType: function validFileMimeType(e) {
-        e.preventDefault();
-        var file = this.$refs.csv.files[0];
-        var isValidFileMimeType = this.checkMimeType(file.type);
-        if (isValidFileMimeType) this.loadFile();
-      },
-      loadFile: function loadFile() {
-        var _this = this;
-
-        /**
-         * output {String}
-            "columnA,columnB,columnC
-            "Susan",41,a
-            "Mike",5,b
-            "Jake",33,c
-            "Jill",30,d
-            "
-          * csv {Object}
-          {
-            "data": [
-              ["columnA", "columnB", "columnC"],
-              ["Susan", "41", "a"],
-              ["Mike", "5", "b"],
-              ["Jake", "33", "c"],
-              ["Jill", "30", "d"],
-            ],
-            "errors": [],
-            "meta": {
-              "delimiter": ",",
-              "linebreak": "\n",
-              "aborted": false,
-              "truncated": false,
-              "cursor": 72
-            }
-          }
-         */
-        this.readFile(function (output) {
-          // const sample = Papa.parse(output, { preview: 2, skipEmptyLines: true })
-          var csv = Papa__default['default'].parse(output, {
-            skipEmptyLines: true
-          });
-
-          _this.$emit('parse', csv);
-
-          _this.$refs.input.value = '';
-        });
-      },
-      readFile: function readFile(callback) {
-        var file = this.$refs.csv.files[0];
-
-        if (file) {
-          var reader = new FileReader();
-          reader.readAsText(file, 'UTF-8');
-
-          reader.onload = function (evt) {
-            callback(evt.target.result);
-          };
-
-          reader.onerror = function () {};
-        }
-      }
-    },
-    render: function render() {
-      var h = arguments[0];
-      var randomId = +new Date();
-      return h("div", {
-        "style": "height: 24px;"
-      }, [h("label", {
-        "attrs": {
-          "for": randomId
-        },
-        "class": "ant-btn ant-btn-primary ant-btn-sm"
-      }, ["\u9009\u62E9\u5BFC\u5165 csv \u6587\u4EF6"]), h("input", {
-        "ref": "csv",
-        "attrs": {
-          "id": randomId,
-          "type": "file",
-          "name": "csv"
-        },
-        "on": {
-          "change": this.validFileMimeType
-        },
-        "style": "visibility:hidden;"
-      }, ["xxxx"])]);
-    }
-  };
-
-  /*
-   * @author : Mater
-   * @Email : bxh8640@gmail.com
-   * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-10 19:42:27
-   * @Description :
-   */
-  var lbsExcelEditor = {
-    name: 'lbs-excel-editor',
-    props: {
-      value: {
-        type: Array
-      },
-      formatter: {
-        type: Function
-      }
-    },
-    computed: {
-      innerItems: {
-        get: function get() {
-          return Parser.binaryMatrix2excel(this.value);
-        },
-        set: function set(val) {
-          this.$emit('input', val);
-        }
-      }
-    },
-    watch: {
-      value: function value() {
-        this.refreshSheet({
-          rows: this.innerItems
-        });
-      }
-    },
-    methods: {
-      parseCSV: function parseCSV(csv) {
-        var sheetData = Parser.binaryMatrix2excel(csv.data);
-        this.$emit('change', csv.data);
-        this.refreshSheet({
-          rows: sheetData
-        });
-      },
-
-      /**
-       *
-       * @param {Object} data { rows }
-       */
-      refreshSheet: function refreshSheet(data) {
-        this.sheet.loadData(data);
-        this.sheet.reRender();
-      },
-      initSheet: function initSheet() {
-        var _this = this;
-
-        var ele = this.$refs.excel;
-        return this.sheet || new Spreadsheet__default['default'](ele, {
-          showToolbar: false,
-          showGrid: true,
-          showContextmenu: true // view: {
-          //   height: () => 400,
-          //   width: () => ele.getBoundingClientRect().width
-          // }
-
-        }).change(function (excelData) {
-          // console.log('----------')
-          // console.log(excelData)
-          // console.log(this.formatter(excelData))
-          // console.log('----------')
-          _this.$emit('change', _this.formatter(excelData)
-          /** BinaryMatrix */
-          ); // save data to db
-
-        });
-      }
-    },
-    // 注意(看源码)： 如果不调用 data 或 props 的某个值，则 render 不会执行。watcher 的更新时机是什么？？
-    render: function render() {
-      var h = arguments[0];
-      return h("div", {
-        "style": "max-height: 320px;overflow:scroll;"
-      }, [h("div", {
-        "style": "line-height:2;"
-      }, [h("span", ["\u65B9\u68481: ", h(CsvImport, {
-        "on": {
-          "parse": this.parseCSV
-        }
-      })]), h("span", ["\u65B9\u68482: \u76F4\u63A5\u7F16\u8F91 Excel"]), h("div", {
-        "ref": "excel",
-        "style": "margin-right: 12px;width: 100%;overflow: scroll"
-      })])]);
-    },
-    mounted: function mounted() {
-      this.sheet = this.initSheet();
-      this.refreshSheet({
-        rows: this.innerItems
-      });
-    }
-  };
-
-  var _components$2;
-  var lbpSlideCustomEditor = {
-    components: (_components$2 = {}, defineProperty$1(_components$2, antDesignVue.Pagination.name, antDesignVue.Pagination), defineProperty$1(_components$2, antDesignVue.Button.name, antDesignVue.Pagination), _components$2),
-    props: {
-      elementProps: {
-        type: Object,
-        default: function _default() {
-          return {
-            items: [],
-            activeIndex: 0
-          };
-        }
-      }
-    },
-    computed: {
-      innerItems: function innerItems() {
-        return this.elementProps.items;
-      }
-    },
-    data: function data() {
-      return {
-        current: 1
-      };
-    },
-    methods: {
-      itemRender: function itemRender(current, type, originalElement) {
-        var _this = this;
-
-        var h = this.$createElement;
-
-        if (type === "prev") {
-          return h("a-button", {
-            "style": {
-              marginRight: "8px"
-            },
-            "attrs": {
-              "size": "small",
-              "icon": "minus",
-              "disabled": this.innerItems.length === 1
-            },
-            "on": {
-              "click": function click() {
-                return _this.minus(current);
-              }
-            }
-          });
-        } else if (type === "next") {
-          return h("a-button", {
-            "style": {
-              marginLeft: "8px"
-            },
-            "attrs": {
-              "size": "small",
-              "icon": "plus"
-            },
-            "on": {
-              "click": this.add
-            }
-          });
-        }
-
-        return originalElement;
-      },
-      add: function add() {
-        this.elementProps.items.push({
-          image: "",
-          value: "\u9009\u9879".concat(this.innerItems.length + 1, "-value"),
-          label: "\u9009\u9879".concat(this.innerItems.length + 1, "-label")
-        });
-      },
-      minus: function minus(index) {
-        if (this.innerItems.length === 1) return;
-        this.elementProps.items.splice(index, 1); // this.elementProps.activeIndex = index > 0 ? index - 1 : 0
-
-        this.elementProps.activeIndex = Math.max(index - 1, 0);
-      }
-    },
-    render: function render() {
-      var _this2 = this;
-
-      var h = arguments[0];
-      var currentItem = this.innerItems[this.current - 1] || {};
-      return h("div", [h("a-pagination", {
-        "attrs": {
-          "current": this.current,
-          "size": "small",
-          "total": this.innerItems.length,
-          "defaultPageSize": 1,
-          "itemRender": this.itemRender
-        },
-        "on": {
-          "change": function change(page) {
-            _this2.current = page;
-            _this2.elementProps.activeIndex = page - 1;
-          }
-        }
-      }), h("lbs-image-gallery", {
-        "style": {
-          margin: "16px 0"
-        },
-        "attrs": {
-          "value": currentItem.image
-        },
-        "on": {
-          "change": function change(url) {
-            currentItem.image = url;
-          }
-        }
-      })]);
-    }
-  };
-
-  var _components$3;
-
-  function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var RenderPropsEditor = {
-    components: (_components$3 = {}, defineProperty$1(_components$3, antDesignVue.Form.name, antDesignVue.Form), defineProperty$1(_components$3, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$1(_components$3, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$1(_components$3, antDesignVue.Button.name, antDesignVue.Button), defineProperty$1(_components$3, antDesignVue.Radio.name, antDesignVue.Radio), defineProperty$1(_components$3, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$1(_components$3, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$1(_components$3, antDesignVue.Input.name, antDesignVue.Input), defineProperty$1(_components$3, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$1(_components$3, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$1(_components$3, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$1(_components$3, antDesignVue.Select.name, antDesignVue.Select), defineProperty$1(_components$3, "colorsPanel", colorsPanel), defineProperty$1(_components$3, "lbsTextAlign", lbsTextAlign), defineProperty$1(_components$3, "lbsExcelEditor", lbsExcelEditor), defineProperty$1(_components$3, "lbpSlideCustomEditor", lbpSlideCustomEditor), _components$3),
-    data: function data() {
-      return {
-        loadCustomEditorFlag: false
-      };
-    },
-    props: {
-      layout: {
-        type: String,
-        default: 'horizontal'
-      },
-      config: {
-        type: Object,
-        default: function _default() {
-          return {};
-        }
-      },
-      value: {
-        type: Object,
-        default: function _default() {
-          return {};
-        }
-      }
-    },
-    watch: {
-      config: function config() {
-        var _this = this;
-
-        // config 需要重新render
-        setTimeout(function () {
-          _this.form.setFieldsValue(_this.value);
-        });
-      }
-    },
-    created: function created() {
-      var _this2 = this;
-
-      this.form = this.$form.createForm(this, {
-        onFieldsChange: function onFieldsChange() {
-          _this2.$emit('change', _this2.form.getFieldsValue());
-        }
-      });
-    },
-    computed: {
-      formItemLayout: function formItemLayout() {
-        this.layout === 'horizontal' ? {
-          labelCol: {
-            span: 6
-          },
-          wrapperCol: {
-            span: 16,
-            offset: 2
-          }
-        } : {};
-      }
-    },
-    methods: {
-      renderPropFormItem: function renderPropFormItem(propName, propConfig) {
-        var h = this.$createElement;
-        var editor = propConfig.editor;
-        if (!editor) return;
-        var formItemData = {
-          props: _objectSpread$1(_objectSpread$1(_objectSpread$1({}, this.formItemLayout), editor.layout), {}, {
-            label: editor.label
-          })
-        };
-        return h("a-form-item", helper([{}, formItemData]), [h(editor.type, helper([{
-          "directives": [{
-            name: "decorator",
-            value: [propName]
-          }]
-        }, {
-          "props": editor.props
-        }]))]);
-      }
-    },
-    render: function render() {
-      var _this3 = this;
-
-      var h = arguments[0];
-      var configEntries = Object.entries(this.config);
-      return h("a-form", {
-        "attrs": {
-          "form": this.form,
-          "size": "mini",
-          "layout": this.layout,
-          "initialValue": this.value
-        },
-        "class": "props-config-form"
-      }, [configEntries.map(function (_ref) {
-        var _ref2 = slicedToArray(_ref, 2),
-            propName = _ref2[0],
-            propConfig = _ref2[1];
-
-        return _this3.renderPropFormItem(propName, propConfig);
-      })]);
-    }
-  };
-
-  var _components$4;
-
-  function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var RenderScriptEditor = {
-    components: (_components$4 = {}, defineProperty$1(_components$4, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$1(_components$4, antDesignVue.Button.name, antDesignVue.Button), _components$4),
-    data: function data() {
-      return {
-        editorContent: "return {\n      editorMethods: {              // \u6B64\u9879\u914D\u7F6E\u81EA\u5B9A\u4E49\u65B9\u6CD5\u7684\u5728\u7EC4\u4EF6\u914D\u7F6E\u9762\u677F\u5982\u4F55\u5C55\u793A\n        projectJump1: {             // \u65B9\u6CD5\u540D\uFF0C\u5BF9\u5E94\u4E8E methods \u5185\u7684\u67D0\u65B9\u6CD5\n          label: '\u5916\u90E8\u8DF3\u8F6C1',        // \u81EA\u5B9A\u4E49\u65B9\u6CD5\u663E\u793A\u540D\n          params: [                 // \u53C2\u6570\u5217\u8868\uFF0C\u5BF9\u8C61\u6570\u7EC4\n            {\n              label: '\u8DF3\u8F6C\u5730\u5740',     // \u53C2\u65701\u7684\u540D\u79F0\n              desc: '\u9879\u76EE\u76F8\u5BF9\u5730\u5740',   // \u53C2\u65701\u7684\u63CF\u8FF0\n              type: 'string',       // \u53C2\u65701\u7684\u7C7B\u578B\uFF0C\u652F\u6301string|number|boolean|array|object\n              default: ''           // \u53C2\u65701\u9ED8\u8BA4\u503C\n            },\n            {\n              label: '\u53C2\u6570',\n              desc: 'query\u5F62\u5F0F\u53C2\u6570',\n              type: 'object',\n              default: {}\n            }\n          ]\n        }\n      },\n      methods:{\n        projectJump1:function(url, query){\n          console.log(url, query)\n          let win = window.open(url, '_blank')\n          win.focus()\n        }\n      }\n    }"
-      };
-    },
-    computed: _objectSpread$2({}, Vuex.mapState("editor", ["editingElement"])),
-    methods: _objectSpread$2(_objectSpread$2({}, Vuex.mapActions("editor", ["setEditingElement"])), {}, {
-      mixinScript: function mixinScript() {// mixin script
-      }
-    }),
-    render: function render(h) {
-      var _this = this;
-
-      var ele = this.editingElement;
-      if (!ele) return h("span", [this.$t("editor.editPanel.common.empty")]);
-      return h("div", [h("a-button", {
-        "on": {
-          "click": this.mixinScript
-        },
-        "attrs": {
-          "disabled": true
-        }
-      }, ["\u4F7F\u7528\u811A\u672C"]), h("div", {
-        "style": {
-          margin: "20px"
-        }
-      }), h("a-textarea", {
-        "attrs": {
-          "rows": 12,
-          "placeholder": "Basic usage",
-          "value": this.editorContent
-        },
-        "on": {
-          "change": function change(e) {
-            _this.editorContent = e.target.value;
-          }
-        }
-      })]);
-    }
-  };
-
-  // `RegExp.prototype.flags` getter implementation
-  // https://tc39.github.io/ecma262/#sec-get-regexp.prototype.flags
-  var regexpFlags = function () {
-    var that = anObject(this);
-    var result = '';
-    if (that.global) result += 'g';
-    if (that.ignoreCase) result += 'i';
-    if (that.multiline) result += 'm';
-    if (that.dotAll) result += 's';
-    if (that.unicode) result += 'u';
-    if (that.sticky) result += 'y';
-    return result;
-  };
-
-  // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError,
-  // so we use an intermediate function.
-  function RE(s, f) {
-    return RegExp(s, f);
-  }
-
-  var UNSUPPORTED_Y = fails(function () {
-    // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError
-    var re = RE('a', 'y');
-    re.lastIndex = 2;
-    return re.exec('abcd') != null;
-  });
-
-  var BROKEN_CARET = fails(function () {
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=773687
-    var re = RE('^r', 'gy');
-    re.lastIndex = 2;
-    return re.exec('str') != null;
-  });
-
-  var regexpStickyHelpers = {
-  	UNSUPPORTED_Y: UNSUPPORTED_Y,
-  	BROKEN_CARET: BROKEN_CARET
-  };
-
-  var nativeExec = RegExp.prototype.exec;
-  // This always refers to the native implementation, because the
-  // String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.js,
-  // which loads this file before patching the method.
-  var nativeReplace = String.prototype.replace;
-
-  var patchedExec = nativeExec;
-
-  var UPDATES_LAST_INDEX_WRONG = (function () {
-    var re1 = /a/;
-    var re2 = /b*/g;
-    nativeExec.call(re1, 'a');
-    nativeExec.call(re2, 'a');
-    return re1.lastIndex !== 0 || re2.lastIndex !== 0;
-  })();
-
-  var UNSUPPORTED_Y$1 = regexpStickyHelpers.UNSUPPORTED_Y || regexpStickyHelpers.BROKEN_CARET;
-
-  // nonparticipating capturing group, copied from es5-shim's String#split patch.
-  var NPCG_INCLUDED = /()??/.exec('')[1] !== undefined;
-
-  var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED || UNSUPPORTED_Y$1;
-
-  if (PATCH) {
-    patchedExec = function exec(str) {
-      var re = this;
-      var lastIndex, reCopy, match, i;
-      var sticky = UNSUPPORTED_Y$1 && re.sticky;
-      var flags = regexpFlags.call(re);
-      var source = re.source;
-      var charsAdded = 0;
-      var strCopy = str;
-
-      if (sticky) {
-        flags = flags.replace('y', '');
-        if (flags.indexOf('g') === -1) {
-          flags += 'g';
-        }
-
-        strCopy = String(str).slice(re.lastIndex);
-        // Support anchored sticky behavior.
-        if (re.lastIndex > 0 && (!re.multiline || re.multiline && str[re.lastIndex - 1] !== '\n')) {
-          source = '(?: ' + source + ')';
-          strCopy = ' ' + strCopy;
-          charsAdded++;
-        }
-        // ^(? + rx + ) is needed, in combination with some str slicing, to
-        // simulate the 'y' flag.
-        reCopy = new RegExp('^(?:' + source + ')', flags);
-      }
-
-      if (NPCG_INCLUDED) {
-        reCopy = new RegExp('^' + source + '$(?!\\s)', flags);
-      }
-      if (UPDATES_LAST_INDEX_WRONG) lastIndex = re.lastIndex;
-
-      match = nativeExec.call(sticky ? reCopy : re, strCopy);
-
-      if (sticky) {
-        if (match) {
-          match.input = match.input.slice(charsAdded);
-          match[0] = match[0].slice(charsAdded);
-          match.index = re.lastIndex;
-          re.lastIndex += match[0].length;
-        } else re.lastIndex = 0;
-      } else if (UPDATES_LAST_INDEX_WRONG && match) {
-        re.lastIndex = re.global ? match.index + match[0].length : lastIndex;
-      }
-      if (NPCG_INCLUDED && match && match.length > 1) {
-        // Fix browsers whose `exec` methods don't consistently return `undefined`
-        // for NPCG, like IE8. NOTE: This doesn' work for /(.?)?/
-        nativeReplace.call(match[0], reCopy, function () {
-          for (i = 1; i < arguments.length - 2; i++) {
-            if (arguments[i] === undefined) match[i] = undefined;
-          }
-        });
-      }
-
-      return match;
-    };
-  }
-
-  var regexpExec = patchedExec;
-
-  _export({ target: 'RegExp', proto: true, forced: /./.exec !== regexpExec }, {
-    exec: regexpExec
-  });
-
-  // TODO: Remove from `core-js@4` since it's moved to entry points
-
-
-
-
-
-
-
-  var SPECIES$3 = wellKnownSymbol('species');
-
-  var REPLACE_SUPPORTS_NAMED_GROUPS = !fails(function () {
-    // #replace needs built-in support for named groups.
-    // #match works fine because it just return the exec results, even if it has
-    // a "grops" property.
-    var re = /./;
-    re.exec = function () {
-      var result = [];
-      result.groups = { a: '7' };
-      return result;
-    };
-    return ''.replace(re, '$<a>') !== '7';
-  });
-
-  // IE <= 11 replaces $0 with the whole match, as if it was $&
-  // https://stackoverflow.com/questions/6024666/getting-ie-to-replace-a-regex-with-the-literal-string-0
-  var REPLACE_KEEPS_$0 = (function () {
-    return 'a'.replace(/./, '$0') === '$0';
-  })();
-
-  var REPLACE = wellKnownSymbol('replace');
-  // Safari <= 13.0.3(?) substitutes nth capture where n>m with an empty string
-  var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = (function () {
-    if (/./[REPLACE]) {
-      return /./[REPLACE]('a', '$0') === '';
-    }
-    return false;
-  })();
-
-  // Chrome 51 has a buggy "split" implementation when RegExp#exec !== nativeExec
-  // Weex JS has frozen built-in prototypes, so use try / catch wrapper
-  var SPLIT_WORKS_WITH_OVERWRITTEN_EXEC = !fails(function () {
-    var re = /(?:)/;
-    var originalExec = re.exec;
-    re.exec = function () { return originalExec.apply(this, arguments); };
-    var result = 'ab'.split(re);
-    return result.length !== 2 || result[0] !== 'a' || result[1] !== 'b';
-  });
-
-  var fixRegexpWellKnownSymbolLogic = function (KEY, length, exec, sham) {
-    var SYMBOL = wellKnownSymbol(KEY);
-
-    var DELEGATES_TO_SYMBOL = !fails(function () {
-      // String methods call symbol-named RegEp methods
-      var O = {};
-      O[SYMBOL] = function () { return 7; };
-      return ''[KEY](O) != 7;
-    });
-
-    var DELEGATES_TO_EXEC = DELEGATES_TO_SYMBOL && !fails(function () {
-      // Symbol-named RegExp methods call .exec
-      var execCalled = false;
-      var re = /a/;
-
-      if (KEY === 'split') {
-        // We can't use real regex here since it causes deoptimization
-        // and serious performance degradation in V8
-        // https://github.com/zloirock/core-js/issues/306
-        re = {};
-        // RegExp[@@split] doesn't call the regex's exec method, but first creates
-        // a new one. We need to return the patched regex when creating the new one.
-        re.constructor = {};
-        re.constructor[SPECIES$3] = function () { return re; };
-        re.flags = '';
-        re[SYMBOL] = /./[SYMBOL];
-      }
-
-      re.exec = function () { execCalled = true; return null; };
-
-      re[SYMBOL]('');
-      return !execCalled;
-    });
-
-    if (
-      !DELEGATES_TO_SYMBOL ||
-      !DELEGATES_TO_EXEC ||
-      (KEY === 'replace' && !(
-        REPLACE_SUPPORTS_NAMED_GROUPS &&
-        REPLACE_KEEPS_$0 &&
-        !REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE
-      )) ||
-      (KEY === 'split' && !SPLIT_WORKS_WITH_OVERWRITTEN_EXEC)
-    ) {
-      var nativeRegExpMethod = /./[SYMBOL];
-      var methods = exec(SYMBOL, ''[KEY], function (nativeMethod, regexp, str, arg2, forceStringMethod) {
-        if (regexp.exec === regexpExec) {
-          if (DELEGATES_TO_SYMBOL && !forceStringMethod) {
-            // The native String method already delegates to @@method (this
-            // polyfilled function), leasing to infinite recursion.
-            // We avoid it by directly calling the native @@method method.
-            return { done: true, value: nativeRegExpMethod.call(regexp, str, arg2) };
-          }
-          return { done: true, value: nativeMethod.call(str, regexp, arg2) };
-        }
-        return { done: false };
-      }, {
-        REPLACE_KEEPS_$0: REPLACE_KEEPS_$0,
-        REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE: REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE
-      });
-      var stringMethod = methods[0];
-      var regexMethod = methods[1];
-
-      redefine(String.prototype, KEY, stringMethod);
-      redefine(RegExp.prototype, SYMBOL, length == 2
-        // 21.2.5.8 RegExp.prototype[@@replace](string, replaceValue)
-        // 21.2.5.11 RegExp.prototype[@@split](string, limit)
-        ? function (string, arg) { return regexMethod.call(string, this, arg); }
-        // 21.2.5.6 RegExp.prototype[@@match](string)
-        // 21.2.5.9 RegExp.prototype[@@search](string)
-        : function (string) { return regexMethod.call(string, this); }
-      );
-    }
-
-    if (sham) createNonEnumerableProperty(RegExp.prototype[SYMBOL], 'sham', true);
-  };
-
-  // `String.prototype.{ codePointAt, at }` methods implementation
-  var createMethod$4 = function (CONVERT_TO_STRING) {
-    return function ($this, pos) {
-      var S = String(requireObjectCoercible($this));
-      var position = toInteger(pos);
-      var size = S.length;
-      var first, second;
-      if (position < 0 || position >= size) return CONVERT_TO_STRING ? '' : undefined;
-      first = S.charCodeAt(position);
-      return first < 0xD800 || first > 0xDBFF || position + 1 === size
-        || (second = S.charCodeAt(position + 1)) < 0xDC00 || second > 0xDFFF
-          ? CONVERT_TO_STRING ? S.charAt(position) : first
-          : CONVERT_TO_STRING ? S.slice(position, position + 2) : (first - 0xD800 << 10) + (second - 0xDC00) + 0x10000;
-    };
-  };
-
-  var stringMultibyte = {
-    // `String.prototype.codePointAt` method
-    // https://tc39.github.io/ecma262/#sec-string.prototype.codepointat
-    codeAt: createMethod$4(false),
-    // `String.prototype.at` method
-    // https://github.com/mathiasbynens/String.prototype.at
-    charAt: createMethod$4(true)
-  };
-
-  var charAt = stringMultibyte.charAt;
-
-  // `AdvanceStringIndex` abstract operation
-  // https://tc39.github.io/ecma262/#sec-advancestringindex
-  var advanceStringIndex = function (S, index, unicode) {
-    return index + (unicode ? charAt(S, index).length : 1);
-  };
-
-  // `RegExpExec` abstract operation
-  // https://tc39.github.io/ecma262/#sec-regexpexec
-  var regexpExecAbstract = function (R, S) {
-    var exec = R.exec;
-    if (typeof exec === 'function') {
-      var result = exec.call(R, S);
-      if (typeof result !== 'object') {
-        throw TypeError('RegExp exec method returned something other than an Object or null');
-      }
-      return result;
-    }
-
-    if (classofRaw(R) !== 'RegExp') {
-      throw TypeError('RegExp#exec called on incompatible receiver');
-    }
-
-    return regexpExec.call(R, S);
-  };
-
-  // @@match logic
-  fixRegexpWellKnownSymbolLogic('match', 1, function (MATCH, nativeMatch, maybeCallNative) {
-    return [
-      // `String.prototype.match` method
-      // https://tc39.github.io/ecma262/#sec-string.prototype.match
-      function match(regexp) {
-        var O = requireObjectCoercible(this);
-        var matcher = regexp == undefined ? undefined : regexp[MATCH];
-        return matcher !== undefined ? matcher.call(regexp, O) : new RegExp(regexp)[MATCH](String(O));
-      },
-      // `RegExp.prototype[@@match]` method
-      // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@match
-      function (regexp) {
-        var res = maybeCallNative(nativeMatch, regexp, this);
-        if (res.done) return res.value;
-
-        var rx = anObject(regexp);
-        var S = String(this);
-
-        if (!rx.global) return regexpExecAbstract(rx, S);
-
-        var fullUnicode = rx.unicode;
-        rx.lastIndex = 0;
-        var A = [];
-        var n = 0;
-        var result;
-        while ((result = regexpExecAbstract(rx, S)) !== null) {
-          var matchStr = String(result[0]);
-          A[n] = matchStr;
-          if (matchStr === '') rx.lastIndex = advanceStringIndex(S, toLength(rx.lastIndex), fullUnicode);
-          n++;
-        }
-        return n === 0 ? null : A;
-      }
-    ];
-  });
-
-  // `Array.prototype.{ reduce, reduceRight }` methods implementation
-  var createMethod$5 = function (IS_RIGHT) {
-    return function (that, callbackfn, argumentsLength, memo) {
-      aFunction$1(callbackfn);
-      var O = toObject(that);
-      var self = indexedObject(O);
-      var length = toLength(O.length);
-      var index = IS_RIGHT ? length - 1 : 0;
-      var i = IS_RIGHT ? -1 : 1;
-      if (argumentsLength < 2) while (true) {
-        if (index in self) {
-          memo = self[index];
-          index += i;
-          break;
-        }
-        index += i;
-        if (IS_RIGHT ? index < 0 : length <= index) {
-          throw TypeError('Reduce of empty array with no initial value');
-        }
-      }
-      for (;IS_RIGHT ? index >= 0 : length > index; index += i) if (index in self) {
-        memo = callbackfn(memo, self[index], index, O);
-      }
-      return memo;
-    };
-  };
-
-  var arrayReduce = {
-    // `Array.prototype.reduce` method
-    // https://tc39.github.io/ecma262/#sec-array.prototype.reduce
-    left: createMethod$5(false),
-    // `Array.prototype.reduceRight` method
-    // https://tc39.github.io/ecma262/#sec-array.prototype.reduceright
-    right: createMethod$5(true)
-  };
-
-  var $reduce = arrayReduce.left;
-
-
-
-  var STRICT_METHOD$2 = arrayMethodIsStrict('reduce');
-  var USES_TO_LENGTH$6 = arrayMethodUsesToLength('reduce', { 1: 0 });
-
-  // `Array.prototype.reduce` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.reduce
-  _export({ target: 'Array', proto: true, forced: !STRICT_METHOD$2 || !USES_TO_LENGTH$6 }, {
-    reduce: function reduce(callbackfn /* , initialValue */) {
-      return $reduce(this, callbackfn, arguments.length, arguments.length > 1 ? arguments[1] : undefined);
-    }
-  });
-
-  // #!zh: 可选的动画列表的第一个层级
-  var firstLevelAnimationOptions = [{
-    label: '进入',
-    value: /进/
-  }, {
-    label: '退出',
-    value: /退/
-  }, {
-    label: '强调',
-    value: /强调|特殊/
-  }];
-  var animationOptions = [{
-    label: '',
-    value: '空',
-    children: [{
-      label: '无',
-      value: ''
-    }]
-  }, {
-    label: '强调',
-    value: 'Attention Seekers',
-    children: [{
-      label: '旋转',
-      value: 'justRotate'
-    }, {
-      label: '弹跳',
-      value: 'bounce'
-    }, {
-      label: '闪烁',
-      value: 'flash'
-    }, {
-      label: '跳动',
-      value: 'pulse'
-    }, {
-      label: '抖动',
-      value: 'shake'
-    }, {
-      label: '摇摆',
-      value: 'swing'
-    }, {
-      label: '橡皮圈',
-      value: 'rubberBand'
-    }, {
-      label: '果冻',
-      value: 'jello'
-    }, {
-      label: '',
-      value: 'tada'
-    }, {
-      label: '',
-      value: 'wobble'
-    }]
-  }, {
-    label: '弹跳进入',
-    value: 'Bouncing Entrances',
-    children: [{
-      label: '弹跳进入',
-      value: 'bounceIn'
-    }, {
-      label: '向下弹跳进入',
-      value: 'bounceInDown'
-    }, {
-      label: '向右弹跳进入',
-      value: 'bounceInLeft'
-    }, {
-      label: '向左弹跳进入',
-      value: 'bounceInRight'
-    }, {
-      label: '向上弹跳进入',
-      value: 'bounceInUp'
-    }]
-  }, {
-    label: '弹跳退出',
-    value: 'Bouncing Exits',
-    children: [{
-      label: '弹跳退出',
-      value: 'bounceOut'
-    }, {
-      label: '向下弹跳退出',
-      value: 'bounceOutDown'
-    }, {
-      label: '向左弹跳退出',
-      value: 'bounceOutLeft'
-    }, {
-      label: '向右弹跳退出',
-      value: 'bounceOutRight'
-    }, {
-      label: '向上弹跳退出',
-      value: 'bounceOutUp'
-    }]
-  }, {
-    label: '渐显进入',
-    value: 'Fading Entrances',
-    children: [{
-      label: '渐显进入',
-      value: 'fadeIn'
-    }, {
-      label: '向下渐显进入',
-      value: 'fadeInDown'
-    }, {
-      label: '由屏幕外向下渐显进入',
-      value: 'fadeInDownBig'
-    }, {
-      label: '向右显进入',
-      value: 'fadeInLeft'
-    }, {
-      label: '由屏幕外向右渐显进入',
-      value: 'fadeInLeftBig'
-    }, {
-      label: '向左渐显进入',
-      value: 'fadeInRight'
-    }, {
-      label: '由屏幕外向左渐显进入',
-      value: 'fadeInRightBig'
-    }, {
-      label: '向上渐显进入',
-      value: 'fadeInUp'
-    }, {
-      label: '由屏幕外向上渐显进入',
-      value: 'fadeInUpBig'
-    }]
-  }, {
-    label: '渐隐退出',
-    value: 'Fading Exits',
-    children: [{
-      label: '渐隐退出',
-      value: 'fadeOut'
-    }, {
-      label: '向下渐隐退出',
-      value: 'fadeOutDown'
-    }, {
-      label: '向下渐隐退出屏幕外',
-      value: 'fadeOutDownBig'
-    }, {
-      label: '向左渐隐退出',
-      value: 'fadeOutLeft'
-    }, {
-      label: '向左渐隐退出屏幕外',
-      value: 'fadeOutLeftBig'
-    }, {
-      label: '向右渐隐退出',
-      value: 'fadeOutRight'
-    }, {
-      label: '向右渐隐退出屏幕外',
-      value: 'fadeOutRightBig'
-    }, {
-      label: '向上渐隐退出',
-      value: 'fadeOutUp'
-    }, {
-      label: '向上渐隐退出屏幕外',
-      value: 'fadeOutUpBig'
-    }]
-  }, {
-    label: '翻动',
-    value: 'Flippers',
-    children: [{
-      label: '翻动',
-      value: 'flip'
-    }, {
-      label: '纵向翻动',
-      value: 'flipInX'
-    }, {
-      label: '横向翻动',
-      value: 'flipInY'
-    }, {
-      label: '立体纵向翻动',
-      value: 'flipOutX'
-    }, {
-      label: '立体横向翻动',
-      value: 'flipOutY'
-    }]
-  }, {
-    label: '加速进出',
-    value: 'Lightspeed',
-    children: [{
-      label: '加速进入',
-      value: 'lightSpeedIn'
-    }, {
-      label: '加速退出',
-      value: 'lightSpeedOut'
-    }]
-  }, {
-    label: '旋转渐显',
-    value: 'Rotating Entrances',
-    children: [{
-      label: '旋转渐显',
-      value: 'rotateIn'
-    }, {
-      label: '左下角旋转渐显',
-      value: 'rotateInDownLeft'
-    }, {
-      label: '旋转渐显',
-      value: '右下角rotateInDownRight'
-    }, {
-      label: '左上角旋转渐显',
-      value: 'rotateInUpLeft'
-    }, {
-      label: '右上角旋转渐显',
-      value: 'rotateInUpRight'
-    }]
-  }, {
-    label: '旋转渐隐',
-    value: 'Rotating Exits',
-    children: [{
-      label: '旋转渐隐',
-      value: 'rotateOut'
-    }, {
-      label: '左下角旋转渐隐',
-      value: 'rotateOutDownLeft'
-    }, {
-      label: '左下角旋转渐隐',
-      value: 'rotateOutDownRight'
-    }, {
-      label: '左上角旋转渐隐',
-      value: 'rotateOutUpLeft'
-    }, {
-      label: '右上角旋转渐隐',
-      value: 'rotateOutUpRight'
-    }]
-  }, {
-    label: '平移进入',
-    value: 'Sliding Entrances',
-    children: [{
-      label: '向上平移进入',
-      value: 'slideInUp'
-    }, {
-      label: '向下平移进入',
-      value: 'slideInDown'
-    }, {
-      label: '向右平移进入',
-      value: 'slideInLeft'
-    }, {
-      label: '向左平移进入',
-      value: 'slideInRight'
-    }]
-  }, {
-    label: '平移退出',
-    value: 'Sliding Exits',
-    children: [{
-      label: '向上平移退出',
-      value: 'slideOutUp'
-    }, {
-      label: '向下平移退出',
-      value: 'slideOutDown'
-    }, {
-      label: '向左平移退出',
-      value: 'slideOutLeft'
-    }, {
-      label: '向右平移退出',
-      value: 'slideOutRight'
-    }]
-  }, {
-    label: '放大进入',
-    value: 'Zoom Entrances',
-    children: [{
-      label: '放大进入',
-      value: 'zoomIn'
-    }, {
-      label: '向下放大进入',
-      value: 'zoomInDown'
-    }, {
-      label: '向右放大进入',
-      value: 'zoomInLeft'
-    }, {
-      label: '向左放大进入',
-      value: 'zoomInRight'
-    }, {
-      label: '向上放大进入',
-      value: 'zoomInUp'
-    }]
-  }, {
-    label: '缩小退出',
-    value: 'Zoom Exits',
-    children: [{
-      label: '缩小退出',
-      value: 'zoomOut'
-    }, {
-      label: '向下缩小退出',
-      value: 'zoomOutDown'
-    }, {
-      label: '向左缩小退出',
-      value: 'zoomOutLeft'
-    }, {
-      label: '向右缩小退出',
-      value: 'zoomOutRight'
-    }, {
-      label: '向上缩小退出',
-      value: 'zoomOutUp'
-    }]
-  }, {
-    label: '特殊效果',
-    value: 'Specials',
-    children: [{
-      label: '悬挂',
-      value: 'hinge'
-    }, {
-      label: '滚动进入',
-      value: 'rollIn'
-    }, {
-      label: '滚动退出',
-      value: 'rollOut'
-    }]
-  }];
-  /**
-   * @return {Object} { animationValue: animatonLabel }
-   */
-
-  var animationValue2Name = animationOptions.reduce(function (obj, curr) {
-    var items = curr.children;
-    items.forEach(function (item) {
-      obj[item.value] = item.label;
-    });
-    return obj;
-  }, {});
-
-  var EventBus = new Vue__default['default'](); // event bus
-
-  var _components$5;
-
-  function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$3(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var RenderAnimationEditor = {
-    components: (_components$5 = {}, defineProperty$1(_components$5, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$1(_components$5, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$1(_components$5, antDesignVue.List.name, antDesignVue.List), defineProperty$1(_components$5, antDesignVue.Form.name, antDesignVue.Form), defineProperty$1(_components$5, antDesignVue.Button.name, antDesignVue.Button), defineProperty$1(_components$5, antDesignVue.Popover.name, antDesignVue.Popover), defineProperty$1(_components$5, antDesignVue.Slider.name, antDesignVue.Slider), defineProperty$1(_components$5, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$1(_components$5, antDesignVue.Collapse.name, antDesignVue.Collapse), defineProperty$1(_components$5, antDesignVue.Collapse.Panel.name, antDesignVue.Collapse.Pane), defineProperty$1(_components$5, antDesignVue.Icon.name, antDesignVue.Icon), defineProperty$1(_components$5, antDesignVue.Drawer.name, antDesignVue.Drawer), defineProperty$1(_components$5, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), defineProperty$1(_components$5, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$1(_components$5, antDesignVue.Form.Item.name, antDesignVue.Form.Item), _components$5),
-    computed: _objectSpread$3(_objectSpread$3({}, Vuex.mapState('editor', ['editingElement'])), {}, {
-      animationQueue: function animationQueue() {
-        return this.editingElement && this.editingElement.animations || [];
-      }
-    }),
-    data: function data() {
-      return {
-        // animationQueue: [],
-        activeCollapsePanel: 0,
-        activePreviewAnimation: '',
-        drawerVisible: false
-      };
-    },
-    methods: {
-      addAnimation: function addAnimation() {
-        // TODO move this to vuex
-        this.animationQueue.push({
-          type: '',
-          duration: 1,
-          delay: 0,
-          interationCount: 1,
-          infinite: false
-        });
-        this.activeCollapsePanel = this.animationQueue.length - 1;
-      },
-      deleteAnimate: function deleteAnimate(index) {
-        // TODO move this to vuex
-        this.animationQueue.splice(index, 1);
-      },
-      runAnimate: function runAnimate() {
-        // front-end/h5/src/components/@/editor/index.js created()
-        EventBus.$emit('RUN_ANIMATIONS');
-      },
-      renderSecondAnimationTabs: function renderSecondAnimationTabs(animations) {
-        var _this = this;
-
-        var h = this.$createElement;
-        return h("a-tabs", {
-          "attrs": {
-            "defaultActiveKey": animations[0].value,
-            "tabBarStyle": {
-              marginLeft: '-16px'
-            },
-            "size": "small",
-            "tabBarGutter": 0,
-            "tabPosition": "left"
-          },
-          "on": {
-            "change": function change(tab) {}
-          },
-          "style": "width:100%;"
-        }, [animations.map(function (group) {
-          return h("a-tab-pane", {
-            "attrs": {
-              "tab": group.label || group.value
-            },
-            "key": group.value
-          }, [h("a-list", {
-            "attrs": {
-              "grid": {
-                gutter: 12,
-                column: 2
-              },
-              "dataSource": group.children,
-              "renderItem": function renderItem(item, index) {
-                return (// [key point] onMouseover vs onMouseenter
-                  // https://stackoverflow.com/questions/7286532/jquery-mouseenter-vs-mouseover
-                  // https://www.quirksmode.org/js/events_mouse.html#mouseenter
-                  h("a-list-item", [h("div", {
-                    "on": {
-                      "click": function click(e) {
-                        // TODO move this to vuex mutation
-                        _this.editingElement.animations[_this.activeCollapsePanel].type = item.value;
-                      },
-                      "mouseenter": function mouseenter(e) {
-                        _this.activePreviewAnimation = item.value;
-                      },
-                      "mouseleave": function mouseleave() {// [key point] why not set activePreviewAnimation='' after mouseleave, see more here: https://stackoverflow.com/questions/32279782/mouseenter-called-multiple-times
-                        // this.activePreviewAnimation = ''
-                      }
-                    },
-                    "class": [_this.activePreviewAnimation === item.value && item.value + ' animated', 'shortcut-button']
-                  }, [item.label])])
-                );
-              }
-            }
-          })]);
-        })]);
-      },
-      renderAvaiableAnimations: function renderAvaiableAnimations() {
-        var _this2 = this;
-
-        var h = this.$createElement;
-        return h("a-tabs", {
-          "class": "avaiable-animations-tabs",
-          "attrs": {
-            "defaultActiveKey": firstLevelAnimationOptions[0].label,
-            "size": "small",
-            "tabBarGutter": 0
-          },
-          "on": {
-            "change": function change(tab) {}
-          },
-          "style": "width:100%;"
-        }, [firstLevelAnimationOptions.map(function (firstGroup) {
-          return h("a-tab-pane", {
-            "attrs": {
-              "tab": firstGroup.label
-            },
-            "key": firstGroup.label
-          }, [_this2.renderSecondAnimationTabs(animationOptions.filter(function (group) {
-            return !!group.label.match(firstGroup.value);
-          }))]);
-        })]);
-      },
-      renderAnimationOptions: function renderAnimationOptions(animationOption) {
-        var _this3 = this;
-
-        var h = this.$createElement;
-        return h("a-form", {
-          "attrs": {
-            "layout": "horizontal"
-          }
-        }, [h("a-form-item", {
-          "attrs": {
-            "label": this.$t('editor.editPanel.animation.type'),
-            "labelCol": {
-              span: 5
-            },
-            "wrapperCol": {
-              span: 16,
-              offset: 2
-            }
-          }
-        }, [h("a-button", {
-          "attrs": {
-            "type": "link",
-            "size": "small",
-            "icon": "ordered-list"
-          },
-          "on": {
-            "click": function click() {
-              _this3.drawerVisible = true;
-            }
-          }
-        }, [this.$t('editor.editPanel.animation.list')])]), h("a-form-item", {
-          "attrs": {
-            "label": this.$t('editor.editPanel.animation.duration'),
-            "labelCol": {
-              span: 5
-            },
-            "wrapperCol": {
-              span: 16,
-              offset: 2
-            }
-          },
-          "style": "margin-bottom:0;"
-        }, [h("a-form-item", {
-          "style": {
-            display: 'inline-block',
-            width: 'calc(50% - 12px)'
-          }
-        }, [h("a-slider", {
-          "attrs": {
-            "defaultValue": 2,
-            "min": 0,
-            "max": 20,
-            "value": animationOption.duration
-          },
-          "on": {
-            "change": function change(value) {
-              animationOption.duration = value;
-            }
-          }
-        })]), h("a-form-item", {
-          "style": {
-            display: 'inline-block',
-            width: 'calc(50% - 12px)',
-            marginLeft: '4px'
-          }
-        }, [h("a-input-number", {
-          "attrs": {
-            "min": 0,
-            "max": 20,
-            "size": "small",
-            "formatter": function formatter(value) {
-              return "".concat(value, "\u79D2(s)");
-            },
-            "value": animationOption.duration
-          },
-          "on": {
-            "change": function change(value) {
-              animationOption.duration = value;
-            }
-          }
-        })])]), h("a-form-item", {
-          "attrs": {
-            "label": this.$t('editor.editPanel.animation.delay'),
-            "labelCol": {
-              span: 5
-            },
-            "wrapperCol": {
-              span: 16,
-              offset: 2
-            }
-          },
-          "style": "margin-bottom:0;"
-        }, [h("a-form-item", {
-          "style": {
-            display: 'inline-block',
-            width: 'calc(50% - 12px)'
-          }
-        }, [h("a-slider", {
-          "attrs": {
-            "defaultValue": 2,
-            "min": 0,
-            "max": 20,
-            "value": animationOption.delay
-          },
-          "on": {
-            "change": function change(value) {
-              animationOption.delay = value;
-            }
-          }
-        })]), h("a-form-item", {
-          "style": {
-            display: 'inline-block',
-            width: 'calc(50% - 12px)',
-            marginLeft: '4px'
-          }
-        }, [h("a-input-number", {
-          "attrs": {
-            "min": 0,
-            "max": 20,
-            "size": "small",
-            "formatter": function formatter(value) {
-              return "".concat(value, "\u79D2(s)");
-            },
-            "value": animationOption.delay
-          },
-          "on": {
-            "change": function change(value) {
-              animationOption.delay = value;
-            }
-          }
-        })])]), h("a-form-item", {
-          "attrs": {
-            "label": this.$t('editor.editPanel.animation.iteration'),
-            "labelCol": {
-              span: 5
-            },
-            "wrapperCol": {
-              span: 16,
-              offset: 2
-            }
-          },
-          "style": "margin-bottom:0;"
-        }, [h("a-form-item", {
-          "style": {
-            display: 'inline-block',
-            width: 'calc(50% - 12px)'
-          }
-        }, [h("a-slider", {
-          "attrs": {
-            "defaultValue": 2,
-            "min": 0,
-            "max": 20,
-            "value": animationOption.interationCount
-          },
-          "on": {
-            "change": function change(value) {
-              animationOption.interationCount = value;
-            }
-          }
-        })]), h("a-form-item", {
-          "style": {
-            display: 'inline-block',
-            width: 'calc(50% - 12px)',
-            marginLeft: '4px'
-          }
-        }, [h("a-input-number", {
-          "attrs": {
-            "min": 0,
-            "max": 20,
-            "size": "small",
-            "formatter": function formatter(value) {
-              return "".concat(value, "\u6B21(times)");
-            },
-            "value": animationOption.interationCount
-          },
-          "on": {
-            "change": function change(value) {
-              animationOption.interationCount = value;
-            }
-          }
-        })])]), h("a-form-item", {
-          "attrs": {
-            "label": this.$t('editor.editPanel.animation.inifinite'),
-            "labelCol": {
-              span: 5
-            },
-            "wrapperCol": {
-              span: 16,
-              offset: 2
-            }
-          },
-          "style": "margin-bottom:0;"
-        }, [h("a-switch", {
-          "attrs": {
-            "value": animationOption.infinite
-          },
-          "on": {
-            "change": function change(value) {
-              animationOption.infinite = value;
-            }
-          }
-        })])]);
-      }
-    },
-    render: function render(h) {
-      var _this4 = this;
-
-      var ele = this.editingElement;
-      if (!ele) return h("span", [this.$t('editor.editPanel.common.empty')]);
-      return h("div", {
-        "class": "main-animate widget",
-        "attrs": {
-          "id": "animation-right-panel"
-        }
-      }, [h("a-button-group", [h("a-button", {
-        "attrs": {
-          "type": "primary"
-        },
-        "on": {
-          "click": this.addAnimation
-        }
-      }, [h("a-icon", {
-        "attrs": {
-          "type": "plus"
-        }
-      }), this.$t('editor.editPanel.animation.add')]), h("a-button", {
-        "attrs": {
-          "type": "primary"
-        },
-        "on": {
-          "click": this.runAnimate
-        }
-      }, [this.$t('editor.editPanel.animation.run'), h("a-icon", {
-        "attrs": {
-          "type": "right-circle"
-        }
-      })])]), // Q：这边为何这样写：this.animationQueue.length && ?
-      // A：如果这样写的话，当 length === 0，的时候，0会显示在 UI 上
-      !!this.animationQueue.length && h("a-collapse", {
-        "attrs": {
-          "accordion": true,
-          "activeKey": '' + this.activeCollapsePanel
-        },
-        "class": "collapse-wrapper",
-        "on": {
-          "change": function change(key) {
-            // 当全部收起来时候，key 为 undefined
-            _this4.activeCollapsePanel = typeof key !== 'undefined' ? +key : -1;
-          }
-        }
-      }, [this.animationQueue.map(function (addedAnimation, index) {
-        return h("a-collapse-panel", {
-          "key": "".concat(index)
-        }, [h("template", {
-          "slot": "header"
-        }, [h("span", [_this4.$t('editor.editPanel.animation.title', {
-          index: index + 1
-        })]), h("a-tag", {
-          "attrs": {
-            "color": "orange"
-          }
-        }, [animationValue2Name[addedAnimation.type] || addedAnimation.type]), h("a-icon", {
-          "attrs": {
-            "type": "delete",
-            "title": "删除动画"
-          },
-          "on": {
-            "click": function click() {
-              return _this4.deleteAnimate(index);
-            }
-          }
-        })]), _this4.renderAnimationOptions(addedAnimation)]);
-      })]), h("a-drawer", {
-        "attrs": {
-          "title": "请选择动画",
-          "placement": "left",
-          "closable": true,
-          "visible": this.drawerVisible,
-          "width": 400,
-          "wrapStyle": {
-            margin: '-16px'
-          }
-        },
-        "on": {
-          "close": function close() {
-            _this4.drawerVisible = false;
-          }
-        }
-      }, [h("div", {
-        "style": "width: 100%;"
-      }, [this.renderAvaiableAnimations()])])]);
-    }
-  };
-
-  function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var RenderActionEditor = {
-    data: function data() {
-      return {};
-    },
-    computed: _objectSpread$4({}, Vuex.mapState('editor', ['editingElement'])),
-    methods: _objectSpread$4({}, Vuex.mapActions('editor', ['setEditingElement'])),
-    render: function render() {
-      var h = arguments[0];
-      var ele = this.editingElement;
-      if (!ele) return h("span", [this.$t('editor.editPanel.common.empty')]);
-      return h("div", ["TODO"]);
-    }
-  };
-
-  var UNSCOPABLES = wellKnownSymbol('unscopables');
-  var ArrayPrototype = Array.prototype;
-
-  // Array.prototype[@@unscopables]
-  // https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
-  if (ArrayPrototype[UNSCOPABLES] == undefined) {
-    objectDefineProperty.f(ArrayPrototype, UNSCOPABLES, {
-      configurable: true,
-      value: objectCreate(null)
-    });
-  }
-
-  // add a key to Array.prototype[@@unscopables]
-  var addToUnscopables = function (key) {
-    ArrayPrototype[UNSCOPABLES][key] = true;
-  };
-
-  var $find = arrayIteration.find;
-
-
-
-  var FIND = 'find';
-  var SKIPS_HOLES = true;
-
-  var USES_TO_LENGTH$7 = arrayMethodUsesToLength(FIND);
-
-  // Shouldn't skip holes
-  if (FIND in []) Array(1)[FIND](function () { SKIPS_HOLES = false; });
-
-  // `Array.prototype.find` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.find
-  _export({ target: 'Array', proto: true, forced: SKIPS_HOLES || !USES_TO_LENGTH$7 }, {
-    find: function find(callbackfn /* , that = undefined */) {
-      return $find(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
-    }
-  });
-
-  // https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
-  addToUnscopables(FIND);
-
-  var freezing = !fails(function () {
-    return Object.isExtensible(Object.preventExtensions({}));
-  });
-
-  var internalMetadata = createCommonjsModule(function (module) {
-  var defineProperty = objectDefineProperty.f;
-
-
-
-  var METADATA = uid('meta');
-  var id = 0;
-
-  var isExtensible = Object.isExtensible || function () {
-    return true;
-  };
-
-  var setMetadata = function (it) {
-    defineProperty(it, METADATA, { value: {
-      objectID: 'O' + ++id, // object ID
-      weakData: {}          // weak collections IDs
-    } });
-  };
-
-  var fastKey = function (it, create) {
-    // return a primitive with prefix
-    if (!isObject(it)) return typeof it == 'symbol' ? it : (typeof it == 'string' ? 'S' : 'P') + it;
-    if (!has(it, METADATA)) {
-      // can't set metadata to uncaught frozen object
-      if (!isExtensible(it)) return 'F';
-      // not necessary to add metadata
-      if (!create) return 'E';
-      // add missing metadata
-      setMetadata(it);
-    // return object ID
-    } return it[METADATA].objectID;
-  };
-
-  var getWeakData = function (it, create) {
-    if (!has(it, METADATA)) {
-      // can't set metadata to uncaught frozen object
-      if (!isExtensible(it)) return true;
-      // not necessary to add metadata
-      if (!create) return false;
-      // add missing metadata
-      setMetadata(it);
-    // return the store of weak collections IDs
-    } return it[METADATA].weakData;
-  };
-
-  // add metadata on freeze-family methods calling
-  var onFreeze = function (it) {
-    if (freezing && meta.REQUIRED && isExtensible(it) && !has(it, METADATA)) setMetadata(it);
-    return it;
-  };
-
-  var meta = module.exports = {
-    REQUIRED: false,
-    fastKey: fastKey,
-    getWeakData: getWeakData,
-    onFreeze: onFreeze
-  };
-
-  hiddenKeys[METADATA] = true;
-  });
-
-  var onFreeze = internalMetadata.onFreeze;
-
-  var nativeFreeze = Object.freeze;
-  var FAILS_ON_PRIMITIVES$2 = fails(function () { nativeFreeze(1); });
-
-  // `Object.freeze` method
-  // https://tc39.github.io/ecma262/#sec-object.freeze
-  _export({ target: 'Object', stat: true, forced: FAILS_ON_PRIMITIVES$2, sham: !freezing }, {
-    freeze: function freeze(it) {
-      return nativeFreeze && isObject(it) ? nativeFreeze(onFreeze(it)) : it;
-    }
-  });
-
-  /*
-   * @author : Mater
-   * @Email : bxh8640@gmail.com
-   * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-06 14:56:14
-   * @Description :
-   */
-
-  /**
-    * 页面模式，枚举值
-    * h5_swipper 翻页H5
-    * h5_long_page 长页面H5
-   */
-  var PAGE_MODE = {
-    SWIPPER_PAGE: 'h5_swipper',
-    LONG_PAGE: 'h5_long_page',
-    WIDTH: 375,
-    HEIGHT: 667
-  };
-  var PAGE_MODE_LABEL = {
-    SWIPPER_PAGE: '翻页H5',
-    LONG_PAGE: '长页面'
-  };
-
-  var _components$6;
-
-  function ownKeys$6(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$5(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var script = {
-    components: (_components$6 = {}, defineProperty$1(_components$6, antDesignVue.Form.name, antDesignVue.Form), defineProperty$1(_components$6, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$1(_components$6, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$1(_components$6, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), _components$6),
-    data: function data() {
-      return {
-        formLayout: 'vertical',
-        PAGE_MODE: Object.freeze(PAGE_MODE),
-        PAGE_MODE_LABEL: Object.freeze(PAGE_MODE_LABEL)
-      };
-    },
-    computed: _objectSpread$5(_objectSpread$5({}, Vuex.mapState('editor', ['work'])), {}, {
-      // 翻页模式、长页面模式
-      // src/constants/work -> PAGE_MODE
-      // https://vuex.vuejs.org/zh/guide/forms.html#%E5%8F%8C%E5%90%91%E7%BB%91%E5%AE%9A%E7%9A%84%E8%AE%A1%E7%AE%97%E5%B1%9E%E6%80%A7
-      pageMode: {
-        get: function get() {
-          return this.work.page_mode || PAGE_MODE.SWIPPER_PAGE;
-        },
-        set: function set(pageMode) {
-          this.updateWork({
-            page_mode: pageMode
-          });
-        }
-      }
-    }),
-    methods: _objectSpread$5({}, Vuex.mapActions('editor', ['updateWork']))
-  };
-
-  function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier /* server only */, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
-      if (typeof shadowMode !== 'boolean') {
-          createInjectorSSR = createInjector;
-          createInjector = shadowMode;
-          shadowMode = false;
-      }
-      // Vue.extend constructor export interop.
-      const options = typeof script === 'function' ? script.options : script;
-      // render functions
-      if (template && template.render) {
-          options.render = template.render;
-          options.staticRenderFns = template.staticRenderFns;
-          options._compiled = true;
-          // functional template
-          if (isFunctionalTemplate) {
-              options.functional = true;
-          }
-      }
-      // scopedId
-      if (scopeId) {
-          options._scopeId = scopeId;
-      }
-      let hook;
-      if (moduleIdentifier) {
-          // server build
-          hook = function (context) {
-              // 2.3 injection
-              context =
-                  context || // cached call
-                      (this.$vnode && this.$vnode.ssrContext) || // stateful
-                      (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext); // functional
-              // 2.2 with runInNewContext: true
-              if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-                  context = __VUE_SSR_CONTEXT__;
-              }
-              // inject component styles
-              if (style) {
-                  style.call(this, createInjectorSSR(context));
-              }
-              // register component module identifier for async chunk inference
-              if (context && context._registeredComponents) {
-                  context._registeredComponents.add(moduleIdentifier);
-              }
-          };
-          // used by ssr in case component is cached and beforeCreate
-          // never gets called
-          options._ssrRegister = hook;
-      }
-      else if (style) {
-          hook = shadowMode
-              ? function (context) {
-                  style.call(this, createInjectorShadow(context, this.$root.$options.shadowRoot));
-              }
-              : function (context) {
-                  style.call(this, createInjector(context));
-              };
-      }
-      if (hook) {
-          if (options.functional) {
-              // register for functional component in vue file
-              const originalRender = options.render;
-              options.render = function renderWithStyleInjection(h, context) {
-                  hook.call(context);
-                  return originalRender(h, context);
-              };
-          }
-          else {
-              // inject component registration as beforeCreate hook
-              const existing = options.beforeCreate;
-              options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
-          }
-      }
-      return script;
-  }
-
-  /* script */
-  const __vue_script__ = script;
-
-  /* template */
-  var __vue_render__ = function() {
-    var _vm = this;
-    var _h = _vm.$createElement;
-    var _c = _vm._self._c || _h;
-    return _c(
-      "a-form",
-      { attrs: { layout: _vm.formLayout } },
-      [
-        _c(
-          "a-form-item",
-          { attrs: { label: "H5类型" } },
-          [
-            _c(
-              "a-radio-group",
-              {
-                attrs: { size: "small" },
-                model: {
-                  value: _vm.pageMode,
-                  callback: function($$v) {
-                    _vm.pageMode = $$v;
-                  },
-                  expression: "pageMode"
-                }
-              },
-              _vm._l(_vm.PAGE_MODE, function(value, key) {
-                return _c(
-                  "a-radio-button",
-                  { key: key, attrs: { value: value } },
-                  [_vm._v(_vm._s(_vm.PAGE_MODE_LABEL[key]))]
-                )
-              }),
-              1
-            )
-          ],
-          1
-        )
-      ],
-      1
-    )
-  };
-  var __vue_staticRenderFns__ = [];
-  __vue_render__._withStripped = true;
-
-    /* style */
-    const __vue_inject_styles__ = undefined;
-    /* scoped */
-    const __vue_scope_id__ = undefined;
-    /* module identifier */
-    const __vue_module_identifier__ = undefined;
-    /* functional template */
-    const __vue_is_functional_template__ = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-    /* style inject shadow dom */
-    
-
-    
-    const __vue_component__ = /*#__PURE__*/normalizeComponent(
-      { render: __vue_render__, staticRenderFns: __vue_staticRenderFns__ },
-      __vue_inject_styles__,
-      __vue_script__,
-      __vue_scope_id__,
-      __vue_is_functional_template__,
-      __vue_module_identifier__,
-      false,
-      undefined,
-      undefined,
-      undefined
-    );
-
-  function ownKeys$7(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$7(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var RenderBackgroundEditor = {
-    computed: _objectSpread$6({}, Vuex.mapState('editor', ['editingPage'])),
-    methods: _objectSpread$6({}, Vuex.mapActions('editor', ['setEditingElement'])),
-    render: function render() {
-      var h = arguments[0];
-      var bgEle = this.editingPage.elements.find(function (e) {
-        return e.name === 'lbp-background';
-      });
-      return h("div", [h(__vue_component__), h(RenderPropsEditor, {
-        "attrs": {
-          "layout": "vertical",
-          "realEditingElement": bgEle
-        }
-      })]);
-    }
-  };
-
-  var _components$7;
-  var EditorRightPanel = {
-    name: 'ElementPropsEditor',
-    components: (_components$7 = {}, defineProperty$1(_components$7, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$1(_components$7, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$1(_components$7, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), _components$7),
-    props: {
-      width: {
-        type: Number,
-        default: 375
-      },
-      element: {
-        type: Object,
-        default: function _default() {
-          return {};
-        }
-      }
-    },
-    computed: {
-      editPropsConfig: function editPropsConfig() {
-        var element = this.element;
-        var vm = element && element.vm;
-        return this.getPropsWithEditor(vm && vm.$options.props || {});
-      },
-      editPropsValue: function editPropsValue() {
-        var element = this.element,
-            editPropsConfig = this.editPropsConfig;
-        var editPropsConfigKeys = Object.keys(editPropsConfig);
-        var props = element ? element.props : {};
-        var propsValue = {};
-        editPropsConfigKeys.forEach(function (key) {
-          propsValue[key] = props[key];
-        });
-        return propsValue;
-      }
-    },
-    data: function data() {
-      return {
-        activeTabKey: '属性'
-      };
-    },
-    methods: {
-      setActiveTab: function setActiveTab(activeTabKey) {
-        this.activeTabKey = activeTabKey;
-      },
-      getPropsWithEditor: function getPropsWithEditor(props) {
-        var propsWithEditor = {};
-        Object.entries(props).forEach(function (_ref) {
-          var _ref2 = slicedToArray(_ref, 2),
-              key = _ref2[0],
-              value = _ref2[1];
-
-          if (value.editor) {
-            propsWithEditor[key] = value;
-          }
-        });
-        return propsWithEditor;
-      }
-    },
-    render: function render() {
-      var h = arguments[0];
-      return h("a-layout-sider", {
-        "attrs": {
-          "width": this.width,
-          "data-set-width": this.width,
-          "theme": "light"
-        },
-        "style": {
-          background: '#fff',
-          padding: '0 12px 0 12px'
-        }
-      }, [h("a-tabs", {
-        "style": "height: 100%;",
-        "attrs": {
-          "tabBarGutter": 10,
-          "defaultActiveKey": this.activeTabKey,
-          "activeKey": this.activeTabKey
-        },
-        "on": {
-          "change": this.setActiveTab
-        }
-      }, [h("a-tab-pane", {
-        "key": "属性"
-      }, [h("span", {
-        "slot": "tab"
-      }, [this.$t('editor.editPanel.tab.prop')]), h(RenderPropsEditor, {
-        "attrs": {
-          "config": this.editPropsConfig,
-          "value": this.editPropsValue
-        },
-        "on": {
-          "change": this.$listeners.propsChange
-        }
-      })]), h("a-tab-pane", {
-        "attrs": {
-          "label": "动画",
-          "tab": this.$t('editor.editPanel.tab.animation')
-        },
-        "key": "动画"
-      }, [h(RenderAnimationEditor)]), h("a-tab-pane", {
-        "attrs": {
-          "label": "动作",
-          "tab": this.$t('editor.editPanel.tab.action')
-        },
-        "key": "动作"
-      }, [this.activeTabKey === '动作' && h(RenderActionEditor)]), h("a-tab-pane", {
-        "attrs": {
-          "label": "脚本",
-          "tab": this.$t('editor.editPanel.tab.script')
-        },
-        "key": "脚本"
-      }, [h(RenderScriptEditor)]), h("a-tab-pane", {
-        "attrs": {
-          "label": "页面",
-          "tab": this.$t('editor.editPanel.tab.page')
-        },
-        "key": "页面"
-      }, [this.activeTabKey === '页面' && h(RenderBackgroundEditor)])])]);
-    }
-  };
-
-  var nativeAssign = Object.assign;
-  var defineProperty$6 = Object.defineProperty;
-
-  // `Object.assign` method
-  // https://tc39.github.io/ecma262/#sec-object.assign
-  var objectAssign = !nativeAssign || fails(function () {
-    // should have correct order of operations (Edge bug)
-    if (descriptors && nativeAssign({ b: 1 }, nativeAssign(defineProperty$6({}, 'a', {
-      enumerable: true,
-      get: function () {
-        defineProperty$6(this, 'b', {
-          value: 3,
-          enumerable: false
-        });
-      }
-    }), { b: 2 })).b !== 1) return true;
-    // should work with symbols and should have deterministic property order (V8 bug)
-    var A = {};
-    var B = {};
-    // eslint-disable-next-line no-undef
-    var symbol = Symbol();
-    var alphabet = 'abcdefghijklmnopqrst';
-    A[symbol] = 7;
-    alphabet.split('').forEach(function (chr) { B[chr] = chr; });
-    return nativeAssign({}, A)[symbol] != 7 || objectKeys(nativeAssign({}, B)).join('') != alphabet;
-  }) ? function assign(target, source) { // eslint-disable-line no-unused-vars
-    var T = toObject(target);
-    var argumentsLength = arguments.length;
-    var index = 1;
-    var getOwnPropertySymbols = objectGetOwnPropertySymbols.f;
-    var propertyIsEnumerable = objectPropertyIsEnumerable.f;
-    while (argumentsLength > index) {
-      var S = indexedObject(arguments[index++]);
-      var keys = getOwnPropertySymbols ? objectKeys(S).concat(getOwnPropertySymbols(S)) : objectKeys(S);
-      var length = keys.length;
-      var j = 0;
-      var key;
-      while (length > j) {
-        key = keys[j++];
-        if (!descriptors || propertyIsEnumerable.call(S, key)) T[key] = S[key];
-      }
-    } return T;
-  } : nativeAssign;
-
-  // `Object.assign` method
-  // https://tc39.github.io/ecma262/#sec-object.assign
-  _export({ target: 'Object', stat: true, forced: Object.assign !== objectAssign }, {
-    assign: objectAssign
-  });
-
-  var IS_CONCAT_SPREADABLE = wellKnownSymbol('isConcatSpreadable');
-  var MAX_SAFE_INTEGER$1 = 0x1FFFFFFFFFFFFF;
-  var MAXIMUM_ALLOWED_INDEX_EXCEEDED = 'Maximum allowed index exceeded';
-
-  // We can't use this feature detection in V8 since it causes
-  // deoptimization and serious performance degradation
-  // https://github.com/zloirock/core-js/issues/679
-  var IS_CONCAT_SPREADABLE_SUPPORT = engineV8Version >= 51 || !fails(function () {
-    var array = [];
-    array[IS_CONCAT_SPREADABLE] = false;
-    return array.concat()[0] !== array;
-  });
-
-  var SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('concat');
-
-  var isConcatSpreadable = function (O) {
-    if (!isObject(O)) return false;
-    var spreadable = O[IS_CONCAT_SPREADABLE];
-    return spreadable !== undefined ? !!spreadable : isArray(O);
-  };
-
-  var FORCED$1 = !IS_CONCAT_SPREADABLE_SUPPORT || !SPECIES_SUPPORT;
-
-  // `Array.prototype.concat` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.concat
-  // with adding support of @@isConcatSpreadable and @@species
-  _export({ target: 'Array', proto: true, forced: FORCED$1 }, {
-    concat: function concat(arg) { // eslint-disable-line no-unused-vars
-      var O = toObject(this);
-      var A = arraySpeciesCreate(O, 0);
-      var n = 0;
-      var i, k, length, len, E;
-      for (i = -1, length = arguments.length; i < length; i++) {
-        E = i === -1 ? O : arguments[i];
-        if (isConcatSpreadable(E)) {
-          len = toLength(E.length);
-          if (n + len > MAX_SAFE_INTEGER$1) throw TypeError(MAXIMUM_ALLOWED_INDEX_EXCEEDED);
-          for (k = 0; k < len; k++, n++) if (k in E) createProperty(A, n, E[k]);
-        } else {
-          if (n >= MAX_SAFE_INTEGER$1) throw TypeError(MAXIMUM_ALLOWED_INDEX_EXCEEDED);
-          createProperty(A, n++, E);
-        }
-      }
-      A.length = n;
-      return A;
-    }
-  });
-
-  var max$3 = Math.max;
-  var min$3 = Math.min;
-  var floor$1 = Math.floor;
-  var SUBSTITUTION_SYMBOLS = /\$([$&'`]|\d\d?|<[^>]*>)/g;
-  var SUBSTITUTION_SYMBOLS_NO_NAMED = /\$([$&'`]|\d\d?)/g;
-
-  var maybeToString = function (it) {
-    return it === undefined ? it : String(it);
-  };
-
-  // @@replace logic
-  fixRegexpWellKnownSymbolLogic('replace', 2, function (REPLACE, nativeReplace, maybeCallNative, reason) {
-    var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = reason.REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE;
-    var REPLACE_KEEPS_$0 = reason.REPLACE_KEEPS_$0;
-    var UNSAFE_SUBSTITUTE = REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE ? '$' : '$0';
-
-    return [
-      // `String.prototype.replace` method
-      // https://tc39.github.io/ecma262/#sec-string.prototype.replace
-      function replace(searchValue, replaceValue) {
-        var O = requireObjectCoercible(this);
-        var replacer = searchValue == undefined ? undefined : searchValue[REPLACE];
-        return replacer !== undefined
-          ? replacer.call(searchValue, O, replaceValue)
-          : nativeReplace.call(String(O), searchValue, replaceValue);
-      },
-      // `RegExp.prototype[@@replace]` method
-      // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@replace
-      function (regexp, replaceValue) {
-        if (
-          (!REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE && REPLACE_KEEPS_$0) ||
-          (typeof replaceValue === 'string' && replaceValue.indexOf(UNSAFE_SUBSTITUTE) === -1)
-        ) {
-          var res = maybeCallNative(nativeReplace, regexp, this, replaceValue);
-          if (res.done) return res.value;
-        }
-
-        var rx = anObject(regexp);
-        var S = String(this);
-
-        var functionalReplace = typeof replaceValue === 'function';
-        if (!functionalReplace) replaceValue = String(replaceValue);
-
-        var global = rx.global;
-        if (global) {
-          var fullUnicode = rx.unicode;
-          rx.lastIndex = 0;
-        }
-        var results = [];
-        while (true) {
-          var result = regexpExecAbstract(rx, S);
-          if (result === null) break;
-
-          results.push(result);
-          if (!global) break;
-
-          var matchStr = String(result[0]);
-          if (matchStr === '') rx.lastIndex = advanceStringIndex(S, toLength(rx.lastIndex), fullUnicode);
-        }
-
-        var accumulatedResult = '';
-        var nextSourcePosition = 0;
-        for (var i = 0; i < results.length; i++) {
-          result = results[i];
-
-          var matched = String(result[0]);
-          var position = max$3(min$3(toInteger(result.index), S.length), 0);
-          var captures = [];
-          // NOTE: This is equivalent to
-          //   captures = result.slice(1).map(maybeToString)
-          // but for some reason `nativeSlice.call(result, 1, result.length)` (called in
-          // the slice polyfill when slicing native arrays) "doesn't work" in safari 9 and
-          // causes a crash (https://pastebin.com/N21QzeQA) when trying to debug it.
-          for (var j = 1; j < result.length; j++) captures.push(maybeToString(result[j]));
-          var namedCaptures = result.groups;
-          if (functionalReplace) {
-            var replacerArgs = [matched].concat(captures, position, S);
-            if (namedCaptures !== undefined) replacerArgs.push(namedCaptures);
-            var replacement = String(replaceValue.apply(undefined, replacerArgs));
-          } else {
-            replacement = getSubstitution(matched, S, position, captures, namedCaptures, replaceValue);
-          }
-          if (position >= nextSourcePosition) {
-            accumulatedResult += S.slice(nextSourcePosition, position) + replacement;
-            nextSourcePosition = position + matched.length;
-          }
-        }
-        return accumulatedResult + S.slice(nextSourcePosition);
-      }
-    ];
-
-    // https://tc39.github.io/ecma262/#sec-getsubstitution
-    function getSubstitution(matched, str, position, captures, namedCaptures, replacement) {
-      var tailPos = position + matched.length;
-      var m = captures.length;
-      var symbols = SUBSTITUTION_SYMBOLS_NO_NAMED;
-      if (namedCaptures !== undefined) {
-        namedCaptures = toObject(namedCaptures);
-        symbols = SUBSTITUTION_SYMBOLS;
-      }
-      return nativeReplace.call(replacement, symbols, function (match, ch) {
-        var capture;
-        switch (ch.charAt(0)) {
-          case '$': return '$';
-          case '&': return matched;
-          case '`': return str.slice(0, position);
-          case "'": return str.slice(tailPos);
-          case '<':
-            capture = namedCaptures[ch.slice(1, -1)];
-            break;
-          default: // \d\d?
-            var n = +ch;
-            if (n === 0) return match;
-            if (n > m) {
-              var f = floor$1(n / 10);
-              if (f === 0) return match;
-              if (f <= m) return captures[f - 1] === undefined ? ch.charAt(1) : captures[f - 1] + ch.charAt(1);
-              return match;
-            }
-            capture = captures[n - 1];
-        }
-        return capture === undefined ? '' : capture;
-      });
-    }
-  });
-
-  function getComputedCSSText(style) {
-    var cssText = '';
-
-    for (var attr in style) {
-      // m <?> matched
-      // #!en: hump to line
-      // #!zh: 驼峰转下划线
-      cssText += "".concat(attr.replace(/[A-Z]+/g, function (m) {
-        return "-".concat(m.toLowerCase());
-      }), ":").concat(style[attr], ";");
-    }
-
-    return cssText;
-  }
-
-  var animationMixin = {
-    methods: {
-      runAnimations: function runAnimations() {
-        var animationQueue = this.animations || this.element.animations || [];
-        var len = animationQueue.length;
-        if (len === 0) return;
-        var that = this;
-        var parentNode = this.$el;
-        var animIdx = 0;
-        var oldStyle = that.element.getStyle({
-          position: 'absolute'
-        });
-        runAnimation();
-
-        function runAnimation() {
-          if (animIdx < len) {
-            var animation = animationQueue[animIdx];
-            var animationStyle = {
-              animationName: animation.type,
-              animationDuration: "".concat(animation.duration, "s"),
-              animationIterationCount: animation.infinite ? 'infinite' : animation.interationCount,
-              animationDelay: "".concat(animation.delay, "s"),
-              animationFillMode: 'both'
-            };
-            parentNode.style.cssText = getComputedCSSText(animationStyle) + getComputedCSSText(oldStyle);
-            animIdx++;
-          } else {
-            // reset to the initial state after the animation ended
-            parentNode.style.cssText = getComputedCSSText(oldStyle);
-          }
-        }
-
-        parentNode.addEventListener('animationend', runAnimation, false);
-      }
-    },
-    created: function created() {
-      var that = this;
-      EventBus && EventBus.$on('RUN_ANIMATIONS', function () {
-        that.runAnimations(); // if (that.active) {
-        //   that.runAnimations()
-        // }
-      });
-    }
-  };
-
-  function _arrayWithoutHoles(arr) {
-    if (Array.isArray(arr)) return arrayLikeToArray(arr);
-  }
-
-  var arrayWithoutHoles = _arrayWithoutHoles;
-
-  function _iterableToArray(iter) {
-    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
-  }
-
-  var iterableToArray = _iterableToArray;
-
-  function _nonIterableSpread() {
-    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-  }
-
-  var nonIterableSpread = _nonIterableSpread;
-
-  function _toConsumableArray(arr) {
-    return arrayWithoutHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableSpread();
-  }
-
-  var toConsumableArray = _toConsumableArray;
-
-  /**
-   * 增加范围node 以限制触发点击外部的 区域范围
-   */
-  var HANDLERS_PROPERTY = '__v-click-outside';
-  var HAS_WINDOWS = typeof window !== 'undefined';
-  var HAS_NAVIGATOR = typeof navigator !== 'undefined';
-  var IS_TOUCH = HAS_WINDOWS && ('ontouchstart' in window || HAS_NAVIGATOR && navigator.msMaxTouchPoints > 0);
-  var EVENTS = IS_TOUCH ? ['touchstart'] : ['click'];
-
-  function processDirectiveArguments(bindingValue) {
-    var isFunction = typeof bindingValue === 'function';
-
-    if (!isFunction && _typeof_1(bindingValue) !== 'object') {
-      throw new Error('v-click-outside: Binding value must be a function or an object');
-    }
-
-    return {
-      handler: isFunction ? bindingValue : bindingValue.handler,
-      middleware: bindingValue.middleware || function (item) {
-        return item;
-      },
-      events: bindingValue.events || EVENTS,
-      isActive: !(bindingValue.isActive === false),
-      detectIframe: !(bindingValue.detectIframe === false),
-      capture: !!bindingValue.capture,
-      scopeNode: bindingValue.scopeNode || document.documentElement
-    };
-  }
-
-  function execHandler(_ref) {
-    var event = _ref.event,
-        handler = _ref.handler,
-        middleware = _ref.middleware;
-
-    if (middleware(event)) {
-      handler && handler(event);
-    }
-  }
-
-  function onFauxIframeClick(_ref2) {
-    var el = _ref2.el,
-        event = _ref2.event,
-        handler = _ref2.handler,
-        middleware = _ref2.middleware;
-    // Note: on firefox clicking on iframe triggers blur, but only on
-    //       next event loop it becomes document.activeElement
-    // https://stackoverflow.com/q/2381336#comment61192398_23231136
-    setTimeout(function () {
-      var _document = document,
-          activeElement = _document.activeElement;
-
-      if (activeElement && activeElement.tagName === 'IFRAME' && !el.contains(activeElement)) {
-        execHandler({
-          event: event,
-          handler: handler,
-          middleware: middleware
-        });
-      }
-    }, 0);
-  }
-
-  function onEvent(_ref3) {
-    var el = _ref3.el,
-        event = _ref3.event,
-        handler = _ref3.handler,
-        middleware = _ref3.middleware,
-        scopeNode = _ref3.scopeNode;
-    // Note: composedPath is not supported on IE and Edge, more information here:
-    //       https://developer.mozilla.org/en-US/docs/Web/API/Event/composedPath
-    //       In the meanwhile, we are using el.contains for those browsers, not
-    //       the ideal solution, but using IE or EDGE is not ideal either.
-    var path = event.path || event.composedPath && event.composedPath();
-    var isClickOutside = path ? path.indexOf(el) < 0 && path.indexOf(scopeNode) > -1 : !el.contains(event.target) && scopeNode.contains(event.target);
-
-    if (!isClickOutside) {
-      return;
-    }
-
-    execHandler({
-      event: event,
-      handler: handler,
-      middleware: middleware
-    });
-  }
-
-  function bind(el, _ref4) {
-    var value = _ref4.value;
-
-    var _processDirectiveArgu = processDirectiveArguments(value),
-        events = _processDirectiveArgu.events,
-        _handler = _processDirectiveArgu.handler,
-        middleware = _processDirectiveArgu.middleware,
-        isActive = _processDirectiveArgu.isActive,
-        detectIframe = _processDirectiveArgu.detectIframe,
-        capture = _processDirectiveArgu.capture,
-        scopeNode = _processDirectiveArgu.scopeNode;
-
-    if (!isActive || !_handler) {
-      return;
-    }
-
-    el[HANDLERS_PROPERTY] = events.map(function (eventName) {
-      return {
-        event: eventName,
-        srcTarget: document.documentElement,
-        handler: function handler(event) {
-          return onEvent({
-            el: el,
-            event: event,
-            handler: _handler,
-            middleware: middleware,
-            scopeNode: scopeNode
-          });
-        },
-        capture: capture
-      };
-    });
-
-    if (detectIframe) {
-      var detectIframeEvent = {
-        event: 'blur',
-        srcTarget: window,
-        handler: function handler(event) {
-          return onFauxIframeClick({
-            el: el,
-            event: event,
-            handler: _handler,
-            middleware: middleware
-          });
-        },
-        capture: capture
-      };
-      el[HANDLERS_PROPERTY] = [].concat(toConsumableArray(el[HANDLERS_PROPERTY]), [detectIframeEvent]);
-    }
-
-    el[HANDLERS_PROPERTY].forEach(function (_ref5) {
-      var event = _ref5.event,
-          srcTarget = _ref5.srcTarget,
-          handler = _ref5.handler;
-      return setTimeout(function () {
-        // Note: More info about this implementation can be found here:
-        //       https://github.com/ndelvalle/v-click-outside/issues/137
-        if (!el[HANDLERS_PROPERTY]) {
-          return;
-        }
-
-        srcTarget.addEventListener(event, handler, capture);
-      }, 0);
-    });
-  }
-
-  function unbind(el) {
-    var handlers = el[HANDLERS_PROPERTY] || [];
-    handlers.forEach(function (_ref6) {
-      var event = _ref6.event,
-          srcTarget = _ref6.srcTarget,
-          handler = _ref6.handler,
-          capture = _ref6.capture;
-      return srcTarget.removeEventListener(event, handler, capture);
-    });
-    delete el[HANDLERS_PROPERTY];
-  }
-
-  function update(el, _ref7) {
-    var value = _ref7.value,
-        oldValue = _ref7.oldValue;
-
-    if (JSON.stringify(value) === JSON.stringify(oldValue)) {
-      return;
-    }
-
-    unbind(el);
-    bind(el, {
-      value: value
-    });
-  }
-
-  var directive = {
-    bind: bind,
-    update: update,
-    unbind: unbind
-  };
-  var vClickOutside = HAS_WINDOWS ? directive : {};
-
-  var points = ['lt', 'rt', 'lb', 'rb', 'lm', 'rm', 'tm', 'bm'];
-  var id$1 = 0;
-  var Shape = {
-    mixins: [animationMixin],
-    directives: {
-      clickOutside: vClickOutside
-    },
-    props: {
-      width: {
-        type: Number,
-        default: 0
-      },
-      height: {
-        type: Number,
-        default: 0
-      },
-      left: {
-        type: Number,
-        default: 0
-      },
-      top: {
-        type: Number,
-        default: 0
-      },
-      disable: {
-        type: Boolean,
-        default: false
-      }
-    },
-    data: function data() {
-      return {
-        rect: {
-          width: this.width,
-          height: this.height,
-          left: this.left,
-          top: this.top
-        },
-        startY: 0,
-        startX: 0,
-        point: '',
-        active: false,
-        vcoConfig: {}
-      };
-    },
-    mounted: function mounted() {
-      this.vcoConfig = {
-        events: ['mousedown'],
-        handler: this.onClickOutside,
-        scopeNode: document.querySelector('.page-render')
-      };
-    },
-    computed: {
-      shapeStyle: function shapeStyle() {
-        var _this$rect = this.rect,
-            left = _this$rect.left,
-            top = _this$rect.top,
-            width = _this$rect.width,
-            height = _this$rect.height;
-        return {
-          left: "".concat(left, "px"),
-          top: "".concat(top, "px"),
-          width: "".concat(width, "px"),
-          height: "".concat(height, "px")
-        };
-      },
-      ltPointStyle: function ltPointStyle() {
-        return {
-          left: "".concat(0, "px"),
-          top: "".concat(0, "px")
-        };
-      },
-      rtPointStyle: function rtPointStyle() {
-        var width = this.rect.width;
-        return {
-          left: "".concat(width, "px"),
-          top: "".concat(0, "px")
-        };
-      },
-      lbPointStyle: function lbPointStyle() {
-        var height = this.rect.height;
-        return {
-          left: "".concat(0, "px"),
-          top: "".concat(height, "px")
-        };
-      },
-      rbPointStyle: function rbPointStyle() {
-        var _this$rect2 = this.rect,
-            width = _this$rect2.width,
-            height = _this$rect2.height;
-        return {
-          left: "".concat(width, "px"),
-          top: "".concat(height, "px")
-        };
-      },
-      lmPointStyle: function lmPointStyle() {
-        var height = this.rect.height;
-        return {
-          left: "".concat(0, "px"),
-          top: "".concat(height / 2, "px")
-        };
-      },
-      rmPointStyle: function rmPointStyle() {
-        var _this$rect3 = this.rect,
-            width = _this$rect3.width,
-            height = _this$rect3.height;
-        return {
-          left: "".concat(width, "px"),
-          top: "".concat(height / 2, "px")
-        };
-      },
-      tmPointStyle: function tmPointStyle() {
-        var width = this.rect.width;
-        return {
-          left: "".concat(width / 2, "px"),
-          top: "".concat(0, "px")
-        };
-      },
-      bmPointStyle: function bmPointStyle() {
-        var _this$rect4 = this.rect,
-            width = _this$rect4.width,
-            height = _this$rect4.height;
-        return {
-          left: "".concat(width / 2, "px"),
-          top: "".concat(height, "px")
-        };
-      }
-    },
-    watch: {
-      rect: {
-        handler: function handler(newValue) {
-          this.$emit('change', newValue);
-        },
-        deep: true
-      }
-    },
-    methods: {
-      setActive: function setActive(active) {
-        if (this.active === active) return;
-        active ? this.$emit('active', active) : this.$emit('deactive', active);
-        this.active = active;
-      },
-      onClickOutside: function onClickOutside() {
-        this.setActive(false);
-      },
-      addWidth: function addWidth(width) {
-        var currentWidth = this.rect.width;
-        var nextWidth = currentWidth + width;
-        if (nextWidth < 0) nextWidth = 0;
-        return this.rect.width = nextWidth;
-      },
-      addHeight: function addHeight(height) {
-        var currentHeight = this.rect.height;
-        var nextHeight = currentHeight + height;
-        if (nextHeight < 0) nextHeight = 0;
-        return this.rect.height = nextHeight;
-      },
-      addLeft: function addLeft(left) {
-        var _this$rect5 = this.rect,
-            currentLeft = _this$rect5.left,
-            currentWidth = _this$rect5.width;
-        left = currentWidth > left ? left : currentWidth;
-        var nextLeft = currentLeft + left;
-        if (nextLeft < 0) nextLeft = 0;
-        return this.rect.left = nextLeft;
-      },
-      addTop: function addTop(top) {
-        var _this$rect6 = this.rect,
-            currentTop = _this$rect6.top,
-            currentHeight = _this$rect6.height;
-        top = currentHeight > top ? top : currentHeight;
-        var nextTop = currentTop + top;
-        if (nextTop < 0) nextTop = 0;
-        return this.rect.top = nextTop;
-      },
-      handleShapeDown: function handleShapeDown(e) {
-        this.setActive(true);
-        this.startY = e.clientY;
-        this.startX = e.clientX;
-        document.addEventListener('mousemove', this.handleShapeMove);
-        document.addEventListener('mouseup', this.handleShapeUp);
-      },
-      handleShapeMove: function handleShapeMove(e) {
-        e.preventDefault();
-        var distanceX = e.clientX - this.startX;
-        var distanceY = e.clientY - this.startY;
-        this.startX = e.clientX;
-        this.startY = e.clientY;
-        this.addLeft(distanceX);
-        this.addTop(distanceY);
-      },
-      handleShapeUp: function handleShapeUp() {
-        document.removeEventListener('mousemove', this.handleShapeMove);
-        document.removeEventListener('mouseup', this.handleShapeUp);
-      },
-      handlePointDown: function handlePointDown(point, e) {
-        this.startY = e.clientY;
-        this.startX = e.clientX;
-        this.point = point;
-        document.addEventListener('mousemove', this.handlePointMove);
-        document.addEventListener('mouseup', this.handlePointUp);
-      },
-      handlePointMove: function handlePointMove(e) {
-        var _this = this;
-
-        var effect = [/l/, /t/, /r/, /b/].map(function (v) {
-          return v.test(_this.point);
-        });
-
-        var _effect = slicedToArray(effect, 4),
-            effectLeft = _effect[0],
-            effectTop = _effect[1],
-            effectWidth = _effect[2],
-            effectHeight = _effect[3];
-
-        var distanceX = e.clientX - this.startX;
-        var distanceY = e.clientY - this.startY;
-        this.startX = e.clientX;
-        this.startY = e.clientY;
-        effectLeft && this.addLeft(distanceX);
-        effectLeft && this.addWidth(-distanceX);
-        effectTop && this.addTop(distanceY);
-        effectTop && this.addHeight(-distanceY);
-        effectWidth && this.addWidth(distanceX);
-        effectHeight && this.addHeight(distanceY);
-      },
-      handlePointUp: function handlePointUp() {
-        document.removeEventListener('mousemove', this.handlePointMove);
-        document.removeEventListener('mouseup', this.handlePointUp);
-      }
-    },
-    render: function render() {
-      var _this2 = this;
-
-      var h = arguments[0];
-      return h("div", {
-        "attrs": {
-          "tabindex": "0",
-          "data-id": id$1++
-        },
-        "directives": [{
-          name: "click-outside",
-          value: this.vcoConfig
-        }],
-        "style": this.shapeStyle,
-        "class": ['shape__wrapper', {
-          'shape__wrapper-active': this.active
-        }],
-        "on": {
-          "mousedown": this.handleShapeDown
-        },
-        "ref": "shape"
-      }, [h("div", {
-        "class": "content"
-      }, [this.$slots.default]), h("div", {
-        "class": "control"
-      }, [points.map(function (v) {
-        return h("div", {
-          "directives": [{
-            name: "show",
-            value: _this2.active
-          }],
-          "style": _this2["".concat(v, "PointStyle")],
-          "class": "shape__scale-point",
-          "attrs": {
-            "data-point": v
-          },
-          "on": {
-            "mousedown": _this2.handlePointDown.bind(_this2, v)
-          }
-        });
-      })])]);
-    }
-  };
-
-  /*
-   * @author : Mater
-   * @Email : bxh8640@gmail.com
-   * @Date : 2020-11-06 10:50:05
-   * @LastEditTime : 2020-11-06 14:44:50
-   * @Description :
-   */
-  var AuxiliayLine = {
-    props: {
-      width: {
-        type: Number,
-        default: 0
-      },
-      height: {
-        type: Number,
-        default: 0
-      },
-      data: {
-        type: Array,
-        default: function _default() {
-          return [];
-        }
-      }
-    },
-    data: function data() {
-      return {
-        vLines: [],
-        hLines: []
-      };
-    },
-    watch: {
-      data: {
-        handler: 'calcVHLine',
-        deep: true
-      }
-    },
-    methods: {
-      drawVLine: function drawVLine(newLeft) {
-        this.vLines = [{
-          left: newLeft
-        }];
-      },
-      clearVLine: function clearVLine() {
-        this.vLines = [];
-      },
-      drawHLine: function drawHLine(newTop) {
-        this.hLines = [{
-          top: newTop
-        }];
-      },
-      clearHLine: function clearHLine() {
-        this.hLines = [];
-      },
-      genBorder: function genBorder(_ref) {
-        var left = _ref.left,
-            top = _ref.top,
-            width = _ref.width,
-            height = _ref.height;
-        return [[left + width, left + width / 2, left], [top + height, top + height / 2, top]];
-      },
-      calcVHLine: function calcVHLine() {
-        var _this = this;
-
-        var referElementsXCoords = [];
-        var referElementsYCoords = [];
-        var hasVLine = false;
-        var hasHLine = false;
-        this.data.forEach(function (e) {
-          var _this$genBorder = _this.genBorder(e),
-              _this$genBorder2 = slicedToArray(_this$genBorder, 2),
-              xCoords = _this$genBorder2[0],
-              yCoords = _this$genBorder2[1];
-
-          referElementsXCoords.push.apply(referElementsXCoords, toConsumableArray(xCoords));
-          referElementsYCoords.push.apply(referElementsYCoords, toConsumableArray(yCoords));
-        });
-
-        var _this$genBorder3 = this.genBorder({
-          left: 0,
-          top: 0,
-          width: this.width,
-          height: this.height
-        }),
-            _this$genBorder4 = slicedToArray(_this$genBorder3, 2),
-            exCoords = _this$genBorder4[0],
-            eyCoords = _this$genBorder4[1];
-
-        exCoords.forEach(function (eX) {
-          referElementsXCoords.forEach(function (referX) {
-            var offset = referX - eX;
-
-            if (Math.abs(offset) <= 5) {
-              _this.drawVLine(referX);
-
-              hasVLine = true;
-            }
-          });
-        });
-        eyCoords.forEach(function (eY) {
-          referElementsYCoords.forEach(function (referY) {
-            var offset = referY - eY;
-
-            if (Math.abs(offset) <= 5) {
-              _this.drawHLine(referY);
-
-              hasHLine = true;
-            }
-          });
-        });
-
-        if (!hasVLine) {
-          this.clearVLine();
-        }
-
-        if (!hasHLine) {
-          this.clearHLine();
-        }
-      }
-    },
-    render: function render() {
-      var h = arguments[0];
-      return h("div", {
-        "class": "luban-auxiliary-line"
-      }, [this.vLines.map(function (line) {
-        return h("div", {
-          "class": "v-line",
-          "style": {
-            left: "".concat(line.left, "px")
-          }
-        });
-      }), this.hLines.map(function (line) {
-        return h("div", {
-          "class": "h-line",
-          "style": {
-            top: "".concat(line.top, "px")
-          }
-        });
-      })]);
-    }
-  };
-
-  function ownKeys$8(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$7(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$8(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$8(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-  /*
-   * @author : Mater
-   * @Email : bxh8640@gmail.com
-   * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-11 09:47:48
-   * @Description :
-   */
-  var defaultProps = {
-    top: 0,
-    left: 0,
-    width: 100,
-    height: 40
-  };
-
-  var Element = /*#__PURE__*/function () {
-    function Element() {
-      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-          _ref$name = _ref.name,
-          name = _ref$name === void 0 ? '' : _ref$name,
-          _ref$uuid = _ref.uuid,
-          uuid = _ref$uuid === void 0 ? +new Date() : _ref$uuid,
-          _ref$isRem = _ref.isRem,
-          isRem = _ref$isRem === void 0 ? false : _ref$isRem,
-          _ref$events = _ref.events,
-          events = _ref$events === void 0 ? [] : _ref$events,
-          _ref$animations = _ref.animations,
-          animations = _ref$animations === void 0 ? [] : _ref$animations,
-          _ref$props = _ref.props,
-          props = _ref$props === void 0 ? {} : _ref$props,
-          _ref$disabled = _ref.disabled,
-          disabled = _ref$disabled === void 0 ? false : _ref$disabled,
-          _ref$vm = _ref.vm,
-          vm = _ref$vm === void 0 ? null : _ref$vm;
-
-      classCallCheck(this, Element);
-
-      this.name = name;
-      this.uuid = uuid;
-      this.props = Object.assign(_objectSpread$7({}, defaultProps), props);
-      this.events = events;
-      this.animations = animations;
-      this.isRem = isRem;
-      this.vm = vm;
-      this.disabled = disabled;
-    }
-
-    createClass(Element, [{
-      key: "clone",
-      value: function clone() {
-        var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            _ref2$zIndex = _ref2.zIndex,
-            zIndex = _ref2$zIndex === void 0 ? this.zIndex + 1 : _ref2$zIndex;
-
-        return new Element({
-          zIndex: zIndex,
-          name: this.name,
-          pluginProps: this.pluginProps,
-          commonStyle: _objectSpread$7(_objectSpread$7({}, this.commonStyle), {}, {
-            top: this.commonStyle.top + 20,
-            left: this.commonStyle.left + 20
-          })
-        });
-      }
-    }, {
-      key: "setVm",
-      value: function setVm(vm) {
-        this.vm = vm;
-      }
-    }]);
-
-    return Element;
-  }();
 
   var defaultNumberInputProp = {// step: 1,
     // min: 0,
@@ -5913,6 +1735,60 @@
     componentsForPropsEditor: {}
   };
 
+  var createProperty = function (object, key, value) {
+    var propertyKey = toPrimitive(key);
+    if (propertyKey in object) objectDefineProperty.f(object, propertyKey, createPropertyDescriptor(0, value));
+    else object[propertyKey] = value;
+  };
+
+  var IS_CONCAT_SPREADABLE = wellKnownSymbol('isConcatSpreadable');
+  var MAX_SAFE_INTEGER = 0x1FFFFFFFFFFFFF;
+  var MAXIMUM_ALLOWED_INDEX_EXCEEDED = 'Maximum allowed index exceeded';
+
+  // We can't use this feature detection in V8 since it causes
+  // deoptimization and serious performance degradation
+  // https://github.com/zloirock/core-js/issues/679
+  var IS_CONCAT_SPREADABLE_SUPPORT = engineV8Version >= 51 || !fails(function () {
+    var array = [];
+    array[IS_CONCAT_SPREADABLE] = false;
+    return array.concat()[0] !== array;
+  });
+
+  var SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('concat');
+
+  var isConcatSpreadable = function (O) {
+    if (!isObject(O)) return false;
+    var spreadable = O[IS_CONCAT_SPREADABLE];
+    return spreadable !== undefined ? !!spreadable : isArray(O);
+  };
+
+  var FORCED = !IS_CONCAT_SPREADABLE_SUPPORT || !SPECIES_SUPPORT;
+
+  // `Array.prototype.concat` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.concat
+  // with adding support of @@isConcatSpreadable and @@species
+  _export({ target: 'Array', proto: true, forced: FORCED }, {
+    concat: function concat(arg) { // eslint-disable-line no-unused-vars
+      var O = toObject(this);
+      var A = arraySpeciesCreate(O, 0);
+      var n = 0;
+      var i, k, length, len, E;
+      for (i = -1, length = arguments.length; i < length; i++) {
+        E = i === -1 ? O : arguments[i];
+        if (isConcatSpreadable(E)) {
+          len = toLength(E.length);
+          if (n + len > MAX_SAFE_INTEGER) throw TypeError(MAXIMUM_ALLOWED_INDEX_EXCEEDED);
+          for (k = 0; k < len; k++, n++) if (k in E) createProperty(A, n, E[k]);
+        } else {
+          if (n >= MAX_SAFE_INTEGER) throw TypeError(MAXIMUM_ALLOWED_INDEX_EXCEEDED);
+          createProperty(A, n++, E);
+        }
+      }
+      A.length = n;
+      return A;
+    }
+  });
+
   var vClickOutside_umd = createCommonjsModule(function (module, exports) {
   !function(e,n){module.exports=n();}(commonjsGlobal,function(){var e="undefined"!=typeof window,n="undefined"!=typeof navigator,t=e&&("ontouchstart"in window||n&&navigator.msMaxTouchPoints>0)?["touchstart"]:["click"];function i(e){var n=e.event,t=e.handler;(0, e.middleware)(n)&&t(n);}function r(e,n){var r=function(e){var n="function"==typeof e;if(!n&&"object"!=typeof e)throw new Error("v-click-outside: Binding value must be a function or an object");return {handler:n?e:e.handler,middleware:e.middleware||function(e){return e},events:e.events||t,isActive:!(!1===e.isActive),detectIframe:!(!1===e.detectIframe)}}(n.value),d=r.handler,o=r.middleware,a=r.detectIframe;if(r.isActive){if(e["__v-click-outside"]=r.events.map(function(n){return {event:n,srcTarget:document.documentElement,handler:function(n){return function(e){var n=e.el,t=e.event,r=e.handler,d=e.middleware,o=t.path||t.composedPath&&t.composedPath();(o?o.indexOf(n)<0:!n.contains(t.target))&&i({event:t,handler:r,middleware:d});}({el:e,event:n,handler:d,middleware:o})}}}),a){var c={event:"blur",srcTarget:window,handler:function(n){return function(e){var n=e.el,t=e.event,r=e.handler,d=e.middleware;setTimeout(function(){var e=document.activeElement;e&&"IFRAME"===e.tagName&&!n.contains(e)&&i({event:t,handler:r,middleware:d});},0);}({el:e,event:n,handler:d,middleware:o})}};e["__v-click-outside"]=[].concat(e["__v-click-outside"],[c]);}e["__v-click-outside"].forEach(function(n){var t=n.event,i=n.srcTarget,r=n.handler;return setTimeout(function(){e["__v-click-outside"]&&i.addEventListener(t,r,!1);},0)});}}function d(e){(e["__v-click-outside"]||[]).forEach(function(e){return e.srcTarget.removeEventListener(e.event,e.handler,!1)}),delete e["__v-click-outside"];}var o=e?{bind:r,update:function(e,n){var t=n.value,i=n.oldValue;JSON.stringify(t)!==JSON.stringify(i)&&(d(e),r(e,{value:t}));},unbind:d}:{};return {install:function(e){e.directive("click-outside",o);},directive:o}});
 
@@ -6249,27 +2125,108 @@
     }
   };
 
+  var $indexOf = arrayIncludes.indexOf;
+
+
+
+  var nativeIndexOf = [].indexOf;
+
+  var NEGATIVE_ZERO = !!nativeIndexOf && 1 / [1].indexOf(1, -0) < 0;
+  var STRICT_METHOD$1 = arrayMethodIsStrict('indexOf');
+  var USES_TO_LENGTH$2 = arrayMethodUsesToLength('indexOf', { ACCESSORS: true, 1: 0 });
+
+  // `Array.prototype.indexOf` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.indexof
+  _export({ target: 'Array', proto: true, forced: NEGATIVE_ZERO || !STRICT_METHOD$1 || !USES_TO_LENGTH$2 }, {
+    indexOf: function indexOf(searchElement /* , fromIndex = 0 */) {
+      return NEGATIVE_ZERO
+        // convert -0 to +0
+        ? nativeIndexOf.apply(this, arguments) || 0
+        : $indexOf(this, searchElement, arguments.length > 1 ? arguments[1] : undefined);
+    }
+  });
+
   var nativeJoin = [].join;
 
   var ES3_STRINGS = indexedObject != Object;
-  var STRICT_METHOD$3 = arrayMethodIsStrict('join', ',');
+  var STRICT_METHOD$2 = arrayMethodIsStrict('join', ',');
 
   // `Array.prototype.join` method
   // https://tc39.github.io/ecma262/#sec-array.prototype.join
-  _export({ target: 'Array', proto: true, forced: ES3_STRINGS || !STRICT_METHOD$3 }, {
+  _export({ target: 'Array', proto: true, forced: ES3_STRINGS || !STRICT_METHOD$2 }, {
     join: function join(separator) {
       return nativeJoin.call(toIndexedObject(this), separator === undefined ? ',' : separator);
     }
   });
 
-  var TO_STRING_TAG$1 = wellKnownSymbol('toStringTag');
+  var HAS_SPECIES_SUPPORT$1 = arrayMethodHasSpeciesSupport('splice');
+  var USES_TO_LENGTH$3 = arrayMethodUsesToLength('splice', { ACCESSORS: true, 0: 0, 1: 2 });
+
+  var max$1 = Math.max;
+  var min$2 = Math.min;
+  var MAX_SAFE_INTEGER$1 = 0x1FFFFFFFFFFFFF;
+  var MAXIMUM_ALLOWED_LENGTH_EXCEEDED = 'Maximum allowed length exceeded';
+
+  // `Array.prototype.splice` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.splice
+  // with adding support of @@species
+  _export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$1 || !USES_TO_LENGTH$3 }, {
+    splice: function splice(start, deleteCount /* , ...items */) {
+      var O = toObject(this);
+      var len = toLength(O.length);
+      var actualStart = toAbsoluteIndex(start, len);
+      var argumentsLength = arguments.length;
+      var insertCount, actualDeleteCount, A, k, from, to;
+      if (argumentsLength === 0) {
+        insertCount = actualDeleteCount = 0;
+      } else if (argumentsLength === 1) {
+        insertCount = 0;
+        actualDeleteCount = len - actualStart;
+      } else {
+        insertCount = argumentsLength - 2;
+        actualDeleteCount = min$2(max$1(toInteger(deleteCount), 0), len - actualStart);
+      }
+      if (len + insertCount - actualDeleteCount > MAX_SAFE_INTEGER$1) {
+        throw TypeError(MAXIMUM_ALLOWED_LENGTH_EXCEEDED);
+      }
+      A = arraySpeciesCreate(O, actualDeleteCount);
+      for (k = 0; k < actualDeleteCount; k++) {
+        from = actualStart + k;
+        if (from in O) createProperty(A, k, O[from]);
+      }
+      A.length = actualDeleteCount;
+      if (insertCount < actualDeleteCount) {
+        for (k = actualStart; k < len - actualDeleteCount; k++) {
+          from = k + actualDeleteCount;
+          to = k + insertCount;
+          if (from in O) O[to] = O[from];
+          else delete O[to];
+        }
+        for (k = len; k > len - actualDeleteCount + insertCount; k--) delete O[k - 1];
+      } else if (insertCount > actualDeleteCount) {
+        for (k = len - actualDeleteCount; k > actualStart; k--) {
+          from = k + actualDeleteCount - 1;
+          to = k + insertCount - 1;
+          if (from in O) O[to] = O[from];
+          else delete O[to];
+        }
+      }
+      for (k = 0; k < insertCount; k++) {
+        O[k + actualStart] = arguments[k + 2];
+      }
+      O.length = len - actualDeleteCount + insertCount;
+      return A;
+    }
+  });
+
+  var TO_STRING_TAG = wellKnownSymbol('toStringTag');
   var test = {};
 
-  test[TO_STRING_TAG$1] = 'z';
+  test[TO_STRING_TAG] = 'z';
 
   var toStringTagSupport = String(test) === '[object z]';
 
-  var TO_STRING_TAG$2 = wellKnownSymbol('toStringTag');
+  var TO_STRING_TAG$1 = wellKnownSymbol('toStringTag');
   // ES3 wrong here
   var CORRECT_ARGUMENTS = classofRaw(function () { return arguments; }()) == 'Arguments';
 
@@ -6285,7 +2242,7 @@
     var O, tag, result;
     return it === undefined ? 'Undefined' : it === null ? 'Null'
       // @@toStringTag case
-      : typeof (tag = tryGet(O = Object(it), TO_STRING_TAG$2)) == 'string' ? tag
+      : typeof (tag = tryGet(O = Object(it), TO_STRING_TAG$1)) == 'string' ? tag
       // builtinTag case
       : CORRECT_ARGUMENTS ? classofRaw(O)
       // ES3 arguments fallback
@@ -6303,6 +2260,20 @@
   if (!toStringTagSupport) {
     redefine(Object.prototype, 'toString', objectToString, { unsafe: true });
   }
+
+  // `RegExp.prototype.flags` getter implementation
+  // https://tc39.github.io/ecma262/#sec-get-regexp.prototype.flags
+  var regexpFlags = function () {
+    var that = anObject(this);
+    var result = '';
+    if (that.global) result += 'g';
+    if (that.ignoreCase) result += 'i';
+    if (that.multiline) result += 'm';
+    if (that.dotAll) result += 's';
+    if (that.unicode) result += 'u';
+    if (that.sticky) result += 'y';
+    return result;
+  };
 
   var TO_STRING = 'toString';
   var RegExpPrototype = RegExp.prototype;
@@ -6338,22 +2309,6 @@
     // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
   };
-  /**
-   * Get the default value of a prop.
-   * copy with vue source code
-   */
-
-  function getPropDefaultValue(vm, prop) {
-    // no default, return undefined
-    if (!prop.hasOwnProperty('default')) {
-      return undefined;
-    }
-
-    var def = prop.default; // call factory function for non-Function types
-    // a value is Function if its prototype is function even across different execution context
-
-    return typeof def === 'function' ? def.call(vm) : def;
-  }
 
   var LbpFormRadio = {
     name: 'lbp-form-radio',
@@ -6570,15 +2525,32 @@
     }
   };
 
+  var UNSCOPABLES = wellKnownSymbol('unscopables');
+  var ArrayPrototype = Array.prototype;
+
+  // Array.prototype[@@unscopables]
+  // https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
+  if (ArrayPrototype[UNSCOPABLES] == undefined) {
+    objectDefineProperty.f(ArrayPrototype, UNSCOPABLES, {
+      configurable: true,
+      value: objectCreate(null)
+    });
+  }
+
+  // add a key to Array.prototype[@@unscopables]
+  var addToUnscopables = function (key) {
+    ArrayPrototype[UNSCOPABLES][key] = true;
+  };
+
   var $includes = arrayIncludes.includes;
 
 
 
-  var USES_TO_LENGTH$8 = arrayMethodUsesToLength('indexOf', { ACCESSORS: true, 1: 0 });
+  var USES_TO_LENGTH$4 = arrayMethodUsesToLength('indexOf', { ACCESSORS: true, 1: 0 });
 
   // `Array.prototype.includes` method
   // https://tc39.github.io/ecma262/#sec-array.prototype.includes
-  _export({ target: 'Array', proto: true, forced: !USES_TO_LENGTH$8 }, {
+  _export({ target: 'Array', proto: true, forced: !USES_TO_LENGTH$4 }, {
     includes: function includes(el /* , fromIndex = 0 */) {
       return $includes(this, el, arguments.length > 1 ? arguments[1] : undefined);
     }
@@ -6766,6 +2738,394 @@
     }
   };
 
+  var nativeGetOwnPropertyNames = objectGetOwnPropertyNames.f;
+
+  var toString$1 = {}.toString;
+
+  var windowNames = typeof window == 'object' && window && Object.getOwnPropertyNames
+    ? Object.getOwnPropertyNames(window) : [];
+
+  var getWindowNames = function (it) {
+    try {
+      return nativeGetOwnPropertyNames(it);
+    } catch (error) {
+      return windowNames.slice();
+    }
+  };
+
+  // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
+  var f$5 = function getOwnPropertyNames(it) {
+    return windowNames && toString$1.call(it) == '[object Window]'
+      ? getWindowNames(it)
+      : nativeGetOwnPropertyNames(toIndexedObject(it));
+  };
+
+  var objectGetOwnPropertyNamesExternal = {
+  	f: f$5
+  };
+
+  var f$6 = wellKnownSymbol;
+
+  var wellKnownSymbolWrapped = {
+  	f: f$6
+  };
+
+  var defineProperty$4 = objectDefineProperty.f;
+
+  var defineWellKnownSymbol = function (NAME) {
+    var Symbol = path.Symbol || (path.Symbol = {});
+    if (!has(Symbol, NAME)) defineProperty$4(Symbol, NAME, {
+      value: wellKnownSymbolWrapped.f(NAME)
+    });
+  };
+
+  var defineProperty$5 = objectDefineProperty.f;
+
+
+
+  var TO_STRING_TAG$2 = wellKnownSymbol('toStringTag');
+
+  var setToStringTag = function (it, TAG, STATIC) {
+    if (it && !has(it = STATIC ? it : it.prototype, TO_STRING_TAG$2)) {
+      defineProperty$5(it, TO_STRING_TAG$2, { configurable: true, value: TAG });
+    }
+  };
+
+  var $forEach$1 = arrayIteration.forEach;
+
+  var HIDDEN = sharedKey('hidden');
+  var SYMBOL = 'Symbol';
+  var PROTOTYPE$1 = 'prototype';
+  var TO_PRIMITIVE = wellKnownSymbol('toPrimitive');
+  var setInternalState = internalState.set;
+  var getInternalState = internalState.getterFor(SYMBOL);
+  var ObjectPrototype = Object[PROTOTYPE$1];
+  var $Symbol = global_1.Symbol;
+  var $stringify = getBuiltIn('JSON', 'stringify');
+  var nativeGetOwnPropertyDescriptor$1 = objectGetOwnPropertyDescriptor.f;
+  var nativeDefineProperty$1 = objectDefineProperty.f;
+  var nativeGetOwnPropertyNames$1 = objectGetOwnPropertyNamesExternal.f;
+  var nativePropertyIsEnumerable$1 = objectPropertyIsEnumerable.f;
+  var AllSymbols = shared('symbols');
+  var ObjectPrototypeSymbols = shared('op-symbols');
+  var StringToSymbolRegistry = shared('string-to-symbol-registry');
+  var SymbolToStringRegistry = shared('symbol-to-string-registry');
+  var WellKnownSymbolsStore$1 = shared('wks');
+  var QObject = global_1.QObject;
+  // Don't use setters in Qt Script, https://github.com/zloirock/core-js/issues/173
+  var USE_SETTER = !QObject || !QObject[PROTOTYPE$1] || !QObject[PROTOTYPE$1].findChild;
+
+  // fallback for old Android, https://code.google.com/p/v8/issues/detail?id=687
+  var setSymbolDescriptor = descriptors && fails(function () {
+    return objectCreate(nativeDefineProperty$1({}, 'a', {
+      get: function () { return nativeDefineProperty$1(this, 'a', { value: 7 }).a; }
+    })).a != 7;
+  }) ? function (O, P, Attributes) {
+    var ObjectPrototypeDescriptor = nativeGetOwnPropertyDescriptor$1(ObjectPrototype, P);
+    if (ObjectPrototypeDescriptor) delete ObjectPrototype[P];
+    nativeDefineProperty$1(O, P, Attributes);
+    if (ObjectPrototypeDescriptor && O !== ObjectPrototype) {
+      nativeDefineProperty$1(ObjectPrototype, P, ObjectPrototypeDescriptor);
+    }
+  } : nativeDefineProperty$1;
+
+  var wrap = function (tag, description) {
+    var symbol = AllSymbols[tag] = objectCreate($Symbol[PROTOTYPE$1]);
+    setInternalState(symbol, {
+      type: SYMBOL,
+      tag: tag,
+      description: description
+    });
+    if (!descriptors) symbol.description = description;
+    return symbol;
+  };
+
+  var isSymbol = useSymbolAsUid ? function (it) {
+    return typeof it == 'symbol';
+  } : function (it) {
+    return Object(it) instanceof $Symbol;
+  };
+
+  var $defineProperty = function defineProperty(O, P, Attributes) {
+    if (O === ObjectPrototype) $defineProperty(ObjectPrototypeSymbols, P, Attributes);
+    anObject(O);
+    var key = toPrimitive(P, true);
+    anObject(Attributes);
+    if (has(AllSymbols, key)) {
+      if (!Attributes.enumerable) {
+        if (!has(O, HIDDEN)) nativeDefineProperty$1(O, HIDDEN, createPropertyDescriptor(1, {}));
+        O[HIDDEN][key] = true;
+      } else {
+        if (has(O, HIDDEN) && O[HIDDEN][key]) O[HIDDEN][key] = false;
+        Attributes = objectCreate(Attributes, { enumerable: createPropertyDescriptor(0, false) });
+      } return setSymbolDescriptor(O, key, Attributes);
+    } return nativeDefineProperty$1(O, key, Attributes);
+  };
+
+  var $defineProperties = function defineProperties(O, Properties) {
+    anObject(O);
+    var properties = toIndexedObject(Properties);
+    var keys = objectKeys(properties).concat($getOwnPropertySymbols(properties));
+    $forEach$1(keys, function (key) {
+      if (!descriptors || $propertyIsEnumerable.call(properties, key)) $defineProperty(O, key, properties[key]);
+    });
+    return O;
+  };
+
+  var $create = function create(O, Properties) {
+    return Properties === undefined ? objectCreate(O) : $defineProperties(objectCreate(O), Properties);
+  };
+
+  var $propertyIsEnumerable = function propertyIsEnumerable(V) {
+    var P = toPrimitive(V, true);
+    var enumerable = nativePropertyIsEnumerable$1.call(this, P);
+    if (this === ObjectPrototype && has(AllSymbols, P) && !has(ObjectPrototypeSymbols, P)) return false;
+    return enumerable || !has(this, P) || !has(AllSymbols, P) || has(this, HIDDEN) && this[HIDDEN][P] ? enumerable : true;
+  };
+
+  var $getOwnPropertyDescriptor = function getOwnPropertyDescriptor(O, P) {
+    var it = toIndexedObject(O);
+    var key = toPrimitive(P, true);
+    if (it === ObjectPrototype && has(AllSymbols, key) && !has(ObjectPrototypeSymbols, key)) return;
+    var descriptor = nativeGetOwnPropertyDescriptor$1(it, key);
+    if (descriptor && has(AllSymbols, key) && !(has(it, HIDDEN) && it[HIDDEN][key])) {
+      descriptor.enumerable = true;
+    }
+    return descriptor;
+  };
+
+  var $getOwnPropertyNames = function getOwnPropertyNames(O) {
+    var names = nativeGetOwnPropertyNames$1(toIndexedObject(O));
+    var result = [];
+    $forEach$1(names, function (key) {
+      if (!has(AllSymbols, key) && !has(hiddenKeys, key)) result.push(key);
+    });
+    return result;
+  };
+
+  var $getOwnPropertySymbols = function getOwnPropertySymbols(O) {
+    var IS_OBJECT_PROTOTYPE = O === ObjectPrototype;
+    var names = nativeGetOwnPropertyNames$1(IS_OBJECT_PROTOTYPE ? ObjectPrototypeSymbols : toIndexedObject(O));
+    var result = [];
+    $forEach$1(names, function (key) {
+      if (has(AllSymbols, key) && (!IS_OBJECT_PROTOTYPE || has(ObjectPrototype, key))) {
+        result.push(AllSymbols[key]);
+      }
+    });
+    return result;
+  };
+
+  // `Symbol` constructor
+  // https://tc39.github.io/ecma262/#sec-symbol-constructor
+  if (!nativeSymbol) {
+    $Symbol = function Symbol() {
+      if (this instanceof $Symbol) throw TypeError('Symbol is not a constructor');
+      var description = !arguments.length || arguments[0] === undefined ? undefined : String(arguments[0]);
+      var tag = uid(description);
+      var setter = function (value) {
+        if (this === ObjectPrototype) setter.call(ObjectPrototypeSymbols, value);
+        if (has(this, HIDDEN) && has(this[HIDDEN], tag)) this[HIDDEN][tag] = false;
+        setSymbolDescriptor(this, tag, createPropertyDescriptor(1, value));
+      };
+      if (descriptors && USE_SETTER) setSymbolDescriptor(ObjectPrototype, tag, { configurable: true, set: setter });
+      return wrap(tag, description);
+    };
+
+    redefine($Symbol[PROTOTYPE$1], 'toString', function toString() {
+      return getInternalState(this).tag;
+    });
+
+    redefine($Symbol, 'withoutSetter', function (description) {
+      return wrap(uid(description), description);
+    });
+
+    objectPropertyIsEnumerable.f = $propertyIsEnumerable;
+    objectDefineProperty.f = $defineProperty;
+    objectGetOwnPropertyDescriptor.f = $getOwnPropertyDescriptor;
+    objectGetOwnPropertyNames.f = objectGetOwnPropertyNamesExternal.f = $getOwnPropertyNames;
+    objectGetOwnPropertySymbols.f = $getOwnPropertySymbols;
+
+    wellKnownSymbolWrapped.f = function (name) {
+      return wrap(wellKnownSymbol(name), name);
+    };
+
+    if (descriptors) {
+      // https://github.com/tc39/proposal-Symbol-description
+      nativeDefineProperty$1($Symbol[PROTOTYPE$1], 'description', {
+        configurable: true,
+        get: function description() {
+          return getInternalState(this).description;
+        }
+      });
+      {
+        redefine(ObjectPrototype, 'propertyIsEnumerable', $propertyIsEnumerable, { unsafe: true });
+      }
+    }
+  }
+
+  _export({ global: true, wrap: true, forced: !nativeSymbol, sham: !nativeSymbol }, {
+    Symbol: $Symbol
+  });
+
+  $forEach$1(objectKeys(WellKnownSymbolsStore$1), function (name) {
+    defineWellKnownSymbol(name);
+  });
+
+  _export({ target: SYMBOL, stat: true, forced: !nativeSymbol }, {
+    // `Symbol.for` method
+    // https://tc39.github.io/ecma262/#sec-symbol.for
+    'for': function (key) {
+      var string = String(key);
+      if (has(StringToSymbolRegistry, string)) return StringToSymbolRegistry[string];
+      var symbol = $Symbol(string);
+      StringToSymbolRegistry[string] = symbol;
+      SymbolToStringRegistry[symbol] = string;
+      return symbol;
+    },
+    // `Symbol.keyFor` method
+    // https://tc39.github.io/ecma262/#sec-symbol.keyfor
+    keyFor: function keyFor(sym) {
+      if (!isSymbol(sym)) throw TypeError(sym + ' is not a symbol');
+      if (has(SymbolToStringRegistry, sym)) return SymbolToStringRegistry[sym];
+    },
+    useSetter: function () { USE_SETTER = true; },
+    useSimple: function () { USE_SETTER = false; }
+  });
+
+  _export({ target: 'Object', stat: true, forced: !nativeSymbol, sham: !descriptors }, {
+    // `Object.create` method
+    // https://tc39.github.io/ecma262/#sec-object.create
+    create: $create,
+    // `Object.defineProperty` method
+    // https://tc39.github.io/ecma262/#sec-object.defineproperty
+    defineProperty: $defineProperty,
+    // `Object.defineProperties` method
+    // https://tc39.github.io/ecma262/#sec-object.defineproperties
+    defineProperties: $defineProperties,
+    // `Object.getOwnPropertyDescriptor` method
+    // https://tc39.github.io/ecma262/#sec-object.getownpropertydescriptors
+    getOwnPropertyDescriptor: $getOwnPropertyDescriptor
+  });
+
+  _export({ target: 'Object', stat: true, forced: !nativeSymbol }, {
+    // `Object.getOwnPropertyNames` method
+    // https://tc39.github.io/ecma262/#sec-object.getownpropertynames
+    getOwnPropertyNames: $getOwnPropertyNames,
+    // `Object.getOwnPropertySymbols` method
+    // https://tc39.github.io/ecma262/#sec-object.getownpropertysymbols
+    getOwnPropertySymbols: $getOwnPropertySymbols
+  });
+
+  // Chrome 38 and 39 `Object.getOwnPropertySymbols` fails on primitives
+  // https://bugs.chromium.org/p/v8/issues/detail?id=3443
+  _export({ target: 'Object', stat: true, forced: fails(function () { objectGetOwnPropertySymbols.f(1); }) }, {
+    getOwnPropertySymbols: function getOwnPropertySymbols(it) {
+      return objectGetOwnPropertySymbols.f(toObject(it));
+    }
+  });
+
+  // `JSON.stringify` method behavior with symbols
+  // https://tc39.github.io/ecma262/#sec-json.stringify
+  if ($stringify) {
+    var FORCED_JSON_STRINGIFY = !nativeSymbol || fails(function () {
+      var symbol = $Symbol();
+      // MS Edge converts symbol values to JSON as {}
+      return $stringify([symbol]) != '[null]'
+        // WebKit converts symbol values to JSON as null
+        || $stringify({ a: symbol }) != '{}'
+        // V8 throws on boxed symbols
+        || $stringify(Object(symbol)) != '{}';
+    });
+
+    _export({ target: 'JSON', stat: true, forced: FORCED_JSON_STRINGIFY }, {
+      // eslint-disable-next-line no-unused-vars
+      stringify: function stringify(it, replacer, space) {
+        var args = [it];
+        var index = 1;
+        var $replacer;
+        while (arguments.length > index) args.push(arguments[index++]);
+        $replacer = replacer;
+        if (!isObject(replacer) && it === undefined || isSymbol(it)) return; // IE8 returns string on undefined
+        if (!isArray(replacer)) replacer = function (key, value) {
+          if (typeof $replacer == 'function') value = $replacer.call(this, key, value);
+          if (!isSymbol(value)) return value;
+        };
+        args[1] = replacer;
+        return $stringify.apply(null, args);
+      }
+    });
+  }
+
+  // `Symbol.prototype[@@toPrimitive]` method
+  // https://tc39.github.io/ecma262/#sec-symbol.prototype-@@toprimitive
+  if (!$Symbol[PROTOTYPE$1][TO_PRIMITIVE]) {
+    createNonEnumerableProperty($Symbol[PROTOTYPE$1], TO_PRIMITIVE, $Symbol[PROTOTYPE$1].valueOf);
+  }
+  // `Symbol.prototype[@@toStringTag]` property
+  // https://tc39.github.io/ecma262/#sec-symbol.prototype-@@tostringtag
+  setToStringTag($Symbol, SYMBOL);
+
+  hiddenKeys[HIDDEN] = true;
+
+  var $filter = arrayIteration.filter;
+
+
+
+  var HAS_SPECIES_SUPPORT$2 = arrayMethodHasSpeciesSupport('filter');
+  // Edge 14- issue
+  var USES_TO_LENGTH$5 = arrayMethodUsesToLength('filter');
+
+  // `Array.prototype.filter` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.filter
+  // with adding support of @@species
+  _export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$2 || !USES_TO_LENGTH$5 }, {
+    filter: function filter(callbackfn /* , thisArg */) {
+      return $filter(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
+    }
+  });
+
+  var nativeGetOwnPropertyDescriptor$2 = objectGetOwnPropertyDescriptor.f;
+
+
+  var FAILS_ON_PRIMITIVES = fails(function () { nativeGetOwnPropertyDescriptor$2(1); });
+  var FORCED$1 = !descriptors || FAILS_ON_PRIMITIVES;
+
+  // `Object.getOwnPropertyDescriptor` method
+  // https://tc39.github.io/ecma262/#sec-object.getownpropertydescriptor
+  _export({ target: 'Object', stat: true, forced: FORCED$1, sham: !descriptors }, {
+    getOwnPropertyDescriptor: function getOwnPropertyDescriptor(it, key) {
+      return nativeGetOwnPropertyDescriptor$2(toIndexedObject(it), key);
+    }
+  });
+
+  // `Object.getOwnPropertyDescriptors` method
+  // https://tc39.github.io/ecma262/#sec-object.getownpropertydescriptors
+  _export({ target: 'Object', stat: true, sham: !descriptors }, {
+    getOwnPropertyDescriptors: function getOwnPropertyDescriptors(object) {
+      var O = toIndexedObject(object);
+      var getOwnPropertyDescriptor = objectGetOwnPropertyDescriptor.f;
+      var keys = ownKeys(O);
+      var result = {};
+      var index = 0;
+      var key, descriptor;
+      while (keys.length > index) {
+        descriptor = getOwnPropertyDescriptor(O, key = keys[index++]);
+        if (descriptor !== undefined) createProperty(result, key, descriptor);
+      }
+      return result;
+    }
+  });
+
+  var FAILS_ON_PRIMITIVES$1 = fails(function () { objectKeys(1); });
+
+  // `Object.keys` method
+  // https://tc39.github.io/ecma262/#sec-object.keys
+  _export({ target: 'Object', stat: true, forced: FAILS_ON_PRIMITIVES$1 }, {
+    keys: function keys(it) {
+      return objectKeys(toObject(it));
+    }
+  });
+
   /**
    *
    * @param {*} param0 canvas 实现 watermark
@@ -6817,9 +3177,9 @@
     }
   }
 
-  function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$8(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$9(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$9(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var LbpBackground = {
     name: 'lbp-background',
     props: {
@@ -6866,14 +3226,14 @@
       };
 
       if (this.imgSrc) {
-        style = _objectSpread$8(_objectSpread$8({}, style), {}, {
+        style = _objectSpread(_objectSpread({}, style), {}, {
           'background-size': 'cover',
           'background-position': '50% 50%',
           'background-origin': 'content-box',
           'background-image': "url(".concat(this.imgSrc, ")")
         });
       } else {
-        style = _objectSpread$8(_objectSpread$8({}, style), {}, {
+        style = _objectSpread(_objectSpread({}, style), {}, {
           backgroundColor: this.backgroundColor
         });
       }
@@ -7183,6 +3543,27 @@
     }
   };
 
+  var non = '\u200B\u0085\u180E';
+
+  // check that a method works with the correct list
+  // of whitespaces and has a correct name
+  var stringTrimForced = function (METHOD_NAME) {
+    return fails(function () {
+      return !!whitespaces[METHOD_NAME]() || non[METHOD_NAME]() != non || whitespaces[METHOD_NAME].name !== METHOD_NAME;
+    });
+  };
+
+  var $trim = stringTrim.trim;
+
+
+  // `String.prototype.trim` method
+  // https://tc39.github.io/ecma262/#sec-string.prototype.trim
+  _export({ target: 'String', proto: true, forced: stringTrimForced('trim') }, {
+    trim: function trim() {
+      return $trim(this);
+    }
+  });
+
   var nativePromiseConstructor = global_1.Promise;
 
   var redefineAll = function (target, src, options) {
@@ -7190,14 +3571,14 @@
     return target;
   };
 
-  var SPECIES$4 = wellKnownSymbol('species');
+  var SPECIES$2 = wellKnownSymbol('species');
 
   var setSpecies = function (CONSTRUCTOR_NAME) {
     var Constructor = getBuiltIn(CONSTRUCTOR_NAME);
     var defineProperty = objectDefineProperty.f;
 
-    if (descriptors && Constructor && !Constructor[SPECIES$4]) {
-      defineProperty(Constructor, SPECIES$4, {
+    if (descriptors && Constructor && !Constructor[SPECIES$2]) {
+      defineProperty(Constructor, SPECIES$2, {
         configurable: true,
         get: function () { return this; }
       });
@@ -7316,14 +3697,14 @@
     return ITERATION_SUPPORT;
   };
 
-  var SPECIES$5 = wellKnownSymbol('species');
+  var SPECIES$3 = wellKnownSymbol('species');
 
   // `SpeciesConstructor` abstract operation
   // https://tc39.github.io/ecma262/#sec-speciesconstructor
   var speciesConstructor = function (O, defaultConstructor) {
     var C = anObject(O).constructor;
     var S;
-    return C === undefined || (S = anObject(C)[SPECIES$5]) == undefined ? defaultConstructor : aFunction$1(S);
+    return C === undefined || (S = anObject(C)[SPECIES$3]) == undefined ? defaultConstructor : aFunction$1(S);
   };
 
   var engineIsIos = /(iphone|ipod|ipad).*applewebkit/i.test(engineUserAgent);
@@ -7561,7 +3942,7 @@
 
 
 
-  var SPECIES$6 = wellKnownSymbol('species');
+  var SPECIES$4 = wellKnownSymbol('species');
   var PROMISE = 'Promise';
   var getInternalState$1 = internalState.get;
   var setInternalState$1 = internalState.set;
@@ -7604,7 +3985,7 @@
       exec(function () { /* empty */ }, function () { /* empty */ });
     };
     var constructor = promise.constructor = {};
-    constructor[SPECIES$6] = FakePromise;
+    constructor[SPECIES$4] = FakePromise;
     return !(promise.then(function () { /* empty */ }) instanceof FakePromise);
   });
 
@@ -7709,7 +4090,7 @@
     });
   };
 
-  var bind$1 = function (fn, promise, state, unwrap) {
+  var bind = function (fn, promise, state, unwrap) {
     return function (value) {
       fn(promise, state, value, unwrap);
     };
@@ -7736,8 +4117,8 @@
           var wrapper = { done: false };
           try {
             then.call(value,
-              bind$1(internalResolve, promise, wrapper, state),
-              bind$1(internalReject, promise, wrapper, state)
+              bind(internalResolve, promise, wrapper, state),
+              bind(internalReject, promise, wrapper, state)
             );
           } catch (error) {
             internalReject(promise, wrapper, error, state);
@@ -7762,7 +4143,7 @@
       Internal.call(this);
       var state = getInternalState$1(this);
       try {
-        executor(bind$1(internalResolve, this, state), bind$1(internalReject, this, state));
+        executor(bind(internalResolve, this, state), bind(internalReject, this, state));
       } catch (error) {
         internalReject(this, state, error);
       }
@@ -7804,8 +4185,8 @@
       var promise = new Internal();
       var state = getInternalState$1(promise);
       this.promise = promise;
-      this.resolve = bind$1(internalResolve, promise, state);
-      this.reject = bind$1(internalReject, promise, state);
+      this.resolve = bind(internalResolve, promise, state);
+      this.reject = bind(internalReject, promise, state);
     };
     newPromiseCapability.f = newPromiseCapability$1 = function (C) {
       return C === PromiseConstructor || C === PromiseWrapper
@@ -7975,7 +4356,7 @@
     }
   };
 
-  var script$1 = {
+  var script = {
     name: 'lbp-qq-map',
     mixins: [MapMixin],
     // loadMap、setMarker
@@ -8110,11 +4491,86 @@
     }
   };
 
+  function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier /* server only */, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
+      if (typeof shadowMode !== 'boolean') {
+          createInjectorSSR = createInjector;
+          createInjector = shadowMode;
+          shadowMode = false;
+      }
+      // Vue.extend constructor export interop.
+      const options = typeof script === 'function' ? script.options : script;
+      // render functions
+      if (template && template.render) {
+          options.render = template.render;
+          options.staticRenderFns = template.staticRenderFns;
+          options._compiled = true;
+          // functional template
+          if (isFunctionalTemplate) {
+              options.functional = true;
+          }
+      }
+      // scopedId
+      if (scopeId) {
+          options._scopeId = scopeId;
+      }
+      let hook;
+      if (moduleIdentifier) {
+          // server build
+          hook = function (context) {
+              // 2.3 injection
+              context =
+                  context || // cached call
+                      (this.$vnode && this.$vnode.ssrContext) || // stateful
+                      (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext); // functional
+              // 2.2 with runInNewContext: true
+              if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+                  context = __VUE_SSR_CONTEXT__;
+              }
+              // inject component styles
+              if (style) {
+                  style.call(this, createInjectorSSR(context));
+              }
+              // register component module identifier for async chunk inference
+              if (context && context._registeredComponents) {
+                  context._registeredComponents.add(moduleIdentifier);
+              }
+          };
+          // used by ssr in case component is cached and beforeCreate
+          // never gets called
+          options._ssrRegister = hook;
+      }
+      else if (style) {
+          hook = shadowMode
+              ? function (context) {
+                  style.call(this, createInjectorShadow(context, this.$root.$options.shadowRoot));
+              }
+              : function (context) {
+                  style.call(this, createInjector(context));
+              };
+      }
+      if (hook) {
+          if (options.functional) {
+              // register for functional component in vue file
+              const originalRender = options.render;
+              options.render = function renderWithStyleInjection(h, context) {
+                  hook.call(context);
+                  return originalRender(h, context);
+              };
+          }
+          else {
+              // inject component registration as beforeCreate hook
+              const existing = options.beforeCreate;
+              options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
+          }
+      }
+      return script;
+  }
+
   /* script */
-  const __vue_script__$1 = script$1;
+  const __vue_script__ = script;
 
   /* template */
-  var __vue_render__$1 = function() {
+  var __vue_render__ = function() {
     var _vm = this;
     var _h = _vm.$createElement;
     var _c = _vm._self._c || _h;
@@ -8126,17 +4582,17 @@
       })
     ])
   };
-  var __vue_staticRenderFns__$1 = [];
-  __vue_render__$1._withStripped = true;
+  var __vue_staticRenderFns__ = [];
+  __vue_render__._withStripped = true;
 
     /* style */
-    const __vue_inject_styles__$1 = undefined;
+    const __vue_inject_styles__ = undefined;
     /* scoped */
-    const __vue_scope_id__$1 = undefined;
+    const __vue_scope_id__ = undefined;
     /* module identifier */
-    const __vue_module_identifier__$1 = undefined;
+    const __vue_module_identifier__ = undefined;
     /* functional template */
-    const __vue_is_functional_template__$1 = false;
+    const __vue_is_functional_template__ = false;
     /* style inject */
     
     /* style inject SSR */
@@ -8145,13 +4601,13 @@
     
 
     
-    const __vue_component__$1 = /*#__PURE__*/normalizeComponent(
-      { render: __vue_render__$1, staticRenderFns: __vue_staticRenderFns__$1 },
-      __vue_inject_styles__$1,
-      __vue_script__$1,
-      __vue_scope_id__$1,
-      __vue_is_functional_template__$1,
-      __vue_module_identifier__$1,
+    const __vue_component__ = /*#__PURE__*/normalizeComponent(
+      { render: __vue_render__, staticRenderFns: __vue_staticRenderFns__ },
+      __vue_inject_styles__,
+      __vue_script__,
+      __vue_scope_id__,
+      __vue_is_functional_template__,
+      __vue_module_identifier__,
       false,
       undefined,
       undefined,
@@ -9003,7 +5459,7 @@
   var arrayProto = Array.prototype;
   var nativeForEach = arrayProto.forEach;
   var nativeFilter = arrayProto.filter;
-  var nativeSlice$1 = arrayProto.slice;
+  var nativeSlice = arrayProto.slice;
   var nativeMap = arrayProto.map;
   var nativeReduce = arrayProto.reduce; // Avoid assign to an exported variable, for transforming to cjs.
 
@@ -9395,10 +5851,10 @@
    */
 
 
-  function bind$2(func, context) {
-    var args = nativeSlice$1.call(arguments, 2);
+  function bind$1(func, context) {
+    var args = nativeSlice.call(arguments, 2);
     return function () {
-      return func.apply(context, args.concat(nativeSlice$1.call(arguments)));
+      return func.apply(context, args.concat(nativeSlice.call(arguments)));
     };
   }
   /**
@@ -9409,9 +5865,9 @@
 
 
   function curry(func) {
-    var args = nativeSlice$1.call(arguments, 1);
+    var args = nativeSlice.call(arguments, 1);
     return function () {
-      return func.apply(this, args.concat(nativeSlice$1.call(arguments)));
+      return func.apply(this, args.concat(nativeSlice.call(arguments)));
     };
   }
   /**
@@ -9531,7 +5987,7 @@
 
 
   function slice() {
-    return Function.call.apply(nativeSlice$1, arguments);
+    return Function.call.apply(nativeSlice, arguments);
   }
   /**
    * Normalize css liked array configuration
@@ -9637,7 +6093,7 @@
     // Although util.each can be performed on this hashMap directly, user
     // should not use the exposed keys, who are prefixed.
     each: function (cb, context) {
-      context !== void 0 && (cb = bind$2(cb, context));
+      context !== void 0 && (cb = bind$1(cb, context));
       /* eslint-disable guard-for-in */
 
       for (var key in this.data) {
@@ -9691,7 +6147,7 @@
   var reduce_1 = reduce;
   var filter_1 = filter;
   var find_1 = find;
-  var bind_1 = bind$2;
+  var bind_1 = bind$1;
   var curry_1 = curry;
   var isArray_1 = isArray$2;
   var isFunction_1 = isFunction$1;
@@ -10026,7 +6482,7 @@
    */
 
 
-  function min$4(out, v1, v2) {
+  function min$3(out, v1, v2) {
     out[0] = Math.min(v1[0], v2[0]);
     out[1] = Math.min(v1[1], v2[1]);
     return out;
@@ -10039,7 +6495,7 @@
    */
 
 
-  function max$4(out, v1, v2) {
+  function max$2(out, v1, v2) {
     out[0] = Math.max(v1[0], v2[0]);
     out[1] = Math.max(v1[1], v2[1]);
     return out;
@@ -10068,8 +6524,8 @@
   var negate_1 = negate;
   var lerp_1 = lerp;
   var applyTransform_1 = applyTransform;
-  var min_1 = min$4;
-  var max_1 = max$4;
+  var min_1 = min$3;
+  var max_1 = max$2;
 
   var vector = {
   	create: create_1,
@@ -14391,7 +10847,7 @@
    * @extends {module:zrender/mixin/Transformable}
    * @extends {module:zrender/mixin/Eventful}
    */
-  var Element$1 = function (opts) {
+  var Element = function (opts) {
     // jshint ignore:line
     Transformable_1.call(this, opts);
     Eventful_1.call(this, opts);
@@ -14404,7 +10860,7 @@
     this.id = opts.id || guid();
   };
 
-  Element$1.prototype = {
+  Element.prototype = {
     /**
      * 元素类型
      * Element type
@@ -14638,10 +11094,10 @@
       }
     }
   };
-  util.mixin(Element$1, Animatable_1);
-  util.mixin(Element$1, Transformable_1);
-  util.mixin(Element$1, Eventful_1);
-  var _default$d = Element$1;
+  util.mixin(Element, Animatable_1);
+  util.mixin(Element, Transformable_1);
+  util.mixin(Element, Eventful_1);
+  var _default$d = Element;
   var Element_1 = _default$d;
 
   /**
@@ -22711,8 +19167,8 @@
   //     Z: 1
   // };
 
-  var min$5 = [];
-  var max$5 = [];
+  var min$4 = [];
+  var max$3 = [];
   var min2 = [];
   var max2 = [];
   var mathMin$2 = Math.min;
@@ -23217,8 +19673,8 @@
      * @return {module:zrender/core/BoundingRect}
      */
     getBoundingRect: function () {
-      min$5[0] = min$5[1] = min2[0] = min2[1] = Number.MAX_VALUE;
-      max$5[0] = max$5[1] = max2[0] = max2[1] = -Number.MAX_VALUE;
+      min$4[0] = min$4[1] = min2[0] = min2[1] = Number.MAX_VALUE;
+      max$3[0] = max$3[1] = max2[0] = max2[1] = -Number.MAX_VALUE;
       var data = this.data;
       var xi = 0;
       var yi = 0;
@@ -23311,16 +19767,16 @@
         } // Union
 
 
-        vector.min(min$5, min$5, min2);
-        vector.max(max$5, max$5, max2);
+        vector.min(min$4, min$4, min2);
+        vector.max(max$3, max$3, max2);
       } // No data
 
 
       if (i === 0) {
-        min$5[0] = min$5[1] = max$5[0] = max$5[1] = 0;
+        min$4[0] = min$4[1] = max$3[0] = max$3[1] = 0;
       }
 
-      return new BoundingRect_1(min$5[0], min$5[1], max$5[0] - min$5[0], max$5[1] - min$5[1]);
+      return new BoundingRect_1(min$4[0], min$4[1], max$3[0] - min$4[0], max$3[1] - min$4[1]);
     },
 
     /**
@@ -24423,7 +20879,7 @@
 
   var v2ApplyTransform$1 = vector.applyTransform;
   var CMD$2 = PathProxy_1.CMD;
-  var points$1 = [[], [], []];
+  var points = [[], [], []];
   var mathSqrt$2 = Math.sqrt;
   var mathAtan2 = Math.atan2;
 
@@ -24505,7 +20961,7 @@
       }
 
       for (k = 0; k < nPoint; k++) {
-        var p = points$1[k];
+        var p = points[k];
         p[0] = data[i++];
         p[1] = data[i++];
         v2ApplyTransform$1(p, p, m); // Write back
@@ -41336,7 +37792,7 @@
   var getIntervalPrecision_1 = getIntervalPrecision;
   var fixExtent_1 = fixExtent;
 
-  var helper$1 = {
+  var helper = {
   	intervalScaleNiceTicks: intervalScaleNiceTicks_1,
   	getIntervalPrecision: getIntervalPrecision_1,
   	fixExtent: fixExtent_1
@@ -41436,7 +37892,7 @@
       // We assume user wan't to set both interval, min, max to get a better result
 
       this._niceExtent = this._extent.slice();
-      this._intervalPrecision = helper$1.getIntervalPrecision(interval);
+      this._intervalPrecision = helper.getIntervalPrecision(interval);
     },
 
     /**
@@ -41581,7 +38037,7 @@
         extent.reverse();
       }
 
-      var result = helper$1.intervalScaleNiceTicks(extent, splitNumber, minInterval, maxInterval);
+      var result = helper.intervalScaleNiceTicks(extent, splitNumber, minInterval, maxInterval);
       this._intervalPrecision = result.intervalPrecision;
       this._interval = result.interval;
       this._niceExtent = result.niceTickExtent;
@@ -42407,7 +38863,7 @@
 
       var timezoneOffset = this.getSetting('useUTC') ? 0 : new Date(+extent[0] || +extent[1]).getTimezoneOffset() * 60 * 1000;
       var niceExtent = [Math.round(mathCeil((extent[0] - timezoneOffset) / interval) * interval + timezoneOffset), Math.round(mathFloor((extent[1] - timezoneOffset) / interval) * interval + timezoneOffset)];
-      helper$1.fixExtent(niceExtent, extent);
+      helper.fixExtent(niceExtent, extent);
       this._stepLvl = level; // Interval will be used in getTicks
 
       this._interval = interval;
@@ -43664,7 +40120,7 @@
   var createScale_1 = createScale;
   var mixinAxisModelCommonMethods_1 = mixinAxisModelCommonMethods;
 
-  var helper$2 = {
+  var helper$1 = {
   	getLayoutRect: getLayoutRect_1$1,
   	completeDimensions: completeDimensions$1,
   	createDimensions: createDimensions$1,
@@ -44899,7 +41355,7 @@
 
 
 
-  var helper$3 = helper$2;
+  var helper$2 = helper$1;
 
 
 
@@ -44964,7 +41420,7 @@
   	number: number$1,
   	format: format$2,
   	throttle: throttle_1$1,
-  	helper: helper$3,
+  	helper: helper$2,
   	parseGeoJSON: parseGeoJSON_1,
   	List: List$1,
   	Model: Model$1,
@@ -48201,7 +44657,7 @@
   var prepareDataCoordInfo_1 = prepareDataCoordInfo;
   var getStackedOnPoint_1 = getStackedOnPoint;
 
-  var helper$4 = {
+  var helper$3 = {
   	prepareDataCoordInfo: prepareDataCoordInfo_1,
   	getStackedOnPoint: getStackedOnPoint_1
   };
@@ -48227,8 +44683,8 @@
 
 
 
-  var prepareDataCoordInfo$1 = helper$4.prepareDataCoordInfo;
-  var getStackedOnPoint$1 = helper$4.getStackedOnPoint;
+  var prepareDataCoordInfo$1 = helper$3.prepareDataCoordInfo;
+  var getStackedOnPoint$1 = helper$3.getStackedOnPoint;
 
   /*
   * Licensed to the Apache Software Foundation (ASF) under one
@@ -48934,8 +45390,8 @@
 
 
 
-  var prepareDataCoordInfo$2 = helper$4.prepareDataCoordInfo;
-  var getStackedOnPoint$2 = helper$4.getStackedOnPoint;
+  var prepareDataCoordInfo$2 = helper$3.prepareDataCoordInfo;
+  var getStackedOnPoint$2 = helper$3.getStackedOnPoint;
 
 
 
@@ -49858,7 +46314,7 @@
     };
   }
 
-  var points$2 = _default$1C;
+  var points$1 = _default$1C;
 
   /*
   * Licensed to the Apache Software Foundation (ASF) under one
@@ -53246,7 +49702,7 @@
   */
   // In case developer forget to include grid component
   echarts.registerVisual(symbol$1('line', 'circle', 'line'));
-  echarts.registerLayout(points$2('line')); // Down sample after filter
+  echarts.registerLayout(points$1('line')); // Down sample after filter
 
   echarts.registerProcessor(echarts.PRIORITY.PROCESSOR.STATISTIC, dataSample('line'));
 
@@ -54199,7 +50655,7 @@
   */
   var inner$9 = makeInner$9();
   var clone$7 = util.clone;
-  var bind$3 = util.bind;
+  var bind$2 = util.bind;
   /**
    * Base axis pointer class in 2D.
    * Implemenents {module:echarts/component/axis/IAxisPointer}.
@@ -54456,9 +50912,9 @@
             // Fot mobile devicem, prevent screen slider on the button.
             event.stop(e.event);
           },
-          onmousedown: bind$3(this._onHandleDragMove, this, 0, 0),
-          drift: bind$3(this._onHandleDragMove, this),
-          ondragend: bind$3(this._onHandleDragEnd, this)
+          onmousedown: bind$2(this._onHandleDragMove, this, 0, 0),
+          drift: bind$2(this._onHandleDragMove, this),
+          ondragend: bind$2(this._onHandleDragEnd, this)
         });
         zr.add(handle);
       }
@@ -55985,7 +52441,7 @@
   * specific language governing permissions and limitations
   * under the License.
   */
-  var bind$4 = util.bind;
+  var bind$3 = util.bind;
   var each$q = util.each;
   var parsePercent$5 = number.parsePercent;
   var proxyRect = new graphic.Rect({
@@ -56070,7 +52526,7 @@
     _initGlobalListener: function () {
       var tooltipModel = this._tooltipModel;
       var triggerOn = tooltipModel.get('triggerOn');
-      globalListener.register('itemTooltip', this._api, bind$4(function (currTrigger, e, dispatchAction) {
+      globalListener.register('itemTooltip', this._api, bind$3(function (currTrigger, e, dispatchAction) {
         // If 'none', it is not controlled by mouse totally.
         if (triggerOn !== 'none') {
           if (triggerOn.indexOf(currTrigger) >= 0) {
@@ -56449,7 +52905,7 @@
       if (formatter && typeof formatter === 'string') {
         html = format$1.formatTpl(formatter, params, true);
       } else if (typeof formatter === 'function') {
-        var callback = bind$4(function (cbTicket, html) {
+        var callback = bind$3(function (cbTicket, html) {
           if (cbTicket === this._ticket) {
             tooltipContent.setContent(html, markers, tooltipModel);
 
@@ -57959,7 +54415,7 @@
     }, staticRenderFns: []
   };
 
-  var _extends$1 = Object.assign || function (target) {
+  var _extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
 
@@ -57987,11 +54443,11 @@
         if (utilsLite.isArray(options[attr]) && utilsLite.isObject(options[attr][0])) {
           // eg: [{ xx: 1 }, { xx: 2 }]
           options[attr].forEach(function (option, index) {
-            options[attr][index] = _extends$1({}, option, value);
+            options[attr][index] = _extends({}, option, value);
           });
         } else if (utilsLite.isObject(options[attr])) {
           // eg: { xx: 1, yy: 2 }
-          options[attr] = _extends$1({}, options[attr], value);
+          options[attr] = _extends({}, options[attr], value);
         } else {
           options[attr] = value;
         }
@@ -58386,7 +54842,7 @@
 
   var Core = _interopDefault$2(core_1);
 
-  var _extends$2 = Object.assign || function (target) {
+  var _extends$1 = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
 
@@ -58497,7 +54953,7 @@
 
     var _loop = function _loop(i) {
       if (yAxisType[i]) {
-        yAxis[i] = _extends$2({}, yAxisBase, {
+        yAxis[i] = _extends$1({}, yAxisBase, {
           axisLabel: {
             formatter: function formatter(val) {
               return utils.getFormated(val, yAxisType[i], digit);
@@ -58505,7 +54961,7 @@
           }
         });
       } else {
-        yAxis[i] = _extends$2({}, yAxisBase);
+        yAxis[i] = _extends$1({}, yAxisBase);
       }
       yAxis[i].name = yAxisName[i] || '';
       yAxis[i].scale = scale[i] || false;
@@ -58675,7 +55131,7 @@
     return options;
   };
 
-  var index = _extends$2({}, Core, {
+  var index = _extends$1({}, Core, {
     name: 'VeLine',
     data: function data() {
       this.chartHandler = line$1;
@@ -60399,7 +56855,7 @@
     return options;
   };
 
-  var _extends$3 = Object.assign || function (target) {
+  var _extends$2 = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
 
@@ -60413,7 +56869,7 @@
     return target;
   };
 
-  var index$1 = _extends$3({}, Core$1, {
+  var index$1 = _extends$2({}, Core$1, {
     name: 'VeRadar',
     data: function data() {
       this.chartHandler = radar$1;
@@ -61832,7 +58288,7 @@
 
   var Core$2 = _interopDefault$4(core_1);
 
-  var _extends$4 = Object.assign || function (target) {
+  var _extends$3 = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
 
@@ -61900,7 +58356,7 @@
     };
     var rowsTempLength = rowsTemp.length;
     rowsTemp.forEach(function (dataRows, index) {
-      var seriesItem = _extends$4({ data: [] }, seriesBase);
+      var seriesItem = _extends$3({ data: [] }, seriesBase);
       var centerWidth = radius / rowsTempLength;
       if (!index) {
         seriesItem.radius = isRing ? radius : centerWidth;
@@ -62115,7 +58571,7 @@
     return options;
   };
 
-  var index$2 = _extends$4({}, Core$2, {
+  var index$2 = _extends$3({}, Core$2, {
     name: 'VePie',
     data: function data() {
       this.chartHandler = pie$1;
@@ -62382,7 +58838,7 @@
 
   var setLabel_1 = setLabel;
 
-  var helper$5 = {
+  var helper$4 = {
   	setLabel: setLabel_1
   };
 
@@ -62534,7 +58990,7 @@
 
   var sausage = _default$29;
 
-  var setLabel$1 = helper$5.setLabel;
+  var setLabel$1 = helper$4.setLabel;
 
 
 
@@ -63274,7 +59730,7 @@
 
   var Core$3 = _interopDefault$5(core_1);
 
-  var defineProperty$7 = function (obj, key, value) {
+  var defineProperty$6 = function (obj, key, value) {
     if (key in obj) {
       Object.defineProperty(obj, key, {
         value: value,
@@ -63289,7 +59745,7 @@
     return obj;
   };
 
-  var _extends$5 = Object.assign || function (target) {
+  var _extends$4 = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
 
@@ -63363,7 +59819,7 @@
 
     var _loop = function _loop(i) {
       if (meaAxisType[i]) {
-        meaAxis[i] = _extends$5({}, meaAxisBase, {
+        meaAxis[i] = _extends$4({}, meaAxisBase, {
           axisLabel: {
             formatter: function formatter(val) {
               return utils.getFormated(val, meaAxisType[i], digit);
@@ -63371,7 +59827,7 @@
           }
         });
       } else {
-        meaAxis[i] = _extends$5({}, meaAxisBase);
+        meaAxis[i] = _extends$4({}, meaAxisBase);
       }
       meaAxis[i].name = meaAxisName[i] || '';
       meaAxis[i].scale = scale[i] || false;
@@ -63464,7 +59920,7 @@
     });
     series = Object.keys(seriesTemp).map(function (item, index) {
       var data = dimAxisType === 'value' ? getValueData(seriesTemp[item], dims) : seriesTemp[item];
-      var seriesItem = defineProperty$7({
+      var seriesItem = defineProperty$6({
         name: labelMap[item] != null ? labelMap[item] : item,
         type: ~showLine.indexOf(item) ? 'line' : 'bar',
         data: data
@@ -63624,7 +60080,7 @@
     return options;
   };
 
-  var index$3 = _extends$5({}, Core$3, {
+  var index$3 = _extends$4({}, Core$3, {
     name: 'VeHistogram',
     data: function data() {
       this.chartHandler = histogram;
@@ -64519,7 +60975,7 @@
     return options;
   };
 
-  var _extends$6 = Object.assign || function (target) {
+  var _extends$5 = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
 
@@ -64533,7 +60989,7 @@
     return target;
   };
 
-  var index$4 = _extends$6({}, Core$4, {
+  var index$4 = _extends$5({}, Core$4, {
     name: 'VeFunnel',
     data: function data() {
       this.chartHandler = funnel$1;
@@ -67051,6 +63507,342 @@
     opt.markArea = opt.markArea || {};
   });
 
+  var HAS_SPECIES_SUPPORT$3 = arrayMethodHasSpeciesSupport('slice');
+  var USES_TO_LENGTH$6 = arrayMethodUsesToLength('slice', { ACCESSORS: true, 0: 0, 1: 2 });
+
+  var SPECIES$5 = wellKnownSymbol('species');
+  var nativeSlice$1 = [].slice;
+  var max$4 = Math.max;
+
+  // `Array.prototype.slice` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.slice
+  // fallback for not array-like ES3 strings and DOM objects
+  _export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$3 || !USES_TO_LENGTH$6 }, {
+    slice: function slice(start, end) {
+      var O = toIndexedObject(this);
+      var length = toLength(O.length);
+      var k = toAbsoluteIndex(start, length);
+      var fin = toAbsoluteIndex(end === undefined ? length : end, length);
+      // inline `ArraySpeciesCreate` for usage native `Array#slice` where it's possible
+      var Constructor, result, n;
+      if (isArray(O)) {
+        Constructor = O.constructor;
+        // cross-realm fallback
+        if (typeof Constructor == 'function' && (Constructor === Array || isArray(Constructor.prototype))) {
+          Constructor = undefined;
+        } else if (isObject(Constructor)) {
+          Constructor = Constructor[SPECIES$5];
+          if (Constructor === null) Constructor = undefined;
+        }
+        if (Constructor === Array || Constructor === undefined) {
+          return nativeSlice$1.call(O, k, fin);
+        }
+      }
+      result = new (Constructor === undefined ? Array : Constructor)(max$4(fin - k, 0));
+      for (n = 0; k < fin; k++, n++) if (k in O) createProperty(result, n, O[k]);
+      result.length = n;
+      return result;
+    }
+  });
+
+  var propertyIsEnumerable = objectPropertyIsEnumerable.f;
+
+  // `Object.{ entries, values }` methods implementation
+  var createMethod$3 = function (TO_ENTRIES) {
+    return function (it) {
+      var O = toIndexedObject(it);
+      var keys = objectKeys(O);
+      var length = keys.length;
+      var i = 0;
+      var result = [];
+      var key;
+      while (length > i) {
+        key = keys[i++];
+        if (!descriptors || propertyIsEnumerable.call(O, key)) {
+          result.push(TO_ENTRIES ? [key, O[key]] : O[key]);
+        }
+      }
+      return result;
+    };
+  };
+
+  var objectToArray = {
+    // `Object.entries` method
+    // https://tc39.github.io/ecma262/#sec-object.entries
+    entries: createMethod$3(true),
+    // `Object.values` method
+    // https://tc39.github.io/ecma262/#sec-object.values
+    values: createMethod$3(false)
+  };
+
+  var $values = objectToArray.values;
+
+  // `Object.values` method
+  // https://tc39.github.io/ecma262/#sec-object.values
+  _export({ target: 'Object', stat: true }, {
+    values: function values(O) {
+      return $values(O);
+    }
+  });
+
+  function _arrayWithHoles(arr) {
+    if (Array.isArray(arr)) return arr;
+  }
+
+  var arrayWithHoles = _arrayWithHoles;
+
+  function _iterableToArrayLimit(arr, i) {
+    if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+    var _arr = [];
+    var _n = true;
+    var _d = false;
+    var _e = undefined;
+
+    try {
+      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+        _arr.push(_s.value);
+
+        if (i && _arr.length === i) break;
+      }
+    } catch (err) {
+      _d = true;
+      _e = err;
+    } finally {
+      try {
+        if (!_n && _i["return"] != null) _i["return"]();
+      } finally {
+        if (_d) throw _e;
+      }
+    }
+
+    return _arr;
+  }
+
+  var iterableToArrayLimit = _iterableToArrayLimit;
+
+  function _nonIterableRest() {
+    throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  var nonIterableRest = _nonIterableRest;
+
+  function _slicedToArray(arr, i) {
+    return arrayWithHoles(arr) || iterableToArrayLimit(arr, i) || unsupportedIterableToArray(arr, i) || nonIterableRest();
+  }
+
+  var slicedToArray = _slicedToArray;
+
+  var _typeof_1 = createCommonjsModule(function (module) {
+  function _typeof(obj) {
+    "@babel/helpers - typeof";
+
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+      module.exports = _typeof = function _typeof(obj) {
+        return typeof obj;
+      };
+    } else {
+      module.exports = _typeof = function _typeof(obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      };
+    }
+
+    return _typeof(obj);
+  }
+
+  module.exports = _typeof;
+  });
+
+  /**
+   *
+   declare module ExcelRows {
+    export interface cell {
+        text: string;
+    }
+    export interface Cells {
+      0: cell;
+      1: cell;
+      2: cell;
+    }
+    export interface ExcelRows {
+      cells: Cells;
+    }
+  }
+   */
+
+  /**
+    *
+    BinaryMatrix = [
+      [any, any, any, ...],
+      [any, any, any, ...],
+      [any, any, any, ...],
+    ]
+
+    ExcelDataType = [
+      {
+        cells: {
+          0: { text: any },
+          1: { text: any },
+          2: { text: any }
+        }
+      },
+      {
+        cells: {
+          0: { text: any },
+          1: { text: any },
+          2: { text: any }
+        }
+      },
+    ]
+    */
+  var Parser = /*#__PURE__*/function () {
+    function Parser() {
+      classCallCheck(this, Parser);
+    }
+
+    createClass(Parser, null, [{
+      key: "dataset2excel",
+
+      /**
+       *
+       * @param {*} dataset ExcelDataType
+       */
+      value: function dataset2excel(dataset) {
+        return dataset.map(function (item) {
+          return {
+            cells: {
+              0: {
+                text: item.x
+              },
+              1: {
+                text: item.y
+              },
+              2: {
+                text: item.s
+              }
+            }
+          };
+        });
+      }
+      /**
+       *
+        [
+          [1,2,3,4],
+          [5,6,7,8],
+          [9,10,11,12]
+        ]
+       * @param {Object} BinaryMatrix
+       * @returns {Object} ExcelDataType
+       */
+
+    }, {
+      key: "binaryMatrix2excel",
+      value: function binaryMatrix2excel() {
+        var binaryMatrix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+        var excelData = binaryMatrix.map(function (row, rowIndex) {
+          // cells: {
+          //   0: { text: item.x },
+          //   1: { text: item.y },
+          //   2: { text: item.s }
+          // }
+          var cells = {};
+          row.forEach(function (cellValue, cellIndex) {
+            cells[cellIndex] = {
+              text: cellValue
+            };
+          });
+          return {
+            cells: cells
+          };
+        });
+        return excelData;
+      }
+    }, {
+      key: "excel2chartDataSet",
+      value: function excel2chartDataSet(excelData) {
+        var rowsArray = Object.values(excelData.rows).filter(function (item) {
+          return _typeof_1(item) === 'object';
+        });
+        var dataset = rowsArray.map(function (row) {
+          var _Object$values$map = Object.values(row.cells).map(function (item) {
+            return item.text;
+          }),
+              _Object$values$map2 = slicedToArray(_Object$values$map, 3),
+              x = _Object$values$map2[0],
+              y = _Object$values$map2[1],
+              s = _Object$values$map2[2];
+
+          return {
+            x: x,
+            y: y,
+            s: s
+          };
+        });
+        return dataset;
+      }
+    }, {
+      key: "excel2BinaryMatrix",
+      value: function excel2BinaryMatrix(excelData) {
+        var rowsArray = Object.values(excelData.rows).filter(function (item) {
+          return _typeof_1(item) === 'object';
+        });
+        var dataset = rowsArray.map(function (row) {
+          // [1,2,3,4]
+          var cells = Object.values(row.cells).map(function (item) {
+            return item.text;
+          });
+          return cells;
+        });
+        console.log('dataset', dataset);
+        return dataset;
+      }
+      /**
+      *
+      * @param {Array} csvArray
+      *    [
+             ['日期', '销售量'],
+             ["1月1日",123],
+             ["1月2日",1223],
+             ["1月3日",2123],
+             ["1月4日",4123],
+             ["1月5日",3123],
+             ["1月6日",7123]
+           ]
+      * @returns {Object}
+         {
+           columns: ['日期', '销售量'],
+           rows:[
+             { '日期': '1月1日', '销售量': 123 },
+             { '日期': '1月2日', '销售量': 1223 },
+             { '日期': '1月3日', '销售量': 2123 },
+             { '日期': '1月4日', '销售量': 4123 },
+             { '日期': '1月5日', '销售量': 3123 },
+             { '日期': '1月6日', '销售量': 7123 }
+           ]
+         }
+      */
+
+    }, {
+      key: "csv2VChartJson",
+      value: function csv2VChartJson(csvArray) {
+        var columns = csvArray[0];
+        var rows = csvArray.slice(1);
+        var json = {
+          columns: columns,
+          rows: rows.map(function (row, index) {
+            var obj = {};
+            columns.forEach(function (col, colIndex) {
+              obj[col.trim()] = row[colIndex];
+            });
+            return obj;
+          })
+        };
+        return json;
+      }
+    }]);
+
+    return Parser;
+  }();
+
   /*
    * @author : Mater
    * @Email : bxh8640@gmail.com
@@ -67144,6 +63936,57 @@
     mounted: function mounted() {// this.renderChart()
     }
   };
+
+  // `Array.prototype.{ reduce, reduceRight }` methods implementation
+  var createMethod$4 = function (IS_RIGHT) {
+    return function (that, callbackfn, argumentsLength, memo) {
+      aFunction$1(callbackfn);
+      var O = toObject(that);
+      var self = indexedObject(O);
+      var length = toLength(O.length);
+      var index = IS_RIGHT ? length - 1 : 0;
+      var i = IS_RIGHT ? -1 : 1;
+      if (argumentsLength < 2) while (true) {
+        if (index in self) {
+          memo = self[index];
+          index += i;
+          break;
+        }
+        index += i;
+        if (IS_RIGHT ? index < 0 : length <= index) {
+          throw TypeError('Reduce of empty array with no initial value');
+        }
+      }
+      for (;IS_RIGHT ? index >= 0 : length > index; index += i) if (index in self) {
+        memo = callbackfn(memo, self[index], index, O);
+      }
+      return memo;
+    };
+  };
+
+  var arrayReduce = {
+    // `Array.prototype.reduce` method
+    // https://tc39.github.io/ecma262/#sec-array.prototype.reduce
+    left: createMethod$4(false),
+    // `Array.prototype.reduceRight` method
+    // https://tc39.github.io/ecma262/#sec-array.prototype.reduceright
+    right: createMethod$4(true)
+  };
+
+  var $reduce = arrayReduce.left;
+
+
+
+  var STRICT_METHOD$3 = arrayMethodIsStrict('reduce');
+  var USES_TO_LENGTH$7 = arrayMethodUsesToLength('reduce', { 1: 0 });
+
+  // `Array.prototype.reduce` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.reduce
+  _export({ target: 'Array', proto: true, forced: !STRICT_METHOD$3 || !USES_TO_LENGTH$7 }, {
+    reduce: function reduce(callbackfn /* , initialValue */) {
+      return $reduce(this, callbackfn, arguments.length, arguments.length > 1 ? arguments[1] : undefined);
+    }
+  });
 
   function sum() {
     var arr = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
@@ -67346,16 +64189,16 @@
     }
   };
 
-  var pluginsList = [{
+  var plugins = [{
     i18nTitle: {
       'en-US': 'RadarChart',
       'zh-CN': '雷达图'
     },
     title: '雷达图',
     icon: 'line-chart',
-    component: LbpLineChart,
     visible: true,
     name: LbpLineChart.name,
+    component: LbpLineChart,
     shortcutProps: {
       type: 'radar'
     }
@@ -67366,9 +64209,9 @@
     },
     title: '折线图',
     icon: 'line-chart',
-    component: LbpLineChart,
     visible: true,
     name: LbpLineChart.name,
+    component: LbpLineChart,
     shortcutProps: {
       type: 'line'
     }
@@ -67379,9 +64222,9 @@
     },
     title: '柱状图',
     icon: 'bar-chart',
-    component: LbpLineChart,
     visible: true,
     name: LbpLineChart.name,
+    component: LbpLineChart,
     shortcutProps: {
       type: 'histogram'
     }
@@ -67392,9 +64235,9 @@
     },
     title: '饼状图',
     icon: 'pie-chart',
-    component: LbpLineChart,
     visible: true,
     name: LbpLineChart.name,
+    component: LbpLineChart,
     shortcutProps: {
       type: 'pie'
     }
@@ -67405,9 +64248,9 @@
     },
     title: '漏斗图',
     icon: 'filter',
-    component: LbpLineChart,
     visible: true,
     name: LbpLineChart.name,
+    component: LbpLineChart,
     shortcutProps: {
       type: 'funnel'
     }
@@ -67418,9 +64261,9 @@
       'zh-CN': '公告'
     },
     icon: 'volume-up',
-    component: LbpNoticeBar,
     visible: true,
-    name: LbpNoticeBar.name
+    name: LbpNoticeBar.name,
+    component: LbpNoticeBar
   }, {
     title: '评分',
     i18nTitle: {
@@ -67428,9 +64271,9 @@
       'zh-CN': '评分'
     },
     icon: 'star-o',
-    component: LbpRate,
     visible: true,
-    name: LbpRate.name
+    name: LbpRate.name,
+    component: LbpRate
   }, {
     title: '图片',
     i18nTitle: {
@@ -67438,9 +64281,9 @@
       'zh-CN': '图片'
     },
     icon: 'photo',
-    component: LbpPicture,
     visible: true,
-    name: LbpPicture.name
+    name: LbpPicture.name,
+    component: LbpPicture
   }, {
     i18nTitle: {
       'en-US': 'Text',
@@ -67448,9 +64291,9 @@
     },
     title: '文字',
     icon: 'text-width',
-    component: LbpText,
     visible: true,
-    name: LbpText.name
+    name: LbpText.name,
+    component: LbpText
   }, {
     i18nTitle: {
       'en-US': 'Button',
@@ -67458,9 +64301,9 @@
     },
     title: '普通按钮',
     icon: 'hand-pointer-o',
-    component: LbpButton,
     visible: true,
-    name: LbpButton.name
+    name: LbpButton.name,
+    component: LbpButton
   }, {
     i18nTitle: {
       'en-US': 'Carousel',
@@ -67468,9 +64311,9 @@
     },
     title: '轮播图',
     icon: 'photo',
-    component: LbpSlide,
     visible: true,
-    name: LbpSlide.name
+    name: LbpSlide.name,
+    component: LbpSlide
   }, {
     i18nTitle: {
       'en-US': 'Map',
@@ -67478,9 +64321,9 @@
     },
     title: '地图',
     icon: 'map-o',
-    component: __vue_component__$1,
     visible: true,
-    name: __vue_component__$1.name
+    name: __vue_component__.name,
+    component: __vue_component__
   }, {
     i18nTitle: {
       'en-US': 'Video',
@@ -67488,9 +64331,9 @@
     },
     title: '视频',
     icon: 'file-video-o',
-    component: LbpVideo,
     visible: true,
-    name: LbpVideo.name
+    name: LbpVideo.name,
+    component: LbpVideo
   }, {
     i18nTitle: {
       'en-US': 'Form Input',
@@ -67498,9 +64341,9 @@
     },
     title: '表单输入',
     icon: 'pencil-square-o',
-    component: LbpFormInput,
     visible: true,
-    name: LbpFormInput.name
+    name: LbpFormInput.name,
+    component: LbpFormInput
   }, {
     i18nTitle: {
       'en-US': 'Form Submit',
@@ -67508,9 +64351,9 @@
     },
     title: '表单提交',
     icon: 'hand-pointer-o',
-    component: LbpFormButton,
     visible: true,
-    name: LbpFormButton.name
+    name: LbpFormButton.name,
+    component: LbpFormButton
   }, {
     i18nTitle: {
       'en-US': 'Form Checkbox',
@@ -67518,9 +64361,9 @@
     },
     title: '表单多选',
     icon: 'check-square-o',
-    component: LbpFormCheckboxGroup,
     visible: true,
-    name: LbpFormCheckboxGroup.name
+    name: LbpFormCheckboxGroup.name,
+    component: LbpFormCheckboxGroup
   }, {
     i18nTitle: {
       'en-US': 'Form Radio',
@@ -67528,9 +64371,9 @@
     },
     title: '表单单选',
     icon: 'dot-circle-o',
-    component: LbpFormRadioGroup,
     visible: true,
-    name: LbpFormRadioGroup.name
+    name: LbpFormRadioGroup.name,
+    component: LbpFormRadioGroup
   }, {
     i18nTitle: {
       'en-US': 'Background',
@@ -67538,9 +64381,9 @@
     },
     title: '背景',
     icon: 'dot-circle-o',
-    component: LbpBackground,
     visible: false,
-    name: LbpBackground.name
+    name: LbpBackground.name,
+    component: LbpBackground
   }, {
     i18nTitle: {
       'en-US': 'BgMusic',
@@ -67548,27 +64391,27 @@
     },
     title: '背景音乐',
     icon: 'music',
-    component: LbpBgMusic,
     visible: true,
-    name: LbpBgMusic.name
+    name: LbpBgMusic.name,
+    component: LbpBgMusic
   }, {
     i18nTitle: {
       'en-US': 'Table(Default)',
       'zh-CN': '默认表格'
     },
     icon: 'table',
-    component: LbpTable,
     visible: true,
-    name: LbpTable.name
+    name: LbpTable.name,
+    component: LbpTable
   }, {
     i18nTitle: {
       'en-US': 'Table(Stripe)',
       'zh-CN': '(斑马线)表格'
     },
     icon: 'table',
-    component: LbpTable,
     visible: true,
     name: LbpTable.name,
+    component: LbpTable,
     shortcutProps: {
       theme: 'lbp-table-theme-stripe'
     }
@@ -67578,9 +64421,9 @@
       'zh-CN': '(淡蓝色)表格'
     },
     icon: 'table',
-    component: LbpTable,
     visible: true,
     name: LbpTable.name,
+    component: LbpTable,
     shortcutProps: {
       theme: 'lbp-table-theme-light-blue'
     }
@@ -67591,1376 +64434,119 @@
     },
     title: '新闻列表',
     icon: 'list',
-    component: LbpNewsList,
     visible: true,
-    name: LbpNewsList.name
+    name: LbpNewsList.name,
+    component: LbpNewsList
   }];
-  var pluginsMap = {};
-  pluginsList.forEach(function (v) {
-    pluginsMap[v.name] = v.component;
-  });
 
-  var ElementRender = {
-    props: {
-      element: {
-        type: Element,
-        require: true
-      }
-    },
-    mounted: function mounted() {
-      this.element.vm = this.$refs['element'];
-    },
-    render: function render(h) {
-      var element = this.element;
-      return h(pluginsMap[element.name], {
-        props: element.props,
-        ref: 'element'
-      });
-    }
-  };
+  var PluginController = /*#__PURE__*/function () {
+    function PluginController() {
+      classCallCheck(this, PluginController);
 
-  var defineProperty$8 = objectDefineProperty.f;
-  var getOwnPropertyNames$1 = objectGetOwnPropertyNames.f;
-
-
-
-
-
-  var setInternalState$2 = internalState.set;
-
-
-
-  var MATCH$2 = wellKnownSymbol('match');
-  var NativeRegExp = global_1.RegExp;
-  var RegExpPrototype$1 = NativeRegExp.prototype;
-  var re1 = /a/g;
-  var re2 = /a/g;
-
-  // "new" should create a new object, old webkit bug
-  var CORRECT_NEW = new NativeRegExp(re1) !== re1;
-
-  var UNSUPPORTED_Y$2 = regexpStickyHelpers.UNSUPPORTED_Y;
-
-  var FORCED$3 = descriptors && isForced_1('RegExp', (!CORRECT_NEW || UNSUPPORTED_Y$2 || fails(function () {
-    re2[MATCH$2] = false;
-    // RegExp constructor can alter flags and IsRegExp works correct with @@match
-    return NativeRegExp(re1) != re1 || NativeRegExp(re2) == re2 || NativeRegExp(re1, 'i') != '/a/i';
-  })));
-
-  // `RegExp` constructor
-  // https://tc39.github.io/ecma262/#sec-regexp-constructor
-  if (FORCED$3) {
-    var RegExpWrapper = function RegExp(pattern, flags) {
-      var thisIsRegExp = this instanceof RegExpWrapper;
-      var patternIsRegExp = isRegexp(pattern);
-      var flagsAreUndefined = flags === undefined;
-      var sticky;
-
-      if (!thisIsRegExp && patternIsRegExp && pattern.constructor === RegExpWrapper && flagsAreUndefined) {
-        return pattern;
-      }
-
-      if (CORRECT_NEW) {
-        if (patternIsRegExp && !flagsAreUndefined) pattern = pattern.source;
-      } else if (pattern instanceof RegExpWrapper) {
-        if (flagsAreUndefined) flags = regexpFlags.call(pattern);
-        pattern = pattern.source;
-      }
-
-      if (UNSUPPORTED_Y$2) {
-        sticky = !!flags && flags.indexOf('y') > -1;
-        if (sticky) flags = flags.replace(/y/g, '');
-      }
-
-      var result = inheritIfRequired(
-        CORRECT_NEW ? new NativeRegExp(pattern, flags) : NativeRegExp(pattern, flags),
-        thisIsRegExp ? this : RegExpPrototype$1,
-        RegExpWrapper
-      );
-
-      if (UNSUPPORTED_Y$2 && sticky) setInternalState$2(result, { sticky: sticky });
-
-      return result;
-    };
-    var proxy = function (key) {
-      key in RegExpWrapper || defineProperty$8(RegExpWrapper, key, {
-        configurable: true,
-        get: function () { return NativeRegExp[key]; },
-        set: function (it) { NativeRegExp[key] = it; }
-      });
-    };
-    var keys$2 = getOwnPropertyNames$1(NativeRegExp);
-    var index$5 = 0;
-    while (keys$2.length > index$5) proxy(keys$2[index$5++]);
-    RegExpPrototype$1.constructor = RegExpWrapper;
-    RegExpWrapper.prototype = RegExpPrototype$1;
-    redefine(global_1, 'RegExp', RegExpWrapper);
-  }
-
-  // https://tc39.github.io/ecma262/#sec-get-regexp-@@species
-  setSpecies('RegExp');
-
-  var _components$8;
-
-  function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$9(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-  function isRegExp(value) {
-    return value instanceof RegExp;
-  } // 垂直菜单
-
-
-  var contextmenuOptions = [{
-    i18nLabel: "editor.centerPanel.contextMenu.copy",
-    label: "复制",
-    value: "copy"
-  }, {
-    i18nLabel: "editor.centerPanel.contextMenu.delete",
-    label: "删除",
-    value: "delete"
-  },
-  /**
-   * contextMenu 白名单，只有匹配白名单列表里的元素，才会显示该选项
-   * 支持正则、数组
-   * 数组：[ElementName]
-   * 正则：RegExp
-   */
-  {
-    i18nLabel: "editor.centerPanel.contextMenu.showOnlyButton",
-    label: "showOnlyButton",
-    value: "showOnlyButton",
-    elementWhiteList: ["lbp-button"]
-  },
-  /**
-   * contextMenu 黑名单，在黑名单列表里的元素，不会显示该选项
-   * 支持正则、数组
-   * 数组：[ElementName]
-   * 正则：RegExp
-   */
-  {
-    i18nLabel: "editor.centerPanel.contextMenu.showExcludePicture",
-    label: "showExcludePicture",
-    value: "showExcludePicture",
-    elementBlackList: /^lbp-picture/
-  }]; // 水平菜单
-
-  var zindexContextMenu = [{
-    i18nLabel: "editor.centerPanel.contextMenu.moveToTop",
-    label: "置顶",
-    value: "move2Top"
-  }, {
-    i18nLabel: "editor.centerPanel.contextMenu.moveToBottom",
-    label: "置底",
-    value: "move2Bottom"
-  }, {
-    i18nLabel: "editor.centerPanel.contextMenu.moveUp",
-    label: "上移",
-    value: "addZindex"
-  }, {
-    i18nLabel: "editor.centerPanel.contextMenu.moveDown",
-    label: "下移",
-    value: "minusZindex"
-  }];
-  ({
-    components: (_components$8 = {}, defineProperty$1(_components$8, antDesignVue.Menu.name, antDesignVue.Menu), defineProperty$1(_components$8, antDesignVue.Menu.Item.name, antDesignVue.Menu.Item), defineProperty$1(_components$8, antDesignVue.Card.name, antDesignVue.Card), _components$8),
-    computed: _objectSpread$9(_objectSpread$9({}, Vuex.mapState("editor", ["editingElement", "work"])), {}, {
-      /**
-       * 做一下扩展，提供：黑白名单，来针对某些特定组件，展示特定右键菜单
-       *
-       */
-      filteredOptions: function filteredOptions() {
-        var elementName = this.editingElement.name;
-        var filteredOptions = contextmenuOptions.filter(function (option) {
-          var wl = option.elementWhiteList;
-          var bl = option.elementBlackList;
-
-          if (wl) {
-            if (Array.isArray(wl)) return wl.includes(elementName);
-            if (isRegExp(wl)) return wl.test(elementName);
-          }
-
-          if (bl) {
-            if (Array.isArray(bl)) return !bl.includes(elementName);
-            if (isRegExp(bl)) return !bl.test(elementName);
-          }
-
-          return true;
-        });
-        return filteredOptions;
-      }
-    }),
-    props: {
-      position: {
-        type: Array,
-        default: function _default() {
-          return [];
-        }
-      }
-    },
-    methods: {
-      handleSelectMenu: function handleSelectMenu(_ref) {
-        var item = _ref.item,
-            key = _ref.key,
-            selectedKeys = _ref.selectedKeys;
-        this.$emit("select", {
-          item: item,
-          key: key,
-          selectedKeys: selectedKeys
-        }); // elementManager({ type: key })
-      }
-    },
-    render: function render(h) {
-      var _this = this;
-
-      return h("a-card", {
-        "attrs": {
-          "bodyStyle": {
-            padding: "4px"
-          }
-        },
-        "class": "contextmenu"
-      }, [h("a-menu", {
-        "attrs": {
-          "inlineIndent": 4,
-          "mode": "inline"
-        },
-        "on": {
-          "select": this.handleSelectMenu
-        },
-        "class": "contextmenu__vertical-menus"
-      }, [this.filteredOptions.map(function (option) {
-        return h("a-menu-item", {
-          "key": option.value,
-          "attrs": {
-            "data-command": option.value
-          },
-          "class": "contextmenu__vertical-menus__item"
-        }, [_this.$t(option.i18nLabel)]);
-      })]), h("a-menu", {
-        "attrs": {
-          "mode": "horizontal"
-        },
-        "on": {
-          "select": this.handleSelectMenu
-        },
-        "class": "contextmenu__horizontal-menus"
-      }, [zindexContextMenu.map(function (option) {
-        return h("a-menu-item", {
-          "key": option.value,
-          "attrs": {
-            "data-command": option.value
-          },
-          "class": "contextmenu__horizontal-menus__item"
-        }, [_this.$t(option.i18nLabel)]);
-      })])]);
-    }
-  });
-
-  var AdjustHeight = {
-    props: {
-      height: {
-        type: Number,
-        default: 0
-      }
-    },
-    components: defineProperty$1({}, antDesignVue.InputNumber.name, antDesignVue.InputNumber),
-    methods: {
-      /**
-       * 更新作品高度
-       * @param {Number} height
-       */
-      updateWorkHeight: function updateWorkHeight(height) {
-        this.$emit('change', height);
-      },
-
-      /**
-       * TODO 封装 adjust editor scale 组件
-       * scale: height/width
-       * @param {MouseEvent} e
-       */
-      mousedownForAdjustLine: function mousedownForAdjustLine(e) {
-        var _this = this;
-
-        var startY = e.clientY;
-        var startHeight = this.height;
-        var canvasOuterWrapper = document.querySelector('#canvas-outer-wrapper .ant-layout');
-
-        var move = function move(moveEvent) {
-          // !#zh 移动的时候，不需要向后代元素传递事件，只需要单纯的移动就OK
-          moveEvent.stopPropagation();
-          moveEvent.preventDefault();
-          var currY = moveEvent.clientY;
-          var moveHeight = currY - startY;
-          var currentHeight = moveHeight + startHeight;
-
-          _this.updateWorkHeight(currentHeight);
-
-          if (canvasOuterWrapper) canvasOuterWrapper.scrollTop = canvasOuterWrapper.scrollHeight;
-        };
-
-        var up = function up() {
-          document.removeEventListener('mousemove', move, true);
-          document.removeEventListener('mouseup', up, true);
-        };
-
-        document.addEventListener('mousemove', move, true);
-        document.addEventListener('mouseup', up, true);
-      }
-    },
-    render: function render() {
-      var _this2 = this;
-
-      var h = arguments[0];
-      return h("div", {
-        "style": {
-          position: 'absolute',
-          bottom: "0px",
-          width: '100%',
-          transform: 'translateY(100%)'
-        }
-      }, [h("div", {
-        "class": "adjust-line-wrapper adjust-line-wrapper-h"
-      }, [h("div", {
-        "class": "adjust-line adjust-line-h"
-      }), h("div", {
-        "class": "adjust-button",
-        "on": {
-          "mousedown": this.mousedownForAdjustLine
-        }
-      }, [h("div", {
-        "class": "indicator"
-      })]), h("div", {
-        "class": "adjust-tip"
-      }, [h("span", ["375 x"]), h("a-input-number", {
-        "attrs": {
-          "size": "small",
-          "value": this.height
-        },
-        "style": "margin: 0 4px; width:60px;",
-        "on": {
-          "change": function change(height) {
-            _this2.updateWork({
-              height: height
-            });
-          }
-        }
-      }), h("span", ["px"])])])]);
-    }
-  };
-
-  var _components$9;
-  var EditorCanvas = {
-    components: (_components$9 = {}, defineProperty$1(_components$9, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$1(_components$9, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$1(_components$9, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$1(_components$9, antDesignVue.Layout.name, antDesignVue.Layout), defineProperty$1(_components$9, antDesignVue.Layout.Content.name, antDesignVue.Layout), _components$9),
-    props: ['data'],
-    data: function data() {
-      return {
-        contextmenuPos: [],
-        activeElement: null,
-        auxiliayVisible: false
-      };
-    },
-    computed: {
-      elements: function elements() {
-        console.log('[pageRender]', this.data);
-        return this.data.elements || [];
-      },
-      elementsRect: function elementsRect() {
-        return this.elements.map(function (_ref) {
-          var props = _ref.props;
-          return props;
-        });
-      },
-      pageStyle: function pageStyle() {
-        return {
-          width: "".concat(this.data.width, "px"),
-          height: "".concat(this.data.height, "px"),
-          position: 'relative'
-        };
-      }
-    },
-    methods: {
-      bindContextMenu: function bindContextMenu(e) {
-        var _this$$el$getBounding = this.$el.getBoundingClientRect(),
-            x = _this$$el$getBounding.x,
-            y = _this$$el$getBounding.y;
-
-        this.contextmenuPos = [e.clientX - x, e.clientY - y];
-      },
-      hideContextMenu: function hideContextMenu() {
-        this.contextmenuPos = [];
-      },
-      handleElementActive: function handleElementActive(activeElement) {
-        console.log('active');
-        this.activeElement = activeElement;
-        this.$emit('active', activeElement);
-      },
-      handleElementDeactive: function handleElementDeactive(deactiveElement) {
-        console.log('deactive');
-
-        if (deactiveElement === this.activeElement) {
-          this.activeElement = null;
-        }
-
-        this.$emit('deactive', deactiveElement);
-      },
-      updateActiveElement: function updateActiveElement(props) {
-        this.activeElement && Object.assign(this.activeElement.props, props);
-      },
-      addElement: function addElement(component) {
-        var props = {};
-        var name = component.name,
-            propsDefine = component.props;
-        Object.entries(propsDefine).forEach(function (_ref2) {
-          var _ref3 = slicedToArray(_ref2, 2),
-              key = _ref3[0],
-              prop = _ref3[1];
-
-          props[key] = getPropDefaultValue(null, prop);
-        });
-        this.elements.push(new Element({
-          name: name,
-          props: props
-        }));
-      },
-      handleElementRectChange: function handleElementRectChange(props) {
-        this.updateActiveElement(props);
-      },
-      handlePageHeightChange: function handlePageHeightChange(height) {
-        this.data.height = height;
-      },
-      hideAuxiliay: function hideAuxiliay() {
-        this.auxiliayVisible = false;
-      },
-      showAuxiliay: function showAuxiliay() {
-        this.auxiliayVisible = true;
-      }
-    },
-    render: function render() {
-      var _this = this;
-
-      var h = arguments[0];
-      var elements = this.elements;
-      return h("a-layout", {
-        "attrs": {
-          "id": "canvas-outer-wrapper"
-        }
-      }, [h("a-layout-content", [h("div", {
-        "class": "canvas-wrapper"
-      }, [h("div", {
-        "class": "page-render",
-        "style": this.pageStyle,
-        "on": {
-          "mouseup": this.hideAuxiliay,
-          "mousedown": this.showAuxiliay
-        }
-      }, [h(AuxiliayLine, {
-        "attrs": {
-          "data": this.elementsRect,
-          "width": this.data.width,
-          "height": this.data.height
-        },
-        "directives": [{
-          name: "show",
-          value: this.auxiliayVisible
-        }]
-      }), h("div", {
-        "class": "elements"
-      }, [elements.map(function (element) {
-        return h(Shape, helper([{}, {
-          "props": element.props
-        }, {
-          "on": {
-            "active": function active() {
-              return _this.handleElementActive(element);
-            },
-            "deactive": function deactive() {
-              return _this.handleElementDeactive(element);
-            },
-            "change": _this.handleElementRectChange
-          }
-        }]), [h(ElementRender, {
-          "attrs": {
-            "element": element
-          }
-        })]);
-      })])]), h(AdjustHeight, {
-        "attrs": {
-          "height": this.data.height
-        },
-        "on": {
-          "change": this.handlePageHeightChange
-        }
-      })])])]);
-    }
-  };
-
-  var ShortcutButton = {
-    functional: true,
-    props: {
-      faIcon: {
-        required: true,
-        type: String
-      },
-      title: {
-        required: true,
-        type: String
-      },
-      clickFn: {
-        required: false,
-        type: Function,
-        default: function _default() {}
-      },
-      mousedownFn: {
-        required: false,
-        type: Function,
-        default: function _default() {}
-      },
-      disabled: {
-        type: Boolean,
-        default: false
-      }
-    },
-    render: function render(h, _ref) {
-      var props = _ref.props,
-          listeners = _ref.listeners,
-          slots = _ref.slots;
-      return h("button", {
-        "class": "shortcut-button",
-        "on": {
-          "click": props.clickFn,
-          "mousedown": props.mousedownFn
-        },
-        "attrs": {
-          "disabled": props.disabled
-        }
-      }, [h("i", {
-        "class": ['shortcut-icon', 'fa', "fa-".concat(props.faIcon)],
-        "attrs": {
-          "aria-hidden": 'true'
-        }
-      }), h("span", [props.title])]);
-    }
-  };
-
-  var UsageTip = {
-    components: defineProperty$1({}, antDesignVue.Icon.name, antDesignVue.Icon),
-    render: function render() {
-      var h = arguments[0];
-      return h("div", {
-        "class": "plugin-usage-tip "
-      }, [h("a-icon", {
-        "attrs": {
-          "type": "info-circle"
-        }
-      }), h("i18n", {
-        "attrs": {
-          "path": "editor.tip.componentUsage",
-          "tag": "span"
-        },
-        "class": "ml-1"
-      }, [h("strong", [this.$t("editor.tip.click")]), this.$t("editor.tip.click")])]);
-    }
-  };
-
-  var _components$a;
-
-  function ownKeys$b(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$a(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$b(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var script$2 = {
-    components: (_components$a = {}, defineProperty$1(_components$a, antDesignVue.Modal.name, antDesignVue.Modal), defineProperty$1(_components$a, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$1(_components$a, antDesignVue.Button.name, antDesignVue.Button), _components$a),
-    data: function data() {
-      return {
-        visible: false,
-        confirmLoading: false,
-        text: JSON.stringify([{
-          package: '@luban-h5/lbp-slide',
-          version: '0.0.7',
-          name: 'lbp-slide',
-          icon: 'photo',
-          i18nTitle: {
-            'en-US': 'Carousel',
-            'zh-CN': '轮播图'
-          },
-          title: '轮播图',
-          visible: true
-        }], null, 2)
-      };
-    },
-    methods: {
-      showModal: function showModal() {
-        this.visible = true;
-      },
-      handleOk: function handleOk(e) {
-        var createjs = window.createjs; // eslint-disable-next-line no-new-func
-
-        var npmPackages = new Function("return ".concat(this.text).replace('\n', ''))();
-        npmPackages = npmPackages.map(function (pluginInfo) {
-          return _objectSpread$a(_objectSpread$a({}, pluginInfo), {}, {
-            // src: `https://cdn.jsdelivr.net/npm/${pluginInfo}/dist/${pluginInfo.name}.umd.js`
-            // src: `https://unpkg.com/${pluginInfo}/dist/${pluginName}.umd.js`
-            src: "https://cdn.jsdelivr.net/npm/".concat(pluginInfo.package, "@").concat(pluginInfo.version, "/dist/").concat(pluginInfo.name, ".umd.js")
-          });
-        });
-        var queue = new createjs.LoadQueue();
-        queue.on('fileload', handleFileLoad, this);
-        queue.on('complete', handleComplete, this);
-        queue.loadManifest(npmPackages);
-
-        function handleComplete(e) {
-          // 可以直接使用 this 的原因： query。on 最后一个参数用来做做 bind this 操作
-          this.visible = false;
-          this.confirmLoading = false;
-          this.$emit('loadComplete', npmPackages);
-        }
-
-        function handleFileLoad(event) {
-          var name = event.item.name;
-          Vue__default['default'].component(name, window[name]);
-        }
-      },
-      handleCancel: function handleCancel(e) {
-        this.visible = false;
-      }
-    }
-  };
-
-  /* script */
-  const __vue_script__$2 = script$2;
-
-  /* template */
-  var __vue_render__$2 = function() {
-    var _vm = this;
-    var _h = _vm.$createElement;
-    var _c = _vm._self._c || _h;
-    return _c(
-      "div",
-      { staticStyle: { "text-align": "center" } },
-      [
-        _c(
-          "a-button",
-          {
-            staticStyle: { "margin-top": "16px" },
-            attrs: { type: "primary" },
-            on: { click: _vm.showModal }
-          },
-          [_vm._v("配置 NPM 组件列表")]
-        ),
-        _vm._v(" "),
-        _c(
-          "a-modal",
-          {
-            attrs: {
-              title: "NPM 组件列表配置信息",
-              visible: _vm.visible,
-              confirmLoading: _vm.confirmLoading
-            },
-            on: { ok: _vm.handleOk, cancel: _vm.handleCancel }
-          },
-          [
-            _c(
-              "div",
-              [
-                _c("a-textarea", {
-                  attrs: { placeholder: "Basic usage", rows: 20 },
-                  model: {
-                    value: _vm.text,
-                    callback: function($$v) {
-                      _vm.text = $$v;
-                    },
-                    expression: "text"
-                  }
-                })
-              ],
-              1
-            )
-          ]
-        )
-      ],
-      1
-    )
-  };
-  var __vue_staticRenderFns__$2 = [];
-  __vue_render__$2._withStripped = true;
-
-    /* style */
-    const __vue_inject_styles__$2 = undefined;
-    /* scoped */
-    const __vue_scope_id__$2 = undefined;
-    /* module identifier */
-    const __vue_module_identifier__$2 = undefined;
-    /* functional template */
-    const __vue_is_functional_template__$2 = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-    /* style inject shadow dom */
-    
-
-    
-    const __vue_component__$2 = /*#__PURE__*/normalizeComponent(
-      { render: __vue_render__$2, staticRenderFns: __vue_staticRenderFns__$2 },
-      __vue_inject_styles__$2,
-      __vue_script__$2,
-      __vue_scope_id__$2,
-      __vue_is_functional_template__$2,
-      __vue_module_identifier__$2,
-      false,
-      undefined,
-      undefined,
-      undefined
-    );
-
-  function ownKeys$c(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$b(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$c(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$c(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var langMixin = {
-    computed: _objectSpread$b({}, Vuex.mapState({
-      currentLang: function currentLang(state) {
-        return state.i18n.lang;
-      }
-    })),
-    methods: _objectSpread$b(_objectSpread$b({}, Vuex.mapActions('i18n', ['SetLang'])), {}, {
-      setLang: function setLang(lang) {
-        this.SetLang(lang);
-      }
-    })
-  };
-
-  function ownKeys$d(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$c(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$d(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$d(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-  /*
-   * @Author: ly525
-   * @Date: 2020-05-17 17:21:04
-   * @LastEditors : Please set LastEditors
-   * @LastEditTime : 2020-10-28 09:22:04
-   * @FilePath: /luban-h5/front-end/h5/src/components/@/mixins/drag.js
-   * @Github: https://github.com/ly525/luban-h5
-   * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
-   * @Description:
-   *  组件拖拽至画布功能
-   *  其中部分代码参考自：https://github.com/hakubox/haku-form-design，已经征得作者同意，目的是后续考虑做 tab 之类的嵌套容器
-   */
-  var dragDom = null;
-  var dragConfig = {
-    isPreDrag: false,
-    // 准备拖拽
-    isDrag: false,
-    // 正式拖拽
-    origin: {
-      clientY: 0,
-      // 鼠标按下时候时候值
-      clientX: 0,
-      layerX: 0,
-      // 鼠标.x 相对于元素左上角.left 的偏移
-      layerY: 0 // 鼠标.y 相对于元素左上角.top  的偏移
-
-    }
-  };
-
-  var Drag = /*#__PURE__*/function () {
-    function Drag(options) {
-      classCallCheck(this, Drag);
-
-      this.mousedown = options.mousedown;
-      this.mousemove = options.mousemove;
-      this.mouseup = options.mouseup;
-      this._mousedown = this._mousedown.bind(this);
-      this._mousemove = this._mousemove.bind(this);
-      this._mouseup = this._mouseup.bind(this);
+      this._plugins = [];
+      this._pluginsMap = {};
     }
 
-    createClass(Drag, [{
-      key: "start",
-      value: function start(e) {
-        this._mousedown(e);
+    createClass(PluginController, [{
+      key: "registerPlugin",
+      value: function registerPlugin() {
+        var option = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        if (!option.name) return;
+        var plugin = new LbpPlugin(option);
+
+        this._plugins.push(plugin);
+
+        this._pluginsMap[plugin['name']] = plugin;
       }
     }, {
-      key: "_mousedown",
-      value: function _mousedown(e) {
-        this.mousedown(e);
-        this.toggleListener('add');
+      key: "getPlugins",
+      value: function getPlugins() {
+        return this._plugins;
       }
     }, {
-      key: "_mousemove",
-      value: function _mousemove(e) {
-        this.mousemove(e);
+      key: "getPluginsMap",
+      value: function getPluginsMap() {
+        return this._pluginsMap;
       }
     }, {
-      key: "_mouseup",
-      value: function _mouseup(e) {
-        this.mouseup(e);
-        this.toggleListener('remove');
-      }
-    }, {
-      key: "toggleListener",
-      value: function toggleListener(action) {
-        document["".concat(action, "EventListener")]('mousemove', this._mousemove);
-        document["".concat(action, "EventListener")]('mouseup', this._mouseup);
+      key: "getPlugin",
+      value: function getPlugin(name) {
+        return this.getPluginsMap()[name];
       }
     }]);
 
-    return Drag;
+    return PluginController;
   }();
 
-  var dragMixin = {
-    data: function data() {
-      return {};
-    },
-    methods: {
-      /**
-       *
-       * @param {*} element shortcutItem
-       * @param {*} e
-       */
-      handleDragStartFromMixin: function handleDragStartFromMixin(element, e) {
-        // https://developer.mozilla.org/zh-CN/docs/Web/API/event.button
-        // 0 为 左键点击.
-        if (e.button !== 0) return;
+  var pluginController = new PluginController();
+  plugins.forEach(function (v) {
+    return pluginController.registerPlugin(v);
+  });
+  console.log(pluginController);
 
-        if (dragDom) {
-          document.body.removeChild(dragDom);
-          dragDom = null;
-        }
+  var UndoRedoHistory = /*#__PURE__*/function () {
+    function UndoRedoHistory() {
+      classCallCheck(this, UndoRedoHistory);
 
-        this.dragElement = element;
-        dragDom = e.target.cloneNode(true);
-        document.body.appendChild(dragDom);
-        new Drag({
-          mousedown: this.mousedown,
-          mousemove: this.mousemove,
-          mouseup: this.mouseup
-        }).start(e);
-      },
+      defineProperty$2(this, "store", void 0);
 
-      /**
-       *
-       * @param {*} e
-       */
-      mousedown: function mousedown(e) {
-        // 鼠标.x 相对于元素左上角 的偏移
-        var layerX = e.layerX,
-            layerY = e.layerY;
-        dragConfig.origin.layerX = layerX;
-        dragConfig.origin.layerY = layerY;
-        dragConfig.origin.clientX = e.clientX;
-        dragConfig.origin.clientY = e.clientY;
-        dragDom.style.position = 'absolute';
-        dragDom.style.left = e.clientX - layerX + 'px';
-        dragDom.style.top = e.clientY - layerY + 'px';
-        dragDom.classList.add('dragging-dom-ele', 'hidden');
-        dragConfig.isPreDrag = true;
-      },
+      defineProperty$2(this, "history", []);
 
-      /** 组件拖拽中 */
-      mousemove: function mousemove(e) {
-        dragDom.classList.remove('hidden');
-        var _dragConfig$origin = dragConfig.origin,
-            layerX = _dragConfig$origin.layerX,
-            layerY = _dragConfig$origin.layerY;
-        dragDom.style.left = e.clientX - layerX + 'px';
-        dragDom.style.top = e.clientY - layerY + 'px';
-      },
-      mouseup: function mouseup(e) {
-        var _dragConfig$origin2 = dragConfig.origin,
-            layerX = _dragConfig$origin2.layerX,
-            layerY = _dragConfig$origin2.layerY;
-        document.body.removeChild(dragDom);
-        dragDom = null;
-        var canMousedown = this.checkCanMousedown(e, {
-          minOffset: 10
-        });
-        if (!canMousedown) return;
-        var canvasWrapper = document.querySelector('.canvas-wrapper');
-        var position = canvasWrapper.getBoundingClientRect();
-        this.dragElement && this.clone(_objectSpread$c(_objectSpread$c({}, this.dragElement), {}, {
-          dragStyle: {
-            left: e.clientX - layerX - position.left,
-            top: e.clientY - layerY - position.top
-          }
-        }));
-      },
-      checkCanMousedown: function checkCanMousedown(e, _ref) {
-        var minOffsetX = _ref.minOffsetX,
-            minOffsetY = _ref.minOffsetY,
-            minOffset = _ref.minOffset;
-        var offsetX = e.clientX - dragConfig.origin.clientX;
-        var offsetY = e.clientY - dragConfig.origin.clientY;
-        return offsetX >= (minOffsetX || minOffset) || offsetY >= (minOffsetY || minOffset);
-      }
-    },
-    updated: function updated() {
-      console.log('updated');
+      defineProperty$2(this, "currentIndex", -1);
     }
-  };
 
-  var _components$b;
-
-  function ownKeys$e(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$d(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$e(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$e(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var RenderShortcutsPanel = {
-    name: 'shotcuts-panle',
-    components: (_components$b = {}, defineProperty$1(_components$b, antDesignVue.Row.name, antDesignVue.Row), defineProperty$1(_components$b, antDesignVue.Col.name, antDesignVue.Col), _components$b),
-    mixins: [langMixin, dragMixin],
-    data: function data() {
-      return {
-        npmPackages: []
-      };
-    },
-    methods: _objectSpread$d(_objectSpread$d({}, Vuex.mapActions('editor', ['elementManager'])), {}, {
-      clone: function clone(shortcutItem) {
-        this.$emit('add', shortcutItem);
+    createClass(UndoRedoHistory, [{
+      key: "init",
+      value: function init(store) {
+        this.store = store;
       }
-    }),
-    render: function render(h) {
-      var _this = this;
-
-      return h("a-row", {
-        "style": "max-height: calc(100vh - 150px);overflow-y: scroll; padding-bottom: 24px"
-      }, [h(UsageTip), [].concat(pluginsList, this.npmPackages).filter(function (plugin) {
-        return plugin.visible;
-      }).map(function (plugin) {
-        return h("a-col", {
-          "attrs": {
-            "span": 12
-          },
-          "style": {
-            marginTop: '10px'
-          }
-        }, [h(ShortcutButton, {
-          "attrs": {
-            "clickFn": _this.clone.bind(_this, plugin),
-            "mousedownFn": _this.handleDragStartFromMixin.bind(_this, plugin),
-            "title": plugin.i18nTitle[_this.currentLang] || plugin.title,
-            "faIcon": plugin.icon,
-            "disabled": plugin.disabled
-          }
-        })]);
-      }), h(__vue_component__$2, {
-        "on": {
-          "loadComplete": function loadComplete(npmPackages) {
-            _this.npmPackages = npmPackages;
-          }
+    }, {
+      key: "addState",
+      value: function addState(state) {
+        // may be we have to remove redo steps
+        if (this.currentIndex + 1 < this.history.length) {
+          this.history.splice(this.currentIndex + 1);
         }
-      })]);
-    }
-  };
 
-  var _components$c;
-  var PageTitleEditor = {
-    components: (_components$c = {}, defineProperty$1(_components$c, antDesignVue.Popconfirm.name, antDesignVue.Popconfirm), defineProperty$1(_components$c, antDesignVue.Input.name, antDesignVue.Input), defineProperty$1(_components$c, antDesignVue.Icon.name, antDesignVue.Icon), _components$c),
-    props: ["page", "pageIndex"],
-    data: function data() {
-      return {
-        editingTitle: "" // 临时缓存当前编辑的 title，点击 Yes 再真正用其更新 page title
-
-      };
-    },
-    methods: {
-      getTitle: function getTitle() {
-        return this.page.title || this.$t("editor.pageManager.title", {
-          index: this.pageIndex
-        });
+        this.history.push(state);
+        this.currentIndex++;
       }
-    },
-    render: function render() {
-      var _this = this;
+    }, {
+      key: "undo",
+      value: function undo() {
+        if (!this.canUndo) return;
+        var prevState = this.history[this.currentIndex - 1]; // take a copy of the history state
+        // because it would be changed during store mutations
+        // what would corrupt the undo-redo-history
+        // (same on redo)
 
-      var h = arguments[0];
-      return h("a-popconfirm", {
-        "attrs": {
-          "placement": "bottom",
-          "okText": "Yes",
-          "cancelText": "No"
-        },
-        "on": {
-          "confirm": function confirm() {
-            _this.$emit("editTitle", {
-              newTitle: _this.editingTitle,
-              pageIndex: _this.pageIndex
-            });
-          },
-          "cancel": function cancel() {}
-        }
-      }, [h("a-input", {
-        "slot": "title",
-        "attrs": {
-          "value": this.editingTitle,
-          "size": "small"
-        },
-        "on": {
-          "change": function change(e) {
-            _this.editingTitle = e.target.value;
-          }
-        }
-      }), h("a-icon", {
-        "attrs": {
-          "type": "edit"
-        },
-        "on": {
-          "click": function click(e) {
-            e.stopPropagation(); // 将 click icon 与 click page item 隔离开。编辑标题的同时不要切换页面
-
-            _this.editingTitle = _this.getTitle();
-          }
-        }
-      })]);
-    }
-  };
-
-  var _components$d;
-  var PageTitleMenu = {
-    components: (_components$d = {}, defineProperty$1(_components$d, antDesignVue.Dropdown.name, antDesignVue.Dropdown), defineProperty$1(_components$d, antDesignVue.Menu.name, antDesignVue.Menu), defineProperty$1(_components$d, antDesignVue.Menu.Item.name, antDesignVue.Menu.Item), defineProperty$1(_components$d, antDesignVue.Icon.name, antDesignVue.Icon), _components$d),
-    render: function render() {
-      var _this = this;
-
-      var h = arguments[0];
-      var addPageText = this.$t("editor.pageManager.action.add");
-      var copyPageText = this.$t("editor.pageManager.action.copy");
-      var deletePageText = this.$t("editor.pageManager.action.delete");
-      return h("a-dropdown", {
-        "attrs": {
-          "trigger": ["hover"],
-          "placement": "bottomCenter"
-        }
-      }, [h("a", {
-        "class": "ml-2",
-        "attrs": {
-          "href": "#"
-        }
-      }, [h("a-icon", {
-        "attrs": {
-          "type": "down"
-        }
-      })]), h("a-menu", {
-        "slot": "overlay",
-        "on": {
-          "click": function click(_ref) {
-            var key = _ref.key;
-            return _this.$emit("selectMenuItem", key);
-          }
-        }
-      }, [h("a-menu-item", {
-        "key": "add"
-      }, [h("a-icon", {
-        "attrs": {
-          "type": "plus"
-        }
-      }), addPageText]), h("a-menu-item", {
-        "key": "copy"
-      }, [h("a-icon", {
-        "attrs": {
-          "type": "copy"
-        }
-      }), copyPageText]), h("a-menu-item", {
-        "key": "delete"
-      }, [h("a-icon", {
-        "attrs": {
-          "type": "delete"
-        }
-      }), deletePageText])])]);
-    }
-  };
-
-  var PageTitleText = {
-    components: defineProperty$1({}, antDesignVue.Badge.name, antDesignVue.Badge),
-    props: ["page", "pageIndex"],
-    methods: {
-      getTitle: function getTitle() {
-        return this.page.title || this.$t("editor.pageManager.title", {
-          index: this.pageIndex
-        });
+        this.store.replaceState(lodash.cloneDeep(prevState));
+        this.currentIndex--;
       }
-    },
-    render: function render(h) {
-      // #!en: Page<Index>
-      // #!zh: 第<Index>页面
-      return h("span", [h("a-badge", {
-        "attrs": {
-          "count": this.pageIndex + 1,
-          "numberStyle": {
-            backgroundColor: "#fff",
-            color: "#999",
-            boxShadow: "0 0 0 1px #d9d9d9 inset"
-          }
-        }
-      }), h("span", {
-        "class": "ml-3"
-      }, [this.getTitle()])]);
-    }
-  };
-
-  function ownKeys$f(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$e(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$f(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$f(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var RenderPageManager = {
-    name: 'page-manager',
-    components: defineProperty$1({}, antDesignVue.Button.name, antDesignVue.Button),
-    data: function data() {
-      return {
-        hoverIndex: -1 // 显示编辑按钮
-
-      };
-    },
-    computed: _objectSpread$e({}, Vuex.mapState('editor', {
-      editingPage: function editingPage(state) {
-        return state.editingPage;
-      },
-      pages: function pages(state) {
-        return state.work.pages;
+    }, {
+      key: "redo",
+      value: function redo() {
+        if (!this.canRedo) return;
+        var nextState = this.history[this.currentIndex + 1];
+        this.store.replaceState(lodash.cloneDeep(nextState));
+        this.currentIndex++;
       }
-    })),
-    methods: _objectSpread$e(_objectSpread$e({}, Vuex.mapActions('editor', ['elementManager', 'pageManager', 'saveWork', 'setEditingPage'])), {}, {
-      onSelectMenuItem: function onSelectMenuItem(menuKey) {
-        this.pageManager({
-          type: menuKey
-        });
-      },
-      onEditTitle: function onEditTitle(_ref) {
-        var pageIndex = _ref.pageIndex,
-            newTitle = _ref.newTitle;
-        this.pageManager({
-          type: 'editTitle',
-          value: {
-            pageIndex: pageIndex,
-            newTitle: newTitle
-          }
-        });
-        this.saveWork({
-          isSaveCover: false
-        });
-      },
-      onSelectPage: function onSelectPage(pageIndex) {
-        this.setEditingPage(pageIndex);
-      },
-      onLeave: function onLeave() {
-        this.hoverIndex = -1;
+    }, {
+      key: "canUndo",
+      get: function get() {
+        return this.currentIndex > 0;
       }
-    }),
-    render: function render(h) {
-      var _this = this;
-
-      var addPageText = this.$t('editor.pageManager.action.add');
-      return h("div", {
-        "class": "page-manager-panel"
-      }, [this.pages.map(function (page, index) {
-        return h("span", {
-          "class": ['cursor-pointer', 'page-manager-panel__item', page.uuid === _this.editingPage.uuid && 'active'],
-          "on": {
-            "click": function click() {
-              return _this.onSelectPage(index);
-            },
-            "mouseenter": function mouseenter() {
-              _this.hoverIndex = index;
-            }
-          }
-        }, [h(PageTitleText, {
-          "attrs": {
-            "page": page,
-            "pageIndex": index
-          }
-        }), h("span", [_this.hoverIndex === index && h(PageTitleEditor, {
-          "attrs": {
-            "page": page,
-            "pageIndex": index
-          },
-          "on": {
-            "editTitle": _this.onEditTitle
-          }
-        }), h(PageTitleMenu, {
-          "on": {
-            "selectMenuItem": _this.onSelectMenuItem
-          }
-        })])]);
-      }), h("a-button", {
-        "attrs": {
-          "icon": "plus",
-          "type": "dashed"
-        },
-        "class": "footer-actions",
-        "on": {
-          "click": function click() {
-            return _this.onSelectMenuItem('add');
-          }
-        }
-      }, [addPageText])]);
-    }
-  };
-
-  function ownKeys$g(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$f(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$g(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$g(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-  function getTreeNode(ele) {
-    return {
-      title: ele.name,
-      key: ele.uuid,
-      children: (ele.children || []).map(getTreeNode)
-    };
-  }
-
-  var script$3 = {
-    name: 'page-tree',
-    computed: _objectSpread$f(_objectSpread$f({}, Vuex.mapState('editor', {
-      elements: function elements(state) {
-        return state.editingPage.elements;
+    }, {
+      key: "canRedo",
+      get: function get() {
+        return this.history.length > this.currentIndex + 1;
       }
-    })), {}, {
-      treeData: function treeData() {
-        return this.elements.map(getTreeNode);
-      }
-    }),
-    data: function data() {
-      return {
-        gData: [],
-        expandedKeys: []
-      };
-    },
-    methods: {
-      onDragEnter: function onDragEnter(info) {},
-      onDrop: function onDrop(info) {}
-    }
-  };
+    }]);
 
-  /* script */
-  const __vue_script__$3 = script$3;
+    return UndoRedoHistory;
+  }();
 
-  /* template */
-  var __vue_render__$3 = function() {
-    var _vm = this;
-    var _h = _vm.$createElement;
-    var _c = _vm._self._c || _h;
-    return _c("a-tree", {
-      staticClass: "draggable-tree",
-      attrs: {
-        "default-expanded-keys": _vm.expandedKeys,
-        draggable: "",
-        "tree-data": _vm.treeData
-      },
-      on: { dragenter: _vm.onDragEnter, drop: _vm.onDrop }
-    })
-  };
-  var __vue_staticRenderFns__$3 = [];
-  __vue_render__$3._withStripped = true;
-
-    /* style */
-    const __vue_inject_styles__$3 = undefined;
-    /* scoped */
-    const __vue_scope_id__$3 = undefined;
-    /* module identifier */
-    const __vue_module_identifier__$3 = undefined;
-    /* functional template */
-    const __vue_is_functional_template__$3 = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-    /* style inject shadow dom */
-    
-
-    
-    const __vue_component__$3 = /*#__PURE__*/normalizeComponent(
-      { render: __vue_render__$3, staticRenderFns: __vue_staticRenderFns__$3 },
-      __vue_inject_styles__$3,
-      __vue_script__$3,
-      __vue_scope_id__$3,
-      __vue_is_functional_template__$3,
-      __vue_module_identifier__$3,
-      false,
-      undefined,
-      undefined,
-      undefined
-    );
-
-  var _components$e;
-  var EditorLeftPanel = {
-    components: (_components$e = {}, defineProperty$1(_components$e, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$1(_components$e, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$1(_components$e, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), _components$e),
-    name: "EditorLeftPanel",
-    render: function render(h) {
-      return h("a-layout-sider", {
-        "attrs": {
-          "width": "240",
-          "theme": "light"
-        },
-        "style": {
-          background: "#fff",
-          padding: "12px"
-        }
-      }, [h("a-tabs", {
-        "style": "height: 100%;",
-        "attrs": {
-          "tabBarGutter": 10
-        }
-      }, [h("a-tab-pane", {
-        "key": "plugin-list",
-        "attrs": {
-          "tab": this.$t("editor.sidebar.components")
-        }
-      }, [h(RenderShortcutsPanel, {
-        "on": {
-          "add": this.$listeners.add
-        }
-      })]), h("a-tab-pane", {
-        "key": "page-manager",
-        "attrs": {
-          "tab": this.$t("editor.sidebar.pages")
-        }
-      }, [h(RenderPageManager)]), h("a-tab-pane", {
-        "key": "page-tree",
-        "attrs": {
-          "tab": this.$t("editor.sidebar.tree")
-        }
-      }, [h(__vue_component__$3)])])]);
-    }
-  };
-
-  var AdjustLineV = {
-    methods: {
-      onMousedown: function onMousedown(e) {
-        var _this = this;
-
-        var startX = e.clientX;
-
-        var move = function move(moveEvent) {
-          moveEvent.preventDefault();
-          moveEvent.stopPropagation();
-          var offset = startX - moveEvent.clientX;
-
-          _this.$emit('lineMove', offset);
-
-          startX -= offset;
-        };
-
-        var up = function up(moveEvent) {
-          document.removeEventListener('mousemove', move, true);
-          document.removeEventListener('mouseup', up, true);
-        };
-
-        document.addEventListener('mousemove', move, true);
-        document.addEventListener('mouseup', up, true);
-      }
-    },
-    render: function render() {
-      var h = arguments[0];
-      return h("div", {
-        "class": "adjust-line-wrapper adjust-line-wrapper-v",
-        "on": {
-          "mousedown": this.onMousedown
-        }
-      }, [h("div", {
-        "class": "adjust-line adjust-line-v"
-      }), h("div", {
-        "class": "adjust-button"
-      }, [h("div", {
-        "class": "indicator"
-      })])]);
-    }
-  };
+  var undoRedoHistory = new UndoRedoHistory();
 
   /**
    * #!zh: setElementCommonStyle 因为是在 mousemove 时候触发的，执行过于频繁，没有必要计入history，因此需要过滤。
@@ -68997,7 +64583,7 @@
     });
   };
 
-  var defineProperty$9 = objectDefineProperty.f;
+  var defineProperty$7 = objectDefineProperty.f;
 
 
   var NativeSymbol = global_1.Symbol;
@@ -69024,7 +64610,7 @@
     var symbolToString = symbolPrototype.toString;
     var native = String(NativeSymbol('test')) == 'Symbol(test)';
     var regexp = /^Symbol\((.*)\)[^)]+$/;
-    defineProperty$9(symbolPrototype, 'description', {
+    defineProperty$7(symbolPrototype, 'description', {
       configurable: true,
       get: function description() {
         var symbol = isObject(this) ? this.valueOf() : this;
@@ -69039,6 +64625,1258 @@
       Symbol: SymbolWrapper
     });
   }
+
+  var nativeAssign = Object.assign;
+  var defineProperty$8 = Object.defineProperty;
+
+  // `Object.assign` method
+  // https://tc39.github.io/ecma262/#sec-object.assign
+  var objectAssign = !nativeAssign || fails(function () {
+    // should have correct order of operations (Edge bug)
+    if (descriptors && nativeAssign({ b: 1 }, nativeAssign(defineProperty$8({}, 'a', {
+      enumerable: true,
+      get: function () {
+        defineProperty$8(this, 'b', {
+          value: 3,
+          enumerable: false
+        });
+      }
+    }), { b: 2 })).b !== 1) return true;
+    // should work with symbols and should have deterministic property order (V8 bug)
+    var A = {};
+    var B = {};
+    // eslint-disable-next-line no-undef
+    var symbol = Symbol();
+    var alphabet = 'abcdefghijklmnopqrst';
+    A[symbol] = 7;
+    alphabet.split('').forEach(function (chr) { B[chr] = chr; });
+    return nativeAssign({}, A)[symbol] != 7 || objectKeys(nativeAssign({}, B)).join('') != alphabet;
+  }) ? function assign(target, source) { // eslint-disable-line no-unused-vars
+    var T = toObject(target);
+    var argumentsLength = arguments.length;
+    var index = 1;
+    var getOwnPropertySymbols = objectGetOwnPropertySymbols.f;
+    var propertyIsEnumerable = objectPropertyIsEnumerable.f;
+    while (argumentsLength > index) {
+      var S = indexedObject(arguments[index++]);
+      var keys = getOwnPropertySymbols ? objectKeys(S).concat(getOwnPropertySymbols(S)) : objectKeys(S);
+      var length = keys.length;
+      var j = 0;
+      var key;
+      while (length > j) {
+        key = keys[j++];
+        if (!descriptors || propertyIsEnumerable.call(S, key)) T[key] = S[key];
+      }
+    } return T;
+  } : nativeAssign;
+
+  // `Object.assign` method
+  // https://tc39.github.io/ecma262/#sec-object.assign
+  _export({ target: 'Object', stat: true, forced: Object.assign !== objectAssign }, {
+    assign: objectAssign
+  });
+
+  function _extends$6(){return _extends$6=Object.assign||function(a){for(var b,c=1;c<arguments.length;c++)for(var d in b=arguments[c],b)Object.prototype.hasOwnProperty.call(b,d)&&(a[d]=b[d]);return a},_extends$6.apply(this,arguments)}var normalMerge=["attrs","props","domProps"],toArrayMerge=["class","style","directives"],functionalMerge=["on","nativeOn"],mergeJsxProps=function(a){return a.reduce(function(c,a){for(var b in a)if(!c[b])c[b]=a[b];else if(-1!==normalMerge.indexOf(b))c[b]=_extends$6({},c[b],a[b]);else if(-1!==toArrayMerge.indexOf(b)){var d=c[b]instanceof Array?c[b]:[c[b]],e=a[b]instanceof Array?a[b]:[a[b]];c[b]=d.concat(e);}else if(-1!==functionalMerge.indexOf(b)){for(var f in a[b])if(c[b][f]){var g=c[b][f]instanceof Array?c[b][f]:[c[b][f]],h=a[b][f]instanceof Array?a[b][f]:[a[b][f]];c[b][f]=g.concat(h);}else c[b][f]=a[b][f];}else if("hook"==b)for(var i in a[b])c[b][i]=c[b][i]?mergeFn(c[b][i],a[b][i]):a[b][i];else c[b]=a[b];return c},{})},mergeFn=function(a,b){return function(){a&&a.apply(this,arguments),b&&b.apply(this,arguments);}};var helper$5=mergeJsxProps;
+
+  var $entries = objectToArray.entries;
+
+  // `Object.entries` method
+  // https://tc39.github.io/ecma262/#sec-object.entries
+  _export({ target: 'Object', stat: true }, {
+    entries: function entries(O) {
+      return $entries(O);
+    }
+  });
+
+  function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  var defaultProps = {
+    top: 0,
+    left: 0,
+    width: 100,
+    height: 40
+  };
+
+  var LbpElement = /*#__PURE__*/function () {
+    function LbpElement() {
+      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+          _ref$name = _ref.name,
+          name = _ref$name === void 0 ? '' : _ref$name,
+          _ref$uuid = _ref.uuid,
+          uuid = _ref$uuid === void 0 ? +new Date() : _ref$uuid,
+          _ref$isRem = _ref.isRem,
+          isRem = _ref$isRem === void 0 ? false : _ref$isRem,
+          _ref$events = _ref.events,
+          events = _ref$events === void 0 ? [] : _ref$events,
+          _ref$animations = _ref.animations,
+          animations = _ref$animations === void 0 ? [] : _ref$animations,
+          _ref$props = _ref.props,
+          props = _ref$props === void 0 ? {} : _ref$props,
+          _ref$disabled = _ref.disabled,
+          disabled = _ref$disabled === void 0 ? false : _ref$disabled,
+          _ref$vm = _ref.vm,
+          vm = _ref$vm === void 0 ? null : _ref$vm;
+
+      classCallCheck(this, LbpElement);
+
+      if (name) {
+        this.name = name;
+        this.uuid = uuid;
+        this.events = events;
+        this.animations = animations;
+        this.isRem = isRem;
+        this.vm = vm;
+        this.disabled = disabled;
+        var plugin = pluginController.getPlugin(name);
+        var pluginProps = this.getPluginProps(plugin.component);
+        this.props = Object.assign({}, defaultProps, pluginProps, props);
+      } else {
+        console.error('lbcanvas need a name of plugin');
+      }
+    }
+
+    createClass(LbpElement, [{
+      key: "clone",
+      value: function clone() {
+        var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            _ref2$zIndex = _ref2.zIndex,
+            zIndex = _ref2$zIndex === void 0 ? this.zIndex + 1 : _ref2$zIndex;
+
+        return new LbpElement({
+          zIndex: zIndex,
+          name: this.name,
+          pluginProps: this.pluginProps,
+          commonStyle: _objectSpread$1(_objectSpread$1({}, this.commonStyle), {}, {
+            top: this.commonStyle.top + 20,
+            left: this.commonStyle.left + 20
+          })
+        });
+      }
+    }, {
+      key: "mergeProps",
+      value: function mergeProps() {}
+    }, {
+      key: "setVm",
+      value: function setVm(vm) {
+        this.vm = vm;
+      }
+      /**
+       * Get the default value of a prop.
+       * copy with vue source code
+       */
+
+    }, {
+      key: "getPluginProps",
+      value: function getPluginProps(component) {
+        var _this = this;
+
+        var props = {};
+        var propsDefine = component.props;
+        Object.entries(propsDefine).forEach(function (_ref3) {
+          var _ref4 = slicedToArray(_ref3, 2),
+              key = _ref4[0],
+              prop = _ref4[1];
+
+          props[key] = _this.getPropDefaultValue(null, prop);
+        });
+        return props;
+      }
+    }, {
+      key: "getPropDefaultValue",
+      value: function getPropDefaultValue(vm, prop) {
+        // no default, return undefined
+        if (!prop.hasOwnProperty('default')) {
+          return undefined;
+        }
+
+        var def = prop.default; // call factory function for non-Function types
+        // a value is Function if its prototype is function even across different execution context
+
+        return typeof def === 'function' ? def.call(vm) : def;
+      }
+    }]);
+
+    return LbpElement;
+  }();
+
+  // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError,
+  // so we use an intermediate function.
+  function RE(s, f) {
+    return RegExp(s, f);
+  }
+
+  var UNSUPPORTED_Y = fails(function () {
+    // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError
+    var re = RE('a', 'y');
+    re.lastIndex = 2;
+    return re.exec('abcd') != null;
+  });
+
+  var BROKEN_CARET = fails(function () {
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=773687
+    var re = RE('^r', 'gy');
+    re.lastIndex = 2;
+    return re.exec('str') != null;
+  });
+
+  var regexpStickyHelpers = {
+  	UNSUPPORTED_Y: UNSUPPORTED_Y,
+  	BROKEN_CARET: BROKEN_CARET
+  };
+
+  var nativeExec = RegExp.prototype.exec;
+  // This always refers to the native implementation, because the
+  // String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.js,
+  // which loads this file before patching the method.
+  var nativeReplace = String.prototype.replace;
+
+  var patchedExec = nativeExec;
+
+  var UPDATES_LAST_INDEX_WRONG = (function () {
+    var re1 = /a/;
+    var re2 = /b*/g;
+    nativeExec.call(re1, 'a');
+    nativeExec.call(re2, 'a');
+    return re1.lastIndex !== 0 || re2.lastIndex !== 0;
+  })();
+
+  var UNSUPPORTED_Y$1 = regexpStickyHelpers.UNSUPPORTED_Y || regexpStickyHelpers.BROKEN_CARET;
+
+  // nonparticipating capturing group, copied from es5-shim's String#split patch.
+  var NPCG_INCLUDED = /()??/.exec('')[1] !== undefined;
+
+  var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED || UNSUPPORTED_Y$1;
+
+  if (PATCH) {
+    patchedExec = function exec(str) {
+      var re = this;
+      var lastIndex, reCopy, match, i;
+      var sticky = UNSUPPORTED_Y$1 && re.sticky;
+      var flags = regexpFlags.call(re);
+      var source = re.source;
+      var charsAdded = 0;
+      var strCopy = str;
+
+      if (sticky) {
+        flags = flags.replace('y', '');
+        if (flags.indexOf('g') === -1) {
+          flags += 'g';
+        }
+
+        strCopy = String(str).slice(re.lastIndex);
+        // Support anchored sticky behavior.
+        if (re.lastIndex > 0 && (!re.multiline || re.multiline && str[re.lastIndex - 1] !== '\n')) {
+          source = '(?: ' + source + ')';
+          strCopy = ' ' + strCopy;
+          charsAdded++;
+        }
+        // ^(? + rx + ) is needed, in combination with some str slicing, to
+        // simulate the 'y' flag.
+        reCopy = new RegExp('^(?:' + source + ')', flags);
+      }
+
+      if (NPCG_INCLUDED) {
+        reCopy = new RegExp('^' + source + '$(?!\\s)', flags);
+      }
+      if (UPDATES_LAST_INDEX_WRONG) lastIndex = re.lastIndex;
+
+      match = nativeExec.call(sticky ? reCopy : re, strCopy);
+
+      if (sticky) {
+        if (match) {
+          match.input = match.input.slice(charsAdded);
+          match[0] = match[0].slice(charsAdded);
+          match.index = re.lastIndex;
+          re.lastIndex += match[0].length;
+        } else re.lastIndex = 0;
+      } else if (UPDATES_LAST_INDEX_WRONG && match) {
+        re.lastIndex = re.global ? match.index + match[0].length : lastIndex;
+      }
+      if (NPCG_INCLUDED && match && match.length > 1) {
+        // Fix browsers whose `exec` methods don't consistently return `undefined`
+        // for NPCG, like IE8. NOTE: This doesn' work for /(.?)?/
+        nativeReplace.call(match[0], reCopy, function () {
+          for (i = 1; i < arguments.length - 2; i++) {
+            if (arguments[i] === undefined) match[i] = undefined;
+          }
+        });
+      }
+
+      return match;
+    };
+  }
+
+  var regexpExec = patchedExec;
+
+  _export({ target: 'RegExp', proto: true, forced: /./.exec !== regexpExec }, {
+    exec: regexpExec
+  });
+
+  // TODO: Remove from `core-js@4` since it's moved to entry points
+
+
+
+
+
+
+
+  var SPECIES$6 = wellKnownSymbol('species');
+
+  var REPLACE_SUPPORTS_NAMED_GROUPS = !fails(function () {
+    // #replace needs built-in support for named groups.
+    // #match works fine because it just return the exec results, even if it has
+    // a "grops" property.
+    var re = /./;
+    re.exec = function () {
+      var result = [];
+      result.groups = { a: '7' };
+      return result;
+    };
+    return ''.replace(re, '$<a>') !== '7';
+  });
+
+  // IE <= 11 replaces $0 with the whole match, as if it was $&
+  // https://stackoverflow.com/questions/6024666/getting-ie-to-replace-a-regex-with-the-literal-string-0
+  var REPLACE_KEEPS_$0 = (function () {
+    return 'a'.replace(/./, '$0') === '$0';
+  })();
+
+  var REPLACE = wellKnownSymbol('replace');
+  // Safari <= 13.0.3(?) substitutes nth capture where n>m with an empty string
+  var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = (function () {
+    if (/./[REPLACE]) {
+      return /./[REPLACE]('a', '$0') === '';
+    }
+    return false;
+  })();
+
+  // Chrome 51 has a buggy "split" implementation when RegExp#exec !== nativeExec
+  // Weex JS has frozen built-in prototypes, so use try / catch wrapper
+  var SPLIT_WORKS_WITH_OVERWRITTEN_EXEC = !fails(function () {
+    var re = /(?:)/;
+    var originalExec = re.exec;
+    re.exec = function () { return originalExec.apply(this, arguments); };
+    var result = 'ab'.split(re);
+    return result.length !== 2 || result[0] !== 'a' || result[1] !== 'b';
+  });
+
+  var fixRegexpWellKnownSymbolLogic = function (KEY, length, exec, sham) {
+    var SYMBOL = wellKnownSymbol(KEY);
+
+    var DELEGATES_TO_SYMBOL = !fails(function () {
+      // String methods call symbol-named RegEp methods
+      var O = {};
+      O[SYMBOL] = function () { return 7; };
+      return ''[KEY](O) != 7;
+    });
+
+    var DELEGATES_TO_EXEC = DELEGATES_TO_SYMBOL && !fails(function () {
+      // Symbol-named RegExp methods call .exec
+      var execCalled = false;
+      var re = /a/;
+
+      if (KEY === 'split') {
+        // We can't use real regex here since it causes deoptimization
+        // and serious performance degradation in V8
+        // https://github.com/zloirock/core-js/issues/306
+        re = {};
+        // RegExp[@@split] doesn't call the regex's exec method, but first creates
+        // a new one. We need to return the patched regex when creating the new one.
+        re.constructor = {};
+        re.constructor[SPECIES$6] = function () { return re; };
+        re.flags = '';
+        re[SYMBOL] = /./[SYMBOL];
+      }
+
+      re.exec = function () { execCalled = true; return null; };
+
+      re[SYMBOL]('');
+      return !execCalled;
+    });
+
+    if (
+      !DELEGATES_TO_SYMBOL ||
+      !DELEGATES_TO_EXEC ||
+      (KEY === 'replace' && !(
+        REPLACE_SUPPORTS_NAMED_GROUPS &&
+        REPLACE_KEEPS_$0 &&
+        !REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE
+      )) ||
+      (KEY === 'split' && !SPLIT_WORKS_WITH_OVERWRITTEN_EXEC)
+    ) {
+      var nativeRegExpMethod = /./[SYMBOL];
+      var methods = exec(SYMBOL, ''[KEY], function (nativeMethod, regexp, str, arg2, forceStringMethod) {
+        if (regexp.exec === regexpExec) {
+          if (DELEGATES_TO_SYMBOL && !forceStringMethod) {
+            // The native String method already delegates to @@method (this
+            // polyfilled function), leasing to infinite recursion.
+            // We avoid it by directly calling the native @@method method.
+            return { done: true, value: nativeRegExpMethod.call(regexp, str, arg2) };
+          }
+          return { done: true, value: nativeMethod.call(str, regexp, arg2) };
+        }
+        return { done: false };
+      }, {
+        REPLACE_KEEPS_$0: REPLACE_KEEPS_$0,
+        REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE: REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE
+      });
+      var stringMethod = methods[0];
+      var regexMethod = methods[1];
+
+      redefine(String.prototype, KEY, stringMethod);
+      redefine(RegExp.prototype, SYMBOL, length == 2
+        // 21.2.5.8 RegExp.prototype[@@replace](string, replaceValue)
+        // 21.2.5.11 RegExp.prototype[@@split](string, limit)
+        ? function (string, arg) { return regexMethod.call(string, this, arg); }
+        // 21.2.5.6 RegExp.prototype[@@match](string)
+        // 21.2.5.9 RegExp.prototype[@@search](string)
+        : function (string) { return regexMethod.call(string, this); }
+      );
+    }
+
+    if (sham) createNonEnumerableProperty(RegExp.prototype[SYMBOL], 'sham', true);
+  };
+
+  // `String.prototype.{ codePointAt, at }` methods implementation
+  var createMethod$5 = function (CONVERT_TO_STRING) {
+    return function ($this, pos) {
+      var S = String(requireObjectCoercible($this));
+      var position = toInteger(pos);
+      var size = S.length;
+      var first, second;
+      if (position < 0 || position >= size) return CONVERT_TO_STRING ? '' : undefined;
+      first = S.charCodeAt(position);
+      return first < 0xD800 || first > 0xDBFF || position + 1 === size
+        || (second = S.charCodeAt(position + 1)) < 0xDC00 || second > 0xDFFF
+          ? CONVERT_TO_STRING ? S.charAt(position) : first
+          : CONVERT_TO_STRING ? S.slice(position, position + 2) : (first - 0xD800 << 10) + (second - 0xDC00) + 0x10000;
+    };
+  };
+
+  var stringMultibyte = {
+    // `String.prototype.codePointAt` method
+    // https://tc39.github.io/ecma262/#sec-string.prototype.codepointat
+    codeAt: createMethod$5(false),
+    // `String.prototype.at` method
+    // https://github.com/mathiasbynens/String.prototype.at
+    charAt: createMethod$5(true)
+  };
+
+  var charAt = stringMultibyte.charAt;
+
+  // `AdvanceStringIndex` abstract operation
+  // https://tc39.github.io/ecma262/#sec-advancestringindex
+  var advanceStringIndex = function (S, index, unicode) {
+    return index + (unicode ? charAt(S, index).length : 1);
+  };
+
+  // `RegExpExec` abstract operation
+  // https://tc39.github.io/ecma262/#sec-regexpexec
+  var regexpExecAbstract = function (R, S) {
+    var exec = R.exec;
+    if (typeof exec === 'function') {
+      var result = exec.call(R, S);
+      if (typeof result !== 'object') {
+        throw TypeError('RegExp exec method returned something other than an Object or null');
+      }
+      return result;
+    }
+
+    if (classofRaw(R) !== 'RegExp') {
+      throw TypeError('RegExp#exec called on incompatible receiver');
+    }
+
+    return regexpExec.call(R, S);
+  };
+
+  var max$5 = Math.max;
+  var min$5 = Math.min;
+  var floor$1 = Math.floor;
+  var SUBSTITUTION_SYMBOLS = /\$([$&'`]|\d\d?|<[^>]*>)/g;
+  var SUBSTITUTION_SYMBOLS_NO_NAMED = /\$([$&'`]|\d\d?)/g;
+
+  var maybeToString = function (it) {
+    return it === undefined ? it : String(it);
+  };
+
+  // @@replace logic
+  fixRegexpWellKnownSymbolLogic('replace', 2, function (REPLACE, nativeReplace, maybeCallNative, reason) {
+    var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = reason.REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE;
+    var REPLACE_KEEPS_$0 = reason.REPLACE_KEEPS_$0;
+    var UNSAFE_SUBSTITUTE = REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE ? '$' : '$0';
+
+    return [
+      // `String.prototype.replace` method
+      // https://tc39.github.io/ecma262/#sec-string.prototype.replace
+      function replace(searchValue, replaceValue) {
+        var O = requireObjectCoercible(this);
+        var replacer = searchValue == undefined ? undefined : searchValue[REPLACE];
+        return replacer !== undefined
+          ? replacer.call(searchValue, O, replaceValue)
+          : nativeReplace.call(String(O), searchValue, replaceValue);
+      },
+      // `RegExp.prototype[@@replace]` method
+      // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@replace
+      function (regexp, replaceValue) {
+        if (
+          (!REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE && REPLACE_KEEPS_$0) ||
+          (typeof replaceValue === 'string' && replaceValue.indexOf(UNSAFE_SUBSTITUTE) === -1)
+        ) {
+          var res = maybeCallNative(nativeReplace, regexp, this, replaceValue);
+          if (res.done) return res.value;
+        }
+
+        var rx = anObject(regexp);
+        var S = String(this);
+
+        var functionalReplace = typeof replaceValue === 'function';
+        if (!functionalReplace) replaceValue = String(replaceValue);
+
+        var global = rx.global;
+        if (global) {
+          var fullUnicode = rx.unicode;
+          rx.lastIndex = 0;
+        }
+        var results = [];
+        while (true) {
+          var result = regexpExecAbstract(rx, S);
+          if (result === null) break;
+
+          results.push(result);
+          if (!global) break;
+
+          var matchStr = String(result[0]);
+          if (matchStr === '') rx.lastIndex = advanceStringIndex(S, toLength(rx.lastIndex), fullUnicode);
+        }
+
+        var accumulatedResult = '';
+        var nextSourcePosition = 0;
+        for (var i = 0; i < results.length; i++) {
+          result = results[i];
+
+          var matched = String(result[0]);
+          var position = max$5(min$5(toInteger(result.index), S.length), 0);
+          var captures = [];
+          // NOTE: This is equivalent to
+          //   captures = result.slice(1).map(maybeToString)
+          // but for some reason `nativeSlice.call(result, 1, result.length)` (called in
+          // the slice polyfill when slicing native arrays) "doesn't work" in safari 9 and
+          // causes a crash (https://pastebin.com/N21QzeQA) when trying to debug it.
+          for (var j = 1; j < result.length; j++) captures.push(maybeToString(result[j]));
+          var namedCaptures = result.groups;
+          if (functionalReplace) {
+            var replacerArgs = [matched].concat(captures, position, S);
+            if (namedCaptures !== undefined) replacerArgs.push(namedCaptures);
+            var replacement = String(replaceValue.apply(undefined, replacerArgs));
+          } else {
+            replacement = getSubstitution(matched, S, position, captures, namedCaptures, replaceValue);
+          }
+          if (position >= nextSourcePosition) {
+            accumulatedResult += S.slice(nextSourcePosition, position) + replacement;
+            nextSourcePosition = position + matched.length;
+          }
+        }
+        return accumulatedResult + S.slice(nextSourcePosition);
+      }
+    ];
+
+    // https://tc39.github.io/ecma262/#sec-getsubstitution
+    function getSubstitution(matched, str, position, captures, namedCaptures, replacement) {
+      var tailPos = position + matched.length;
+      var m = captures.length;
+      var symbols = SUBSTITUTION_SYMBOLS_NO_NAMED;
+      if (namedCaptures !== undefined) {
+        namedCaptures = toObject(namedCaptures);
+        symbols = SUBSTITUTION_SYMBOLS;
+      }
+      return nativeReplace.call(replacement, symbols, function (match, ch) {
+        var capture;
+        switch (ch.charAt(0)) {
+          case '$': return '$';
+          case '&': return matched;
+          case '`': return str.slice(0, position);
+          case "'": return str.slice(tailPos);
+          case '<':
+            capture = namedCaptures[ch.slice(1, -1)];
+            break;
+          default: // \d\d?
+            var n = +ch;
+            if (n === 0) return match;
+            if (n > m) {
+              var f = floor$1(n / 10);
+              if (f === 0) return match;
+              if (f <= m) return captures[f - 1] === undefined ? ch.charAt(1) : captures[f - 1] + ch.charAt(1);
+              return match;
+            }
+            capture = captures[n - 1];
+        }
+        return capture === undefined ? '' : capture;
+      });
+    }
+  });
+
+  var EventBus = new Vue__default['default'](); // event bus
+
+  function getComputedCSSText(style) {
+    var cssText = '';
+
+    for (var attr in style) {
+      // m <?> matched
+      // #!en: hump to line
+      // #!zh: 驼峰转下划线
+      cssText += "".concat(attr.replace(/[A-Z]+/g, function (m) {
+        return "-".concat(m.toLowerCase());
+      }), ":").concat(style[attr], ";");
+    }
+
+    return cssText;
+  }
+
+  var animationMixin = {
+    methods: {
+      runAnimations: function runAnimations() {
+        var animationQueue = this.animations || this.element.animations || [];
+        var len = animationQueue.length;
+        if (len === 0) return;
+        var that = this;
+        var parentNode = this.$el;
+        var animIdx = 0;
+        var oldStyle = that.element.getStyle({
+          position: 'absolute'
+        });
+        runAnimation();
+
+        function runAnimation() {
+          if (animIdx < len) {
+            var animation = animationQueue[animIdx];
+            var animationStyle = {
+              animationName: animation.type,
+              animationDuration: "".concat(animation.duration, "s"),
+              animationIterationCount: animation.infinite ? 'infinite' : animation.interationCount,
+              animationDelay: "".concat(animation.delay, "s"),
+              animationFillMode: 'both'
+            };
+            parentNode.style.cssText = getComputedCSSText(animationStyle) + getComputedCSSText(oldStyle);
+            animIdx++;
+          } else {
+            // reset to the initial state after the animation ended
+            parentNode.style.cssText = getComputedCSSText(oldStyle);
+          }
+        }
+
+        parentNode.addEventListener('animationend', runAnimation, false);
+      }
+    },
+    created: function created() {
+      var that = this;
+      EventBus && EventBus.$on('RUN_ANIMATIONS', function () {
+        that.runAnimations(); // if (that.active) {
+        //   that.runAnimations()
+        // }
+      });
+    }
+  };
+
+  /**
+   * 增加范围node 以限制触发点击外部的 区域范围
+   */
+  var HANDLERS_PROPERTY = '__v-click-outside';
+  var HAS_WINDOWS = typeof window !== 'undefined';
+  var HAS_NAVIGATOR = typeof navigator !== 'undefined';
+  var IS_TOUCH = HAS_WINDOWS && ('ontouchstart' in window || HAS_NAVIGATOR && navigator.msMaxTouchPoints > 0);
+  var EVENTS = IS_TOUCH ? ['touchstart'] : ['click'];
+
+  function processDirectiveArguments(bindingValue) {
+    var isFunction = typeof bindingValue === 'function';
+
+    if (!isFunction && _typeof_1(bindingValue) !== 'object') {
+      throw new Error('v-click-outside: Binding value must be a function or an object');
+    }
+
+    return {
+      handler: isFunction ? bindingValue : bindingValue.handler,
+      middleware: bindingValue.middleware || function (item) {
+        return item;
+      },
+      events: bindingValue.events || EVENTS,
+      isActive: !(bindingValue.isActive === false),
+      detectIframe: !(bindingValue.detectIframe === false),
+      capture: !!bindingValue.capture,
+      scopeNode: bindingValue.scopeNode || document.documentElement
+    };
+  }
+
+  function execHandler(_ref) {
+    var event = _ref.event,
+        handler = _ref.handler,
+        middleware = _ref.middleware;
+
+    if (middleware(event)) {
+      handler && handler(event);
+    }
+  }
+
+  function onFauxIframeClick(_ref2) {
+    var el = _ref2.el,
+        event = _ref2.event,
+        handler = _ref2.handler,
+        middleware = _ref2.middleware;
+    // Note: on firefox clicking on iframe triggers blur, but only on
+    //       next event loop it becomes document.activeElement
+    // https://stackoverflow.com/q/2381336#comment61192398_23231136
+    setTimeout(function () {
+      var _document = document,
+          activeElement = _document.activeElement;
+
+      if (activeElement && activeElement.tagName === 'IFRAME' && !el.contains(activeElement)) {
+        execHandler({
+          event: event,
+          handler: handler,
+          middleware: middleware
+        });
+      }
+    }, 0);
+  }
+
+  function onEvent(_ref3) {
+    var el = _ref3.el,
+        event = _ref3.event,
+        handler = _ref3.handler,
+        middleware = _ref3.middleware,
+        scopeNode = _ref3.scopeNode;
+    // Note: composedPath is not supported on IE and Edge, more information here:
+    //       https://developer.mozilla.org/en-US/docs/Web/API/Event/composedPath
+    //       In the meanwhile, we are using el.contains for those browsers, not
+    //       the ideal solution, but using IE or EDGE is not ideal either.
+    var path = event.path || event.composedPath && event.composedPath();
+    var isClickOutside = path ? path.indexOf(el) < 0 && path.indexOf(scopeNode) > -1 : !el.contains(event.target) && scopeNode.contains(event.target);
+
+    if (!isClickOutside) {
+      return;
+    }
+
+    execHandler({
+      event: event,
+      handler: handler,
+      middleware: middleware
+    });
+  }
+
+  function bind$4(el, _ref4) {
+    var value = _ref4.value;
+
+    var _processDirectiveArgu = processDirectiveArguments(value),
+        events = _processDirectiveArgu.events,
+        _handler = _processDirectiveArgu.handler,
+        middleware = _processDirectiveArgu.middleware,
+        isActive = _processDirectiveArgu.isActive,
+        detectIframe = _processDirectiveArgu.detectIframe,
+        capture = _processDirectiveArgu.capture,
+        scopeNode = _processDirectiveArgu.scopeNode;
+
+    if (!isActive || !_handler) {
+      return;
+    }
+
+    el[HANDLERS_PROPERTY] = events.map(function (eventName) {
+      return {
+        event: eventName,
+        srcTarget: document.documentElement,
+        handler: function handler(event) {
+          return onEvent({
+            el: el,
+            event: event,
+            handler: _handler,
+            middleware: middleware,
+            scopeNode: scopeNode
+          });
+        },
+        capture: capture
+      };
+    });
+
+    if (detectIframe) {
+      var detectIframeEvent = {
+        event: 'blur',
+        srcTarget: window,
+        handler: function handler(event) {
+          return onFauxIframeClick({
+            el: el,
+            event: event,
+            handler: _handler,
+            middleware: middleware
+          });
+        },
+        capture: capture
+      };
+      el[HANDLERS_PROPERTY] = [].concat(toConsumableArray(el[HANDLERS_PROPERTY]), [detectIframeEvent]);
+    }
+
+    el[HANDLERS_PROPERTY].forEach(function (_ref5) {
+      var event = _ref5.event,
+          srcTarget = _ref5.srcTarget,
+          handler = _ref5.handler;
+      return setTimeout(function () {
+        // Note: More info about this implementation can be found here:
+        //       https://github.com/ndelvalle/v-click-outside/issues/137
+        if (!el[HANDLERS_PROPERTY]) {
+          return;
+        }
+
+        srcTarget.addEventListener(event, handler, capture);
+      }, 0);
+    });
+  }
+
+  function unbind(el) {
+    var handlers = el[HANDLERS_PROPERTY] || [];
+    handlers.forEach(function (_ref6) {
+      var event = _ref6.event,
+          srcTarget = _ref6.srcTarget,
+          handler = _ref6.handler,
+          capture = _ref6.capture;
+      return srcTarget.removeEventListener(event, handler, capture);
+    });
+    delete el[HANDLERS_PROPERTY];
+  }
+
+  function update(el, _ref7) {
+    var value = _ref7.value,
+        oldValue = _ref7.oldValue;
+
+    if (JSON.stringify(value) === JSON.stringify(oldValue)) {
+      return;
+    }
+
+    unbind(el);
+    bind$4(el, {
+      value: value
+    });
+  }
+
+  var directive = {
+    bind: bind$4,
+    update: update,
+    unbind: unbind
+  };
+  var vClickOutside = HAS_WINDOWS ? directive : {};
+
+  var points$2 = ['lt', 'rt', 'lb', 'rb', 'lm', 'rm', 'tm', 'bm'];
+  var id$1 = 0;
+  var Shape = {
+    mixins: [animationMixin],
+    directives: {
+      clickOutside: vClickOutside
+    },
+    props: {
+      width: {
+        type: Number,
+        default: 0
+      },
+      height: {
+        type: Number,
+        default: 0
+      },
+      left: {
+        type: Number,
+        default: 0
+      },
+      top: {
+        type: Number,
+        default: 0
+      },
+      disable: {
+        type: Boolean,
+        default: false
+      }
+    },
+    data: function data() {
+      return {
+        rect: {
+          width: this.width,
+          height: this.height,
+          left: this.left,
+          top: this.top
+        },
+        startY: 0,
+        startX: 0,
+        point: '',
+        active: false,
+        vcoConfig: {}
+      };
+    },
+    mounted: function mounted() {
+      this.vcoConfig = {
+        events: ['mousedown'],
+        handler: this.onClickOutside,
+        scopeNode: document.querySelector('.lb-canvas')
+      };
+    },
+    computed: {
+      shapeStyle: function shapeStyle() {
+        var _this$rect = this.rect,
+            left = _this$rect.left,
+            top = _this$rect.top,
+            width = _this$rect.width,
+            height = _this$rect.height;
+        return {
+          left: "".concat(left, "px"),
+          top: "".concat(top, "px"),
+          width: "".concat(width, "px"),
+          height: "".concat(height, "px")
+        };
+      },
+      ltPointStyle: function ltPointStyle() {
+        return {
+          left: "".concat(0, "px"),
+          top: "".concat(0, "px")
+        };
+      },
+      rtPointStyle: function rtPointStyle() {
+        var width = this.rect.width;
+        return {
+          left: "".concat(width, "px"),
+          top: "".concat(0, "px")
+        };
+      },
+      lbPointStyle: function lbPointStyle() {
+        var height = this.rect.height;
+        return {
+          left: "".concat(0, "px"),
+          top: "".concat(height, "px")
+        };
+      },
+      rbPointStyle: function rbPointStyle() {
+        var _this$rect2 = this.rect,
+            width = _this$rect2.width,
+            height = _this$rect2.height;
+        return {
+          left: "".concat(width, "px"),
+          top: "".concat(height, "px")
+        };
+      },
+      lmPointStyle: function lmPointStyle() {
+        var height = this.rect.height;
+        return {
+          left: "".concat(0, "px"),
+          top: "".concat(height / 2, "px")
+        };
+      },
+      rmPointStyle: function rmPointStyle() {
+        var _this$rect3 = this.rect,
+            width = _this$rect3.width,
+            height = _this$rect3.height;
+        return {
+          left: "".concat(width, "px"),
+          top: "".concat(height / 2, "px")
+        };
+      },
+      tmPointStyle: function tmPointStyle() {
+        var width = this.rect.width;
+        return {
+          left: "".concat(width / 2, "px"),
+          top: "".concat(0, "px")
+        };
+      },
+      bmPointStyle: function bmPointStyle() {
+        var _this$rect4 = this.rect,
+            width = _this$rect4.width,
+            height = _this$rect4.height;
+        return {
+          left: "".concat(width / 2, "px"),
+          top: "".concat(height, "px")
+        };
+      }
+    },
+    watch: {
+      rect: {
+        handler: function handler(newValue) {
+          this.$emit('change', newValue);
+        },
+        deep: true
+      }
+    },
+    methods: {
+      setActive: function setActive(active) {
+        if (this.active === active) return;
+        active ? this.$emit('active', active) : this.$emit('deactive', active);
+        this.active = active;
+      },
+      onClickOutside: function onClickOutside() {
+        this.setActive(false);
+      },
+      addWidth: function addWidth(width) {
+        var currentWidth = this.rect.width;
+        var nextWidth = currentWidth + width;
+        if (nextWidth < 0) nextWidth = 0;
+        return this.rect.width = nextWidth;
+      },
+      addHeight: function addHeight(height) {
+        var currentHeight = this.rect.height;
+        var nextHeight = currentHeight + height;
+        if (nextHeight < 0) nextHeight = 0;
+        return this.rect.height = nextHeight;
+      },
+      addLeft: function addLeft(left) {
+        var _this$rect5 = this.rect,
+            currentLeft = _this$rect5.left,
+            currentWidth = _this$rect5.width;
+        left = currentWidth > left ? left : currentWidth;
+        var nextLeft = currentLeft + left;
+        if (nextLeft < 0) nextLeft = 0;
+        return this.rect.left = nextLeft;
+      },
+      addTop: function addTop(top) {
+        var _this$rect6 = this.rect,
+            currentTop = _this$rect6.top,
+            currentHeight = _this$rect6.height;
+        top = currentHeight > top ? top : currentHeight;
+        var nextTop = currentTop + top;
+        if (nextTop < 0) nextTop = 0;
+        return this.rect.top = nextTop;
+      },
+      handleShapeDown: function handleShapeDown(e) {
+        this.setActive(true);
+        this.startY = e.clientY;
+        this.startX = e.clientX;
+        document.addEventListener('mousemove', this.handleShapeMove);
+        document.addEventListener('mouseup', this.handleShapeUp);
+      },
+      handleShapeMove: function handleShapeMove(e) {
+        e.preventDefault();
+        var distanceX = e.clientX - this.startX;
+        var distanceY = e.clientY - this.startY;
+        this.startX = e.clientX;
+        this.startY = e.clientY;
+        this.addLeft(distanceX);
+        this.addTop(distanceY);
+      },
+      handleShapeUp: function handleShapeUp() {
+        document.removeEventListener('mousemove', this.handleShapeMove);
+        document.removeEventListener('mouseup', this.handleShapeUp);
+      },
+      handlePointDown: function handlePointDown(point, e) {
+        this.startY = e.clientY;
+        this.startX = e.clientX;
+        this.point = point;
+        document.addEventListener('mousemove', this.handlePointMove);
+        document.addEventListener('mouseup', this.handlePointUp);
+      },
+      handlePointMove: function handlePointMove(e) {
+        var _this = this;
+
+        var effect = [/l/, /t/, /r/, /b/].map(function (v) {
+          return v.test(_this.point);
+        });
+
+        var _effect = slicedToArray(effect, 4),
+            effectLeft = _effect[0],
+            effectTop = _effect[1],
+            effectWidth = _effect[2],
+            effectHeight = _effect[3];
+
+        var distanceX = e.clientX - this.startX;
+        var distanceY = e.clientY - this.startY;
+        this.startX = e.clientX;
+        this.startY = e.clientY;
+        effectLeft && this.addLeft(distanceX);
+        effectLeft && this.addWidth(-distanceX);
+        effectTop && this.addTop(distanceY);
+        effectTop && this.addHeight(-distanceY);
+        effectWidth && this.addWidth(distanceX);
+        effectHeight && this.addHeight(distanceY);
+      },
+      handlePointUp: function handlePointUp() {
+        document.removeEventListener('mousemove', this.handlePointMove);
+        document.removeEventListener('mouseup', this.handlePointUp);
+      }
+    },
+    render: function render() {
+      var _this2 = this;
+
+      var h = arguments[0];
+      return h("div", {
+        "attrs": {
+          "tabindex": "0",
+          "data-id": id$1++
+        },
+        "directives": [{
+          name: "click-outside",
+          value: this.vcoConfig
+        }],
+        "style": this.shapeStyle,
+        "class": ['shape__wrapper', {
+          'shape__wrapper-active': this.active
+        }],
+        "on": {
+          "mousedown": this.handleShapeDown
+        },
+        "ref": "shape"
+      }, [h("div", {
+        "class": "content"
+      }, [this.$slots.default]), h("div", {
+        "class": "control"
+      }, [points$2.map(function (v) {
+        return h("div", {
+          "directives": [{
+            name: "show",
+            value: _this2.active
+          }],
+          "style": _this2["".concat(v, "PointStyle")],
+          "class": "shape__scale-point",
+          "attrs": {
+            "data-point": v
+          },
+          "on": {
+            "mousedown": _this2.handlePointDown.bind(_this2, v)
+          }
+        });
+      })])]);
+    }
+  };
+
+  var ElementRender = {
+    props: {
+      element: {
+        type: LbpElement,
+        require: true
+      }
+    },
+    created: function created() {
+      this.element.vm = this;
+    },
+    render: function render(h) {
+      var element = this.element;
+      var component = pluginController.getPlugin(element.name).component;
+      return h(component, {
+        props: element.props
+      });
+    }
+  };
+
+  var CoreRender = {
+    Element: LbpElement,
+    props: {
+      width: {
+        type: Number,
+        default: 0
+      },
+      height: {
+        type: Number,
+        default: 0
+      }
+    },
+    data: function data() {
+      return {
+        activeElement: null,
+        elements: []
+      };
+    },
+    computed: {
+      canvasStyle: function canvasStyle() {
+        return {
+          width: "".concat(this.width, "px"),
+          height: "".concat(this.height, "px"),
+          position: 'relative'
+        };
+      }
+    },
+    methods: {
+      handleElementActive: function handleElementActive(activeElement) {
+        console.log('active');
+        this.activeElement = activeElement;
+        this.$emit('active', activeElement);
+      },
+      handleElementDeactive: function handleElementDeactive(deactiveElement) {
+        console.log('deactive');
+
+        if (deactiveElement === this.activeElement) {
+          this.activeElement = null;
+        }
+
+        this.$emit('deactive', deactiveElement);
+      },
+      updateActiveElement: function updateActiveElement(props) {
+        this.activeElement && Object.assign(this.activeElement.props, props);
+      },
+      addElement: function addElement() {
+        var _this = this;
+
+        for (var _len = arguments.length, elements = new Array(_len), _key = 0; _key < _len; _key++) {
+          elements[_key] = arguments[_key];
+        }
+
+        elements.forEach(function (element) {
+          if (element instanceof LbpElement) {
+            _this.elements.push(element);
+          }
+        });
+      },
+      handleElementRectChange: function handleElementRectChange(props) {
+        this.updateActiveElement(props);
+      },
+      clear: function clear() {
+        this.elements = [];
+      }
+    },
+    render: function render() {
+      var _this2 = this;
+
+      var h = arguments[0];
+      var elements = this.elements;
+      return h("div", {
+        "class": "lb-canvas-wrapper"
+      }, [h("div", {
+        "class": "lb-canvas",
+        "style": this.canvasStyle
+      }, [h("div", {
+        "class": "elements"
+      }, [elements.map(function (element) {
+        return h(Shape, helper$5([{}, {
+          "props": element.props
+        }, {
+          "on": {
+            "active": function active() {
+              return _this2.handleElementActive(element);
+            },
+            "deactive": function deactive() {
+              return _this2.handleElementDeactive(element);
+            },
+            "change": _this2.handleElementRectChange
+          }
+        }]), [h(ElementRender, {
+          "attrs": {
+            "element": element
+          }
+        })]);
+      })])])]);
+    }
+  };
+
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-02 16:12:09
+   * @LastEditTime : 2020-11-06 14:56:14
+   * @Description :
+   */
+
+  /**
+    * 页面模式，枚举值
+    * h5_swipper 翻页H5
+    * h5_long_page 长页面H5
+   */
+  var PAGE_MODE = {
+    SWIPPER_PAGE: 'h5_swipper',
+    LONG_PAGE: 'h5_long_page',
+    WIDTH: 375,
+    HEIGHT: 667
+  };
+  var PAGE_MODE_LABEL = {
+    SWIPPER_PAGE: '翻页H5',
+    LONG_PAGE: '长页面'
+  };
 
   var Page = /*#__PURE__*/function () {
     function Page() {
@@ -69070,7 +65908,7 @@
       key: "clone",
       value: function clone() {
         var elements = this.elements.map(function (element) {
-          return new Element(element);
+          return new CoreRender.Element(element);
         });
         return new Page({
           title: this.title,
@@ -69082,8 +65920,8 @@
       value: function genElements() {
         var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
         return Array.isArray(elements) && elements.length > 0 ? elements.map(function (v) {
-          return new Element(v);
-        }) : [new Element(LbpBackground)];
+          return new CoreRender.Element(v);
+        }) : [new CoreRender.Element(LbpBackground)];
       }
     }]);
 
@@ -69150,16 +65988,16 @@
 
 
   var FIND_INDEX = 'findIndex';
-  var SKIPS_HOLES$1 = true;
+  var SKIPS_HOLES = true;
 
-  var USES_TO_LENGTH$9 = arrayMethodUsesToLength(FIND_INDEX);
+  var USES_TO_LENGTH$8 = arrayMethodUsesToLength(FIND_INDEX);
 
   // Shouldn't skip holes
-  if (FIND_INDEX in []) Array(1)[FIND_INDEX](function () { SKIPS_HOLES$1 = false; });
+  if (FIND_INDEX in []) Array(1)[FIND_INDEX](function () { SKIPS_HOLES = false; });
 
   // `Array.prototype.findIndex` method
   // https://tc39.github.io/ecma262/#sec-array.prototype.findindex
-  _export({ target: 'Array', proto: true, forced: SKIPS_HOLES$1 || !USES_TO_LENGTH$9 }, {
+  _export({ target: 'Array', proto: true, forced: SKIPS_HOLES || !USES_TO_LENGTH$8 }, {
     findIndex: function findIndex(callbackfn /* , that = undefined */) {
       return $findIndex(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
     }
@@ -69230,9 +66068,32 @@
     }
   };
 
-  function ownKeys$h(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  var $find = arrayIteration.find;
 
-  function _objectSpread$g(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$h(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$h(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+
+  var FIND = 'find';
+  var SKIPS_HOLES$1 = true;
+
+  var USES_TO_LENGTH$9 = arrayMethodUsesToLength(FIND);
+
+  // Shouldn't skip holes
+  if (FIND in []) Array(1)[FIND](function () { SKIPS_HOLES$1 = false; });
+
+  // `Array.prototype.find` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.find
+  _export({ target: 'Array', proto: true, forced: SKIPS_HOLES$1 || !USES_TO_LENGTH$9 }, {
+    find: function find(callbackfn /* , that = undefined */) {
+      return $find(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
+    }
+  });
+
+  // https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
+  addToUnscopables(FIND);
+
+  function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   var actions$2 = {
     setEditingElement: function setEditingElement(_ref, payload) {
@@ -69264,7 +66125,7 @@
       state.editingElement = payload;
     },
     setElementCommonStyle: function setElementCommonStyle(state, payload) {
-      state.editingElement.commonStyle = _objectSpread$g(_objectSpread$g({}, state.editingElement.commonStyle), payload);
+      state.editingElement.commonStyle = _objectSpread$2(_objectSpread$2({}, state.editingElement.commonStyle), payload);
     },
     elementManager: function elementManager(state, _ref6) {
       var type = _ref6.type,
@@ -69281,7 +66142,7 @@
 
           vm.$options.dragStyle = value.dragStyle; // {left: Number, top: Number}
 
-          var element = new Element(vm.$options);
+          var element = new CoreRender.Element(vm.$options);
           elements.push(element);
           break;
 
@@ -69357,11 +66218,11 @@
   // Old WebKit
   var STRICT_METHOD$4 = arrayMethodIsStrict('sort');
 
-  var FORCED$4 = FAILS_ON_UNDEFINED || !FAILS_ON_NULL || !STRICT_METHOD$4;
+  var FORCED$3 = FAILS_ON_UNDEFINED || !FAILS_ON_NULL || !STRICT_METHOD$4;
 
   // `Array.prototype.sort` method
   // https://tc39.github.io/ecma262/#sec-array.prototype.sort
-  _export({ target: 'Array', proto: true, forced: FORCED$4 }, {
+  _export({ target: 'Array', proto: true, forced: FORCED$3 }, {
     sort: function sort(comparefn) {
       return comparefn === undefined
         ? nativeSort.call(toObject(this))
@@ -69369,9 +66230,9 @@
     }
   });
 
-  function ownKeys$i(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$h(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$i(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$i(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$3(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var actions$3 = {
     updateWork: function updateWork(_ref) {
       var commit = _ref.commit,
@@ -69379,7 +66240,7 @@
       var payload = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       // update work with strapi
-      var work = _objectSpread$h(_objectSpread$h({}, state.work), payload);
+      var work = _objectSpread$3(_objectSpread$3({}, state.work), payload);
 
       commit('setWork', work);
     }
@@ -69407,7 +66268,7 @@
       window.__work = work;
       work.pages = work.pages.map(function (page) {
         page.elements = page.elements.map(function (element) {
-          return new Element(element);
+          return new CoreRender.Element(element);
         });
         return new Page(page);
       });
@@ -69428,9 +66289,9 @@
     }
   };
 
-  function ownKeys$j(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$i(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$j(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$j(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var state = {
     works: [],
     work: new Work(),
@@ -69448,10 +66309,10 @@
 
   var getters = {}; // actions
 
-  var actions$4 = _objectSpread$i(_objectSpread$i(_objectSpread$i(_objectSpread$i({}, actions$2), actions$1), actions$3), actions); // mutations
+  var actions$4 = _objectSpread$4(_objectSpread$4(_objectSpread$4(_objectSpread$4({}, actions$2), actions$1), actions$3), actions); // mutations
 
 
-  var mutations$4 = _objectSpread$i(_objectSpread$i(_objectSpread$i(_objectSpread$i({}, mutations$2), mutations$1), mutations$3), mutations);
+  var mutations$4 = _objectSpread$4(_objectSpread$4(_objectSpread$4(_objectSpread$4({}, mutations$2), mutations$1), mutations$3), mutations);
 
   var editor = {
     namespaced: true,
@@ -69689,13 +66550,13 @@
     }
   };
 
-  function ownKeys$k(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$6(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$j(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$k(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$k(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$5(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   Vue__default['default'].use(VueI18n__default['default']);
   var messages = {
-    "en-US": _objectSpread$j({}, enUSLang),
-    "zh-CN": _objectSpread$j({}, zhCNLang)
+    "en-US": _objectSpread$5({}, enUSLang),
+    "zh-CN": _objectSpread$5({}, zhCNLang)
   };
   var defaultLang = "zh-CN";
   var i18n = new VueI18n__default['default']({
@@ -69773,11 +66634,2961 @@
     plugins: [undoRedoPlugin]
   });
 
-  var CoreEditor = {
-    name: 'CoreEditor',
-    components: defineProperty$1({}, antDesignVue.Layout.name, antDesignVue.Layout),
+  var fixedTools = [{
+    i18nTooltip: 'editor.fixedTool.undo',
+    icon: 'mail-reply',
+    action: function action() {
+      return undoRedoHistory.undo();
+    },
+    hotkey: 'ctrl&z,⌘&z',
+    hotkeyTooltip: '(ctrl+z)'
+  }, {
+    i18nTooltip: 'editor.fixedTool.redo',
+    icon: 'mail-forward',
+    action: function action() {
+      return undoRedoHistory.redo();
+    },
+    hotkey: 'ctrl&y,⌘&u',
+    hotkeyTooltip: '(ctrl+y)'
+  }, {
+    i18nTooltip: 'editor.fixedTool.preview',
+    icon: 'eye',
+    action: function action() {
+      this.previewDialogVisible = true;
+    }
+  }, {
+    i18nTooltip: 'editor.fixedTool.copyCurrentPage',
+    icon: 'copy',
+    action: function action() {
+      this.pageManager({
+        type: 'copy'
+      });
+    },
+    hotkey: 'ctrl&c,⌘&c'
+  }, {
+    i18nTooltip: 'editor.fixedTool.copyCurrentElement',
+    icon: 'copy',
+    action: function action() {
+      this.elementManager({
+        type: 'copy'
+      });
+    }
+  }, {
+    i18nTooltip: 'editor.fixedTool.importPSD',
+    text: 'Ps',
+    icon: '',
+    // 优先级: icon > text > i18nTooltip
+    action: '',
+    disabled: true
+  }, {
+    i18nTooltip: 'editor.fixedTool.zoomOut',
+    icon: 'plus',
+    action: function action() {
+      this.updateScaleRate(0.25);
+    },
+    hotkey: 'ctrl&=,⌘&=',
+    hotkeyTooltip: '(ctrl +)'
+  }, {
+    i18nTooltip: 'editor.fixedTool.zoomIn',
+    icon: 'minus',
+    action: function action() {
+      this.updateScaleRate(-0.25);
+    },
+    hotkey: 'ctrl&-,⌘&-',
+    hotkeyTooltip: '(ctrl -)'
+  }, {
+    i18nTooltip: 'editor.fixedTool.issues',
+    icon: 'question',
+    action: function action() {
+      window.open('https://github.com/ly525/luban-h5/issues/110');
+    }
+  }];
+
+  var _components;
+
+  function ownKeys$7(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$7(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  var FixedTools = {
+    components: (_components = {}, defineProperty$2(_components, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$2(_components, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$2(_components, antDesignVue.Tooltip.name, antDesignVue.Tooltip), defineProperty$2(_components, antDesignVue.Button.name, antDesignVue.Button), _components),
+    computed: _objectSpread$6({}, Vuex.mapState("editor", {
+      scaleRate: function scaleRate(state) {
+        return state.scaleRate;
+      }
+    })),
+    methods: _objectSpread$6({}, Vuex.mapActions("editor", ["pageManager", "elementManager", "updateScaleRate"])),
+    render: function render() {
+      var _this = this;
+
+      var h = arguments[0];
+      return h("a-layout-sider", {
+        "attrs": {
+          "width": "40",
+          "theme": "light"
+        },
+        "style": {
+          background: "#fff",
+          border: "1px solid #eee"
+        }
+      }, [h("a-button-group", {
+        "style": {
+          display: "flex",
+          flexDirection: "column"
+        }
+      }, [fixedTools.map(function (tool) {
+        return h("a-tooltip", {
+          "attrs": {
+            "effect": "dark",
+            "placement": "left",
+            "title": _this.$t(tool.i18nTooltip, {
+              hotkey: tool.hotkeyTooltip
+            })
+          }
+        }, [h("a-button", {
+          "attrs": {
+            "block": true,
+            "type": "link",
+            "size": "small",
+            "disabled": !!tool.disabled
+          },
+          "class": "transparent-bg",
+          "style": {
+            height: "40px",
+            color: "#000"
+          },
+          "on": {
+            "click": function click() {
+              return tool.action && tool.action.call(_this);
+            }
+          }
+        }, [tool.icon ? h("i", {
+          "class": ["shortcut-icon", "fa", "fa-".concat(tool.icon)],
+          "attrs": {
+            "aria-hidden": "true"
+          }
+        }) : tool.text || _this.$t(tool.i18nTooltip)]), tool.icon === "minus" && h("div", {
+          "style": {
+            fontSize: "12px",
+            textAlign: "center"
+          }
+        }, [_this.scaleRate * 100, "%"])]);
+      })])]);
+    },
+    mounted: function mounted() {
+      var _this2 = this;
+
+      fixedTools.map(function (tool) {
+        tool.hotkey && hotkeys__default['default'](tool.hotkey, {
+          splitKey: "&"
+        }, function (event, handler) {
+          event.preventDefault();
+          event.stopPropagation();
+          tool.action && tool.action.call(_this2);
+        });
+      });
+    }
+  };
+
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-02 16:12:09
+   * @LastEditTime : 2020-11-06 17:47:10
+   * @Description :
+   */
+  var colorsPanel = {
+    name: 'colors-panel',
+    props: {
+      value: {
+        type: [Array, String]
+      }
+    },
+    render: function render() {
+      var _this = this;
+
+      var h = arguments[0];
+      return h("div", [Array.isArray(this.value) ? this.value.map(function (v, index) {
+        h("input", {
+          "attrs": {
+            "size": "small",
+            "type": "color",
+            "autocomplete": true
+          },
+          "domProps": {
+            "value": v
+          },
+          "on": {
+            "change": function change(e) {
+              var colors = _this.value.slice(0);
+
+              colors[index] = e.target.value;
+
+              _this.$emit('change', colors);
+            }
+          }
+        });
+      }) : h("input", {
+        "attrs": {
+          "size": "small",
+          "type": "color",
+          "autocomplete": true
+        },
+        "domProps": {
+          "value": this.value
+        },
+        "on": {
+          "change": function change(e) {
+            _this.$emit('change', e.target.value);
+          }
+        }
+      })]);
+    }
+  };
+
+  var _components$1;
+  var lbsTextAlign = {
+    name: 'lbs-text-align',
+    components: (_components$1 = {}, defineProperty$2(_components$1, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$2(_components$1, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$2(_components$1, antDesignVue.Tooltip.name, antDesignVue.Tooltip), _components$1),
+    render: function render(h) {
+      var _this = this;
+
+      return h("div", {
+        "class": "wrap"
+      }, [h("a-radio-group", {
+        "attrs": {
+          "size": "small",
+          "value": this.value
+        },
+        "on": {
+          "change": function change(value) {
+            _this.$emit('change', value);
+
+            _this.$emit('input', value);
+          }
+        }
+      }, [this.textAlignTabs.map(function (item) {
+        return h("a-tooltip", {
+          "attrs": {
+            "effect": "dark",
+            "placement": "top",
+            "title": item.label
+          },
+          "key": item.value
+        }, [h("a-radio-button", {
+          "attrs": {
+            "value": item.value
+          }
+        }, [h("i", {
+          "class": ['fa', 'fa-align-' + item.value],
+          "attrs": {
+            "aria-hidden": "true"
+          }
+        })])]);
+      })])]);
+    },
+    props: {
+      value: {
+        type: [String, Number]
+      }
+    },
+    data: function data() {
+      return {
+        textAlignTabs: [{
+          label: '左对齐',
+          value: 'left'
+        }, {
+          label: '居中对齐',
+          value: 'center'
+        }, {
+          label: '右对齐',
+          value: 'right'
+        }]
+      };
+    }
+  };
+
+  var validFileMimeTypes = ['text/csv', 'text/x-csv', 'application/vnd.ms-excel', 'text/plain'];
+  var CsvImport = {
+    name: 'lbs-csv-import',
+    methods: {
+      checkMimeType: function checkMimeType(type) {
+        return validFileMimeTypes.indexOf(type) > -1;
+      },
+      validFileMimeType: function validFileMimeType(e) {
+        e.preventDefault();
+        var file = this.$refs.csv.files[0];
+        var isValidFileMimeType = this.checkMimeType(file.type);
+        if (isValidFileMimeType) this.loadFile();
+      },
+      loadFile: function loadFile() {
+        var _this = this;
+
+        /**
+         * output {String}
+            "columnA,columnB,columnC
+            "Susan",41,a
+            "Mike",5,b
+            "Jake",33,c
+            "Jill",30,d
+            "
+          * csv {Object}
+          {
+            "data": [
+              ["columnA", "columnB", "columnC"],
+              ["Susan", "41", "a"],
+              ["Mike", "5", "b"],
+              ["Jake", "33", "c"],
+              ["Jill", "30", "d"],
+            ],
+            "errors": [],
+            "meta": {
+              "delimiter": ",",
+              "linebreak": "\n",
+              "aborted": false,
+              "truncated": false,
+              "cursor": 72
+            }
+          }
+         */
+        this.readFile(function (output) {
+          // const sample = Papa.parse(output, { preview: 2, skipEmptyLines: true })
+          var csv = Papa__default['default'].parse(output, {
+            skipEmptyLines: true
+          });
+
+          _this.$emit('parse', csv);
+
+          _this.$refs.input.value = '';
+        });
+      },
+      readFile: function readFile(callback) {
+        var file = this.$refs.csv.files[0];
+
+        if (file) {
+          var reader = new FileReader();
+          reader.readAsText(file, 'UTF-8');
+
+          reader.onload = function (evt) {
+            callback(evt.target.result);
+          };
+
+          reader.onerror = function () {};
+        }
+      }
+    },
+    render: function render() {
+      var h = arguments[0];
+      var randomId = +new Date();
+      return h("div", {
+        "style": "height: 24px;"
+      }, [h("label", {
+        "attrs": {
+          "for": randomId
+        },
+        "class": "ant-btn ant-btn-primary ant-btn-sm"
+      }, ["\u9009\u62E9\u5BFC\u5165 csv \u6587\u4EF6"]), h("input", {
+        "ref": "csv",
+        "attrs": {
+          "id": randomId,
+          "type": "file",
+          "name": "csv"
+        },
+        "on": {
+          "change": this.validFileMimeType
+        },
+        "style": "visibility:hidden;"
+      }, ["xxxx"])]);
+    }
+  };
+
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-02 16:12:09
+   * @LastEditTime : 2020-11-10 19:42:27
+   * @Description :
+   */
+  var lbsExcelEditor = {
+    name: 'lbs-excel-editor',
+    props: {
+      value: {
+        type: Array
+      },
+      formatter: {
+        type: Function
+      }
+    },
+    computed: {
+      innerItems: {
+        get: function get() {
+          return Parser.binaryMatrix2excel(this.value);
+        },
+        set: function set(val) {
+          this.$emit('input', val);
+        }
+      }
+    },
+    watch: {
+      value: function value() {
+        this.refreshSheet({
+          rows: this.innerItems
+        });
+      }
+    },
+    methods: {
+      parseCSV: function parseCSV(csv) {
+        var sheetData = Parser.binaryMatrix2excel(csv.data);
+        this.$emit('change', csv.data);
+        this.refreshSheet({
+          rows: sheetData
+        });
+      },
+
+      /**
+       *
+       * @param {Object} data { rows }
+       */
+      refreshSheet: function refreshSheet(data) {
+        this.sheet.loadData(data);
+        this.sheet.reRender();
+      },
+      initSheet: function initSheet() {
+        var _this = this;
+
+        var ele = this.$refs.excel;
+        return this.sheet || new Spreadsheet__default['default'](ele, {
+          showToolbar: false,
+          showGrid: true,
+          showContextmenu: true // view: {
+          //   height: () => 400,
+          //   width: () => ele.getBoundingClientRect().width
+          // }
+
+        }).change(function (excelData) {
+          // console.log('----------')
+          // console.log(excelData)
+          // console.log(this.formatter(excelData))
+          // console.log('----------')
+          _this.$emit('change', _this.formatter(excelData)
+          /** BinaryMatrix */
+          ); // save data to db
+
+        });
+      }
+    },
+    // 注意(看源码)： 如果不调用 data 或 props 的某个值，则 render 不会执行。watcher 的更新时机是什么？？
+    render: function render() {
+      var h = arguments[0];
+      return h("div", {
+        "style": "max-height: 320px;overflow:scroll;"
+      }, [h("div", {
+        "style": "line-height:2;"
+      }, [h("span", ["\u65B9\u68481: ", h(CsvImport, {
+        "on": {
+          "parse": this.parseCSV
+        }
+      })]), h("span", ["\u65B9\u68482: \u76F4\u63A5\u7F16\u8F91 Excel"]), h("div", {
+        "ref": "excel",
+        "style": "margin-right: 12px;width: 100%;overflow: scroll"
+      })])]);
+    },
+    mounted: function mounted() {
+      this.sheet = this.initSheet();
+      this.refreshSheet({
+        rows: this.innerItems
+      });
+    }
+  };
+
+  var _components$2;
+  var lbpSlideCustomEditor = {
+    components: (_components$2 = {}, defineProperty$2(_components$2, antDesignVue.Pagination.name, antDesignVue.Pagination), defineProperty$2(_components$2, antDesignVue.Button.name, antDesignVue.Pagination), _components$2),
+    props: {
+      elementProps: {
+        type: Object,
+        default: function _default() {
+          return {
+            items: [],
+            activeIndex: 0
+          };
+        }
+      }
+    },
+    computed: {
+      innerItems: function innerItems() {
+        return this.elementProps.items;
+      }
+    },
+    data: function data() {
+      return {
+        current: 1
+      };
+    },
+    methods: {
+      itemRender: function itemRender(current, type, originalElement) {
+        var _this = this;
+
+        var h = this.$createElement;
+
+        if (type === "prev") {
+          return h("a-button", {
+            "style": {
+              marginRight: "8px"
+            },
+            "attrs": {
+              "size": "small",
+              "icon": "minus",
+              "disabled": this.innerItems.length === 1
+            },
+            "on": {
+              "click": function click() {
+                return _this.minus(current);
+              }
+            }
+          });
+        } else if (type === "next") {
+          return h("a-button", {
+            "style": {
+              marginLeft: "8px"
+            },
+            "attrs": {
+              "size": "small",
+              "icon": "plus"
+            },
+            "on": {
+              "click": this.add
+            }
+          });
+        }
+
+        return originalElement;
+      },
+      add: function add() {
+        this.elementProps.items.push({
+          image: "",
+          value: "\u9009\u9879".concat(this.innerItems.length + 1, "-value"),
+          label: "\u9009\u9879".concat(this.innerItems.length + 1, "-label")
+        });
+      },
+      minus: function minus(index) {
+        if (this.innerItems.length === 1) return;
+        this.elementProps.items.splice(index, 1); // this.elementProps.activeIndex = index > 0 ? index - 1 : 0
+
+        this.elementProps.activeIndex = Math.max(index - 1, 0);
+      }
+    },
+    render: function render() {
+      var _this2 = this;
+
+      var h = arguments[0];
+      var currentItem = this.innerItems[this.current - 1] || {};
+      return h("div", [h("a-pagination", {
+        "attrs": {
+          "current": this.current,
+          "size": "small",
+          "total": this.innerItems.length,
+          "defaultPageSize": 1,
+          "itemRender": this.itemRender
+        },
+        "on": {
+          "change": function change(page) {
+            _this2.current = page;
+            _this2.elementProps.activeIndex = page - 1;
+          }
+        }
+      }), h("lbs-image-gallery", {
+        "style": {
+          margin: "16px 0"
+        },
+        "attrs": {
+          "value": currentItem.image
+        },
+        "on": {
+          "change": function change(url) {
+            currentItem.image = url;
+          }
+        }
+      })]);
+    }
+  };
+
+  var _components$3;
+
+  function ownKeys$8(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$7(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$8(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$8(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  var RenderPropsEditor = {
+    components: (_components$3 = {}, defineProperty$2(_components$3, antDesignVue.Form.name, antDesignVue.Form), defineProperty$2(_components$3, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$2(_components$3, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$2(_components$3, antDesignVue.Button.name, antDesignVue.Button), defineProperty$2(_components$3, antDesignVue.Radio.name, antDesignVue.Radio), defineProperty$2(_components$3, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$2(_components$3, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$2(_components$3, antDesignVue.Input.name, antDesignVue.Input), defineProperty$2(_components$3, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$2(_components$3, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$2(_components$3, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$2(_components$3, antDesignVue.Select.name, antDesignVue.Select), defineProperty$2(_components$3, "colorsPanel", colorsPanel), defineProperty$2(_components$3, "lbsTextAlign", lbsTextAlign), defineProperty$2(_components$3, "lbsExcelEditor", lbsExcelEditor), defineProperty$2(_components$3, "lbpSlideCustomEditor", lbpSlideCustomEditor), _components$3),
+    data: function data() {
+      return {
+        loadCustomEditorFlag: false
+      };
+    },
+    props: {
+      layout: {
+        type: String,
+        default: 'horizontal'
+      },
+      config: {
+        type: Object,
+        default: function _default() {
+          return {};
+        }
+      },
+      value: {
+        type: Object,
+        default: function _default() {
+          return {};
+        }
+      }
+    },
+    watch: {
+      config: function config() {
+        var _this = this;
+
+        // config 需要重新render
+        setTimeout(function () {
+          _this.form.setFieldsValue(_this.value);
+        });
+      }
+    },
+    created: function created() {
+      var _this2 = this;
+
+      this.form = this.$form.createForm(this, {
+        onFieldsChange: function onFieldsChange() {
+          _this2.$emit('change', _this2.form.getFieldsValue());
+        }
+      });
+    },
+    computed: {
+      formItemLayout: function formItemLayout() {
+        this.layout === 'horizontal' ? {
+          labelCol: {
+            span: 6
+          },
+          wrapperCol: {
+            span: 16,
+            offset: 2
+          }
+        } : {};
+      }
+    },
+    methods: {
+      renderPropFormItem: function renderPropFormItem(propName, propConfig) {
+        var h = this.$createElement;
+        var editor = propConfig.editor;
+        if (!editor) return;
+        var formItemData = {
+          props: _objectSpread$7(_objectSpread$7(_objectSpread$7({}, this.formItemLayout), editor.layout), {}, {
+            label: editor.label
+          })
+        };
+        return h("a-form-item", helper$5([{}, formItemData]), [h(editor.type, helper$5([{
+          "directives": [{
+            name: "decorator",
+            value: [propName]
+          }]
+        }, {
+          "props": editor.props
+        }]))]);
+      }
+    },
+    render: function render() {
+      var _this3 = this;
+
+      var h = arguments[0];
+      var configEntries = Object.entries(this.config);
+      return h("a-form", {
+        "attrs": {
+          "form": this.form,
+          "size": "mini",
+          "layout": this.layout,
+          "initialValue": this.value
+        },
+        "class": "props-config-form"
+      }, [configEntries.map(function (_ref) {
+        var _ref2 = slicedToArray(_ref, 2),
+            propName = _ref2[0],
+            propConfig = _ref2[1];
+
+        return _this3.renderPropFormItem(propName, propConfig);
+      })]);
+    }
+  };
+
+  var _components$4;
+
+  function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$8(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$9(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$9(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  var RenderScriptEditor = {
+    components: (_components$4 = {}, defineProperty$2(_components$4, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$2(_components$4, antDesignVue.Button.name, antDesignVue.Button), _components$4),
+    data: function data() {
+      return {
+        editorContent: "return {\n      editorMethods: {              // \u6B64\u9879\u914D\u7F6E\u81EA\u5B9A\u4E49\u65B9\u6CD5\u7684\u5728\u7EC4\u4EF6\u914D\u7F6E\u9762\u677F\u5982\u4F55\u5C55\u793A\n        projectJump1: {             // \u65B9\u6CD5\u540D\uFF0C\u5BF9\u5E94\u4E8E methods \u5185\u7684\u67D0\u65B9\u6CD5\n          label: '\u5916\u90E8\u8DF3\u8F6C1',        // \u81EA\u5B9A\u4E49\u65B9\u6CD5\u663E\u793A\u540D\n          params: [                 // \u53C2\u6570\u5217\u8868\uFF0C\u5BF9\u8C61\u6570\u7EC4\n            {\n              label: '\u8DF3\u8F6C\u5730\u5740',     // \u53C2\u65701\u7684\u540D\u79F0\n              desc: '\u9879\u76EE\u76F8\u5BF9\u5730\u5740',   // \u53C2\u65701\u7684\u63CF\u8FF0\n              type: 'string',       // \u53C2\u65701\u7684\u7C7B\u578B\uFF0C\u652F\u6301string|number|boolean|array|object\n              default: ''           // \u53C2\u65701\u9ED8\u8BA4\u503C\n            },\n            {\n              label: '\u53C2\u6570',\n              desc: 'query\u5F62\u5F0F\u53C2\u6570',\n              type: 'object',\n              default: {}\n            }\n          ]\n        }\n      },\n      methods:{\n        projectJump1:function(url, query){\n          console.log(url, query)\n          let win = window.open(url, '_blank')\n          win.focus()\n        }\n      }\n    }"
+      };
+    },
+    computed: _objectSpread$8({}, Vuex.mapState("editor", ["editingElement"])),
+    methods: _objectSpread$8(_objectSpread$8({}, Vuex.mapActions("editor", ["setEditingElement"])), {}, {
+      mixinScript: function mixinScript() {// mixin script
+      }
+    }),
+    render: function render(h) {
+      var _this = this;
+
+      var ele = this.editingElement;
+      if (!ele) return h("span", [this.$t("editor.editPanel.common.empty")]);
+      return h("div", [h("a-button", {
+        "on": {
+          "click": this.mixinScript
+        },
+        "attrs": {
+          "disabled": true
+        }
+      }, ["\u4F7F\u7528\u811A\u672C"]), h("div", {
+        "style": {
+          margin: "20px"
+        }
+      }), h("a-textarea", {
+        "attrs": {
+          "rows": 12,
+          "placeholder": "Basic usage",
+          "value": this.editorContent
+        },
+        "on": {
+          "change": function change(e) {
+            _this.editorContent = e.target.value;
+          }
+        }
+      })]);
+    }
+  };
+
+  // @@match logic
+  fixRegexpWellKnownSymbolLogic('match', 1, function (MATCH, nativeMatch, maybeCallNative) {
+    return [
+      // `String.prototype.match` method
+      // https://tc39.github.io/ecma262/#sec-string.prototype.match
+      function match(regexp) {
+        var O = requireObjectCoercible(this);
+        var matcher = regexp == undefined ? undefined : regexp[MATCH];
+        return matcher !== undefined ? matcher.call(regexp, O) : new RegExp(regexp)[MATCH](String(O));
+      },
+      // `RegExp.prototype[@@match]` method
+      // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@match
+      function (regexp) {
+        var res = maybeCallNative(nativeMatch, regexp, this);
+        if (res.done) return res.value;
+
+        var rx = anObject(regexp);
+        var S = String(this);
+
+        if (!rx.global) return regexpExecAbstract(rx, S);
+
+        var fullUnicode = rx.unicode;
+        rx.lastIndex = 0;
+        var A = [];
+        var n = 0;
+        var result;
+        while ((result = regexpExecAbstract(rx, S)) !== null) {
+          var matchStr = String(result[0]);
+          A[n] = matchStr;
+          if (matchStr === '') rx.lastIndex = advanceStringIndex(S, toLength(rx.lastIndex), fullUnicode);
+          n++;
+        }
+        return n === 0 ? null : A;
+      }
+    ];
+  });
+
+  // #!zh: 可选的动画列表的第一个层级
+  var firstLevelAnimationOptions = [{
+    label: '进入',
+    value: /进/
+  }, {
+    label: '退出',
+    value: /退/
+  }, {
+    label: '强调',
+    value: /强调|特殊/
+  }];
+  var animationOptions = [{
+    label: '',
+    value: '空',
+    children: [{
+      label: '无',
+      value: ''
+    }]
+  }, {
+    label: '强调',
+    value: 'Attention Seekers',
+    children: [{
+      label: '旋转',
+      value: 'justRotate'
+    }, {
+      label: '弹跳',
+      value: 'bounce'
+    }, {
+      label: '闪烁',
+      value: 'flash'
+    }, {
+      label: '跳动',
+      value: 'pulse'
+    }, {
+      label: '抖动',
+      value: 'shake'
+    }, {
+      label: '摇摆',
+      value: 'swing'
+    }, {
+      label: '橡皮圈',
+      value: 'rubberBand'
+    }, {
+      label: '果冻',
+      value: 'jello'
+    }, {
+      label: '',
+      value: 'tada'
+    }, {
+      label: '',
+      value: 'wobble'
+    }]
+  }, {
+    label: '弹跳进入',
+    value: 'Bouncing Entrances',
+    children: [{
+      label: '弹跳进入',
+      value: 'bounceIn'
+    }, {
+      label: '向下弹跳进入',
+      value: 'bounceInDown'
+    }, {
+      label: '向右弹跳进入',
+      value: 'bounceInLeft'
+    }, {
+      label: '向左弹跳进入',
+      value: 'bounceInRight'
+    }, {
+      label: '向上弹跳进入',
+      value: 'bounceInUp'
+    }]
+  }, {
+    label: '弹跳退出',
+    value: 'Bouncing Exits',
+    children: [{
+      label: '弹跳退出',
+      value: 'bounceOut'
+    }, {
+      label: '向下弹跳退出',
+      value: 'bounceOutDown'
+    }, {
+      label: '向左弹跳退出',
+      value: 'bounceOutLeft'
+    }, {
+      label: '向右弹跳退出',
+      value: 'bounceOutRight'
+    }, {
+      label: '向上弹跳退出',
+      value: 'bounceOutUp'
+    }]
+  }, {
+    label: '渐显进入',
+    value: 'Fading Entrances',
+    children: [{
+      label: '渐显进入',
+      value: 'fadeIn'
+    }, {
+      label: '向下渐显进入',
+      value: 'fadeInDown'
+    }, {
+      label: '由屏幕外向下渐显进入',
+      value: 'fadeInDownBig'
+    }, {
+      label: '向右显进入',
+      value: 'fadeInLeft'
+    }, {
+      label: '由屏幕外向右渐显进入',
+      value: 'fadeInLeftBig'
+    }, {
+      label: '向左渐显进入',
+      value: 'fadeInRight'
+    }, {
+      label: '由屏幕外向左渐显进入',
+      value: 'fadeInRightBig'
+    }, {
+      label: '向上渐显进入',
+      value: 'fadeInUp'
+    }, {
+      label: '由屏幕外向上渐显进入',
+      value: 'fadeInUpBig'
+    }]
+  }, {
+    label: '渐隐退出',
+    value: 'Fading Exits',
+    children: [{
+      label: '渐隐退出',
+      value: 'fadeOut'
+    }, {
+      label: '向下渐隐退出',
+      value: 'fadeOutDown'
+    }, {
+      label: '向下渐隐退出屏幕外',
+      value: 'fadeOutDownBig'
+    }, {
+      label: '向左渐隐退出',
+      value: 'fadeOutLeft'
+    }, {
+      label: '向左渐隐退出屏幕外',
+      value: 'fadeOutLeftBig'
+    }, {
+      label: '向右渐隐退出',
+      value: 'fadeOutRight'
+    }, {
+      label: '向右渐隐退出屏幕外',
+      value: 'fadeOutRightBig'
+    }, {
+      label: '向上渐隐退出',
+      value: 'fadeOutUp'
+    }, {
+      label: '向上渐隐退出屏幕外',
+      value: 'fadeOutUpBig'
+    }]
+  }, {
+    label: '翻动',
+    value: 'Flippers',
+    children: [{
+      label: '翻动',
+      value: 'flip'
+    }, {
+      label: '纵向翻动',
+      value: 'flipInX'
+    }, {
+      label: '横向翻动',
+      value: 'flipInY'
+    }, {
+      label: '立体纵向翻动',
+      value: 'flipOutX'
+    }, {
+      label: '立体横向翻动',
+      value: 'flipOutY'
+    }]
+  }, {
+    label: '加速进出',
+    value: 'Lightspeed',
+    children: [{
+      label: '加速进入',
+      value: 'lightSpeedIn'
+    }, {
+      label: '加速退出',
+      value: 'lightSpeedOut'
+    }]
+  }, {
+    label: '旋转渐显',
+    value: 'Rotating Entrances',
+    children: [{
+      label: '旋转渐显',
+      value: 'rotateIn'
+    }, {
+      label: '左下角旋转渐显',
+      value: 'rotateInDownLeft'
+    }, {
+      label: '旋转渐显',
+      value: '右下角rotateInDownRight'
+    }, {
+      label: '左上角旋转渐显',
+      value: 'rotateInUpLeft'
+    }, {
+      label: '右上角旋转渐显',
+      value: 'rotateInUpRight'
+    }]
+  }, {
+    label: '旋转渐隐',
+    value: 'Rotating Exits',
+    children: [{
+      label: '旋转渐隐',
+      value: 'rotateOut'
+    }, {
+      label: '左下角旋转渐隐',
+      value: 'rotateOutDownLeft'
+    }, {
+      label: '左下角旋转渐隐',
+      value: 'rotateOutDownRight'
+    }, {
+      label: '左上角旋转渐隐',
+      value: 'rotateOutUpLeft'
+    }, {
+      label: '右上角旋转渐隐',
+      value: 'rotateOutUpRight'
+    }]
+  }, {
+    label: '平移进入',
+    value: 'Sliding Entrances',
+    children: [{
+      label: '向上平移进入',
+      value: 'slideInUp'
+    }, {
+      label: '向下平移进入',
+      value: 'slideInDown'
+    }, {
+      label: '向右平移进入',
+      value: 'slideInLeft'
+    }, {
+      label: '向左平移进入',
+      value: 'slideInRight'
+    }]
+  }, {
+    label: '平移退出',
+    value: 'Sliding Exits',
+    children: [{
+      label: '向上平移退出',
+      value: 'slideOutUp'
+    }, {
+      label: '向下平移退出',
+      value: 'slideOutDown'
+    }, {
+      label: '向左平移退出',
+      value: 'slideOutLeft'
+    }, {
+      label: '向右平移退出',
+      value: 'slideOutRight'
+    }]
+  }, {
+    label: '放大进入',
+    value: 'Zoom Entrances',
+    children: [{
+      label: '放大进入',
+      value: 'zoomIn'
+    }, {
+      label: '向下放大进入',
+      value: 'zoomInDown'
+    }, {
+      label: '向右放大进入',
+      value: 'zoomInLeft'
+    }, {
+      label: '向左放大进入',
+      value: 'zoomInRight'
+    }, {
+      label: '向上放大进入',
+      value: 'zoomInUp'
+    }]
+  }, {
+    label: '缩小退出',
+    value: 'Zoom Exits',
+    children: [{
+      label: '缩小退出',
+      value: 'zoomOut'
+    }, {
+      label: '向下缩小退出',
+      value: 'zoomOutDown'
+    }, {
+      label: '向左缩小退出',
+      value: 'zoomOutLeft'
+    }, {
+      label: '向右缩小退出',
+      value: 'zoomOutRight'
+    }, {
+      label: '向上缩小退出',
+      value: 'zoomOutUp'
+    }]
+  }, {
+    label: '特殊效果',
+    value: 'Specials',
+    children: [{
+      label: '悬挂',
+      value: 'hinge'
+    }, {
+      label: '滚动进入',
+      value: 'rollIn'
+    }, {
+      label: '滚动退出',
+      value: 'rollOut'
+    }]
+  }];
+  /**
+   * @return {Object} { animationValue: animatonLabel }
+   */
+
+  var animationValue2Name = animationOptions.reduce(function (obj, curr) {
+    var items = curr.children;
+    items.forEach(function (item) {
+      obj[item.value] = item.label;
+    });
+    return obj;
+  }, {});
+
+  var _components$5;
+
+  function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$9(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  var RenderAnimationEditor = {
+    components: (_components$5 = {}, defineProperty$2(_components$5, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$2(_components$5, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$2(_components$5, antDesignVue.List.name, antDesignVue.List), defineProperty$2(_components$5, antDesignVue.Form.name, antDesignVue.Form), defineProperty$2(_components$5, antDesignVue.Button.name, antDesignVue.Button), defineProperty$2(_components$5, antDesignVue.Popover.name, antDesignVue.Popover), defineProperty$2(_components$5, antDesignVue.Slider.name, antDesignVue.Slider), defineProperty$2(_components$5, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$2(_components$5, antDesignVue.Collapse.name, antDesignVue.Collapse), defineProperty$2(_components$5, antDesignVue.Collapse.Panel.name, antDesignVue.Collapse.Pane), defineProperty$2(_components$5, antDesignVue.Icon.name, antDesignVue.Icon), defineProperty$2(_components$5, antDesignVue.Drawer.name, antDesignVue.Drawer), defineProperty$2(_components$5, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), defineProperty$2(_components$5, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$2(_components$5, antDesignVue.Form.Item.name, antDesignVue.Form.Item), _components$5),
+    computed: _objectSpread$9(_objectSpread$9({}, Vuex.mapState('editor', ['editingElement'])), {}, {
+      animationQueue: function animationQueue() {
+        return this.editingElement && this.editingElement.animations || [];
+      }
+    }),
+    data: function data() {
+      return {
+        // animationQueue: [],
+        activeCollapsePanel: 0,
+        activePreviewAnimation: '',
+        drawerVisible: false
+      };
+    },
+    methods: {
+      addAnimation: function addAnimation() {
+        // TODO move this to vuex
+        this.animationQueue.push({
+          type: '',
+          duration: 1,
+          delay: 0,
+          interationCount: 1,
+          infinite: false
+        });
+        this.activeCollapsePanel = this.animationQueue.length - 1;
+      },
+      deleteAnimate: function deleteAnimate(index) {
+        // TODO move this to vuex
+        this.animationQueue.splice(index, 1);
+      },
+      runAnimate: function runAnimate() {
+        // front-end/h5/src/components/@/editor/index.js created()
+        EventBus.$emit('RUN_ANIMATIONS');
+      },
+      renderSecondAnimationTabs: function renderSecondAnimationTabs(animations) {
+        var _this = this;
+
+        var h = this.$createElement;
+        return h("a-tabs", {
+          "attrs": {
+            "defaultActiveKey": animations[0].value,
+            "tabBarStyle": {
+              marginLeft: '-16px'
+            },
+            "size": "small",
+            "tabBarGutter": 0,
+            "tabPosition": "left"
+          },
+          "on": {
+            "change": function change(tab) {}
+          },
+          "style": "width:100%;"
+        }, [animations.map(function (group) {
+          return h("a-tab-pane", {
+            "attrs": {
+              "tab": group.label || group.value
+            },
+            "key": group.value
+          }, [h("a-list", {
+            "attrs": {
+              "grid": {
+                gutter: 12,
+                column: 2
+              },
+              "dataSource": group.children,
+              "renderItem": function renderItem(item, index) {
+                return (// [key point] onMouseover vs onMouseenter
+                  // https://stackoverflow.com/questions/7286532/jquery-mouseenter-vs-mouseover
+                  // https://www.quirksmode.org/js/events_mouse.html#mouseenter
+                  h("a-list-item", [h("div", {
+                    "on": {
+                      "click": function click(e) {
+                        // TODO move this to vuex mutation
+                        _this.editingElement.animations[_this.activeCollapsePanel].type = item.value;
+                      },
+                      "mouseenter": function mouseenter(e) {
+                        _this.activePreviewAnimation = item.value;
+                      },
+                      "mouseleave": function mouseleave() {// [key point] why not set activePreviewAnimation='' after mouseleave, see more here: https://stackoverflow.com/questions/32279782/mouseenter-called-multiple-times
+                        // this.activePreviewAnimation = ''
+                      }
+                    },
+                    "class": [_this.activePreviewAnimation === item.value && item.value + ' animated', 'shortcut-button']
+                  }, [item.label])])
+                );
+              }
+            }
+          })]);
+        })]);
+      },
+      renderAvaiableAnimations: function renderAvaiableAnimations() {
+        var _this2 = this;
+
+        var h = this.$createElement;
+        return h("a-tabs", {
+          "class": "avaiable-animations-tabs",
+          "attrs": {
+            "defaultActiveKey": firstLevelAnimationOptions[0].label,
+            "size": "small",
+            "tabBarGutter": 0
+          },
+          "on": {
+            "change": function change(tab) {}
+          },
+          "style": "width:100%;"
+        }, [firstLevelAnimationOptions.map(function (firstGroup) {
+          return h("a-tab-pane", {
+            "attrs": {
+              "tab": firstGroup.label
+            },
+            "key": firstGroup.label
+          }, [_this2.renderSecondAnimationTabs(animationOptions.filter(function (group) {
+            return !!group.label.match(firstGroup.value);
+          }))]);
+        })]);
+      },
+      renderAnimationOptions: function renderAnimationOptions(animationOption) {
+        var _this3 = this;
+
+        var h = this.$createElement;
+        return h("a-form", {
+          "attrs": {
+            "layout": "horizontal"
+          }
+        }, [h("a-form-item", {
+          "attrs": {
+            "label": this.$t('editor.editPanel.animation.type'),
+            "labelCol": {
+              span: 5
+            },
+            "wrapperCol": {
+              span: 16,
+              offset: 2
+            }
+          }
+        }, [h("a-button", {
+          "attrs": {
+            "type": "link",
+            "size": "small",
+            "icon": "ordered-list"
+          },
+          "on": {
+            "click": function click() {
+              _this3.drawerVisible = true;
+            }
+          }
+        }, [this.$t('editor.editPanel.animation.list')])]), h("a-form-item", {
+          "attrs": {
+            "label": this.$t('editor.editPanel.animation.duration'),
+            "labelCol": {
+              span: 5
+            },
+            "wrapperCol": {
+              span: 16,
+              offset: 2
+            }
+          },
+          "style": "margin-bottom:0;"
+        }, [h("a-form-item", {
+          "style": {
+            display: 'inline-block',
+            width: 'calc(50% - 12px)'
+          }
+        }, [h("a-slider", {
+          "attrs": {
+            "defaultValue": 2,
+            "min": 0,
+            "max": 20,
+            "value": animationOption.duration
+          },
+          "on": {
+            "change": function change(value) {
+              animationOption.duration = value;
+            }
+          }
+        })]), h("a-form-item", {
+          "style": {
+            display: 'inline-block',
+            width: 'calc(50% - 12px)',
+            marginLeft: '4px'
+          }
+        }, [h("a-input-number", {
+          "attrs": {
+            "min": 0,
+            "max": 20,
+            "size": "small",
+            "formatter": function formatter(value) {
+              return "".concat(value, "\u79D2(s)");
+            },
+            "value": animationOption.duration
+          },
+          "on": {
+            "change": function change(value) {
+              animationOption.duration = value;
+            }
+          }
+        })])]), h("a-form-item", {
+          "attrs": {
+            "label": this.$t('editor.editPanel.animation.delay'),
+            "labelCol": {
+              span: 5
+            },
+            "wrapperCol": {
+              span: 16,
+              offset: 2
+            }
+          },
+          "style": "margin-bottom:0;"
+        }, [h("a-form-item", {
+          "style": {
+            display: 'inline-block',
+            width: 'calc(50% - 12px)'
+          }
+        }, [h("a-slider", {
+          "attrs": {
+            "defaultValue": 2,
+            "min": 0,
+            "max": 20,
+            "value": animationOption.delay
+          },
+          "on": {
+            "change": function change(value) {
+              animationOption.delay = value;
+            }
+          }
+        })]), h("a-form-item", {
+          "style": {
+            display: 'inline-block',
+            width: 'calc(50% - 12px)',
+            marginLeft: '4px'
+          }
+        }, [h("a-input-number", {
+          "attrs": {
+            "min": 0,
+            "max": 20,
+            "size": "small",
+            "formatter": function formatter(value) {
+              return "".concat(value, "\u79D2(s)");
+            },
+            "value": animationOption.delay
+          },
+          "on": {
+            "change": function change(value) {
+              animationOption.delay = value;
+            }
+          }
+        })])]), h("a-form-item", {
+          "attrs": {
+            "label": this.$t('editor.editPanel.animation.iteration'),
+            "labelCol": {
+              span: 5
+            },
+            "wrapperCol": {
+              span: 16,
+              offset: 2
+            }
+          },
+          "style": "margin-bottom:0;"
+        }, [h("a-form-item", {
+          "style": {
+            display: 'inline-block',
+            width: 'calc(50% - 12px)'
+          }
+        }, [h("a-slider", {
+          "attrs": {
+            "defaultValue": 2,
+            "min": 0,
+            "max": 20,
+            "value": animationOption.interationCount
+          },
+          "on": {
+            "change": function change(value) {
+              animationOption.interationCount = value;
+            }
+          }
+        })]), h("a-form-item", {
+          "style": {
+            display: 'inline-block',
+            width: 'calc(50% - 12px)',
+            marginLeft: '4px'
+          }
+        }, [h("a-input-number", {
+          "attrs": {
+            "min": 0,
+            "max": 20,
+            "size": "small",
+            "formatter": function formatter(value) {
+              return "".concat(value, "\u6B21(times)");
+            },
+            "value": animationOption.interationCount
+          },
+          "on": {
+            "change": function change(value) {
+              animationOption.interationCount = value;
+            }
+          }
+        })])]), h("a-form-item", {
+          "attrs": {
+            "label": this.$t('editor.editPanel.animation.inifinite'),
+            "labelCol": {
+              span: 5
+            },
+            "wrapperCol": {
+              span: 16,
+              offset: 2
+            }
+          },
+          "style": "margin-bottom:0;"
+        }, [h("a-switch", {
+          "attrs": {
+            "value": animationOption.infinite
+          },
+          "on": {
+            "change": function change(value) {
+              animationOption.infinite = value;
+            }
+          }
+        })])]);
+      }
+    },
+    render: function render(h) {
+      var _this4 = this;
+
+      var ele = this.editingElement;
+      if (!ele) return h("span", [this.$t('editor.editPanel.common.empty')]);
+      return h("div", {
+        "class": "main-animate widget",
+        "attrs": {
+          "id": "animation-right-panel"
+        }
+      }, [h("a-button-group", [h("a-button", {
+        "attrs": {
+          "type": "primary"
+        },
+        "on": {
+          "click": this.addAnimation
+        }
+      }, [h("a-icon", {
+        "attrs": {
+          "type": "plus"
+        }
+      }), this.$t('editor.editPanel.animation.add')]), h("a-button", {
+        "attrs": {
+          "type": "primary"
+        },
+        "on": {
+          "click": this.runAnimate
+        }
+      }, [this.$t('editor.editPanel.animation.run'), h("a-icon", {
+        "attrs": {
+          "type": "right-circle"
+        }
+      })])]), // Q：这边为何这样写：this.animationQueue.length && ?
+      // A：如果这样写的话，当 length === 0，的时候，0会显示在 UI 上
+      !!this.animationQueue.length && h("a-collapse", {
+        "attrs": {
+          "accordion": true,
+          "activeKey": '' + this.activeCollapsePanel
+        },
+        "class": "collapse-wrapper",
+        "on": {
+          "change": function change(key) {
+            // 当全部收起来时候，key 为 undefined
+            _this4.activeCollapsePanel = typeof key !== 'undefined' ? +key : -1;
+          }
+        }
+      }, [this.animationQueue.map(function (addedAnimation, index) {
+        return h("a-collapse-panel", {
+          "key": "".concat(index)
+        }, [h("template", {
+          "slot": "header"
+        }, [h("span", [_this4.$t('editor.editPanel.animation.title', {
+          index: index + 1
+        })]), h("a-tag", {
+          "attrs": {
+            "color": "orange"
+          }
+        }, [animationValue2Name[addedAnimation.type] || addedAnimation.type]), h("a-icon", {
+          "attrs": {
+            "type": "delete",
+            "title": "删除动画"
+          },
+          "on": {
+            "click": function click() {
+              return _this4.deleteAnimate(index);
+            }
+          }
+        })]), _this4.renderAnimationOptions(addedAnimation)]);
+      })]), h("a-drawer", {
+        "attrs": {
+          "title": "请选择动画",
+          "placement": "left",
+          "closable": true,
+          "visible": this.drawerVisible,
+          "width": 400,
+          "wrapStyle": {
+            margin: '-16px'
+          }
+        },
+        "on": {
+          "close": function close() {
+            _this4.drawerVisible = false;
+          }
+        }
+      }, [h("div", {
+        "style": "width: 100%;"
+      }, [this.renderAvaiableAnimations()])])]);
+    }
+  };
+
+  function ownKeys$b(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$a(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$b(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  var RenderActionEditor = {
+    data: function data() {
+      return {};
+    },
+    computed: _objectSpread$a({}, Vuex.mapState('editor', ['editingElement'])),
+    methods: _objectSpread$a({}, Vuex.mapActions('editor', ['setEditingElement'])),
+    render: function render() {
+      var h = arguments[0];
+      var ele = this.editingElement;
+      if (!ele) return h("span", [this.$t('editor.editPanel.common.empty')]);
+      return h("div", ["TODO"]);
+    }
+  };
+
+  var freezing = !fails(function () {
+    return Object.isExtensible(Object.preventExtensions({}));
+  });
+
+  var internalMetadata = createCommonjsModule(function (module) {
+  var defineProperty = objectDefineProperty.f;
+
+
+
+  var METADATA = uid('meta');
+  var id = 0;
+
+  var isExtensible = Object.isExtensible || function () {
+    return true;
+  };
+
+  var setMetadata = function (it) {
+    defineProperty(it, METADATA, { value: {
+      objectID: 'O' + ++id, // object ID
+      weakData: {}          // weak collections IDs
+    } });
+  };
+
+  var fastKey = function (it, create) {
+    // return a primitive with prefix
+    if (!isObject(it)) return typeof it == 'symbol' ? it : (typeof it == 'string' ? 'S' : 'P') + it;
+    if (!has(it, METADATA)) {
+      // can't set metadata to uncaught frozen object
+      if (!isExtensible(it)) return 'F';
+      // not necessary to add metadata
+      if (!create) return 'E';
+      // add missing metadata
+      setMetadata(it);
+    // return object ID
+    } return it[METADATA].objectID;
+  };
+
+  var getWeakData = function (it, create) {
+    if (!has(it, METADATA)) {
+      // can't set metadata to uncaught frozen object
+      if (!isExtensible(it)) return true;
+      // not necessary to add metadata
+      if (!create) return false;
+      // add missing metadata
+      setMetadata(it);
+    // return the store of weak collections IDs
+    } return it[METADATA].weakData;
+  };
+
+  // add metadata on freeze-family methods calling
+  var onFreeze = function (it) {
+    if (freezing && meta.REQUIRED && isExtensible(it) && !has(it, METADATA)) setMetadata(it);
+    return it;
+  };
+
+  var meta = module.exports = {
+    REQUIRED: false,
+    fastKey: fastKey,
+    getWeakData: getWeakData,
+    onFreeze: onFreeze
+  };
+
+  hiddenKeys[METADATA] = true;
+  });
+
+  var onFreeze = internalMetadata.onFreeze;
+
+  var nativeFreeze = Object.freeze;
+  var FAILS_ON_PRIMITIVES$2 = fails(function () { nativeFreeze(1); });
+
+  // `Object.freeze` method
+  // https://tc39.github.io/ecma262/#sec-object.freeze
+  _export({ target: 'Object', stat: true, forced: FAILS_ON_PRIMITIVES$2, sham: !freezing }, {
+    freeze: function freeze(it) {
+      return nativeFreeze && isObject(it) ? nativeFreeze(onFreeze(it)) : it;
+    }
+  });
+
+  var _components$6;
+
+  function ownKeys$c(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$b(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$c(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$c(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  var script$1 = {
+    components: (_components$6 = {}, defineProperty$2(_components$6, antDesignVue.Form.name, antDesignVue.Form), defineProperty$2(_components$6, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$2(_components$6, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$2(_components$6, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), _components$6),
+    data: function data() {
+      return {
+        formLayout: 'vertical',
+        PAGE_MODE: Object.freeze(PAGE_MODE),
+        PAGE_MODE_LABEL: Object.freeze(PAGE_MODE_LABEL)
+      };
+    },
+    computed: _objectSpread$b(_objectSpread$b({}, Vuex.mapState('editor', ['work'])), {}, {
+      // 翻页模式、长页面模式
+      // src/constants/work -> PAGE_MODE
+      // https://vuex.vuejs.org/zh/guide/forms.html#%E5%8F%8C%E5%90%91%E7%BB%91%E5%AE%9A%E7%9A%84%E8%AE%A1%E7%AE%97%E5%B1%9E%E6%80%A7
+      pageMode: {
+        get: function get() {
+          return this.work.page_mode || PAGE_MODE.SWIPPER_PAGE;
+        },
+        set: function set(pageMode) {
+          this.updateWork({
+            page_mode: pageMode
+          });
+        }
+      }
+    }),
+    methods: _objectSpread$b({}, Vuex.mapActions('editor', ['updateWork']))
+  };
+
+  /* script */
+  const __vue_script__$1 = script$1;
+
+  /* template */
+  var __vue_render__$1 = function() {
+    var _vm = this;
+    var _h = _vm.$createElement;
+    var _c = _vm._self._c || _h;
+    return _c(
+      "a-form",
+      { attrs: { layout: _vm.formLayout } },
+      [
+        _c(
+          "a-form-item",
+          { attrs: { label: "H5类型" } },
+          [
+            _c(
+              "a-radio-group",
+              {
+                attrs: { size: "small" },
+                model: {
+                  value: _vm.pageMode,
+                  callback: function($$v) {
+                    _vm.pageMode = $$v;
+                  },
+                  expression: "pageMode"
+                }
+              },
+              _vm._l(_vm.PAGE_MODE, function(value, key) {
+                return _c(
+                  "a-radio-button",
+                  { key: key, attrs: { value: value } },
+                  [_vm._v(_vm._s(_vm.PAGE_MODE_LABEL[key]))]
+                )
+              }),
+              1
+            )
+          ],
+          1
+        )
+      ],
+      1
+    )
+  };
+  var __vue_staticRenderFns__$1 = [];
+  __vue_render__$1._withStripped = true;
+
+    /* style */
+    const __vue_inject_styles__$1 = undefined;
+    /* scoped */
+    const __vue_scope_id__$1 = undefined;
+    /* module identifier */
+    const __vue_module_identifier__$1 = undefined;
+    /* functional template */
+    const __vue_is_functional_template__$1 = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+    /* style inject shadow dom */
+    
+
+    
+    const __vue_component__$1 = /*#__PURE__*/normalizeComponent(
+      { render: __vue_render__$1, staticRenderFns: __vue_staticRenderFns__$1 },
+      __vue_inject_styles__$1,
+      __vue_script__$1,
+      __vue_scope_id__$1,
+      __vue_is_functional_template__$1,
+      __vue_module_identifier__$1,
+      false,
+      undefined,
+      undefined,
+      undefined
+    );
+
+  function ownKeys$d(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$c(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$d(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$d(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  var RenderBackgroundEditor = {
+    computed: _objectSpread$c({}, Vuex.mapState('editor', ['editingPage'])),
+    methods: _objectSpread$c({}, Vuex.mapActions('editor', ['setEditingElement'])),
+    render: function render() {
+      var h = arguments[0];
+      var bgEle = this.editingPage.elements.find(function (e) {
+        return e.name === 'lbp-background';
+      });
+      return h("div", [h(__vue_component__$1), h(RenderPropsEditor, {
+        "attrs": {
+          "layout": "vertical",
+          "realEditingElement": bgEle
+        }
+      })]);
+    }
+  };
+
+  var _components$7;
+  var EditorRightPanel = {
+    name: 'ElementPropsEditor',
+    components: (_components$7 = {}, defineProperty$2(_components$7, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$2(_components$7, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$2(_components$7, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), _components$7),
+    props: {
+      width: {
+        type: Number,
+        default: 375
+      },
+      element: {
+        type: Object,
+        default: function _default() {
+          return {};
+        }
+      }
+    },
+    computed: {
+      editPropsConfig: function editPropsConfig() {
+        var element = this.element;
+
+        if (element && element.name) {
+          var _pluginsControl$getPl = pluginController.getPlugin(element.name),
+              component = _pluginsControl$getPl.component;
+
+          return this.getPropsWithEditor(component.props);
+        } else {
+          return {};
+        }
+      },
+      editPropsValue: function editPropsValue() {
+        var element = this.element,
+            editPropsConfig = this.editPropsConfig;
+        var editPropsConfigKeys = Object.keys(editPropsConfig);
+        var props = element ? element.props : {};
+        var propsValue = {};
+        editPropsConfigKeys.forEach(function (key) {
+          propsValue[key] = props[key];
+        });
+        return propsValue;
+      }
+    },
+    data: function data() {
+      return {
+        activeTabKey: '属性'
+      };
+    },
+    methods: {
+      setActiveTab: function setActiveTab(activeTabKey) {
+        this.activeTabKey = activeTabKey;
+      },
+      getPropsWithEditor: function getPropsWithEditor(props) {
+        var propsWithEditor = {};
+        Object.entries(props).forEach(function (_ref) {
+          var _ref2 = slicedToArray(_ref, 2),
+              key = _ref2[0],
+              value = _ref2[1];
+
+          if (value.editor) {
+            propsWithEditor[key] = value;
+          }
+        });
+        return propsWithEditor;
+      }
+    },
+    render: function render() {
+      var h = arguments[0];
+      return h("a-layout-sider", {
+        "attrs": {
+          "width": this.width,
+          "data-set-width": this.width,
+          "theme": "light"
+        },
+        "style": {
+          background: '#fff',
+          padding: '0 12px 0 12px'
+        }
+      }, [h("a-tabs", {
+        "style": "height: 100%;",
+        "attrs": {
+          "tabBarGutter": 10,
+          "defaultActiveKey": this.activeTabKey,
+          "activeKey": this.activeTabKey
+        },
+        "on": {
+          "change": this.setActiveTab
+        }
+      }, [h("a-tab-pane", {
+        "key": "属性"
+      }, [h("span", {
+        "slot": "tab"
+      }, [this.$t('editor.editPanel.tab.prop')]), h(RenderPropsEditor, {
+        "attrs": {
+          "config": this.editPropsConfig,
+          "value": this.editPropsValue
+        },
+        "on": {
+          "change": this.$listeners.propsChange
+        }
+      })]), h("a-tab-pane", {
+        "attrs": {
+          "label": "动画",
+          "tab": this.$t('editor.editPanel.tab.animation')
+        },
+        "key": "动画"
+      }, [h(RenderAnimationEditor)]), h("a-tab-pane", {
+        "attrs": {
+          "label": "动作",
+          "tab": this.$t('editor.editPanel.tab.action')
+        },
+        "key": "动作"
+      }, [this.activeTabKey === '动作' && h(RenderActionEditor)]), h("a-tab-pane", {
+        "attrs": {
+          "label": "脚本",
+          "tab": this.$t('editor.editPanel.tab.script')
+        },
+        "key": "脚本"
+      }, [h(RenderScriptEditor)]), h("a-tab-pane", {
+        "attrs": {
+          "label": "页面",
+          "tab": this.$t('editor.editPanel.tab.page')
+        },
+        "key": "页面"
+      }, [this.activeTabKey === '页面' && h(RenderBackgroundEditor)])])]);
+    }
+  };
+
+  var ShortcutButton = {
+    functional: true,
+    props: {
+      faIcon: {
+        required: true,
+        type: String
+      },
+      title: {
+        required: true,
+        type: String
+      },
+      clickFn: {
+        required: false,
+        type: Function,
+        default: function _default() {}
+      },
+      mousedownFn: {
+        required: false,
+        type: Function,
+        default: function _default() {}
+      },
+      disabled: {
+        type: Boolean,
+        default: false
+      }
+    },
+    render: function render(h, _ref) {
+      var props = _ref.props,
+          listeners = _ref.listeners,
+          slots = _ref.slots;
+      return h("button", {
+        "class": "shortcut-button",
+        "on": {
+          "click": props.clickFn,
+          "mousedown": props.mousedownFn
+        },
+        "attrs": {
+          "disabled": props.disabled
+        }
+      }, [h("i", {
+        "class": ['shortcut-icon', 'fa', "fa-".concat(props.faIcon)],
+        "attrs": {
+          "aria-hidden": 'true'
+        }
+      }), h("span", [props.title])]);
+    }
+  };
+
+  var UsageTip = {
+    components: defineProperty$2({}, antDesignVue.Icon.name, antDesignVue.Icon),
+    render: function render() {
+      var h = arguments[0];
+      return h("div", {
+        "class": "plugin-usage-tip "
+      }, [h("a-icon", {
+        "attrs": {
+          "type": "info-circle"
+        }
+      }), h("i18n", {
+        "attrs": {
+          "path": "editor.tip.componentUsage",
+          "tag": "span"
+        },
+        "class": "ml-1"
+      }, [h("strong", [this.$t("editor.tip.click")]), this.$t("editor.tip.click")])]);
+    }
+  };
+
+  var _components$8;
+
+  function ownKeys$e(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$d(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$e(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$e(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  var script$2 = {
+    components: (_components$8 = {}, defineProperty$2(_components$8, antDesignVue.Modal.name, antDesignVue.Modal), defineProperty$2(_components$8, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$2(_components$8, antDesignVue.Button.name, antDesignVue.Button), _components$8),
+    data: function data() {
+      return {
+        visible: false,
+        confirmLoading: false,
+        text: JSON.stringify([{
+          package: '@luban-h5/lbp-slide',
+          version: '0.0.7',
+          name: 'lbp-slide',
+          icon: 'photo',
+          i18nTitle: {
+            'en-US': 'Carousel',
+            'zh-CN': '轮播图'
+          },
+          title: '轮播图',
+          visible: true
+        }], null, 2)
+      };
+    },
+    methods: {
+      showModal: function showModal() {
+        this.visible = true;
+      },
+      handleOk: function handleOk(e) {
+        var createjs = window.createjs; // eslint-disable-next-line no-new-func
+
+        var npmPackages = new Function("return ".concat(this.text).replace('\n', ''))();
+        npmPackages = npmPackages.map(function (pluginInfo) {
+          return _objectSpread$d(_objectSpread$d({}, pluginInfo), {}, {
+            // src: `https://cdn.jsdelivr.net/npm/${pluginInfo}/dist/${pluginInfo.name}.umd.js`
+            // src: `https://unpkg.com/${pluginInfo}/dist/${pluginName}.umd.js`
+            src: "https://cdn.jsdelivr.net/npm/".concat(pluginInfo.package, "@").concat(pluginInfo.version, "/dist/").concat(pluginInfo.name, ".umd.js")
+          });
+        });
+        var queue = new createjs.LoadQueue();
+        queue.on('fileload', handleFileLoad, this);
+        queue.on('complete', handleComplete, this);
+        queue.loadManifest(npmPackages);
+
+        function handleComplete(e) {
+          // 可以直接使用 this 的原因： query。on 最后一个参数用来做做 bind this 操作
+          this.visible = false;
+          this.confirmLoading = false;
+          this.$emit('loadComplete', npmPackages);
+        }
+
+        function handleFileLoad(event) {
+          var name = event.item.name;
+          Vue__default['default'].component(name, window[name]);
+        }
+      },
+      handleCancel: function handleCancel(e) {
+        this.visible = false;
+      }
+    }
+  };
+
+  /* script */
+  const __vue_script__$2 = script$2;
+
+  /* template */
+  var __vue_render__$2 = function() {
+    var _vm = this;
+    var _h = _vm.$createElement;
+    var _c = _vm._self._c || _h;
+    return _c(
+      "div",
+      { staticStyle: { "text-align": "center" } },
+      [
+        _c(
+          "a-button",
+          {
+            staticStyle: { "margin-top": "16px" },
+            attrs: { type: "primary" },
+            on: { click: _vm.showModal }
+          },
+          [_vm._v("配置 NPM 组件列表")]
+        ),
+        _vm._v(" "),
+        _c(
+          "a-modal",
+          {
+            attrs: {
+              title: "NPM 组件列表配置信息",
+              visible: _vm.visible,
+              confirmLoading: _vm.confirmLoading
+            },
+            on: { ok: _vm.handleOk, cancel: _vm.handleCancel }
+          },
+          [
+            _c(
+              "div",
+              [
+                _c("a-textarea", {
+                  attrs: { placeholder: "Basic usage", rows: 20 },
+                  model: {
+                    value: _vm.text,
+                    callback: function($$v) {
+                      _vm.text = $$v;
+                    },
+                    expression: "text"
+                  }
+                })
+              ],
+              1
+            )
+          ]
+        )
+      ],
+      1
+    )
+  };
+  var __vue_staticRenderFns__$2 = [];
+  __vue_render__$2._withStripped = true;
+
+    /* style */
+    const __vue_inject_styles__$2 = undefined;
+    /* scoped */
+    const __vue_scope_id__$2 = undefined;
+    /* module identifier */
+    const __vue_module_identifier__$2 = undefined;
+    /* functional template */
+    const __vue_is_functional_template__$2 = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+    /* style inject shadow dom */
+    
+
+    
+    const __vue_component__$2 = /*#__PURE__*/normalizeComponent(
+      { render: __vue_render__$2, staticRenderFns: __vue_staticRenderFns__$2 },
+      __vue_inject_styles__$2,
+      __vue_script__$2,
+      __vue_scope_id__$2,
+      __vue_is_functional_template__$2,
+      __vue_module_identifier__$2,
+      false,
+      undefined,
+      undefined,
+      undefined
+    );
+
+  function ownKeys$f(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$e(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$f(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$f(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  var langMixin = {
+    computed: _objectSpread$e({}, Vuex.mapState({
+      currentLang: function currentLang(state) {
+        return state.i18n.lang;
+      }
+    })),
+    methods: _objectSpread$e(_objectSpread$e({}, Vuex.mapActions('i18n', ['SetLang'])), {}, {
+      setLang: function setLang(lang) {
+        this.SetLang(lang);
+      }
+    })
+  };
+
+  function ownKeys$g(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$f(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$g(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$g(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+  /*
+   * @Author: ly525
+   * @Date: 2020-05-17 17:21:04
+   * @LastEditors : Please set LastEditors
+   * @LastEditTime : 2020-11-11 17:03:29
+   * @FilePath: /luban-h5/front-end/h5/src/components/@/mixins/drag.js
+   * @Github: https://github.com/ly525/luban-h5
+   * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
+   * @Description:
+   *  组件拖拽至画布功能
+   *  其中部分代码参考自：https://github.com/hakubox/haku-form-design，已经征得作者同意，目的是后续考虑做 tab 之类的嵌套容器
+   */
+  var dragDom = null;
+  var dragConfig = {
+    isPreDrag: false,
+    // 准备拖拽
+    isDrag: false,
+    // 正式拖拽
+    origin: {
+      clientY: 0,
+      // 鼠标按下时候时候值
+      clientX: 0,
+      layerX: 0,
+      // 鼠标.x 相对于元素左上角.left 的偏移
+      layerY: 0 // 鼠标.y 相对于元素左上角.top  的偏移
+
+    }
+  };
+
+  var Drag = /*#__PURE__*/function () {
+    function Drag(options) {
+      classCallCheck(this, Drag);
+
+      this.mousedown = options.mousedown;
+      this.mousemove = options.mousemove;
+      this.mouseup = options.mouseup;
+      this._mousedown = this._mousedown.bind(this);
+      this._mousemove = this._mousemove.bind(this);
+      this._mouseup = this._mouseup.bind(this);
+    }
+
+    createClass(Drag, [{
+      key: "start",
+      value: function start(e) {
+        this._mousedown(e);
+      }
+    }, {
+      key: "_mousedown",
+      value: function _mousedown(e) {
+        this.mousedown(e);
+        this.toggleListener('add');
+      }
+    }, {
+      key: "_mousemove",
+      value: function _mousemove(e) {
+        this.mousemove(e);
+      }
+    }, {
+      key: "_mouseup",
+      value: function _mouseup(e) {
+        this.mouseup(e);
+        this.toggleListener('remove');
+      }
+    }, {
+      key: "toggleListener",
+      value: function toggleListener(action) {
+        document["".concat(action, "EventListener")]('mousemove', this._mousemove);
+        document["".concat(action, "EventListener")]('mouseup', this._mouseup);
+      }
+    }]);
+
+    return Drag;
+  }();
+
+  var dragMixin = {
+    data: function data() {
+      return {};
+    },
+    methods: {
+      /**
+       *
+       * @param {*} element shortcutItem
+       * @param {*} e
+       */
+      handleDragStartFromMixin: function handleDragStartFromMixin(element, e) {
+        // https://developer.mozilla.org/zh-CN/docs/Web/API/event.button
+        // 0 为 左键点击.
+        if (e.button !== 0) return;
+
+        if (dragDom) {
+          document.body.removeChild(dragDom);
+          dragDom = null;
+        }
+
+        this.dragElement = element;
+        dragDom = e.target.cloneNode(true);
+        document.body.appendChild(dragDom);
+        new Drag({
+          mousedown: this.mousedown,
+          mousemove: this.mousemove,
+          mouseup: this.mouseup
+        }).start(e);
+      },
+
+      /**
+       *
+       * @param {*} e
+       */
+      mousedown: function mousedown(e) {
+        // 鼠标.x 相对于元素左上角 的偏移
+        var layerX = e.layerX,
+            layerY = e.layerY;
+        dragConfig.origin.layerX = layerX;
+        dragConfig.origin.layerY = layerY;
+        dragConfig.origin.clientX = e.clientX;
+        dragConfig.origin.clientY = e.clientY;
+        dragDom.style.position = 'absolute';
+        dragDom.style.left = e.clientX - layerX + 'px';
+        dragDom.style.top = e.clientY - layerY + 'px';
+        dragDom.classList.add('dragging-dom-ele', 'hidden');
+        dragConfig.isPreDrag = true;
+      },
+
+      /** 组件拖拽中 */
+      mousemove: function mousemove(e) {
+        dragDom.classList.remove('hidden');
+        var _dragConfig$origin = dragConfig.origin,
+            layerX = _dragConfig$origin.layerX,
+            layerY = _dragConfig$origin.layerY;
+        dragDom.style.left = e.clientX - layerX + 'px';
+        dragDom.style.top = e.clientY - layerY + 'px';
+      },
+      mouseup: function mouseup(e) {
+        var _dragConfig$origin2 = dragConfig.origin,
+            layerX = _dragConfig$origin2.layerX,
+            layerY = _dragConfig$origin2.layerY;
+        document.body.removeChild(dragDom);
+        dragDom = null;
+        var canMousedown = this.checkCanMousedown(e, {
+          minOffset: 10
+        });
+        if (!canMousedown) return;
+        var canvasWrapper = document.querySelector('.lb-canvas');
+        var position = canvasWrapper.getBoundingClientRect();
+        this.dragElement && this.clone(_objectSpread$f(_objectSpread$f({}, this.dragElement), {}, {
+          dragStyle: {
+            left: e.clientX - layerX - position.left,
+            top: e.clientY - layerY - position.top
+          }
+        }));
+      },
+      checkCanMousedown: function checkCanMousedown(e, _ref) {
+        var minOffsetX = _ref.minOffsetX,
+            minOffsetY = _ref.minOffsetY,
+            minOffset = _ref.minOffset;
+        var offsetX = e.clientX - dragConfig.origin.clientX;
+        var offsetY = e.clientY - dragConfig.origin.clientY;
+        return offsetX >= (minOffsetX || minOffset) || offsetY >= (minOffsetY || minOffset);
+      }
+    },
+    updated: function updated() {
+      console.log('updated');
+    }
+  };
+
+  var _components$9;
+
+  function ownKeys$h(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$g(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$h(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$h(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  var RenderShortcutsPanel = {
+    name: 'shotcuts-panel',
+    components: (_components$9 = {}, defineProperty$2(_components$9, antDesignVue.Row.name, antDesignVue.Row), defineProperty$2(_components$9, antDesignVue.Col.name, antDesignVue.Col), _components$9),
+    mixins: [langMixin, dragMixin],
+    data: function data() {
+      return {
+        npmPackages: []
+      };
+    },
+    methods: _objectSpread$g(_objectSpread$g({}, Vuex.mapActions('editor', ['elementManager'])), {}, {
+      clone: function clone(shortcutItem) {
+        this.$emit('add', shortcutItem);
+      }
+    }),
+    render: function render(h) {
+      var _this = this;
+
+      return h("a-row", {
+        "style": "padding-bottom: 24px"
+      }, [h(UsageTip), [].concat(pluginController.getPlugins(), this.npmPackages).filter(function (plugin) {
+        return plugin.visible;
+      }).map(function (plugin) {
+        return h("a-col", {
+          "attrs": {
+            "span": 12
+          },
+          "style": {
+            marginTop: '10px'
+          }
+        }, [h(ShortcutButton, {
+          "attrs": {
+            "clickFn": _this.clone.bind(_this, plugin),
+            "mousedownFn": _this.handleDragStartFromMixin.bind(_this, plugin),
+            "title": plugin.i18nTitle[_this.currentLang] || plugin.title,
+            "faIcon": plugin.icon,
+            "disabled": plugin.disabled
+          }
+        })]);
+      }), h(__vue_component__$2, {
+        "on": {
+          "loadComplete": function loadComplete(npmPackages) {
+            _this.npmPackages = npmPackages;
+          }
+        }
+      })]);
+    }
+  };
+
+  var _components$a;
+  var PageTitleEditor = {
+    components: (_components$a = {}, defineProperty$2(_components$a, antDesignVue.Popconfirm.name, antDesignVue.Popconfirm), defineProperty$2(_components$a, antDesignVue.Input.name, antDesignVue.Input), defineProperty$2(_components$a, antDesignVue.Icon.name, antDesignVue.Icon), _components$a),
+    props: ["page", "pageIndex"],
+    data: function data() {
+      return {
+        editingTitle: "" // 临时缓存当前编辑的 title，点击 Yes 再真正用其更新 page title
+
+      };
+    },
+    methods: {
+      getTitle: function getTitle() {
+        return this.page.title || this.$t("editor.pageManager.title", {
+          index: this.pageIndex
+        });
+      }
+    },
+    render: function render() {
+      var _this = this;
+
+      var h = arguments[0];
+      return h("a-popconfirm", {
+        "attrs": {
+          "placement": "bottom",
+          "okText": "Yes",
+          "cancelText": "No"
+        },
+        "on": {
+          "confirm": function confirm() {
+            _this.$emit("editTitle", {
+              newTitle: _this.editingTitle,
+              pageIndex: _this.pageIndex
+            });
+          },
+          "cancel": function cancel() {}
+        }
+      }, [h("a-input", {
+        "slot": "title",
+        "attrs": {
+          "value": this.editingTitle,
+          "size": "small"
+        },
+        "on": {
+          "change": function change(e) {
+            _this.editingTitle = e.target.value;
+          }
+        }
+      }), h("a-icon", {
+        "attrs": {
+          "type": "edit"
+        },
+        "on": {
+          "click": function click(e) {
+            e.stopPropagation(); // 将 click icon 与 click page item 隔离开。编辑标题的同时不要切换页面
+
+            _this.editingTitle = _this.getTitle();
+          }
+        }
+      })]);
+    }
+  };
+
+  var _components$b;
+  var PageTitleMenu = {
+    components: (_components$b = {}, defineProperty$2(_components$b, antDesignVue.Dropdown.name, antDesignVue.Dropdown), defineProperty$2(_components$b, antDesignVue.Menu.name, antDesignVue.Menu), defineProperty$2(_components$b, antDesignVue.Menu.Item.name, antDesignVue.Menu.Item), defineProperty$2(_components$b, antDesignVue.Icon.name, antDesignVue.Icon), _components$b),
+    render: function render() {
+      var _this = this;
+
+      var h = arguments[0];
+      var addPageText = this.$t("editor.pageManager.action.add");
+      var copyPageText = this.$t("editor.pageManager.action.copy");
+      var deletePageText = this.$t("editor.pageManager.action.delete");
+      return h("a-dropdown", {
+        "attrs": {
+          "trigger": ["hover"],
+          "placement": "bottomCenter"
+        }
+      }, [h("a", {
+        "class": "ml-2",
+        "attrs": {
+          "href": "#"
+        }
+      }, [h("a-icon", {
+        "attrs": {
+          "type": "down"
+        }
+      })]), h("a-menu", {
+        "slot": "overlay",
+        "on": {
+          "click": function click(_ref) {
+            var key = _ref.key;
+            return _this.$emit("selectMenuItem", key);
+          }
+        }
+      }, [h("a-menu-item", {
+        "key": "add"
+      }, [h("a-icon", {
+        "attrs": {
+          "type": "plus"
+        }
+      }), addPageText]), h("a-menu-item", {
+        "key": "copy"
+      }, [h("a-icon", {
+        "attrs": {
+          "type": "copy"
+        }
+      }), copyPageText]), h("a-menu-item", {
+        "key": "delete"
+      }, [h("a-icon", {
+        "attrs": {
+          "type": "delete"
+        }
+      }), deletePageText])])]);
+    }
+  };
+
+  var PageTitleText = {
+    components: defineProperty$2({}, antDesignVue.Badge.name, antDesignVue.Badge),
+    props: ["page", "pageIndex"],
+    methods: {
+      getTitle: function getTitle() {
+        return this.page.title || this.$t("editor.pageManager.title", {
+          index: this.pageIndex
+        });
+      }
+    },
+    render: function render(h) {
+      // #!en: Page<Index>
+      // #!zh: 第<Index>页面
+      return h("span", [h("a-badge", {
+        "attrs": {
+          "count": this.pageIndex + 1,
+          "numberStyle": {
+            backgroundColor: "#fff",
+            color: "#999",
+            boxShadow: "0 0 0 1px #d9d9d9 inset"
+          }
+        }
+      }), h("span", {
+        "class": "ml-3"
+      }, [this.getTitle()])]);
+    }
+  };
+
+  function ownKeys$i(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$h(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$i(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$i(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  var RenderPageManager = {
+    name: 'page-manager',
+    components: defineProperty$2({}, antDesignVue.Button.name, antDesignVue.Button),
+    data: function data() {
+      return {
+        hoverIndex: -1 // 显示编辑按钮
+
+      };
+    },
+    computed: _objectSpread$h({}, Vuex.mapState('editor', {
+      editingPage: function editingPage(state) {
+        return state.editingPage;
+      },
+      pages: function pages(state) {
+        return state.work.pages;
+      }
+    })),
+    methods: _objectSpread$h(_objectSpread$h({}, Vuex.mapActions('editor', ['elementManager', 'pageManager', 'saveWork', 'setEditingPage'])), {}, {
+      onSelectMenuItem: function onSelectMenuItem(menuKey) {
+        this.pageManager({
+          type: menuKey
+        });
+      },
+      onEditTitle: function onEditTitle(_ref) {
+        var pageIndex = _ref.pageIndex,
+            newTitle = _ref.newTitle;
+        this.pageManager({
+          type: 'editTitle',
+          value: {
+            pageIndex: pageIndex,
+            newTitle: newTitle
+          }
+        });
+        this.saveWork({
+          isSaveCover: false
+        });
+      },
+      onSelectPage: function onSelectPage(pageIndex) {
+        this.setEditingPage(pageIndex);
+      },
+      onLeave: function onLeave() {
+        this.hoverIndex = -1;
+      }
+    }),
+    render: function render(h) {
+      var _this = this;
+
+      var addPageText = this.$t('editor.pageManager.action.add');
+      return h("div", {
+        "class": "page-manager-panel"
+      }, [this.pages.map(function (page, index) {
+        return h("span", {
+          "class": ['cursor-pointer', 'page-manager-panel__item', page.uuid === _this.editingPage.uuid && 'active'],
+          "on": {
+            "click": function click() {
+              return _this.onSelectPage(index);
+            },
+            "mouseenter": function mouseenter() {
+              _this.hoverIndex = index;
+            }
+          }
+        }, [h(PageTitleText, {
+          "attrs": {
+            "page": page,
+            "pageIndex": index
+          }
+        }), h("span", [_this.hoverIndex === index && h(PageTitleEditor, {
+          "attrs": {
+            "page": page,
+            "pageIndex": index
+          },
+          "on": {
+            "editTitle": _this.onEditTitle
+          }
+        }), h(PageTitleMenu, {
+          "on": {
+            "selectMenuItem": _this.onSelectMenuItem
+          }
+        })])]);
+      }), h("a-button", {
+        "attrs": {
+          "icon": "plus",
+          "type": "dashed"
+        },
+        "class": "footer-actions",
+        "on": {
+          "click": function click() {
+            return _this.onSelectMenuItem('add');
+          }
+        }
+      }, [addPageText])]);
+    }
+  };
+
+  function ownKeys$j(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$i(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$j(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$j(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+  function getTreeNode(ele) {
+    return {
+      title: ele.name,
+      key: ele.uuid,
+      children: (ele.children || []).map(getTreeNode)
+    };
+  }
+
+  var script$3 = {
+    name: 'page-tree',
+    computed: _objectSpread$i(_objectSpread$i({}, Vuex.mapState('editor', {
+      elements: function elements(state) {
+        return state.editingPage.elements;
+      }
+    })), {}, {
+      treeData: function treeData() {
+        return this.elements.map(getTreeNode);
+      }
+    }),
+    data: function data() {
+      return {
+        gData: [],
+        expandedKeys: []
+      };
+    },
+    methods: {
+      onDragEnter: function onDragEnter(info) {},
+      onDrop: function onDrop(info) {}
+    }
+  };
+
+  /* script */
+  const __vue_script__$3 = script$3;
+
+  /* template */
+  var __vue_render__$3 = function() {
+    var _vm = this;
+    var _h = _vm.$createElement;
+    var _c = _vm._self._c || _h;
+    return _c("a-tree", {
+      staticClass: "draggable-tree",
+      attrs: {
+        "default-expanded-keys": _vm.expandedKeys,
+        draggable: "",
+        "tree-data": _vm.treeData
+      },
+      on: { dragenter: _vm.onDragEnter, drop: _vm.onDrop }
+    })
+  };
+  var __vue_staticRenderFns__$3 = [];
+  __vue_render__$3._withStripped = true;
+
+    /* style */
+    const __vue_inject_styles__$3 = undefined;
+    /* scoped */
+    const __vue_scope_id__$3 = undefined;
+    /* module identifier */
+    const __vue_module_identifier__$3 = undefined;
+    /* functional template */
+    const __vue_is_functional_template__$3 = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+    /* style inject shadow dom */
+    
+
+    
+    const __vue_component__$3 = /*#__PURE__*/normalizeComponent(
+      { render: __vue_render__$3, staticRenderFns: __vue_staticRenderFns__$3 },
+      __vue_inject_styles__$3,
+      __vue_script__$3,
+      __vue_scope_id__$3,
+      __vue_is_functional_template__$3,
+      __vue_module_identifier__$3,
+      false,
+      undefined,
+      undefined,
+      undefined
+    );
+
+  var _components$c;
+  var EditorLeftPanel = {
+    components: (_components$c = {}, defineProperty$2(_components$c, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$2(_components$c, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$2(_components$c, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), _components$c),
+    name: "EditorLeftPanel",
+    render: function render(h) {
+      return h("a-layout-sider", {
+        "attrs": {
+          "width": "240",
+          "theme": "light"
+        },
+        "style": {
+          background: "#fff",
+          padding: "12px",
+          height: '100%',
+          'overflow': 'auto'
+        }
+      }, [h("a-tabs", {
+        "attrs": {
+          "tabBarGutter": 10
+        }
+      }, [h("a-tab-pane", {
+        "key": "plugin-list",
+        "attrs": {
+          "tab": this.$t("editor.sidebar.components")
+        }
+      }, [h(RenderShortcutsPanel, {
+        "on": {
+          "add": this.$listeners.add
+        }
+      })]), h("a-tab-pane", {
+        "key": "page-manager",
+        "attrs": {
+          "tab": this.$t("editor.sidebar.pages")
+        }
+      }, [h(RenderPageManager)]), h("a-tab-pane", {
+        "key": "page-tree",
+        "attrs": {
+          "tab": this.$t("editor.sidebar.tree")
+        }
+      }, [h(__vue_component__$3)])])]);
+    }
+  };
+
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-06 10:50:05
+   * @LastEditTime : 2020-11-06 14:44:50
+   * @Description :
+   */
+  var AuxiliayLine = {
+    props: {
+      width: {
+        type: Number,
+        default: 0
+      },
+      height: {
+        type: Number,
+        default: 0
+      },
+      data: {
+        type: Array,
+        default: function _default() {
+          return [];
+        }
+      }
+    },
+    data: function data() {
+      return {
+        vLines: [],
+        hLines: []
+      };
+    },
+    watch: {
+      data: {
+        handler: 'calcVHLine',
+        deep: true
+      }
+    },
+    methods: {
+      drawVLine: function drawVLine(newLeft) {
+        this.vLines = [{
+          left: newLeft
+        }];
+      },
+      clearVLine: function clearVLine() {
+        this.vLines = [];
+      },
+      drawHLine: function drawHLine(newTop) {
+        this.hLines = [{
+          top: newTop
+        }];
+      },
+      clearHLine: function clearHLine() {
+        this.hLines = [];
+      },
+      genBorder: function genBorder(_ref) {
+        var left = _ref.left,
+            top = _ref.top,
+            width = _ref.width,
+            height = _ref.height;
+        return [[left + width, left + width / 2, left], [top + height, top + height / 2, top]];
+      },
+      calcVHLine: function calcVHLine() {
+        var _this = this;
+
+        var referElementsXCoords = [];
+        var referElementsYCoords = [];
+        var hasVLine = false;
+        var hasHLine = false;
+        this.data.forEach(function (e) {
+          var _this$genBorder = _this.genBorder(e),
+              _this$genBorder2 = slicedToArray(_this$genBorder, 2),
+              xCoords = _this$genBorder2[0],
+              yCoords = _this$genBorder2[1];
+
+          referElementsXCoords.push.apply(referElementsXCoords, toConsumableArray(xCoords));
+          referElementsYCoords.push.apply(referElementsYCoords, toConsumableArray(yCoords));
+        });
+
+        var _this$genBorder3 = this.genBorder({
+          left: 0,
+          top: 0,
+          width: this.width,
+          height: this.height
+        }),
+            _this$genBorder4 = slicedToArray(_this$genBorder3, 2),
+            exCoords = _this$genBorder4[0],
+            eyCoords = _this$genBorder4[1];
+
+        exCoords.forEach(function (eX) {
+          referElementsXCoords.forEach(function (referX) {
+            var offset = referX - eX;
+
+            if (Math.abs(offset) <= 5) {
+              _this.drawVLine(referX);
+
+              hasVLine = true;
+            }
+          });
+        });
+        eyCoords.forEach(function (eY) {
+          referElementsYCoords.forEach(function (referY) {
+            var offset = referY - eY;
+
+            if (Math.abs(offset) <= 5) {
+              _this.drawHLine(referY);
+
+              hasHLine = true;
+            }
+          });
+        });
+
+        if (!hasVLine) {
+          this.clearVLine();
+        }
+
+        if (!hasHLine) {
+          this.clearHLine();
+        }
+      }
+    },
+    render: function render() {
+      var h = arguments[0];
+      return h("div", {
+        "class": "luban-auxiliary-line"
+      }, [this.vLines.map(function (line) {
+        return h("div", {
+          "class": "v-line",
+          "style": {
+            left: "".concat(line.left, "px")
+          }
+        });
+      }), this.hLines.map(function (line) {
+        return h("div", {
+          "class": "h-line",
+          "style": {
+            top: "".concat(line.top, "px")
+          }
+        });
+      })]);
+    }
+  };
+
+  var AdjustHeight = {
+    props: {
+      height: {
+        type: Number,
+        default: 0
+      }
+    },
+    components: defineProperty$2({}, antDesignVue.InputNumber.name, antDesignVue.InputNumber),
+    methods: {
+      /**
+       * 更新作品高度
+       * @param {Number} height
+       */
+      updateWorkHeight: function updateWorkHeight(height) {
+        this.$emit('change', height);
+      },
+
+      /**
+       * TODO 封装 adjust editor scale 组件
+       * scale: height/width
+       * @param {MouseEvent} e
+       */
+      mousedownForAdjustLine: function mousedownForAdjustLine(e) {
+        var _this = this;
+
+        var startY = e.clientY;
+        var startHeight = this.height;
+        var canvasOuterWrapper = document.querySelector('#canvas-outer-wrapper .ant-layout');
+
+        var move = function move(moveEvent) {
+          // !#zh 移动的时候，不需要向后代元素传递事件，只需要单纯的移动就OK
+          moveEvent.stopPropagation();
+          moveEvent.preventDefault();
+          var currY = moveEvent.clientY;
+          var moveHeight = currY - startY;
+          var currentHeight = moveHeight + startHeight;
+
+          _this.updateWorkHeight(currentHeight);
+
+          if (canvasOuterWrapper) canvasOuterWrapper.scrollTop = canvasOuterWrapper.scrollHeight;
+        };
+
+        var up = function up() {
+          document.removeEventListener('mousemove', move, true);
+          document.removeEventListener('mouseup', up, true);
+        };
+
+        document.addEventListener('mousemove', move, true);
+        document.addEventListener('mouseup', up, true);
+      }
+    },
+    render: function render() {
+      var _this2 = this;
+
+      var h = arguments[0];
+      return h("div", {
+        "style": {
+          position: 'absolute',
+          bottom: "0px",
+          width: '100%',
+          transform: 'translateY(100%)'
+        }
+      }, [h("div", {
+        "class": "adjust-line-wrapper adjust-line-wrapper-h"
+      }, [h("div", {
+        "class": "adjust-line adjust-line-h"
+      }), h("div", {
+        "class": "adjust-button",
+        "on": {
+          "mousedown": this.mousedownForAdjustLine
+        }
+      }, [h("div", {
+        "class": "indicator"
+      })]), h("div", {
+        "class": "adjust-tip"
+      }, [h("span", ["375 x"]), h("a-input-number", {
+        "attrs": {
+          "size": "small",
+          "value": this.height
+        },
+        "style": "margin: 0 4px; width:60px;",
+        "on": {
+          "change": function change(height) {
+            _this2.updateWork({
+              height: height
+            });
+          }
+        }
+      }), h("span", ["px"])])])]);
+    }
+  };
+
+  var AdjustLineV = {
+    methods: {
+      onMousedown: function onMousedown(e) {
+        var _this = this;
+
+        var startX = e.clientX;
+
+        var move = function move(moveEvent) {
+          moveEvent.preventDefault();
+          moveEvent.stopPropagation();
+          var offset = startX - moveEvent.clientX;
+
+          _this.$emit('lineMove', offset);
+
+          startX -= offset;
+        };
+
+        var up = function up(moveEvent) {
+          document.removeEventListener('mousemove', move, true);
+          document.removeEventListener('mouseup', up, true);
+        };
+
+        document.addEventListener('mousemove', move, true);
+        document.addEventListener('mouseup', up, true);
+      }
+    },
+    render: function render() {
+      var h = arguments[0];
+      return h("div", {
+        "class": "adjust-line-wrapper adjust-line-wrapper-v",
+        "on": {
+          "mousedown": this.onMousedown
+        }
+      }, [h("div", {
+        "class": "adjust-line adjust-line-v"
+      }), h("div", {
+        "class": "adjust-button"
+      }, [h("div", {
+        "class": "indicator"
+      })])]);
+    }
+  };
+
+  var _components$d;
+  var Editor = {
+    name: 'lbp-editor',
     store: store$2,
     i18n: i18n,
+    components: (_components$d = {}, defineProperty$2(_components$d, antDesignVue.Layout.name, antDesignVue.Layout), defineProperty$2(_components$d, antDesignVue.Layout.Content.name, antDesignVue.Layout), _components$d),
     props: {
       data: {
         type: Object,
@@ -69791,13 +69602,15 @@
         work: {},
         pageIndex: 0,
         propsPanelWidth: 375,
-        activeElement: null
+        activeElement: null,
+        auxiliayVisible: false
       };
     },
     watch: {
       data: {
         handler: function handler(data) {
           this.work = new Work(data);
+          console.log(this.work);
         },
         immediate: true
       }
@@ -69807,9 +69620,31 @@
         var _this$work$pages = this.work.pages,
             pages = _this$work$pages === void 0 ? [] : _this$work$pages;
         return pages[this.pageIndex];
+      },
+      elementsRect: function elementsRect() {
+        return this.currentPage.elements.map(function (_ref) {
+          var props = _ref.props;
+          return props;
+        });
       }
     },
+    mounted: function mounted() {
+      var _this$$editor;
+
+      this.$editor = this.$refs['editor'];
+
+      (_this$$editor = this.$editor).addElement.apply(_this$$editor, toConsumableArray(this.currentPage.elements));
+    },
     methods: {
+      hideAuxiliay: function hideAuxiliay() {
+        this.auxiliayVisible = false;
+      },
+      showAuxiliay: function showAuxiliay() {
+        this.auxiliayVisible = true;
+      },
+      handlePageHeightChange: function handlePageHeightChange(height) {
+        this.currentPage.height = height;
+      },
       getData: function getData() {
         return this.$store.state.editor.work;
       },
@@ -69824,9 +69659,11 @@
       handlePropsChange: function handlePropsChange(value) {
         this.$refs['editor'].updateActiveElement(value);
       },
-      handleAddElement: function handleAddElement(_ref) {
-        var component = _ref.component;
-        this.$refs['editor'].addElement(component);
+      handleAddElement: function handleAddElement(_ref2) {
+        var name = _ref2.name;
+        this.$refs['editor'].addElement(new CoreRender.Element({
+          name: name
+        }));
       }
     },
     render: function render() {
@@ -69841,16 +69678,46 @@
         "on": {
           "add": this.handleAddElement
         }
-      }), h(EditorCanvas, {
+      }), h("a-layout", {
+        "attrs": {
+          "id": "canvas-outer-wrapper"
+        }
+      }, [h("a-layout-content", {
+        "class": "scroll-view remove-scrollbar",
+        "on": {
+          "mouseup": this.hideAuxiliay,
+          "mousedown": this.showAuxiliay
+        }
+      }, [h("div", {
+        "class": "content"
+      }, [h(AuxiliayLine, {
+        "attrs": {
+          "data": this.elementsRect,
+          "width": this.currentPage.width,
+          "height": this.currentPage.height
+        },
+        "directives": [{
+          name: "show",
+          value: this.auxiliayVisible
+        }]
+      }), h(CoreRender, {
         "ref": "editor",
         "attrs": {
-          "data": this.currentPage
+          "width": this.currentPage.width,
+          "height": this.currentPage.height
         },
         "on": {
           "active": this.handleElementActive,
           "deactive": this.handleElementDeactive
         }
-      }), h(AdjustLineV, {
+      }), h(AdjustHeight, {
+        "attrs": {
+          "height": this.currentPage.height
+        },
+        "on": {
+          "change": this.handlePageHeightChange
+        }
+      })])])]), h(AdjustLineV, {
         "on": {
           "lineMove": function lineMove(offset) {
             _this.propsPanelWidth += offset;
@@ -69868,16 +69735,16 @@
     }
   };
 
-  CoreEditor.install = function (Vue) {
-    Vue.component(CoreEditor.name, CoreEditor);
+  Editor.install = function (Vue) {
+    Vue.component(Editor.name, Editor);
   }; // 通过script标签引入Vue的环境
 
 
   if (typeof window !== 'undefined' && window.Vue) {
-    CoreEditor.install(window.Vue);
+    Editor.install(window.Vue);
   }
 
-  return CoreEditor;
+  return Editor;
 
 })));
 //# sourceMappingURL=luban-h5-editor.js.map

@@ -2,12 +2,12 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-11-02 09:25:51
- * @LastEditTime: 2020-11-05 18:30:34
+ * @LastEditTime: 2020-11-12 09:30:52
  * @Description:
 -->
 <template>
   <div id="app">
-    <CoreEditor :data="work" ref="editor" style="height: 100vh" />
+    <lbp-editor :data="work" ref="editor" style="height: 100vh" />
   </div>
 </template>
 

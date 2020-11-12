@@ -43,18 +43,3 @@ export const genUUID = () => {
       .substring(2, 15)
   )
 }
-/**
- * Get the default value of a prop.
- * copy with vue source code
- */
-
-export function getPropDefaultValue(vm, prop) {
-  // no default, return undefined
-  if (!prop.hasOwnProperty('default')) {
-    return undefined
-  }
-  const def = prop.default
-  // call factory function for non-Function types
-  // a value is Function if its prototype is function even across different execution context
-  return typeof def === 'function' ? def.call(vm) : def
-}

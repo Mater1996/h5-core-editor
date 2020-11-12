@@ -2,10 +2,10 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-02 09:46:24
+ * @LastEditTime : 2020-11-12 09:44:28
  * @Description :
  */
-import Element from '@/models/element'
+import CoreEditor from '@/core'
 import { swapZindex, getVM } from '@/utils/element'
 import EventBus from "@/bus"
 // actions
@@ -50,7 +50,7 @@ export const mutations = {
         vm.$options.shortcutProps = value.shortcutProps
         // 用于拖拽结束，确定最终放置的位置
         vm.$options.dragStyle = value.dragStyle // {left: Number, top: Number}
-        const element = new Element(vm.$options)
+        const element = new CoreEditor.Element(vm.$options)
         elements.push(element)
         break
       case 'copy':

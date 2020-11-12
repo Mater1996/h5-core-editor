@@ -2,10 +2,10 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-11 09:50:15
+ * @LastEditTime : 2020-11-12 09:43:23
  * @Description :
  */
-import Element from '@/models/element'
+import CoreRender from '@/core'
 import { PAGE_MODE } from '@/constants/work'
 import LbpBackground from '@/plugins/components/lbp-background'
 
@@ -27,14 +27,16 @@ class Page {
   }
 
   clone() {
-    const elements = this.elements.map(element => new Element(element))
+    const elements = this.elements.map(
+      element => new CoreRender.Element(element)
+    )
     return new Page({ title: this.title, elements })
   }
 
   genElements(elements = []) {
     return Array.isArray(elements) && elements.length > 0
-      ? elements.map(v => new Element(v))
-      : [new Element(LbpBackground)]
+      ? elements.map(v => new CoreRender.Element(v))
+      : [new CoreRender.Element(LbpBackground)]
   }
 }
 

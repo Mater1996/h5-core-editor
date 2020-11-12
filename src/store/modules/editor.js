@@ -1,5 +1,12 @@
+/*
+ * @author : Mater
+ * @Email : bxh8640@gmail.com
+ * @Date : 2020-11-02 16:12:09
+ * @LastEditTime : 2020-11-11 15:23:52
+ * @Description :
+ */
 // initial state
-import Work from '@/models/work'
+import Work from '@/editor/models/work'
 import { actions as canvasActions, mutations as canvasMutations } from './canvas'
 import { actions as pageActions, mutations as pageMutations } from './page'
 import { actions as elementActions, mutations as elementMutations } from './element'

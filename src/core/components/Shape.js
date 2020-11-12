@@ -1,5 +1,6 @@
+import '../css/shape.scss'
 import animationMixin from '@/mixins/animation.js'
-import vClickOutside from '@/directive/v-click-outside'
+import vClickOutside from '../directive/v-click-outside'
 
 /**
  * #!zh: 上下左右 对应的 东南西北
@@ -62,7 +63,7 @@ export default {
     this.vcoConfig = {
       events: ['mousedown'],
       handler: this.onClickOutside,
-      scopeNode: document.querySelector('.page-render')
+      scopeNode: document.querySelector('.lb-canvas')
     }
   },
   computed: {

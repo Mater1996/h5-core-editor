@@ -1,0 +1,12 @@
+.lb-canvas-wrapper {
+  position: relative;
+  .edit-mode {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZAgMAAAC5h23wAAAAAXNSR0IB2cksfwAAAAlQTFRF9fX18PDwAAAABQ8/pgAAAAN0Uk5T/yIA41y2EwAAABhJREFUeJxjYIAC0VAQcGCQWgUCDUONBgDH8Fwzu33LswAAAABJRU5ErkJggg==');
+  }
+}
+
+.lb-canvas-wrapper .lb-canvas {
+  border: 1px solid #e7e7e7;
+  margin: 0 auto;
+  background: #fff;
+}

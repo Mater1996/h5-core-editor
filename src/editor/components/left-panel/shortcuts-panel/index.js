@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-10 11:35:02
+ * @LastEditTime : 2020-11-12 09:46:29
  * @Description :
  */
 import ShortcutButton from './shortcut-button'
@@ -10,12 +10,12 @@ import UsageTip from './usage-tip'
 import LoadNpmPlugins from './load-npm-plugins.vue'
 import langMixin from '@/mixins/i18n'
 import dragMixin from '@/mixins/drag'
-import pluginsList from '@/plugins/index'
+import pluginsControl from '@/plugins'
 import { mapActions } from 'vuex'
 import { Row, Col } from 'ant-design-vue'
 
 export default {
-  name: 'shotcuts-panle',
+  name: 'shotcuts-panel',
   components: {
     [Row.name]: Row,
     [Col.name]: Col
@@ -32,10 +32,10 @@ export default {
   },
   render(h) {
     return (
-      <a-row style="max-height: calc(100vh - 150px);overflow-y: scroll; padding-bottom: 24px">
+      <a-row style="padding-bottom: 24px">
         <UsageTip />
         {[]
-          .concat(pluginsList, this.npmPackages)
+          .concat(pluginsControl.getPlugins(), this.npmPackages)
           .filter(plugin => plugin.visible)
           .map(plugin => (
             <a-col span={12} style={{ marginTop: '10px' }}>
