@@ -47,12 +47,10 @@ export default {
         if (canvasOuterWrapper)
           canvasOuterWrapper.scrollTop = canvasOuterWrapper.scrollHeight
       }
-
       const up = () => {
         document.removeEventListener('mousemove', move, true)
         document.removeEventListener('mouseup', up, true)
       }
-
       document.addEventListener('mousemove', move, true)
       document.addEventListener('mouseup', up, true)
     }

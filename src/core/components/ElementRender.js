@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-05 10:04:35
- * @LastEditTime : 2020-11-12 09:28:11
+ * @LastEditTime : 2020-11-12 10:15:10
  * @Description :
  */
 
@@ -17,7 +17,7 @@ export default {
     }
   },
   created() {
-    this.element.vm = this
+    this.element.setVm(this)
   },
   render(h) {
     const element = this.element

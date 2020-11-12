@@ -13,6 +13,13 @@ const directionKey = {
   r: 'e'
 }
 
+export const ShapeLayerDefaultProps = {
+  top: 0,
+  left: 0,
+  width: 100,
+  height: 40
+}
+
 const points = ['lt', 'rt', 'lb', 'rb', 'lm', 'rm', 'tm', 'bm']
 
 var id = 0
@@ -25,23 +32,23 @@ export default {
   props: {
     width: {
       type: Number,
-      default: 0
+      default: ShapeLayerDefaultProps.width
     },
     height: {
       type: Number,
-      default: 0
+      default: ShapeLayerDefaultProps.height
     },
     left: {
       type: Number,
-      default: 0
+      default: ShapeLayerDefaultProps.left
     },
     top: {
       type: Number,
-      default: 0
+      default: ShapeLayerDefaultProps.top
     },
     disable: {
       type: Boolean,
-      default: false
+      default: ShapeLayerDefaultProps.disable
     }
   },
   data() {

@@ -2,18 +2,12 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-12 09:42:59
+ * @LastEditTime : 2020-11-12 10:14:19
  * @Description :
  */
 
+import { ShapeLayerDefaultProps } from '../components/ShapeLayer'
 import pluginsControl from '@/plugins'
-
-export const defaultProps = {
-  top: 0,
-  left: 0,
-  width: 100,
-  height: 40
-}
 
 class LbpElement {
   constructor({
@@ -35,8 +29,12 @@ class LbpElement {
       this.vm = vm
       this.disabled = disabled
       const plugin = pluginsControl.getPlugin(name)
-      const pluginProps = this.getPluginProps(plugin.component)
-      this.props = Object.assign({}, defaultProps, pluginProps, props)
+      const defaultPluginProps = this.getPluginProps(plugin.component)
+      this.props = {
+        ...ShapeLayerDefaultProps,
+        ...defaultPluginProps,
+        ...props
+      }
     } else {
       console.error('lbcanvas need a name of plugin')
     }
@@ -55,7 +53,9 @@ class LbpElement {
     })
   }
 
-  mergeProps() {}
+  updateProps(props) {
+    return Object.assign(this.props, props)
+  }
 
   setVm(vm) {
     this.vm = vm

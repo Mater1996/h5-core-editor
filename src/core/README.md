@@ -2,13 +2,20 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-11-11 15:09:43
- * @LastEditTime: 2020-11-11 17:18:26
+ * @LastEditTime: 2020-11-12 10:07:40
  * @Description: 
 -->
-鲁班H5核心编辑器
+## 鲁班H5核心编辑器
 
-元素 就是 plugins 里 注册的每个元素
-core 实现了对元素的增删查改功能
+### 概念
+
+元素：plugins注册的并完成渲染的VueComponent
+
+### 功能
+
+core 实现了对渲染完成元素的部分功能
+
 - 添加元素
 - 删除元素
 - 更新元素
+- 清空元素

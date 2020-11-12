@@ -64626,6 +64626,8 @@
     });
   }
 
+  function _extends$6(){return _extends$6=Object.assign||function(a){for(var b,c=1;c<arguments.length;c++)for(var d in b=arguments[c],b)Object.prototype.hasOwnProperty.call(b,d)&&(a[d]=b[d]);return a},_extends$6.apply(this,arguments)}var normalMerge=["attrs","props","domProps"],toArrayMerge=["class","style","directives"],functionalMerge=["on","nativeOn"],mergeJsxProps=function(a){return a.reduce(function(c,a){for(var b in a)if(!c[b])c[b]=a[b];else if(-1!==normalMerge.indexOf(b))c[b]=_extends$6({},c[b],a[b]);else if(-1!==toArrayMerge.indexOf(b)){var d=c[b]instanceof Array?c[b]:[c[b]],e=a[b]instanceof Array?a[b]:[a[b]];c[b]=d.concat(e);}else if(-1!==functionalMerge.indexOf(b)){for(var f in a[b])if(c[b][f]){var g=c[b][f]instanceof Array?c[b][f]:[c[b][f]],h=a[b][f]instanceof Array?a[b][f]:[a[b][f]];c[b][f]=g.concat(h);}else c[b][f]=a[b][f];}else if("hook"==b)for(var i in a[b])c[b][i]=c[b][i]?mergeFn(c[b][i],a[b][i]):a[b][i];else c[b]=a[b];return c},{})},mergeFn=function(a,b){return function(){a&&a.apply(this,arguments),b&&b.apply(this,arguments);}};var helper$5=mergeJsxProps;
+
   var nativeAssign = Object.assign;
   var defineProperty$8 = Object.defineProperty;
 
@@ -64676,8 +64678,6 @@
     assign: objectAssign
   });
 
-  function _extends$6(){return _extends$6=Object.assign||function(a){for(var b,c=1;c<arguments.length;c++)for(var d in b=arguments[c],b)Object.prototype.hasOwnProperty.call(b,d)&&(a[d]=b[d]);return a},_extends$6.apply(this,arguments)}var normalMerge=["attrs","props","domProps"],toArrayMerge=["class","style","directives"],functionalMerge=["on","nativeOn"],mergeJsxProps=function(a){return a.reduce(function(c,a){for(var b in a)if(!c[b])c[b]=a[b];else if(-1!==normalMerge.indexOf(b))c[b]=_extends$6({},c[b],a[b]);else if(-1!==toArrayMerge.indexOf(b)){var d=c[b]instanceof Array?c[b]:[c[b]],e=a[b]instanceof Array?a[b]:[a[b]];c[b]=d.concat(e);}else if(-1!==functionalMerge.indexOf(b)){for(var f in a[b])if(c[b][f]){var g=c[b][f]instanceof Array?c[b][f]:[c[b][f]],h=a[b][f]instanceof Array?a[b][f]:[a[b][f]];c[b][f]=g.concat(h);}else c[b][f]=a[b][f];}else if("hook"==b)for(var i in a[b])c[b][i]=c[b][i]?mergeFn(c[b][i],a[b][i]):a[b][i];else c[b]=a[b];return c},{})},mergeFn=function(a,b){return function(){a&&a.apply(this,arguments),b&&b.apply(this,arguments);}};var helper$5=mergeJsxProps;
-
   var $entries = objectToArray.entries;
 
   // `Object.entries` method
@@ -64687,118 +64687,6 @@
       return $entries(O);
     }
   });
-
-  function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var defaultProps = {
-    top: 0,
-    left: 0,
-    width: 100,
-    height: 40
-  };
-
-  var LbpElement = /*#__PURE__*/function () {
-    function LbpElement() {
-      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-          _ref$name = _ref.name,
-          name = _ref$name === void 0 ? '' : _ref$name,
-          _ref$uuid = _ref.uuid,
-          uuid = _ref$uuid === void 0 ? +new Date() : _ref$uuid,
-          _ref$isRem = _ref.isRem,
-          isRem = _ref$isRem === void 0 ? false : _ref$isRem,
-          _ref$events = _ref.events,
-          events = _ref$events === void 0 ? [] : _ref$events,
-          _ref$animations = _ref.animations,
-          animations = _ref$animations === void 0 ? [] : _ref$animations,
-          _ref$props = _ref.props,
-          props = _ref$props === void 0 ? {} : _ref$props,
-          _ref$disabled = _ref.disabled,
-          disabled = _ref$disabled === void 0 ? false : _ref$disabled,
-          _ref$vm = _ref.vm,
-          vm = _ref$vm === void 0 ? null : _ref$vm;
-
-      classCallCheck(this, LbpElement);
-
-      if (name) {
-        this.name = name;
-        this.uuid = uuid;
-        this.events = events;
-        this.animations = animations;
-        this.isRem = isRem;
-        this.vm = vm;
-        this.disabled = disabled;
-        var plugin = pluginController.getPlugin(name);
-        var pluginProps = this.getPluginProps(plugin.component);
-        this.props = Object.assign({}, defaultProps, pluginProps, props);
-      } else {
-        console.error('lbcanvas need a name of plugin');
-      }
-    }
-
-    createClass(LbpElement, [{
-      key: "clone",
-      value: function clone() {
-        var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            _ref2$zIndex = _ref2.zIndex,
-            zIndex = _ref2$zIndex === void 0 ? this.zIndex + 1 : _ref2$zIndex;
-
-        return new LbpElement({
-          zIndex: zIndex,
-          name: this.name,
-          pluginProps: this.pluginProps,
-          commonStyle: _objectSpread$1(_objectSpread$1({}, this.commonStyle), {}, {
-            top: this.commonStyle.top + 20,
-            left: this.commonStyle.left + 20
-          })
-        });
-      }
-    }, {
-      key: "mergeProps",
-      value: function mergeProps() {}
-    }, {
-      key: "setVm",
-      value: function setVm(vm) {
-        this.vm = vm;
-      }
-      /**
-       * Get the default value of a prop.
-       * copy with vue source code
-       */
-
-    }, {
-      key: "getPluginProps",
-      value: function getPluginProps(component) {
-        var _this = this;
-
-        var props = {};
-        var propsDefine = component.props;
-        Object.entries(propsDefine).forEach(function (_ref3) {
-          var _ref4 = slicedToArray(_ref3, 2),
-              key = _ref4[0],
-              prop = _ref4[1];
-
-          props[key] = _this.getPropDefaultValue(null, prop);
-        });
-        return props;
-      }
-    }, {
-      key: "getPropDefaultValue",
-      value: function getPropDefaultValue(vm, prop) {
-        // no default, return undefined
-        if (!prop.hasOwnProperty('default')) {
-          return undefined;
-        }
-
-        var def = prop.default; // call factory function for non-Function types
-        // a value is Function if its prototype is function even across different execution context
-
-        return typeof def === 'function' ? def.call(vm) : def;
-      }
-    }]);
-
-    return LbpElement;
-  }();
 
   // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError,
   // so we use an intermediate function.
@@ -65462,9 +65350,15 @@
   };
   var vClickOutside = HAS_WINDOWS ? directive : {};
 
+  var ShapeLayerDefaultProps = {
+    top: 0,
+    left: 0,
+    width: 100,
+    height: 40
+  };
   var points$2 = ['lt', 'rt', 'lb', 'rb', 'lm', 'rm', 'tm', 'bm'];
   var id$1 = 0;
-  var Shape = {
+  var ShapeLayer = {
     mixins: [animationMixin],
     directives: {
       clickOutside: vClickOutside
@@ -65472,23 +65366,23 @@
     props: {
       width: {
         type: Number,
-        default: 0
+        default: ShapeLayerDefaultProps.width
       },
       height: {
         type: Number,
-        default: 0
+        default: ShapeLayerDefaultProps.height
       },
       left: {
         type: Number,
-        default: 0
+        default: ShapeLayerDefaultProps.left
       },
       top: {
         type: Number,
-        default: 0
+        default: ShapeLayerDefaultProps.top
       },
       disable: {
         type: Boolean,
-        default: false
+        default: ShapeLayerDefaultProps.disable
       }
     },
     data: function data() {
@@ -65736,6 +65630,114 @@
     }
   };
 
+  function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+  var LbpElement = /*#__PURE__*/function () {
+    function LbpElement() {
+      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+          _ref$name = _ref.name,
+          name = _ref$name === void 0 ? '' : _ref$name,
+          _ref$uuid = _ref.uuid,
+          uuid = _ref$uuid === void 0 ? +new Date() : _ref$uuid,
+          _ref$isRem = _ref.isRem,
+          isRem = _ref$isRem === void 0 ? false : _ref$isRem,
+          _ref$events = _ref.events,
+          events = _ref$events === void 0 ? [] : _ref$events,
+          _ref$animations = _ref.animations,
+          animations = _ref$animations === void 0 ? [] : _ref$animations,
+          _ref$props = _ref.props,
+          props = _ref$props === void 0 ? {} : _ref$props,
+          _ref$disabled = _ref.disabled,
+          disabled = _ref$disabled === void 0 ? false : _ref$disabled,
+          _ref$vm = _ref.vm,
+          vm = _ref$vm === void 0 ? null : _ref$vm;
+
+      classCallCheck(this, LbpElement);
+
+      if (name) {
+        this.name = name;
+        this.uuid = uuid;
+        this.events = events;
+        this.animations = animations;
+        this.isRem = isRem;
+        this.vm = vm;
+        this.disabled = disabled;
+        var plugin = pluginController.getPlugin(name);
+        var defaultPluginProps = this.getPluginProps(plugin.component);
+        this.props = _objectSpread$1(_objectSpread$1(_objectSpread$1({}, ShapeLayerDefaultProps), defaultPluginProps), props);
+      } else {
+        console.error('lbcanvas need a name of plugin');
+      }
+    }
+
+    createClass(LbpElement, [{
+      key: "clone",
+      value: function clone() {
+        var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            _ref2$zIndex = _ref2.zIndex,
+            zIndex = _ref2$zIndex === void 0 ? this.zIndex + 1 : _ref2$zIndex;
+
+        return new LbpElement({
+          zIndex: zIndex,
+          name: this.name,
+          pluginProps: this.pluginProps,
+          commonStyle: _objectSpread$1(_objectSpread$1({}, this.commonStyle), {}, {
+            top: this.commonStyle.top + 20,
+            left: this.commonStyle.left + 20
+          })
+        });
+      }
+    }, {
+      key: "updateProps",
+      value: function updateProps(props) {
+        return Object.assign(this.props, props);
+      }
+    }, {
+      key: "setVm",
+      value: function setVm(vm) {
+        this.vm = vm;
+      }
+      /**
+       * Get the default value of a prop.
+       * copy with vue source code
+       */
+
+    }, {
+      key: "getPluginProps",
+      value: function getPluginProps(component) {
+        var _this = this;
+
+        var props = {};
+        var propsDefine = component.props;
+        Object.entries(propsDefine).forEach(function (_ref3) {
+          var _ref4 = slicedToArray(_ref3, 2),
+              key = _ref4[0],
+              prop = _ref4[1];
+
+          props[key] = _this.getPropDefaultValue(null, prop);
+        });
+        return props;
+      }
+    }, {
+      key: "getPropDefaultValue",
+      value: function getPropDefaultValue(vm, prop) {
+        // no default, return undefined
+        if (!prop.hasOwnProperty('default')) {
+          return undefined;
+        }
+
+        var def = prop.default; // call factory function for non-Function types
+        // a value is Function if its prototype is function even across different execution context
+
+        return typeof def === 'function' ? def.call(vm) : def;
+      }
+    }]);
+
+    return LbpElement;
+  }();
+
   var ElementRender = {
     props: {
       element: {
@@ -65744,7 +65746,7 @@
       }
     },
     created: function created() {
-      this.element.vm = this;
+      this.element.setVm(this);
     },
     render: function render(h) {
       var element = this.element;
@@ -65784,13 +65786,10 @@
     },
     methods: {
       handleElementActive: function handleElementActive(activeElement) {
-        console.log('active');
         this.activeElement = activeElement;
         this.$emit('active', activeElement);
       },
       handleElementDeactive: function handleElementDeactive(deactiveElement) {
-        console.log('deactive');
-
         if (deactiveElement === this.activeElement) {
           this.activeElement = null;
         }
@@ -65798,7 +65797,7 @@
         this.$emit('deactive', deactiveElement);
       },
       updateActiveElement: function updateActiveElement(props) {
-        this.activeElement && Object.assign(this.activeElement.props, props);
+        this.activeElement && this.activeElement.updateProps(props);
       },
       addElement: function addElement() {
         var _this = this;
@@ -65824,7 +65823,6 @@
       var _this2 = this;
 
       var h = arguments[0];
-      var elements = this.elements;
       return h("div", {
         "class": "lb-canvas-wrapper"
       }, [h("div", {
@@ -65832,8 +65830,8 @@
         "style": this.canvasStyle
       }, [h("div", {
         "class": "elements"
-      }, [elements.map(function (element) {
-        return h(Shape, helper$5([{}, {
+      }, [this.elements.map(function (element) {
+        return h(ShapeLayer, helper$5([{}, {
           "props": element.props
         }, {
           "on": {
