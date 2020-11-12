@@ -2,10 +2,9 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-02 10:43:53
+ * @LastEditTime : 2020-11-12 16:39:37
  * @Description :
  */
-import { mapState, mapActions } from "vuex";
 import { Button, Input } from "ant-design-vue";
 
 export default {
@@ -43,17 +42,8 @@ export default {
       }
     }`
   }),
-  computed: {
-    ...mapState("editor", ["editingElement"])
-  },
-  methods: {
-    ...mapActions("editor", ["setEditingElement"]),
-    mixinScript() {
-      // mixin script
-    }
-  },
   render(h) {
-    const ele = this.editingElement;
+    const ele = null;
     if (!ele) return <span>{this.$t("editor.editPanel.common.empty")}</span>;
     return (
       <div>

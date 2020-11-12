@@ -22,7 +22,7 @@ export default {
       <a-layout-sider
         width="240"
         theme="light"
-        style={{ background: "#fff", padding: "12px", height: '100%', 'overflow': 'auto' }}
+        style={{ padding: "0 12px", height: '100%', 'overflow': 'auto' }}
       >
         <a-tabs tabBarGutter={10}>
           <a-tab-pane

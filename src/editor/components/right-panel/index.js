@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-12 09:48:52
+ * @LastEditTime : 2020-11-12 15:10:55
  * @Description : 右侧panel为修改 props， events, animations 等属性
  */
 import RenderPropsEditor from './props'
@@ -49,6 +49,11 @@ export default {
         propsValue[key] = props[key]
       })
       return propsValue
+    },
+    editAnimationValue() {
+      const { element } = this
+      const animations = element ? element.animations : []
+      return animations
     }
   },
   data: () => ({
@@ -72,9 +77,8 @@ export default {
     return (
       <a-layout-sider
         width={this.width}
-        data-set-width={this.width}
         theme="light"
-        style={{ background: '#fff', padding: '0 12px 0 12px' }}
+        style={{ padding: '0 12px' }}
       >
         <a-tabs
           style="height: 100%;"
@@ -96,7 +100,10 @@ export default {
             key="动画"
             tab={this.$t('editor.editPanel.tab.animation')}
           >
-            <RenderAnimationEditor />
+            <RenderAnimationEditor
+              value={this.editAnimationValue}
+              onChange={this.$listeners.animationsChange}
+            />
           </a-tab-pane>
           <a-tab-pane
             label="动作"

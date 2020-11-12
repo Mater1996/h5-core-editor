@@ -2,13 +2,13 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-02 11:21:38
+ * @LastEditTime : 2020-11-12 16:40:37
  * @Description :
  */
-import { mapActions, mapState } from "vuex";
-import { Layout, Button, Tooltip } from "ant-design-vue";
-import hotkeys from "hotkeys-js";
-import fixedTools from "./options";
+import { mapState } from 'vuex'
+import { Layout, Button, Tooltip } from 'ant-design-vue'
+import hotkeys from 'hotkeys-js'
+import fixedTools from './options'
 
 export default {
   components: {
@@ -18,25 +18,18 @@ export default {
     [Button.name]: Button
   },
   computed: {
-    ...mapState("editor", {
+    ...mapState('editor', {
       scaleRate: state => state.scaleRate
     })
-  },
-  methods: {
-    ...mapActions("editor", [
-      "pageManager",
-      "elementManager",
-      "updateScaleRate"
-    ])
   },
   render() {
     return (
       <a-layout-sider
         width="40"
         theme="light"
-        style={{ background: "#fff", border: "1px solid #eee" }}
+        style={{ background: '#fff', border: '1px solid #eee' }}
       >
-        <a-button-group style={{ display: "flex", flexDirection: "column" }}>
+        <a-button-group style={{ display: 'flex', flexDirection: 'column' }}>
           {fixedTools.map(tool => (
             <a-tooltip
               effect="dark"
@@ -48,21 +41,21 @@ export default {
                 class="transparent-bg"
                 type="link"
                 size="small"
-                style={{ height: "40px", color: "#000" }}
+                style={{ height: '40px', color: '#000' }}
                 disabled={!!tool.disabled}
                 onClick={() => tool.action && tool.action.call(this)}
               >
                 {tool.icon ? (
                   <i
-                    class={["shortcut-icon", "fa", `fa-${tool.icon}`]}
+                    class={['shortcut-icon', 'fa', `fa-${tool.icon}`]}
                     aria-hidden="true"
                   />
                 ) : (
                   tool.text || this.$t(tool.i18nTooltip)
                 )}
               </a-button>
-              {tool.icon === "minus" && (
-                <div style={{ fontSize: "12px", textAlign: "center" }}>
+              {tool.icon === 'minus' && (
+                <div style={{ fontSize: '12px', textAlign: 'center' }}>
                   {this.scaleRate * 100}%
                 </div>
               )}
@@ -70,16 +63,16 @@ export default {
           ))}
         </a-button-group>
       </a-layout-sider>
-    );
+    )
   },
   mounted() {
     fixedTools.map(tool => {
       tool.hotkey &&
-        hotkeys(tool.hotkey, { splitKey: "&" }, (event, handler) => {
-          event.preventDefault();
-          event.stopPropagation();
-          tool.action && tool.action.call(this);
-        });
-    });
+        hotkeys(tool.hotkey, { splitKey: '&' }, (event, handler) => {
+          event.preventDefault()
+          event.stopPropagation()
+          tool.action && tool.action.call(this)
+        })
+    })
   }
-};
+}

@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-12 09:18:49
+ * @LastEditTime : 2020-11-12 15:15:52
  * @Description :
  */
 import 'animate.css/animate.css'
@@ -23,6 +23,7 @@ import AuxiliayLine from './components/AuxiliayLine'
 import AdjustHeight from './components/AdjustHeight'
 import AdjustLineV from './components/adjust-line/vertical'
 import Work from './models/work'
+import config from './config'
 
 const Editor = {
   name: 'lbp-editor',
@@ -43,9 +44,9 @@ const Editor = {
   data: () => ({
     work: {},
     pageIndex: 0,
-    propsPanelWidth: 375,
     activeElement: null,
-    auxiliayVisible: false
+    auxiliayVisible: false,
+    rightPanelWidth: config.rightPanelWidth
   }),
   watch: {
     data: {
@@ -91,7 +92,11 @@ const Editor = {
       }
     },
     handlePropsChange(value) {
-      this.$refs['editor'].updateActiveElement(value)
+      this.$refs['editor'].updateActiveElement({ props: value })
+    },
+    handleAnimationsChange(value) {
+      console.log(value)
+      this.$refs['editor'].updateActiveElement({ animations: value })
     },
     handleAddElement({ name }) {
       this.$refs['editor'].addElement(new CoreRender.Element({ name }))
@@ -131,14 +136,15 @@ const Editor = {
           </a-layout>
           <AdjustLineV
             onLineMove={offset => {
-              this.propsPanelWidth += offset
+              this.rightPanelWidth += offset
             }}
           />
           <FixedTools />
           <EditorRightPanel
-            width={this.propsPanelWidth}
+            width={this.rightPanelWidth}
             element={this.activeElement}
             onPropsChange={this.handlePropsChange}
+            onAnimationsChange={this.handleAnimationsChange}
           />
         </a-layout>
       </a-layout>

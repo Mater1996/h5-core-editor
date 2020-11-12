@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-11 19:49:25
- * @LastEditTime : 2020-11-12 09:28:44
+ * @LastEditTime : 2020-11-12 16:43:34
  * @Description :
  */
 
@@ -38,7 +38,5 @@ class PluginController {
 const pluginController = new PluginController()
 
 plugins.forEach(v => pluginController.registerPlugin(v))
-
-console.log(pluginController)
 
 export default pluginController

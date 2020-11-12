@@ -1,3 +1,7 @@
+.shortcut-button-wrapper {
+  cursor: pointer;
+}
+
 .shortcut-button {
   display: flex !important;
   flex-direction: column;
@@ -10,12 +14,6 @@
   border: 1px dashed #fff !important;
   background-color: #f5f8fb !important;
   color: #393e46 !important;
-
-  // !#zh: 移除动画，防止因为动画导致的拖拽延迟
-  // !#en: remove animation to prevent moving delay
-  // transition: all .25s;
-  // transition: none !important;
-  cursor: pointer;
 
   &:disabled {
     cursor: not-allowed;
@@ -31,4 +29,3 @@
     pointer-events: none;
   }
 }
-

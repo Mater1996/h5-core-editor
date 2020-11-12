@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-12 10:10:44
+ * @LastEditTime : 2020-11-12 15:45:49
  * @Description :
  */
 import './css/common.scss'
@@ -10,9 +10,11 @@ import './css/lb-canvas.scss'
 import Element from './models/element'
 import ShapeLayer from './components/ShapeLayer'
 import ElementRender from './components/ElementRender'
+import animationsMixin from '@/mixins/animation'
 
 export default {
   Element,
+  mixins: [animationsMixin],
   props: {
     width: {
       type: Number,
@@ -47,8 +49,11 @@ export default {
       }
       this.$emit('deactive', deactiveElement)
     },
-    updateActiveElement(props) {
-      this.activeElement && this.activeElement.updateProps(props)
+    updateActiveElement({ props, animations }) {
+      if (this.activeElement) {
+        props && this.activeElement.updateProps(props)
+        animations && this.activeElement.updateAnimations(animations)
+      }
     },
     addElement(...elements) {
       elements.forEach(element => {

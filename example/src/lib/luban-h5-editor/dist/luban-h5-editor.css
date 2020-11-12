@@ -28901,6 +28901,9 @@ li.ant-tree-treenode-disabled > .ant-tree-node-content-wrapper:hover {
 .pa-6 {
   padding: 24px !important; }
 
+.shortcut-button-wrapper {
+  cursor: pointer; }
+
 .shortcut-button {
   display: -webkit-box !important;
   display: -ms-flexbox !important;
@@ -28921,7 +28924,6 @@ li.ant-tree-treenode-disabled > .ant-tree-node-content-wrapper:hover {
   border: 1px dashed #fff !important;
   background-color: #f5f8fb !important;
   color: #393e46 !important;
-  cursor: pointer;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;

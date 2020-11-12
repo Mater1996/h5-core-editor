@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-12 09:46:29
+ * @LastEditTime : 2020-11-12 16:41:16
  * @Description :
  */
 import ShortcutButton from './shortcut-button'
@@ -11,7 +11,6 @@ import LoadNpmPlugins from './load-npm-plugins.vue'
 import langMixin from '@/mixins/i18n'
 import dragMixin from '@/mixins/drag'
 import pluginsControl from '@/plugins'
-import { mapActions } from 'vuex'
 import { Row, Col } from 'ant-design-vue'
 
 export default {
@@ -25,7 +24,6 @@ export default {
     npmPackages: []
   }),
   methods: {
-    ...mapActions('editor', ['elementManager']),
     clone(shortcutItem) {
       this.$emit('add', shortcutItem)
     }

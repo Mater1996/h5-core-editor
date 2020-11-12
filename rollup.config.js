@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 14:39:39
- * @LastEditTime : 2020-11-06 19:09:36
+ * @LastEditTime : 2020-11-12 13:37:56
  * @Description :
  */
 const path = require('path')
@@ -151,7 +151,8 @@ module.exports = args => {
       }),
       babel(babelConfig),
       vue({
-        compileTemplate: true
+        compileTemplate: true,
+        needMap: true
       }),
       commonjs(),
       nodeResolve({

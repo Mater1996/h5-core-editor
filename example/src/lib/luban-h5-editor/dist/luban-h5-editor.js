@@ -64482,7 +64482,6 @@
   plugins.forEach(function (v) {
     return pluginController.registerPlugin(v);
   });
-  console.log(pluginController);
 
   var UndoRedoHistory = /*#__PURE__*/function () {
     function UndoRedoHistory() {
@@ -64688,468 +64687,38 @@
     }
   });
 
-  // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError,
-  // so we use an intermediate function.
-  function RE(s, f) {
-    return RegExp(s, f);
-  }
-
-  var UNSUPPORTED_Y = fails(function () {
-    // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError
-    var re = RE('a', 'y');
-    re.lastIndex = 2;
-    return re.exec('abcd') != null;
-  });
-
-  var BROKEN_CARET = fails(function () {
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=773687
-    var re = RE('^r', 'gy');
-    re.lastIndex = 2;
-    return re.exec('str') != null;
-  });
-
-  var regexpStickyHelpers = {
-  	UNSUPPORTED_Y: UNSUPPORTED_Y,
-  	BROKEN_CARET: BROKEN_CARET
-  };
-
-  var nativeExec = RegExp.prototype.exec;
-  // This always refers to the native implementation, because the
-  // String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.js,
-  // which loads this file before patching the method.
-  var nativeReplace = String.prototype.replace;
-
-  var patchedExec = nativeExec;
-
-  var UPDATES_LAST_INDEX_WRONG = (function () {
-    var re1 = /a/;
-    var re2 = /b*/g;
-    nativeExec.call(re1, 'a');
-    nativeExec.call(re2, 'a');
-    return re1.lastIndex !== 0 || re2.lastIndex !== 0;
-  })();
-
-  var UNSUPPORTED_Y$1 = regexpStickyHelpers.UNSUPPORTED_Y || regexpStickyHelpers.BROKEN_CARET;
-
-  // nonparticipating capturing group, copied from es5-shim's String#split patch.
-  var NPCG_INCLUDED = /()??/.exec('')[1] !== undefined;
-
-  var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED || UNSUPPORTED_Y$1;
-
-  if (PATCH) {
-    patchedExec = function exec(str) {
-      var re = this;
-      var lastIndex, reCopy, match, i;
-      var sticky = UNSUPPORTED_Y$1 && re.sticky;
-      var flags = regexpFlags.call(re);
-      var source = re.source;
-      var charsAdded = 0;
-      var strCopy = str;
-
-      if (sticky) {
-        flags = flags.replace('y', '');
-        if (flags.indexOf('g') === -1) {
-          flags += 'g';
-        }
-
-        strCopy = String(str).slice(re.lastIndex);
-        // Support anchored sticky behavior.
-        if (re.lastIndex > 0 && (!re.multiline || re.multiline && str[re.lastIndex - 1] !== '\n')) {
-          source = '(?: ' + source + ')';
-          strCopy = ' ' + strCopy;
-          charsAdded++;
-        }
-        // ^(? + rx + ) is needed, in combination with some str slicing, to
-        // simulate the 'y' flag.
-        reCopy = new RegExp('^(?:' + source + ')', flags);
-      }
-
-      if (NPCG_INCLUDED) {
-        reCopy = new RegExp('^' + source + '$(?!\\s)', flags);
-      }
-      if (UPDATES_LAST_INDEX_WRONG) lastIndex = re.lastIndex;
-
-      match = nativeExec.call(sticky ? reCopy : re, strCopy);
-
-      if (sticky) {
-        if (match) {
-          match.input = match.input.slice(charsAdded);
-          match[0] = match[0].slice(charsAdded);
-          match.index = re.lastIndex;
-          re.lastIndex += match[0].length;
-        } else re.lastIndex = 0;
-      } else if (UPDATES_LAST_INDEX_WRONG && match) {
-        re.lastIndex = re.global ? match.index + match[0].length : lastIndex;
-      }
-      if (NPCG_INCLUDED && match && match.length > 1) {
-        // Fix browsers whose `exec` methods don't consistently return `undefined`
-        // for NPCG, like IE8. NOTE: This doesn' work for /(.?)?/
-        nativeReplace.call(match[0], reCopy, function () {
-          for (i = 1; i < arguments.length - 2; i++) {
-            if (arguments[i] === undefined) match[i] = undefined;
-          }
-        });
-      }
-
-      return match;
-    };
-  }
-
-  var regexpExec = patchedExec;
-
-  _export({ target: 'RegExp', proto: true, forced: /./.exec !== regexpExec }, {
-    exec: regexpExec
-  });
-
-  // TODO: Remove from `core-js@4` since it's moved to entry points
-
-
-
-
-
-
-
-  var SPECIES$6 = wellKnownSymbol('species');
-
-  var REPLACE_SUPPORTS_NAMED_GROUPS = !fails(function () {
-    // #replace needs built-in support for named groups.
-    // #match works fine because it just return the exec results, even if it has
-    // a "grops" property.
-    var re = /./;
-    re.exec = function () {
-      var result = [];
-      result.groups = { a: '7' };
-      return result;
-    };
-    return ''.replace(re, '$<a>') !== '7';
-  });
-
-  // IE <= 11 replaces $0 with the whole match, as if it was $&
-  // https://stackoverflow.com/questions/6024666/getting-ie-to-replace-a-regex-with-the-literal-string-0
-  var REPLACE_KEEPS_$0 = (function () {
-    return 'a'.replace(/./, '$0') === '$0';
-  })();
-
-  var REPLACE = wellKnownSymbol('replace');
-  // Safari <= 13.0.3(?) substitutes nth capture where n>m with an empty string
-  var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = (function () {
-    if (/./[REPLACE]) {
-      return /./[REPLACE]('a', '$0') === '';
-    }
-    return false;
-  })();
-
-  // Chrome 51 has a buggy "split" implementation when RegExp#exec !== nativeExec
-  // Weex JS has frozen built-in prototypes, so use try / catch wrapper
-  var SPLIT_WORKS_WITH_OVERWRITTEN_EXEC = !fails(function () {
-    var re = /(?:)/;
-    var originalExec = re.exec;
-    re.exec = function () { return originalExec.apply(this, arguments); };
-    var result = 'ab'.split(re);
-    return result.length !== 2 || result[0] !== 'a' || result[1] !== 'b';
-  });
-
-  var fixRegexpWellKnownSymbolLogic = function (KEY, length, exec, sham) {
-    var SYMBOL = wellKnownSymbol(KEY);
-
-    var DELEGATES_TO_SYMBOL = !fails(function () {
-      // String methods call symbol-named RegEp methods
-      var O = {};
-      O[SYMBOL] = function () { return 7; };
-      return ''[KEY](O) != 7;
-    });
-
-    var DELEGATES_TO_EXEC = DELEGATES_TO_SYMBOL && !fails(function () {
-      // Symbol-named RegExp methods call .exec
-      var execCalled = false;
-      var re = /a/;
-
-      if (KEY === 'split') {
-        // We can't use real regex here since it causes deoptimization
-        // and serious performance degradation in V8
-        // https://github.com/zloirock/core-js/issues/306
-        re = {};
-        // RegExp[@@split] doesn't call the regex's exec method, but first creates
-        // a new one. We need to return the patched regex when creating the new one.
-        re.constructor = {};
-        re.constructor[SPECIES$6] = function () { return re; };
-        re.flags = '';
-        re[SYMBOL] = /./[SYMBOL];
-      }
-
-      re.exec = function () { execCalled = true; return null; };
-
-      re[SYMBOL]('');
-      return !execCalled;
-    });
-
-    if (
-      !DELEGATES_TO_SYMBOL ||
-      !DELEGATES_TO_EXEC ||
-      (KEY === 'replace' && !(
-        REPLACE_SUPPORTS_NAMED_GROUPS &&
-        REPLACE_KEEPS_$0 &&
-        !REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE
-      )) ||
-      (KEY === 'split' && !SPLIT_WORKS_WITH_OVERWRITTEN_EXEC)
-    ) {
-      var nativeRegExpMethod = /./[SYMBOL];
-      var methods = exec(SYMBOL, ''[KEY], function (nativeMethod, regexp, str, arg2, forceStringMethod) {
-        if (regexp.exec === regexpExec) {
-          if (DELEGATES_TO_SYMBOL && !forceStringMethod) {
-            // The native String method already delegates to @@method (this
-            // polyfilled function), leasing to infinite recursion.
-            // We avoid it by directly calling the native @@method method.
-            return { done: true, value: nativeRegExpMethod.call(regexp, str, arg2) };
-          }
-          return { done: true, value: nativeMethod.call(str, regexp, arg2) };
-        }
-        return { done: false };
-      }, {
-        REPLACE_KEEPS_$0: REPLACE_KEEPS_$0,
-        REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE: REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE
-      });
-      var stringMethod = methods[0];
-      var regexMethod = methods[1];
-
-      redefine(String.prototype, KEY, stringMethod);
-      redefine(RegExp.prototype, SYMBOL, length == 2
-        // 21.2.5.8 RegExp.prototype[@@replace](string, replaceValue)
-        // 21.2.5.11 RegExp.prototype[@@split](string, limit)
-        ? function (string, arg) { return regexMethod.call(string, this, arg); }
-        // 21.2.5.6 RegExp.prototype[@@match](string)
-        // 21.2.5.9 RegExp.prototype[@@search](string)
-        : function (string) { return regexMethod.call(string, this); }
-      );
-    }
-
-    if (sham) createNonEnumerableProperty(RegExp.prototype[SYMBOL], 'sham', true);
-  };
-
-  // `String.prototype.{ codePointAt, at }` methods implementation
-  var createMethod$5 = function (CONVERT_TO_STRING) {
-    return function ($this, pos) {
-      var S = String(requireObjectCoercible($this));
-      var position = toInteger(pos);
-      var size = S.length;
-      var first, second;
-      if (position < 0 || position >= size) return CONVERT_TO_STRING ? '' : undefined;
-      first = S.charCodeAt(position);
-      return first < 0xD800 || first > 0xDBFF || position + 1 === size
-        || (second = S.charCodeAt(position + 1)) < 0xDC00 || second > 0xDFFF
-          ? CONVERT_TO_STRING ? S.charAt(position) : first
-          : CONVERT_TO_STRING ? S.slice(position, position + 2) : (first - 0xD800 << 10) + (second - 0xDC00) + 0x10000;
-    };
-  };
-
-  var stringMultibyte = {
-    // `String.prototype.codePointAt` method
-    // https://tc39.github.io/ecma262/#sec-string.prototype.codepointat
-    codeAt: createMethod$5(false),
-    // `String.prototype.at` method
-    // https://github.com/mathiasbynens/String.prototype.at
-    charAt: createMethod$5(true)
-  };
-
-  var charAt = stringMultibyte.charAt;
-
-  // `AdvanceStringIndex` abstract operation
-  // https://tc39.github.io/ecma262/#sec-advancestringindex
-  var advanceStringIndex = function (S, index, unicode) {
-    return index + (unicode ? charAt(S, index).length : 1);
-  };
-
-  // `RegExpExec` abstract operation
-  // https://tc39.github.io/ecma262/#sec-regexpexec
-  var regexpExecAbstract = function (R, S) {
-    var exec = R.exec;
-    if (typeof exec === 'function') {
-      var result = exec.call(R, S);
-      if (typeof result !== 'object') {
-        throw TypeError('RegExp exec method returned something other than an Object or null');
-      }
-      return result;
-    }
-
-    if (classofRaw(R) !== 'RegExp') {
-      throw TypeError('RegExp#exec called on incompatible receiver');
-    }
-
-    return regexpExec.call(R, S);
-  };
-
-  var max$5 = Math.max;
-  var min$5 = Math.min;
-  var floor$1 = Math.floor;
-  var SUBSTITUTION_SYMBOLS = /\$([$&'`]|\d\d?|<[^>]*>)/g;
-  var SUBSTITUTION_SYMBOLS_NO_NAMED = /\$([$&'`]|\d\d?)/g;
-
-  var maybeToString = function (it) {
-    return it === undefined ? it : String(it);
-  };
-
-  // @@replace logic
-  fixRegexpWellKnownSymbolLogic('replace', 2, function (REPLACE, nativeReplace, maybeCallNative, reason) {
-    var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = reason.REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE;
-    var REPLACE_KEEPS_$0 = reason.REPLACE_KEEPS_$0;
-    var UNSAFE_SUBSTITUTE = REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE ? '$' : '$0';
-
-    return [
-      // `String.prototype.replace` method
-      // https://tc39.github.io/ecma262/#sec-string.prototype.replace
-      function replace(searchValue, replaceValue) {
-        var O = requireObjectCoercible(this);
-        var replacer = searchValue == undefined ? undefined : searchValue[REPLACE];
-        return replacer !== undefined
-          ? replacer.call(searchValue, O, replaceValue)
-          : nativeReplace.call(String(O), searchValue, replaceValue);
-      },
-      // `RegExp.prototype[@@replace]` method
-      // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@replace
-      function (regexp, replaceValue) {
-        if (
-          (!REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE && REPLACE_KEEPS_$0) ||
-          (typeof replaceValue === 'string' && replaceValue.indexOf(UNSAFE_SUBSTITUTE) === -1)
-        ) {
-          var res = maybeCallNative(nativeReplace, regexp, this, replaceValue);
-          if (res.done) return res.value;
-        }
-
-        var rx = anObject(regexp);
-        var S = String(this);
-
-        var functionalReplace = typeof replaceValue === 'function';
-        if (!functionalReplace) replaceValue = String(replaceValue);
-
-        var global = rx.global;
-        if (global) {
-          var fullUnicode = rx.unicode;
-          rx.lastIndex = 0;
-        }
-        var results = [];
-        while (true) {
-          var result = regexpExecAbstract(rx, S);
-          if (result === null) break;
-
-          results.push(result);
-          if (!global) break;
-
-          var matchStr = String(result[0]);
-          if (matchStr === '') rx.lastIndex = advanceStringIndex(S, toLength(rx.lastIndex), fullUnicode);
-        }
-
-        var accumulatedResult = '';
-        var nextSourcePosition = 0;
-        for (var i = 0; i < results.length; i++) {
-          result = results[i];
-
-          var matched = String(result[0]);
-          var position = max$5(min$5(toInteger(result.index), S.length), 0);
-          var captures = [];
-          // NOTE: This is equivalent to
-          //   captures = result.slice(1).map(maybeToString)
-          // but for some reason `nativeSlice.call(result, 1, result.length)` (called in
-          // the slice polyfill when slicing native arrays) "doesn't work" in safari 9 and
-          // causes a crash (https://pastebin.com/N21QzeQA) when trying to debug it.
-          for (var j = 1; j < result.length; j++) captures.push(maybeToString(result[j]));
-          var namedCaptures = result.groups;
-          if (functionalReplace) {
-            var replacerArgs = [matched].concat(captures, position, S);
-            if (namedCaptures !== undefined) replacerArgs.push(namedCaptures);
-            var replacement = String(replaceValue.apply(undefined, replacerArgs));
-          } else {
-            replacement = getSubstitution(matched, S, position, captures, namedCaptures, replaceValue);
-          }
-          if (position >= nextSourcePosition) {
-            accumulatedResult += S.slice(nextSourcePosition, position) + replacement;
-            nextSourcePosition = position + matched.length;
-          }
-        }
-        return accumulatedResult + S.slice(nextSourcePosition);
-      }
-    ];
-
-    // https://tc39.github.io/ecma262/#sec-getsubstitution
-    function getSubstitution(matched, str, position, captures, namedCaptures, replacement) {
-      var tailPos = position + matched.length;
-      var m = captures.length;
-      var symbols = SUBSTITUTION_SYMBOLS_NO_NAMED;
-      if (namedCaptures !== undefined) {
-        namedCaptures = toObject(namedCaptures);
-        symbols = SUBSTITUTION_SYMBOLS;
-      }
-      return nativeReplace.call(replacement, symbols, function (match, ch) {
-        var capture;
-        switch (ch.charAt(0)) {
-          case '$': return '$';
-          case '&': return matched;
-          case '`': return str.slice(0, position);
-          case "'": return str.slice(tailPos);
-          case '<':
-            capture = namedCaptures[ch.slice(1, -1)];
-            break;
-          default: // \d\d?
-            var n = +ch;
-            if (n === 0) return match;
-            if (n > m) {
-              var f = floor$1(n / 10);
-              if (f === 0) return match;
-              if (f <= m) return captures[f - 1] === undefined ? ch.charAt(1) : captures[f - 1] + ch.charAt(1);
-              return match;
-            }
-            capture = captures[n - 1];
-        }
-        return capture === undefined ? '' : capture;
-      });
-    }
-  });
-
   var EventBus = new Vue__default['default'](); // event bus
 
-  function getComputedCSSText(style) {
-    var cssText = '';
-
-    for (var attr in style) {
-      // m <?> matched
-      // #!en: hump to line
-      // #!zh: 驼峰转下划线
-      cssText += "".concat(attr.replace(/[A-Z]+/g, function (m) {
-        return "-".concat(m.toLowerCase());
-      }), ":").concat(style[attr], ";");
-    }
-
-    return cssText;
-  }
-
-  var animationMixin = {
+  var animationsMixin = {
     methods: {
       runAnimations: function runAnimations() {
-        var animationQueue = this.animations || this.element.animations || [];
+        if (!this.activeElement) return;
+        var animationQueue = this.activeElement.animations || [];
         var len = animationQueue.length;
         if (len === 0) return;
-        var that = this;
-        var parentNode = this.$el;
+        var parentNode = this.activeElement.vm.$el;
         var animIdx = 0;
-        var oldStyle = that.element.getStyle({
-          position: 'absolute'
-        });
         runAnimation();
 
         function runAnimation() {
           if (animIdx < len) {
             var animation = animationQueue[animIdx];
-            var animationStyle = {
+            Object.assign(parentNode.style, {
               animationName: animation.type,
               animationDuration: "".concat(animation.duration, "s"),
               animationIterationCount: animation.infinite ? 'infinite' : animation.interationCount,
               animationDelay: "".concat(animation.delay, "s"),
               animationFillMode: 'both'
-            };
-            parentNode.style.cssText = getComputedCSSText(animationStyle) + getComputedCSSText(oldStyle);
+            });
             animIdx++;
           } else {
-            // reset to the initial state after the animation ended
-            parentNode.style.cssText = getComputedCSSText(oldStyle);
+            Object.assign(parentNode.style, {
+              animationName: null,
+              animationDuration: null,
+              animationIterationCount: null,
+              animationDelay: null,
+              animationFillMode: null
+            });
           }
         }
 
@@ -65159,9 +64728,7 @@
     created: function created() {
       var that = this;
       EventBus && EventBus.$on('RUN_ANIMATIONS', function () {
-        that.runAnimations(); // if (that.active) {
-        //   that.runAnimations()
-        // }
+        that.runAnimations();
       });
     }
   };
@@ -65359,7 +64926,7 @@
   var points$2 = ['lt', 'rt', 'lb', 'rb', 'lm', 'rm', 'tm', 'bm'];
   var id$1 = 0;
   var ShapeLayer = {
-    mixins: [animationMixin],
+    mixins: [animationsMixin],
     directives: {
       clickOutside: vClickOutside
     },
@@ -65659,14 +65226,14 @@
       if (name) {
         this.name = name;
         this.uuid = uuid;
-        this.events = events;
-        this.animations = animations;
         this.isRem = isRem;
         this.vm = vm;
         this.disabled = disabled;
         var plugin = pluginController.getPlugin(name);
-        var defaultPluginProps = this.getPluginProps(plugin.component);
+        var defaultPluginProps = LbpElement.getPluginProps(plugin.component);
         this.props = _objectSpread$1(_objectSpread$1(_objectSpread$1({}, ShapeLayerDefaultProps), defaultPluginProps), props);
+        this.events = events;
+        this.animations = animations;
       } else {
         console.error('lbcanvas need a name of plugin');
       }
@@ -65695,20 +65262,18 @@
         return Object.assign(this.props, props);
       }
     }, {
+      key: "updateAnimations",
+      value: function updateAnimations(animations) {
+        return this.animations = animations;
+      }
+    }, {
       key: "setVm",
       value: function setVm(vm) {
         this.vm = vm;
       }
-      /**
-       * Get the default value of a prop.
-       * copy with vue source code
-       */
-
-    }, {
+    }], [{
       key: "getPluginProps",
       value: function getPluginProps(component) {
-        var _this = this;
-
         var props = {};
         var propsDefine = component.props;
         Object.entries(propsDefine).forEach(function (_ref3) {
@@ -65716,21 +65281,18 @@
               key = _ref4[0],
               prop = _ref4[1];
 
-          props[key] = _this.getPropDefaultValue(null, prop);
+          props[key] = LbpElement.getPropDefaultValue(null, prop);
         });
         return props;
       }
     }, {
       key: "getPropDefaultValue",
       value: function getPropDefaultValue(vm, prop) {
-        // no default, return undefined
         if (!prop.hasOwnProperty('default')) {
           return undefined;
         }
 
-        var def = prop.default; // call factory function for non-Function types
-        // a value is Function if its prototype is function even across different execution context
-
+        var def = prop.default;
         return typeof def === 'function' ? def.call(vm) : def;
       }
     }]);
@@ -65759,6 +65321,7 @@
 
   var CoreRender = {
     Element: LbpElement,
+    mixins: [animationsMixin],
     props: {
       width: {
         type: Number,
@@ -65796,8 +65359,14 @@
 
         this.$emit('deactive', deactiveElement);
       },
-      updateActiveElement: function updateActiveElement(props) {
-        this.activeElement && this.activeElement.updateProps(props);
+      updateActiveElement: function updateActiveElement(_ref) {
+        var props = _ref.props,
+            animations = _ref.animations;
+
+        if (this.activeElement) {
+          props && this.activeElement.updateProps(props);
+          animations && this.activeElement.updateAnimations(animations);
+        }
       },
       addElement: function addElement() {
         var _this = this;
@@ -66709,12 +66278,11 @@
   function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$7(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var FixedTools = {
     components: (_components = {}, defineProperty$2(_components, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$2(_components, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$2(_components, antDesignVue.Tooltip.name, antDesignVue.Tooltip), defineProperty$2(_components, antDesignVue.Button.name, antDesignVue.Button), _components),
-    computed: _objectSpread$6({}, Vuex.mapState("editor", {
+    computed: _objectSpread$6({}, Vuex.mapState('editor', {
       scaleRate: function scaleRate(state) {
         return state.scaleRate;
       }
     })),
-    methods: _objectSpread$6({}, Vuex.mapActions("editor", ["pageManager", "elementManager", "updateScaleRate"])),
     render: function render() {
       var _this = this;
 
@@ -66725,13 +66293,13 @@
           "theme": "light"
         },
         "style": {
-          background: "#fff",
-          border: "1px solid #eee"
+          background: '#fff',
+          border: '1px solid #eee'
         }
       }, [h("a-button-group", {
         "style": {
-          display: "flex",
-          flexDirection: "column"
+          display: 'flex',
+          flexDirection: 'column'
         }
       }, [fixedTools.map(function (tool) {
         return h("a-tooltip", {
@@ -66751,8 +66319,8 @@
           },
           "class": "transparent-bg",
           "style": {
-            height: "40px",
-            color: "#000"
+            height: '40px',
+            color: '#000'
           },
           "on": {
             "click": function click() {
@@ -66760,14 +66328,14 @@
             }
           }
         }, [tool.icon ? h("i", {
-          "class": ["shortcut-icon", "fa", "fa-".concat(tool.icon)],
+          "class": ['shortcut-icon', 'fa', "fa-".concat(tool.icon)],
           "attrs": {
             "aria-hidden": "true"
           }
-        }) : tool.text || _this.$t(tool.i18nTooltip)]), tool.icon === "minus" && h("div", {
+        }) : tool.text || _this.$t(tool.i18nTooltip)]), tool.icon === 'minus' && h("div", {
           "style": {
-            fontSize: "12px",
-            textAlign: "center"
+            fontSize: '12px',
+            textAlign: 'center'
           }
         }, [_this.scaleRate * 100, "%"])]);
       })])]);
@@ -66777,7 +66345,7 @@
 
       fixedTools.map(function (tool) {
         tool.hotkey && hotkeys__default['default'](tool.hotkey, {
-          splitKey: "&"
+          splitKey: '&'
         }, function (event, handler) {
           event.preventDefault();
           event.stopPropagation();
@@ -67316,10 +66884,6 @@
   };
 
   var _components$4;
-
-  function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$8(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$9(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$9(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var RenderScriptEditor = {
     components: (_components$4 = {}, defineProperty$2(_components$4, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$2(_components$4, antDesignVue.Button.name, antDesignVue.Button), _components$4),
     data: function data() {
@@ -67327,40 +66891,299 @@
         editorContent: "return {\n      editorMethods: {              // \u6B64\u9879\u914D\u7F6E\u81EA\u5B9A\u4E49\u65B9\u6CD5\u7684\u5728\u7EC4\u4EF6\u914D\u7F6E\u9762\u677F\u5982\u4F55\u5C55\u793A\n        projectJump1: {             // \u65B9\u6CD5\u540D\uFF0C\u5BF9\u5E94\u4E8E methods \u5185\u7684\u67D0\u65B9\u6CD5\n          label: '\u5916\u90E8\u8DF3\u8F6C1',        // \u81EA\u5B9A\u4E49\u65B9\u6CD5\u663E\u793A\u540D\n          params: [                 // \u53C2\u6570\u5217\u8868\uFF0C\u5BF9\u8C61\u6570\u7EC4\n            {\n              label: '\u8DF3\u8F6C\u5730\u5740',     // \u53C2\u65701\u7684\u540D\u79F0\n              desc: '\u9879\u76EE\u76F8\u5BF9\u5730\u5740',   // \u53C2\u65701\u7684\u63CF\u8FF0\n              type: 'string',       // \u53C2\u65701\u7684\u7C7B\u578B\uFF0C\u652F\u6301string|number|boolean|array|object\n              default: ''           // \u53C2\u65701\u9ED8\u8BA4\u503C\n            },\n            {\n              label: '\u53C2\u6570',\n              desc: 'query\u5F62\u5F0F\u53C2\u6570',\n              type: 'object',\n              default: {}\n            }\n          ]\n        }\n      },\n      methods:{\n        projectJump1:function(url, query){\n          console.log(url, query)\n          let win = window.open(url, '_blank')\n          win.focus()\n        }\n      }\n    }"
       };
     },
-    computed: _objectSpread$8({}, Vuex.mapState("editor", ["editingElement"])),
-    methods: _objectSpread$8(_objectSpread$8({}, Vuex.mapActions("editor", ["setEditingElement"])), {}, {
-      mixinScript: function mixinScript() {// mixin script
-      }
-    }),
     render: function render(h) {
-      var _this = this;
-
-      var ele = this.editingElement;
-      if (!ele) return h("span", [this.$t("editor.editPanel.common.empty")]);
-      return h("div", [h("a-button", {
-        "on": {
-          "click": this.mixinScript
-        },
-        "attrs": {
-          "disabled": true
-        }
-      }, ["\u4F7F\u7528\u811A\u672C"]), h("div", {
-        "style": {
-          margin: "20px"
-        }
-      }), h("a-textarea", {
-        "attrs": {
-          "rows": 12,
-          "placeholder": "Basic usage",
-          "value": this.editorContent
-        },
-        "on": {
-          "change": function change(e) {
-            _this.editorContent = e.target.value;
-          }
-        }
-      })]);
+      return h("span", [this.$t("editor.editPanel.common.empty")]);
     }
+  };
+
+  // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError,
+  // so we use an intermediate function.
+  function RE(s, f) {
+    return RegExp(s, f);
+  }
+
+  var UNSUPPORTED_Y = fails(function () {
+    // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError
+    var re = RE('a', 'y');
+    re.lastIndex = 2;
+    return re.exec('abcd') != null;
+  });
+
+  var BROKEN_CARET = fails(function () {
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=773687
+    var re = RE('^r', 'gy');
+    re.lastIndex = 2;
+    return re.exec('str') != null;
+  });
+
+  var regexpStickyHelpers = {
+  	UNSUPPORTED_Y: UNSUPPORTED_Y,
+  	BROKEN_CARET: BROKEN_CARET
+  };
+
+  var nativeExec = RegExp.prototype.exec;
+  // This always refers to the native implementation, because the
+  // String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.js,
+  // which loads this file before patching the method.
+  var nativeReplace = String.prototype.replace;
+
+  var patchedExec = nativeExec;
+
+  var UPDATES_LAST_INDEX_WRONG = (function () {
+    var re1 = /a/;
+    var re2 = /b*/g;
+    nativeExec.call(re1, 'a');
+    nativeExec.call(re2, 'a');
+    return re1.lastIndex !== 0 || re2.lastIndex !== 0;
+  })();
+
+  var UNSUPPORTED_Y$1 = regexpStickyHelpers.UNSUPPORTED_Y || regexpStickyHelpers.BROKEN_CARET;
+
+  // nonparticipating capturing group, copied from es5-shim's String#split patch.
+  var NPCG_INCLUDED = /()??/.exec('')[1] !== undefined;
+
+  var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED || UNSUPPORTED_Y$1;
+
+  if (PATCH) {
+    patchedExec = function exec(str) {
+      var re = this;
+      var lastIndex, reCopy, match, i;
+      var sticky = UNSUPPORTED_Y$1 && re.sticky;
+      var flags = regexpFlags.call(re);
+      var source = re.source;
+      var charsAdded = 0;
+      var strCopy = str;
+
+      if (sticky) {
+        flags = flags.replace('y', '');
+        if (flags.indexOf('g') === -1) {
+          flags += 'g';
+        }
+
+        strCopy = String(str).slice(re.lastIndex);
+        // Support anchored sticky behavior.
+        if (re.lastIndex > 0 && (!re.multiline || re.multiline && str[re.lastIndex - 1] !== '\n')) {
+          source = '(?: ' + source + ')';
+          strCopy = ' ' + strCopy;
+          charsAdded++;
+        }
+        // ^(? + rx + ) is needed, in combination with some str slicing, to
+        // simulate the 'y' flag.
+        reCopy = new RegExp('^(?:' + source + ')', flags);
+      }
+
+      if (NPCG_INCLUDED) {
+        reCopy = new RegExp('^' + source + '$(?!\\s)', flags);
+      }
+      if (UPDATES_LAST_INDEX_WRONG) lastIndex = re.lastIndex;
+
+      match = nativeExec.call(sticky ? reCopy : re, strCopy);
+
+      if (sticky) {
+        if (match) {
+          match.input = match.input.slice(charsAdded);
+          match[0] = match[0].slice(charsAdded);
+          match.index = re.lastIndex;
+          re.lastIndex += match[0].length;
+        } else re.lastIndex = 0;
+      } else if (UPDATES_LAST_INDEX_WRONG && match) {
+        re.lastIndex = re.global ? match.index + match[0].length : lastIndex;
+      }
+      if (NPCG_INCLUDED && match && match.length > 1) {
+        // Fix browsers whose `exec` methods don't consistently return `undefined`
+        // for NPCG, like IE8. NOTE: This doesn' work for /(.?)?/
+        nativeReplace.call(match[0], reCopy, function () {
+          for (i = 1; i < arguments.length - 2; i++) {
+            if (arguments[i] === undefined) match[i] = undefined;
+          }
+        });
+      }
+
+      return match;
+    };
+  }
+
+  var regexpExec = patchedExec;
+
+  _export({ target: 'RegExp', proto: true, forced: /./.exec !== regexpExec }, {
+    exec: regexpExec
+  });
+
+  // TODO: Remove from `core-js@4` since it's moved to entry points
+
+
+
+
+
+
+
+  var SPECIES$6 = wellKnownSymbol('species');
+
+  var REPLACE_SUPPORTS_NAMED_GROUPS = !fails(function () {
+    // #replace needs built-in support for named groups.
+    // #match works fine because it just return the exec results, even if it has
+    // a "grops" property.
+    var re = /./;
+    re.exec = function () {
+      var result = [];
+      result.groups = { a: '7' };
+      return result;
+    };
+    return ''.replace(re, '$<a>') !== '7';
+  });
+
+  // IE <= 11 replaces $0 with the whole match, as if it was $&
+  // https://stackoverflow.com/questions/6024666/getting-ie-to-replace-a-regex-with-the-literal-string-0
+  var REPLACE_KEEPS_$0 = (function () {
+    return 'a'.replace(/./, '$0') === '$0';
+  })();
+
+  var REPLACE = wellKnownSymbol('replace');
+  // Safari <= 13.0.3(?) substitutes nth capture where n>m with an empty string
+  var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = (function () {
+    if (/./[REPLACE]) {
+      return /./[REPLACE]('a', '$0') === '';
+    }
+    return false;
+  })();
+
+  // Chrome 51 has a buggy "split" implementation when RegExp#exec !== nativeExec
+  // Weex JS has frozen built-in prototypes, so use try / catch wrapper
+  var SPLIT_WORKS_WITH_OVERWRITTEN_EXEC = !fails(function () {
+    var re = /(?:)/;
+    var originalExec = re.exec;
+    re.exec = function () { return originalExec.apply(this, arguments); };
+    var result = 'ab'.split(re);
+    return result.length !== 2 || result[0] !== 'a' || result[1] !== 'b';
+  });
+
+  var fixRegexpWellKnownSymbolLogic = function (KEY, length, exec, sham) {
+    var SYMBOL = wellKnownSymbol(KEY);
+
+    var DELEGATES_TO_SYMBOL = !fails(function () {
+      // String methods call symbol-named RegEp methods
+      var O = {};
+      O[SYMBOL] = function () { return 7; };
+      return ''[KEY](O) != 7;
+    });
+
+    var DELEGATES_TO_EXEC = DELEGATES_TO_SYMBOL && !fails(function () {
+      // Symbol-named RegExp methods call .exec
+      var execCalled = false;
+      var re = /a/;
+
+      if (KEY === 'split') {
+        // We can't use real regex here since it causes deoptimization
+        // and serious performance degradation in V8
+        // https://github.com/zloirock/core-js/issues/306
+        re = {};
+        // RegExp[@@split] doesn't call the regex's exec method, but first creates
+        // a new one. We need to return the patched regex when creating the new one.
+        re.constructor = {};
+        re.constructor[SPECIES$6] = function () { return re; };
+        re.flags = '';
+        re[SYMBOL] = /./[SYMBOL];
+      }
+
+      re.exec = function () { execCalled = true; return null; };
+
+      re[SYMBOL]('');
+      return !execCalled;
+    });
+
+    if (
+      !DELEGATES_TO_SYMBOL ||
+      !DELEGATES_TO_EXEC ||
+      (KEY === 'replace' && !(
+        REPLACE_SUPPORTS_NAMED_GROUPS &&
+        REPLACE_KEEPS_$0 &&
+        !REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE
+      )) ||
+      (KEY === 'split' && !SPLIT_WORKS_WITH_OVERWRITTEN_EXEC)
+    ) {
+      var nativeRegExpMethod = /./[SYMBOL];
+      var methods = exec(SYMBOL, ''[KEY], function (nativeMethod, regexp, str, arg2, forceStringMethod) {
+        if (regexp.exec === regexpExec) {
+          if (DELEGATES_TO_SYMBOL && !forceStringMethod) {
+            // The native String method already delegates to @@method (this
+            // polyfilled function), leasing to infinite recursion.
+            // We avoid it by directly calling the native @@method method.
+            return { done: true, value: nativeRegExpMethod.call(regexp, str, arg2) };
+          }
+          return { done: true, value: nativeMethod.call(str, regexp, arg2) };
+        }
+        return { done: false };
+      }, {
+        REPLACE_KEEPS_$0: REPLACE_KEEPS_$0,
+        REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE: REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE
+      });
+      var stringMethod = methods[0];
+      var regexMethod = methods[1];
+
+      redefine(String.prototype, KEY, stringMethod);
+      redefine(RegExp.prototype, SYMBOL, length == 2
+        // 21.2.5.8 RegExp.prototype[@@replace](string, replaceValue)
+        // 21.2.5.11 RegExp.prototype[@@split](string, limit)
+        ? function (string, arg) { return regexMethod.call(string, this, arg); }
+        // 21.2.5.6 RegExp.prototype[@@match](string)
+        // 21.2.5.9 RegExp.prototype[@@search](string)
+        : function (string) { return regexMethod.call(string, this); }
+      );
+    }
+
+    if (sham) createNonEnumerableProperty(RegExp.prototype[SYMBOL], 'sham', true);
+  };
+
+  // `String.prototype.{ codePointAt, at }` methods implementation
+  var createMethod$5 = function (CONVERT_TO_STRING) {
+    return function ($this, pos) {
+      var S = String(requireObjectCoercible($this));
+      var position = toInteger(pos);
+      var size = S.length;
+      var first, second;
+      if (position < 0 || position >= size) return CONVERT_TO_STRING ? '' : undefined;
+      first = S.charCodeAt(position);
+      return first < 0xD800 || first > 0xDBFF || position + 1 === size
+        || (second = S.charCodeAt(position + 1)) < 0xDC00 || second > 0xDFFF
+          ? CONVERT_TO_STRING ? S.charAt(position) : first
+          : CONVERT_TO_STRING ? S.slice(position, position + 2) : (first - 0xD800 << 10) + (second - 0xDC00) + 0x10000;
+    };
+  };
+
+  var stringMultibyte = {
+    // `String.prototype.codePointAt` method
+    // https://tc39.github.io/ecma262/#sec-string.prototype.codepointat
+    codeAt: createMethod$5(false),
+    // `String.prototype.at` method
+    // https://github.com/mathiasbynens/String.prototype.at
+    charAt: createMethod$5(true)
+  };
+
+  var charAt = stringMultibyte.charAt;
+
+  // `AdvanceStringIndex` abstract operation
+  // https://tc39.github.io/ecma262/#sec-advancestringindex
+  var advanceStringIndex = function (S, index, unicode) {
+    return index + (unicode ? charAt(S, index).length : 1);
+  };
+
+  // `RegExpExec` abstract operation
+  // https://tc39.github.io/ecma262/#sec-regexpexec
+  var regexpExecAbstract = function (R, S) {
+    var exec = R.exec;
+    if (typeof exec === 'function') {
+      var result = exec.call(R, S);
+      if (typeof result !== 'object') {
+        throw TypeError('RegExp exec method returned something other than an Object or null');
+      }
+      return result;
+    }
+
+    if (classofRaw(R) !== 'RegExp') {
+      throw TypeError('RegExp#exec called on incompatible receiver');
+    }
+
+    return regexpExec.call(R, S);
   };
 
   // @@match logic
@@ -67716,20 +67539,23 @@
   }, {});
 
   var _components$5;
-
-  function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$9(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var RenderAnimationEditor = {
-    components: (_components$5 = {}, defineProperty$2(_components$5, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$2(_components$5, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$2(_components$5, antDesignVue.List.name, antDesignVue.List), defineProperty$2(_components$5, antDesignVue.Form.name, antDesignVue.Form), defineProperty$2(_components$5, antDesignVue.Button.name, antDesignVue.Button), defineProperty$2(_components$5, antDesignVue.Popover.name, antDesignVue.Popover), defineProperty$2(_components$5, antDesignVue.Slider.name, antDesignVue.Slider), defineProperty$2(_components$5, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$2(_components$5, antDesignVue.Collapse.name, antDesignVue.Collapse), defineProperty$2(_components$5, antDesignVue.Collapse.Panel.name, antDesignVue.Collapse.Pane), defineProperty$2(_components$5, antDesignVue.Icon.name, antDesignVue.Icon), defineProperty$2(_components$5, antDesignVue.Drawer.name, antDesignVue.Drawer), defineProperty$2(_components$5, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), defineProperty$2(_components$5, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$2(_components$5, antDesignVue.Form.Item.name, antDesignVue.Form.Item), _components$5),
-    computed: _objectSpread$9(_objectSpread$9({}, Vuex.mapState('editor', ['editingElement'])), {}, {
-      animationQueue: function animationQueue() {
-        return this.editingElement && this.editingElement.animations || [];
+    components: (_components$5 = {}, defineProperty$2(_components$5, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$2(_components$5, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$2(_components$5, antDesignVue.List.name, antDesignVue.List), defineProperty$2(_components$5, antDesignVue.List.Item.name, antDesignVue.List.Item), defineProperty$2(_components$5, antDesignVue.Form.name, antDesignVue.Form), defineProperty$2(_components$5, antDesignVue.Button.name, antDesignVue.Button), defineProperty$2(_components$5, antDesignVue.Popover.name, antDesignVue.Popover), defineProperty$2(_components$5, antDesignVue.Slider.name, antDesignVue.Slider), defineProperty$2(_components$5, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$2(_components$5, antDesignVue.Collapse.name, antDesignVue.Collapse), defineProperty$2(_components$5, antDesignVue.Collapse.Panel.name, antDesignVue.Collapse.Panel), defineProperty$2(_components$5, antDesignVue.Icon.name, antDesignVue.Icon), defineProperty$2(_components$5, antDesignVue.Drawer.name, antDesignVue.Drawer), defineProperty$2(_components$5, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), defineProperty$2(_components$5, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$2(_components$5, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$2(_components$5, antDesignVue.Tag.name, antDesignVue.Tag), _components$5),
+    props: {
+      value: {
+        type: Array,
+        default: function _default() {
+          return [];
+        }
       }
-    }),
+    },
+    computed: {
+      animationQueue: function animationQueue() {
+        return this.value || [];
+      }
+    },
     data: function data() {
       return {
-        // animationQueue: [],
         activeCollapsePanel: 0,
         activePreviewAnimation: '',
         drawerVisible: false
@@ -67737,7 +67563,6 @@
     },
     methods: {
       addAnimation: function addAnimation() {
-        // TODO move this to vuex
         this.animationQueue.push({
           type: '',
           duration: 1,
@@ -67746,13 +67571,23 @@
           infinite: false
         });
         this.activeCollapsePanel = this.animationQueue.length - 1;
+        this.$emit('change', this.animationQueue);
       },
       deleteAnimate: function deleteAnimate(index) {
-        // TODO move this to vuex
         this.animationQueue.splice(index, 1);
+        this.$emit('change', this.animationQueue);
+      },
+      updateAnimation: function updateAnimation(type) {
+        var activeAnimationQueue = this.animationQueue[this.activeCollapsePanel];
+
+        if (activeAnimationQueue) {
+          activeAnimationQueue.type = type;
+        }
+
+        this.drawerVisible = false;
+        this.$emit('change', this.animationQueue);
       },
       runAnimate: function runAnimate() {
-        // front-end/h5/src/components/@/editor/index.js created()
         EventBus.$emit('RUN_ANIMATIONS');
       },
       renderSecondAnimationTabs: function renderSecondAnimationTabs(animations) {
@@ -67787,25 +67622,20 @@
               },
               "dataSource": group.children,
               "renderItem": function renderItem(item, index) {
-                return (// [key point] onMouseover vs onMouseenter
-                  // https://stackoverflow.com/questions/7286532/jquery-mouseenter-vs-mouseover
-                  // https://www.quirksmode.org/js/events_mouse.html#mouseenter
-                  h("a-list-item", [h("div", {
-                    "on": {
-                      "click": function click(e) {
-                        // TODO move this to vuex mutation
-                        _this.editingElement.animations[_this.activeCollapsePanel].type = item.value;
-                      },
-                      "mouseenter": function mouseenter(e) {
-                        _this.activePreviewAnimation = item.value;
-                      },
-                      "mouseleave": function mouseleave() {// [key point] why not set activePreviewAnimation='' after mouseleave, see more here: https://stackoverflow.com/questions/32279782/mouseenter-called-multiple-times
-                        // this.activePreviewAnimation = ''
-                      }
+                return h("a-list-item", {
+                  "class": "shortcut-button-wrapper"
+                }, [h("div", {
+                  "on": {
+                    "click": function click() {
+                      return _this.updateAnimation(item.value);
                     },
-                    "class": [_this.activePreviewAnimation === item.value && item.value + ' animated', 'shortcut-button']
-                  }, [item.label])])
-                );
+                    "mouseenter": function mouseenter(e) {
+                      _this.activePreviewAnimation = item.value;
+                    },
+                    "mouseleave": function mouseleave() {}
+                  },
+                  "class": ['shortcut-button', _this.activePreviewAnimation === item.value && "".concat(item.value, " animated")]
+                }, [item.label])]);
               }
             }
           })]);
@@ -68044,8 +67874,6 @@
     render: function render(h) {
       var _this4 = this;
 
-      var ele = this.editingElement;
-      if (!ele) return h("span", [this.$t('editor.editPanel.common.empty')]);
       return h("div", {
         "class": "main-animate widget",
         "attrs": {
@@ -68073,9 +67901,7 @@
         "attrs": {
           "type": "right-circle"
         }
-      })])]), // Q：这边为何这样写：this.animationQueue.length && ?
-      // A：如果这样写的话，当 length === 0，的时候，0会显示在 UI 上
-      !!this.animationQueue.length && h("a-collapse", {
+      })])]), h("a-collapse", {
         "attrs": {
           "accordion": true,
           "activeKey": '' + this.activeCollapsePanel
@@ -68114,32 +67940,33 @@
           "title": "请选择动画",
           "placement": "left",
           "closable": true,
+          "width": "100%",
           "visible": this.drawerVisible,
-          "width": 400,
           "wrapStyle": {
-            margin: '-16px'
-          }
+            position: 'absolute'
+          },
+          "getContainer": false
         },
         "on": {
           "close": function close() {
             _this4.drawerVisible = false;
           }
         }
-      }, [h("div", {
-        "style": "width: 100%;"
-      }, [this.renderAvaiableAnimations()])])]);
+      }, [h("div", [this.renderAvaiableAnimations()])])]);
     }
   };
 
-  function ownKeys$b(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$a(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$b(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-02 16:12:09
+   * @LastEditTime : 2020-11-12 16:35:48
+   * @Description :
+   */
   var RenderActionEditor = {
     data: function data() {
       return {};
     },
-    computed: _objectSpread$a({}, Vuex.mapState('editor', ['editingElement'])),
-    methods: _objectSpread$a({}, Vuex.mapActions('editor', ['setEditingElement'])),
     render: function render() {
       var h = arguments[0];
       var ele = this.editingElement;
@@ -68227,11 +68054,7 @@
   });
 
   var _components$6;
-
-  function ownKeys$c(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$b(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$c(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$c(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var script$1 = {
+  var RenderBackgroundEditor = {
     components: (_components$6 = {}, defineProperty$2(_components$6, antDesignVue.Form.name, antDesignVue.Form), defineProperty$2(_components$6, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$2(_components$6, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$2(_components$6, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), _components$6),
     data: function data() {
       return {
@@ -68240,10 +68063,7 @@
         PAGE_MODE_LABEL: Object.freeze(PAGE_MODE_LABEL)
       };
     },
-    computed: _objectSpread$b(_objectSpread$b({}, Vuex.mapState('editor', ['work'])), {}, {
-      // 翻页模式、长页面模式
-      // src/constants/work -> PAGE_MODE
-      // https://vuex.vuejs.org/zh/guide/forms.html#%E5%8F%8C%E5%90%91%E7%BB%91%E5%AE%9A%E7%9A%84%E8%AE%A1%E7%AE%97%E5%B1%9E%E6%80%A7
+    computed: {
       pageMode: {
         get: function get() {
           return this.work.page_mode || PAGE_MODE.SWIPPER_PAGE;
@@ -68254,103 +68074,37 @@
           });
         }
       }
-    }),
-    methods: _objectSpread$b({}, Vuex.mapActions('editor', ['updateWork']))
-  };
-
-  /* script */
-  const __vue_script__$1 = script$1;
-
-  /* template */
-  var __vue_render__$1 = function() {
-    var _vm = this;
-    var _h = _vm.$createElement;
-    var _c = _vm._self._c || _h;
-    return _c(
-      "a-form",
-      { attrs: { layout: _vm.formLayout } },
-      [
-        _c(
-          "a-form-item",
-          { attrs: { label: "H5类型" } },
-          [
-            _c(
-              "a-radio-group",
-              {
-                attrs: { size: "small" },
-                model: {
-                  value: _vm.pageMode,
-                  callback: function($$v) {
-                    _vm.pageMode = $$v;
-                  },
-                  expression: "pageMode"
-                }
-              },
-              _vm._l(_vm.PAGE_MODE, function(value, key) {
-                return _c(
-                  "a-radio-button",
-                  { key: key, attrs: { value: value } },
-                  [_vm._v(_vm._s(_vm.PAGE_MODE_LABEL[key]))]
-                )
-              }),
-              1
-            )
-          ],
-          1
-        )
-      ],
-      1
-    )
-  };
-  var __vue_staticRenderFns__$1 = [];
-  __vue_render__$1._withStripped = true;
-
-    /* style */
-    const __vue_inject_styles__$1 = undefined;
-    /* scoped */
-    const __vue_scope_id__$1 = undefined;
-    /* module identifier */
-    const __vue_module_identifier__$1 = undefined;
-    /* functional template */
-    const __vue_is_functional_template__$1 = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-    /* style inject shadow dom */
-    
-
-    
-    const __vue_component__$1 = /*#__PURE__*/normalizeComponent(
-      { render: __vue_render__$1, staticRenderFns: __vue_staticRenderFns__$1 },
-      __vue_inject_styles__$1,
-      __vue_script__$1,
-      __vue_scope_id__$1,
-      __vue_is_functional_template__$1,
-      __vue_module_identifier__$1,
-      false,
-      undefined,
-      undefined,
-      undefined
-    );
-
-  function ownKeys$d(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$c(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$d(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$d(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var RenderBackgroundEditor = {
-    computed: _objectSpread$c({}, Vuex.mapState('editor', ['editingPage'])),
-    methods: _objectSpread$c({}, Vuex.mapActions('editor', ['setEditingElement'])),
+    },
     render: function render() {
+      var _this = this;
+
       var h = arguments[0];
-      var bgEle = this.editingPage.elements.find(function (e) {
-        return e.name === 'lbp-background';
-      });
-      return h("div", [h(__vue_component__$1), h(RenderPropsEditor, {
+      return h("div", [h("a-form", {
         "attrs": {
-          "layout": "vertical",
-          "realEditingElement": bgEle
+          "layout": this.formLayout
         }
-      })]);
+      }, [h("a-form-item", {
+        "attrs": {
+          "label": "H5类型"
+        }
+      }, [h("a-radio-group", {
+        "attrs": {
+          "size": "small"
+        },
+        "model": {
+          value: _this.pageMode,
+          callback: function callback($$v) {
+            _this.pageMode = $$v;
+          }
+        }
+      }, [PAGE_MODE.map(function (v, k) {
+        return h("a-radio-button", {
+          "key": k,
+          "attrs": {
+            "value": v
+          }
+        }, [PAGE_MODE_LABEL[k]]);
+      })])])])]);
     }
   };
 
@@ -68393,6 +68147,11 @@
           propsValue[key] = props[key];
         });
         return propsValue;
+      },
+      editAnimationValue: function editAnimationValue() {
+        var element = this.element;
+        var animations = element ? element.animations : [];
+        return animations;
       }
     },
     data: function data() {
@@ -68423,12 +68182,10 @@
       return h("a-layout-sider", {
         "attrs": {
           "width": this.width,
-          "data-set-width": this.width,
           "theme": "light"
         },
         "style": {
-          background: '#fff',
-          padding: '0 12px 0 12px'
+          padding: '0 12px'
         }
       }, [h("a-tabs", {
         "style": "height: 100%;",
@@ -68458,7 +68215,14 @@
           "tab": this.$t('editor.editPanel.tab.animation')
         },
         "key": "动画"
-      }, [h(RenderAnimationEditor)]), h("a-tab-pane", {
+      }, [h(RenderAnimationEditor, {
+        "attrs": {
+          "value": this.editAnimationValue
+        },
+        "on": {
+          "change": this.$listeners.animationsChange
+        }
+      })]), h("a-tab-pane", {
         "attrs": {
           "label": "动作",
           "tab": this.$t('editor.editPanel.tab.action')
@@ -68548,12 +68312,138 @@
     }
   };
 
+  var max$5 = Math.max;
+  var min$5 = Math.min;
+  var floor$1 = Math.floor;
+  var SUBSTITUTION_SYMBOLS = /\$([$&'`]|\d\d?|<[^>]*>)/g;
+  var SUBSTITUTION_SYMBOLS_NO_NAMED = /\$([$&'`]|\d\d?)/g;
+
+  var maybeToString = function (it) {
+    return it === undefined ? it : String(it);
+  };
+
+  // @@replace logic
+  fixRegexpWellKnownSymbolLogic('replace', 2, function (REPLACE, nativeReplace, maybeCallNative, reason) {
+    var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = reason.REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE;
+    var REPLACE_KEEPS_$0 = reason.REPLACE_KEEPS_$0;
+    var UNSAFE_SUBSTITUTE = REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE ? '$' : '$0';
+
+    return [
+      // `String.prototype.replace` method
+      // https://tc39.github.io/ecma262/#sec-string.prototype.replace
+      function replace(searchValue, replaceValue) {
+        var O = requireObjectCoercible(this);
+        var replacer = searchValue == undefined ? undefined : searchValue[REPLACE];
+        return replacer !== undefined
+          ? replacer.call(searchValue, O, replaceValue)
+          : nativeReplace.call(String(O), searchValue, replaceValue);
+      },
+      // `RegExp.prototype[@@replace]` method
+      // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@replace
+      function (regexp, replaceValue) {
+        if (
+          (!REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE && REPLACE_KEEPS_$0) ||
+          (typeof replaceValue === 'string' && replaceValue.indexOf(UNSAFE_SUBSTITUTE) === -1)
+        ) {
+          var res = maybeCallNative(nativeReplace, regexp, this, replaceValue);
+          if (res.done) return res.value;
+        }
+
+        var rx = anObject(regexp);
+        var S = String(this);
+
+        var functionalReplace = typeof replaceValue === 'function';
+        if (!functionalReplace) replaceValue = String(replaceValue);
+
+        var global = rx.global;
+        if (global) {
+          var fullUnicode = rx.unicode;
+          rx.lastIndex = 0;
+        }
+        var results = [];
+        while (true) {
+          var result = regexpExecAbstract(rx, S);
+          if (result === null) break;
+
+          results.push(result);
+          if (!global) break;
+
+          var matchStr = String(result[0]);
+          if (matchStr === '') rx.lastIndex = advanceStringIndex(S, toLength(rx.lastIndex), fullUnicode);
+        }
+
+        var accumulatedResult = '';
+        var nextSourcePosition = 0;
+        for (var i = 0; i < results.length; i++) {
+          result = results[i];
+
+          var matched = String(result[0]);
+          var position = max$5(min$5(toInteger(result.index), S.length), 0);
+          var captures = [];
+          // NOTE: This is equivalent to
+          //   captures = result.slice(1).map(maybeToString)
+          // but for some reason `nativeSlice.call(result, 1, result.length)` (called in
+          // the slice polyfill when slicing native arrays) "doesn't work" in safari 9 and
+          // causes a crash (https://pastebin.com/N21QzeQA) when trying to debug it.
+          for (var j = 1; j < result.length; j++) captures.push(maybeToString(result[j]));
+          var namedCaptures = result.groups;
+          if (functionalReplace) {
+            var replacerArgs = [matched].concat(captures, position, S);
+            if (namedCaptures !== undefined) replacerArgs.push(namedCaptures);
+            var replacement = String(replaceValue.apply(undefined, replacerArgs));
+          } else {
+            replacement = getSubstitution(matched, S, position, captures, namedCaptures, replaceValue);
+          }
+          if (position >= nextSourcePosition) {
+            accumulatedResult += S.slice(nextSourcePosition, position) + replacement;
+            nextSourcePosition = position + matched.length;
+          }
+        }
+        return accumulatedResult + S.slice(nextSourcePosition);
+      }
+    ];
+
+    // https://tc39.github.io/ecma262/#sec-getsubstitution
+    function getSubstitution(matched, str, position, captures, namedCaptures, replacement) {
+      var tailPos = position + matched.length;
+      var m = captures.length;
+      var symbols = SUBSTITUTION_SYMBOLS_NO_NAMED;
+      if (namedCaptures !== undefined) {
+        namedCaptures = toObject(namedCaptures);
+        symbols = SUBSTITUTION_SYMBOLS;
+      }
+      return nativeReplace.call(replacement, symbols, function (match, ch) {
+        var capture;
+        switch (ch.charAt(0)) {
+          case '$': return '$';
+          case '&': return matched;
+          case '`': return str.slice(0, position);
+          case "'": return str.slice(tailPos);
+          case '<':
+            capture = namedCaptures[ch.slice(1, -1)];
+            break;
+          default: // \d\d?
+            var n = +ch;
+            if (n === 0) return match;
+            if (n > m) {
+              var f = floor$1(n / 10);
+              if (f === 0) return match;
+              if (f <= m) return captures[f - 1] === undefined ? ch.charAt(1) : captures[f - 1] + ch.charAt(1);
+              return match;
+            }
+            capture = captures[n - 1];
+        }
+        return capture === undefined ? '' : capture;
+      });
+    }
+  });
+
   var _components$8;
 
-  function ownKeys$e(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$d(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$e(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$e(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var script$2 = {
+  function _objectSpread$8(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$9(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$9(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  var script$1 = {
     components: (_components$8 = {}, defineProperty$2(_components$8, antDesignVue.Modal.name, antDesignVue.Modal), defineProperty$2(_components$8, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$2(_components$8, antDesignVue.Button.name, antDesignVue.Button), _components$8),
     data: function data() {
       return {
@@ -68582,7 +68472,7 @@
 
         var npmPackages = new Function("return ".concat(this.text).replace('\n', ''))();
         npmPackages = npmPackages.map(function (pluginInfo) {
-          return _objectSpread$d(_objectSpread$d({}, pluginInfo), {}, {
+          return _objectSpread$8(_objectSpread$8({}, pluginInfo), {}, {
             // src: `https://cdn.jsdelivr.net/npm/${pluginInfo}/dist/${pluginInfo.name}.umd.js`
             // src: `https://unpkg.com/${pluginInfo}/dist/${pluginName}.umd.js`
             src: "https://cdn.jsdelivr.net/npm/".concat(pluginInfo.package, "@").concat(pluginInfo.version, "/dist/").concat(pluginInfo.name, ".umd.js")
@@ -68612,10 +68502,10 @@
   };
 
   /* script */
-  const __vue_script__$2 = script$2;
+  const __vue_script__$1 = script$1;
 
   /* template */
-  var __vue_render__$2 = function() {
+  var __vue_render__$1 = function() {
     var _vm = this;
     var _h = _vm.$createElement;
     var _c = _vm._self._c || _h;
@@ -68666,17 +68556,17 @@
       1
     )
   };
-  var __vue_staticRenderFns__$2 = [];
-  __vue_render__$2._withStripped = true;
+  var __vue_staticRenderFns__$1 = [];
+  __vue_render__$1._withStripped = true;
 
     /* style */
-    const __vue_inject_styles__$2 = undefined;
+    const __vue_inject_styles__$1 = undefined;
     /* scoped */
-    const __vue_scope_id__$2 = undefined;
+    const __vue_scope_id__$1 = undefined;
     /* module identifier */
-    const __vue_module_identifier__$2 = undefined;
+    const __vue_module_identifier__$1 = undefined;
     /* functional template */
-    const __vue_is_functional_template__$2 = false;
+    const __vue_is_functional_template__$1 = false;
     /* style inject */
     
     /* style inject SSR */
@@ -68685,38 +68575,38 @@
     
 
     
-    const __vue_component__$2 = /*#__PURE__*/normalizeComponent(
-      { render: __vue_render__$2, staticRenderFns: __vue_staticRenderFns__$2 },
-      __vue_inject_styles__$2,
-      __vue_script__$2,
-      __vue_scope_id__$2,
-      __vue_is_functional_template__$2,
-      __vue_module_identifier__$2,
+    const __vue_component__$1 = /*#__PURE__*/normalizeComponent(
+      { render: __vue_render__$1, staticRenderFns: __vue_staticRenderFns__$1 },
+      __vue_inject_styles__$1,
+      __vue_script__$1,
+      __vue_scope_id__$1,
+      __vue_is_functional_template__$1,
+      __vue_module_identifier__$1,
       false,
       undefined,
       undefined,
       undefined
     );
 
-  function ownKeys$f(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$e(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$f(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$f(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$9(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var langMixin = {
-    computed: _objectSpread$e({}, Vuex.mapState({
+    computed: _objectSpread$9({}, Vuex.mapState({
       currentLang: function currentLang(state) {
         return state.i18n.lang;
       }
     })),
-    methods: _objectSpread$e(_objectSpread$e({}, Vuex.mapActions('i18n', ['SetLang'])), {}, {
+    methods: _objectSpread$9(_objectSpread$9({}, Vuex.mapActions('i18n', ['SetLang'])), {}, {
       setLang: function setLang(lang) {
         this.SetLang(lang);
       }
     })
   };
 
-  function ownKeys$g(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$b(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$f(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$g(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$g(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$a(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$b(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   /*
    * @Author: ly525
@@ -68862,7 +68752,7 @@
         if (!canMousedown) return;
         var canvasWrapper = document.querySelector('.lb-canvas');
         var position = canvasWrapper.getBoundingClientRect();
-        this.dragElement && this.clone(_objectSpread$f(_objectSpread$f({}, this.dragElement), {}, {
+        this.dragElement && this.clone(_objectSpread$a(_objectSpread$a({}, this.dragElement), {}, {
           dragStyle: {
             left: e.clientX - layerX - position.left,
             top: e.clientY - layerY - position.top
@@ -68884,10 +68774,6 @@
   };
 
   var _components$9;
-
-  function ownKeys$h(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$g(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$h(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$h(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var RenderShortcutsPanel = {
     name: 'shotcuts-panel',
     components: (_components$9 = {}, defineProperty$2(_components$9, antDesignVue.Row.name, antDesignVue.Row), defineProperty$2(_components$9, antDesignVue.Col.name, antDesignVue.Col), _components$9),
@@ -68897,11 +68783,11 @@
         npmPackages: []
       };
     },
-    methods: _objectSpread$g(_objectSpread$g({}, Vuex.mapActions('editor', ['elementManager'])), {}, {
+    methods: {
       clone: function clone(shortcutItem) {
         this.$emit('add', shortcutItem);
       }
-    }),
+    },
     render: function render(h) {
       var _this = this;
 
@@ -68926,7 +68812,7 @@
             "disabled": plugin.disabled
           }
         })]);
-      }), h(__vue_component__$2, {
+      }), h(__vue_component__$1, {
         "on": {
           "loadComplete": function loadComplete(npmPackages) {
             _this.npmPackages = npmPackages;
@@ -69080,9 +68966,9 @@
     }
   };
 
-  function ownKeys$i(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$c(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$h(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$i(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$i(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$b(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$c(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$c(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var RenderPageManager = {
     name: 'page-manager',
     components: defineProperty$2({}, antDesignVue.Button.name, antDesignVue.Button),
@@ -69092,7 +68978,7 @@
 
       };
     },
-    computed: _objectSpread$h({}, Vuex.mapState('editor', {
+    computed: _objectSpread$b({}, Vuex.mapState('editor', {
       editingPage: function editingPage(state) {
         return state.editingPage;
       },
@@ -69100,7 +68986,7 @@
         return state.work.pages;
       }
     })),
-    methods: _objectSpread$h(_objectSpread$h({}, Vuex.mapActions('editor', ['elementManager', 'pageManager', 'saveWork', 'setEditingPage'])), {}, {
+    methods: _objectSpread$b(_objectSpread$b({}, Vuex.mapActions('editor', ['elementManager', 'pageManager', 'saveWork', 'setEditingPage'])), {}, {
       onSelectMenuItem: function onSelectMenuItem(menuKey) {
         this.pageManager({
           type: menuKey
@@ -69177,9 +69063,9 @@
     }
   };
 
-  function ownKeys$j(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$d(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$i(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$j(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$j(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$c(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$d(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$d(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   function getTreeNode(ele) {
     return {
@@ -69189,9 +69075,9 @@
     };
   }
 
-  var script$3 = {
+  var script$2 = {
     name: 'page-tree',
-    computed: _objectSpread$i(_objectSpread$i({}, Vuex.mapState('editor', {
+    computed: _objectSpread$c(_objectSpread$c({}, Vuex.mapState('editor', {
       elements: function elements(state) {
         return state.editingPage.elements;
       }
@@ -69213,10 +69099,10 @@
   };
 
   /* script */
-  const __vue_script__$3 = script$3;
+  const __vue_script__$2 = script$2;
 
   /* template */
-  var __vue_render__$3 = function() {
+  var __vue_render__$2 = function() {
     var _vm = this;
     var _h = _vm.$createElement;
     var _c = _vm._self._c || _h;
@@ -69230,17 +69116,17 @@
       on: { dragenter: _vm.onDragEnter, drop: _vm.onDrop }
     })
   };
-  var __vue_staticRenderFns__$3 = [];
-  __vue_render__$3._withStripped = true;
+  var __vue_staticRenderFns__$2 = [];
+  __vue_render__$2._withStripped = true;
 
     /* style */
-    const __vue_inject_styles__$3 = undefined;
+    const __vue_inject_styles__$2 = undefined;
     /* scoped */
-    const __vue_scope_id__$3 = undefined;
+    const __vue_scope_id__$2 = undefined;
     /* module identifier */
-    const __vue_module_identifier__$3 = undefined;
+    const __vue_module_identifier__$2 = undefined;
     /* functional template */
-    const __vue_is_functional_template__$3 = false;
+    const __vue_is_functional_template__$2 = false;
     /* style inject */
     
     /* style inject SSR */
@@ -69249,13 +69135,13 @@
     
 
     
-    const __vue_component__$3 = /*#__PURE__*/normalizeComponent(
-      { render: __vue_render__$3, staticRenderFns: __vue_staticRenderFns__$3 },
-      __vue_inject_styles__$3,
-      __vue_script__$3,
-      __vue_scope_id__$3,
-      __vue_is_functional_template__$3,
-      __vue_module_identifier__$3,
+    const __vue_component__$2 = /*#__PURE__*/normalizeComponent(
+      { render: __vue_render__$2, staticRenderFns: __vue_staticRenderFns__$2 },
+      __vue_inject_styles__$2,
+      __vue_script__$2,
+      __vue_scope_id__$2,
+      __vue_is_functional_template__$2,
+      __vue_module_identifier__$2,
       false,
       undefined,
       undefined,
@@ -69273,8 +69159,7 @@
           "theme": "light"
         },
         "style": {
-          background: "#fff",
-          padding: "12px",
+          padding: "0 12px",
           height: '100%',
           'overflow': 'auto'
         }
@@ -69301,7 +69186,7 @@
         "attrs": {
           "tab": this.$t("editor.sidebar.tree")
         }
-      }, [h(__vue_component__$3)])])]);
+      }, [h(__vue_component__$2)])])]);
     }
   };
 
@@ -69581,6 +69466,17 @@
     }
   };
 
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-12 14:49:13
+   * @LastEditTime : 2020-11-12 14:49:29
+   * @Description :
+   */
+  var config$1 = {
+    rightPanelWidth: 375
+  };
+
   var _components$d;
   var Editor = {
     name: 'lbp-editor',
@@ -69599,9 +69495,9 @@
       return {
         work: {},
         pageIndex: 0,
-        propsPanelWidth: 375,
         activeElement: null,
-        auxiliayVisible: false
+        auxiliayVisible: false,
+        rightPanelWidth: config$1.rightPanelWidth
       };
     },
     watch: {
@@ -69655,7 +69551,15 @@
         }
       },
       handlePropsChange: function handlePropsChange(value) {
-        this.$refs['editor'].updateActiveElement(value);
+        this.$refs['editor'].updateActiveElement({
+          props: value
+        });
+      },
+      handleAnimationsChange: function handleAnimationsChange(value) {
+        console.log(value);
+        this.$refs['editor'].updateActiveElement({
+          animations: value
+        });
       },
       handleAddElement: function handleAddElement(_ref2) {
         var name = _ref2.name;
@@ -69718,16 +69622,17 @@
       })])])]), h(AdjustLineV, {
         "on": {
           "lineMove": function lineMove(offset) {
-            _this.propsPanelWidth += offset;
+            _this.rightPanelWidth += offset;
           }
         }
       }), h(FixedTools), h(EditorRightPanel, {
         "attrs": {
-          "width": this.propsPanelWidth,
+          "width": this.rightPanelWidth,
           "element": this.activeElement
         },
         "on": {
-          "propsChange": this.handlePropsChange
+          "propsChange": this.handlePropsChange,
+          "animationsChange": this.handleAnimationsChange
         }
       })])]);
     }

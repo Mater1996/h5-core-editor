@@ -1,4 +1,3 @@
-import { mapState } from 'vuex'
 import {
   animationOptions,
   animationValue2Name,
@@ -16,7 +15,8 @@ import {
   Collapse,
   Icon,
   Drawer,
-  InputNumber
+  InputNumber,
+  Tag
 } from 'ant-design-vue'
 
 export default {
@@ -24,34 +24,39 @@ export default {
     [InputNumber.name]: InputNumber,
     [Tabs.name]: Tabs,
     [List.name]: List,
+    [List.Item.name]: List.Item,
     [Form.name]: Form,
     [Button.name]: Button,
     [Popover.name]: Popover,
     [Slider.name]: Slider,
     [Switch.name]: Switch,
     [Collapse.name]: Collapse,
-    [Collapse.Panel.name]: Collapse.Pane,
+    [Collapse.Panel.name]: Collapse.Panel,
     [Icon.name]: Icon,
     [Drawer.name]: Drawer,
     [Tabs.TabPane.name]: Tabs.TabPane,
     [Button.Group.name]: Button.Group,
-    [Form.Item.name]: Form.Item
+    [Form.Item.name]: Form.Item,
+    [Tag.name]: Tag
+  },
+  props: {
+    value: {
+      type: Array,
+      default: () => []
+    }
   },
   computed: {
-    ...mapState('editor', ['editingElement']),
     animationQueue() {
-      return (this.editingElement && this.editingElement.animations) || []
+      return this.value || []
     }
   },
   data: () => ({
-    // animationQueue: [],
     activeCollapsePanel: 0,
     activePreviewAnimation: '',
     drawerVisible: false
   }),
   methods: {
     addAnimation() {
-      // TODO move this to vuex
       this.animationQueue.push({
         type: '',
         duration: 1,
@@ -60,13 +65,21 @@ export default {
         infinite: false
       })
       this.activeCollapsePanel = this.animationQueue.length - 1
+      this.$emit('change', this.animationQueue)
     },
     deleteAnimate(index) {
-      // TODO move this to vuex
       this.animationQueue.splice(index, 1)
+      this.$emit('change', this.animationQueue)
+    },
+    updateAnimation(type) {
+      const activeAnimationQueue = this.animationQueue[this.activeCollapsePanel]
+      if (activeAnimationQueue) {
+        activeAnimationQueue.type = type
+      }
+      this.drawerVisible = false
+      this.$emit('change', this.animationQueue)
     },
     runAnimate() {
-      // front-end/h5/src/components/@/editor/index.js created()
       EventBus.$emit('RUN_ANIMATIONS')
     },
     renderSecondAnimationTabs(animations) {
@@ -86,29 +99,18 @@ export default {
                 grid={{ gutter: 12, column: 2 }}
                 dataSource={group.children}
                 renderItem={(item, index) => (
-                  // [key point] onMouseover vs onMouseenter
-                  // https://stackoverflow.com/questions/7286532/jquery-mouseenter-vs-mouseover
-                  // https://www.quirksmode.org/js/events_mouse.html#mouseenter
-                  <a-list-item>
+                  <a-list-item class="shortcut-button-wrapper">
                     <div
-                      onClick={e => {
-                        // TODO move this to vuex mutation
-                        this.editingElement.animations[
-                          this.activeCollapsePanel
-                        ].type = item.value
-                      }}
+                      onClick={() => this.updateAnimation(item.value)}
                       class={[
+                        'shortcut-button',
                         this.activePreviewAnimation === item.value &&
-                          item.value + ' animated',
-                        'shortcut-button'
+                          `${item.value} animated`
                       ]}
                       onMouseenter={e => {
                         this.activePreviewAnimation = item.value
                       }}
-                      onMouseleave={() => {
-                        // [key point] why not set activePreviewAnimation='' after mouseleave, see more here: https://stackoverflow.com/questions/32279782/mouseenter-called-multiple-times
-                        // this.activePreviewAnimation = ''
-                      }}
+                      onMouseleave={() => {}}
                     >
                       {item.label}
                     </div>
@@ -152,13 +154,6 @@ export default {
             labelCol={{ span: 5 }}
             wrapperCol={{ span: 16, offset: 2 }}
           >
-            {/* <a-popover placement="left" title="动画列表" trigger="click">
-              <template slot="content">
-                {this.renderAvaiableAnimations()}
-              </template>
-              <a-button type="primary">动画列表</a-button>
-            </a-popover> */}
-            {/* 动画列表 */}
             <a-button
               type="link"
               size="small"
@@ -302,8 +297,6 @@ export default {
     }
   },
   render(h) {
-    const ele = this.editingElement
-    if (!ele) return <span>{this.$t('editor.editPanel.common.empty')}</span>
     return (
       <div class="main-animate widget" id="animation-right-panel">
         <a-button-group>
@@ -317,44 +310,39 @@ export default {
             <a-icon type="right-circle" />
           </a-button>
         </a-button-group>
-        {// Q：这边为何这样写：this.animationQueue.length && ?
-        // A：如果这样写的话，当 length === 0，的时候，0会显示在 UI 上
-        !!this.animationQueue.length && (
-          <a-collapse
-            accordion
-            class="collapse-wrapper"
-            activeKey={'' + this.activeCollapsePanel}
-            onChange={key => {
-              // 当全部收起来时候，key 为 undefined
-              this.activeCollapsePanel = typeof key !== 'undefined' ? +key : -1
-            }}
-          >
-            {this.animationQueue.map((addedAnimation, index) => (
-              <a-collapse-panel key={`${index}`}>
-                <template slot="header">
-                  {/* #!zh: 动画{index + 1} */}
-                  {/* #!en: Animation{index + 1}</span> */}
-                  <span>
-                    {this.$t('editor.editPanel.animation.title', {
-                      index: index + 1
-                    })}
-                  </span>
-                  <a-tag color="orange">
-                    {animationValue2Name[addedAnimation.type] ||
-                      addedAnimation.type}
-                  </a-tag>
-                  <a-icon
-                    type="delete"
-                    onClick={() => this.deleteAnimate(index)}
-                    title="删除动画"
-                  ></a-icon>
-                </template>
-                {this.renderAnimationOptions(addedAnimation)}
-              </a-collapse-panel>
-            ))}
-          </a-collapse>
-        )}
-
+        <a-collapse
+          accordion
+          class="collapse-wrapper"
+          activeKey={'' + this.activeCollapsePanel}
+          onChange={key => {
+            // 当全部收起来时候，key 为 undefined
+            this.activeCollapsePanel = typeof key !== 'undefined' ? +key : -1
+          }}
+        >
+          {this.animationQueue.map((addedAnimation, index) => (
+            <a-collapse-panel key={`${index}`}>
+              <template slot="header">
+                {/* #!zh: 动画{index + 1} */}
+                {/* #!en: Animation{index + 1}</span> */}
+                <span>
+                  {this.$t('editor.editPanel.animation.title', {
+                    index: index + 1
+                  })}
+                </span>
+                <a-tag color="orange">
+                  {animationValue2Name[addedAnimation.type] ||
+                    addedAnimation.type}
+                </a-tag>
+                <a-icon
+                  type="delete"
+                  onClick={() => this.deleteAnimate(index)}
+                  title="删除动画"
+                ></a-icon>
+              </template>
+              {this.renderAnimationOptions(addedAnimation)}
+            </a-collapse-panel>
+          ))}
+        </a-collapse>
         <a-drawer
           title="请选择动画"
           placement="left"
@@ -362,11 +350,12 @@ export default {
           onClose={() => {
             this.drawerVisible = false
           }}
+          width="100%"
           visible={this.drawerVisible}
-          width={400}
-          wrapStyle={{ margin: '-16px' }}
+          wrapStyle={{ position: 'absolute' }}
+          getContainer={false}
         >
-          <div style="width: 100%;">{this.renderAvaiableAnimations()}</div>
+          <div>{this.renderAvaiableAnimations()}</div>
         </a-drawer>
       </div>
     )
