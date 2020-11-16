@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-12 15:15:52
+ * @LastEditTime : 2020-11-16 17:18:10
  * @Description :
  */
 import 'animate.css/animate.css'
@@ -92,11 +92,10 @@ const Editor = {
       }
     },
     handlePropsChange(value) {
-      this.$refs['editor'].updateActiveElement({ props: value })
+      this.$refs['editor'].updateElement({ props: value })
     },
     handleAnimationsChange(value) {
-      console.log(value)
-      this.$refs['editor'].updateActiveElement({ animations: value })
+      this.$refs['editor'].updateElement({ animations: value })
     },
     handleAddElement({ name }) {
       this.$refs['editor'].addElement(new CoreRender.Element({ name }))

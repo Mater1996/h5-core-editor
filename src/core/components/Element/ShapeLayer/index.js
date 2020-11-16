@@ -1,6 +1,6 @@
-import '../css/shape.scss'
-import animationMixin from '@/mixins/animation.js'
-import vClickOutside from '../directive/v-click-outside'
+import './index.scss'
+import vClickOutside from '@/core/directive/v-click-outside'
+import { hyphenateStyleName } from '@/core/share'
 
 /**
  * #!zh: 上下左右 对应的 东南西北
@@ -22,43 +22,28 @@ export const ShapeLayerDefaultProps = {
 
 const points = ['lt', 'rt', 'lb', 'rb', 'lm', 'rm', 'tm', 'bm']
 
-var id = 0
-
 export default {
-  mixins: [animationMixin],
   directives: {
     clickOutside: vClickOutside
   },
   props: {
-    width: {
-      type: Number,
-      default: ShapeLayerDefaultProps.width
-    },
-    height: {
-      type: Number,
-      default: ShapeLayerDefaultProps.height
-    },
-    left: {
-      type: Number,
-      default: ShapeLayerDefaultProps.left
-    },
-    top: {
-      type: Number,
-      default: ShapeLayerDefaultProps.top
+    elStyle: {
+      type: Object,
+      default: () => ({})
     },
     disable: {
       type: Boolean,
       default: ShapeLayerDefaultProps.disable
     }
   },
+  inject: ['canvas'],
+  created() {
+    console.log(this.canvas)
+  },
   data() {
     return {
-      rect: {
-        width: this.width,
-        height: this.height,
-        left: this.left,
-        top: this.top
-      },
+      rect: this.getReact(this.elStyle),
+      shapeStyle: this.getStyle(this.elStyle),
       startY: 0,
       startX: 0,
       point: '',
@@ -66,23 +51,7 @@ export default {
       vcoConfig: {}
     }
   },
-  mounted() {
-    this.vcoConfig = {
-      events: ['mousedown'],
-      handler: this.onClickOutside,
-      scopeNode: document.querySelector('.lb-canvas')
-    }
-  },
   computed: {
-    shapeStyle() {
-      const { left, top, width, height } = this.rect
-      return {
-        left: `${left}px`,
-        top: `${top}px`,
-        width: `${width}px`,
-        height: `${height}px`
-      }
-    },
     ltPointStyle() {
       return {
         left: `${0}px`,
@@ -137,17 +106,62 @@ export default {
         left: `${width / 2}px`,
         top: `${height}px`
       }
+    },
+    bound() {
+      return {
+        left: 0,
+        top: 0,
+        right: this.canvas.width,
+        bottom: this.canvas.height
+      }
+    }
+  },
+  mounted() {
+    this.vcoConfig = {
+      events: ['mousedown'],
+      handler: this.onClickOutside,
+      scopeNode: document.querySelector('.lb-canvas-wrapper')
     }
   },
   watch: {
+    elStyle() {
+      const { elStyle } = this
+      this.rect = this.getReact(elStyle)
+      this.shapeStyle = this.getStyle(elStyle)
+    },
     rect: {
-      handler(newValue) {
-        this.$emit('change', newValue)
+      handler() {
+        const newStyle = {
+          ...this.elStyle,
+          ...this.rect
+        }
+        this.shapeStyle = {
+          ...this.shapeStyle,
+          ...this.getStyle(this.rect)
+        }
+        this.$emit('change', newStyle)
       },
       deep: true
     }
   },
   methods: {
+    getReact(elStyle) {
+      return {
+        left: elStyle.left,
+        top: elStyle.top,
+        width: elStyle.width,
+        height: elStyle.height
+      }
+    },
+    getStyle(style) {
+      const newStyle = {}
+      Object.entries(style).forEach(([key, value]) => {
+        const v = typeof value === 'number' ? `${value}px` : value
+        const n = hyphenateStyleName(key)
+        newStyle[n] = v
+      })
+      return newStyle
+    },
     setActive(active) {
       if (this.active === active) return
       active ? this.$emit('active', active) : this.$emit('deactive', active)
@@ -156,30 +170,36 @@ export default {
     onClickOutside() {
       this.setActive(false)
     },
-    addWidth(width) {
-      const currentWidth = this.rect.width
-      let nextWidth = currentWidth + width
+    addWidth(distance) {
+      const { left: currentLeft, width: currentWidth } = this.rect
+      const { right: boundRight } = this.bound
+      let nextWidth = currentWidth + distance
       if (nextWidth < 0) nextWidth = 0
+      if (currentLeft + nextWidth > boundRight) return
       return (this.rect.width = nextWidth)
     },
-    addHeight(height) {
-      const currentHeight = this.rect.height
-      let nextHeight = currentHeight + height
+    addHeight(distance) {
+      const { top: currentTop, height: currentHeight } = this.rect
+      const { bottom: boundBottom } = this.bound
+      let nextHeight = currentHeight + distance
       if (nextHeight < 0) nextHeight = 0
+      if (currentTop + nextHeight > boundBottom) return
       return (this.rect.height = nextHeight)
     },
-    addLeft(left) {
+    addLeft(distance) {
       const { left: currentLeft, width: currentWidth } = this.rect
-      left = currentWidth > left ? left : currentWidth
-      let nextLeft = currentLeft + left
-      if (nextLeft < 0) nextLeft = 0
+      const { left: boundLeft, right: boundRight } = this.bound
+      let nextLeft = currentLeft + distance
+      if (nextLeft < boundLeft) nextLeft = boundLeft
+      if (nextLeft + currentWidth > boundRight) return
       return (this.rect.left = nextLeft)
     },
-    addTop(top) {
+    addTop(distance) {
       const { top: currentTop, height: currentHeight } = this.rect
-      top = currentHeight > top ? top : currentHeight
-      let nextTop = currentTop + top
-      if (nextTop < 0) nextTop = 0
+      const { top: boundTop, bottom: boundBottom } = this.bound
+      let nextTop = currentTop + distance
+      if (nextTop < boundTop) nextTop = boundTop
+      if (nextTop + currentHeight > boundBottom) return
       return (this.rect.top = nextTop)
     },
     handleShapeDown(e) {
@@ -216,10 +236,20 @@ export default {
       const distanceY = e.clientY - this.startY
       this.startX = e.clientX
       this.startY = e.clientY
-      effectLeft && this.addLeft(distanceX)
-      effectLeft && this.addWidth(-distanceX)
-      effectTop && this.addTop(distanceY)
-      effectTop && this.addHeight(-distanceY)
+      if (effectLeft) {
+        const { left: currentLeft, width: currentWidth } = this.rect
+        const effectLeftDistance = Math.min(currentWidth, distanceX)
+        const effectWidthDistance = Math.min(currentLeft, -distanceX)
+        this.addLeft(effectLeftDistance)
+        this.addWidth(effectWidthDistance)
+      }
+      if (effectTop) {
+        const { top: currentTop, height: currentHeight } = this.rect
+        const effectTopDistance = Math.min(currentHeight, distanceY)
+        const effectHeightDistance = Math.min(currentTop, -distanceY)
+        this.addTop(effectTopDistance)
+        this.addHeight(effectHeightDistance)
+      }
       effectWidth && this.addWidth(distanceX)
       effectHeight && this.addHeight(distanceY)
     },
@@ -233,19 +263,18 @@ export default {
       <div
         tabindex="0"
         v-click-outside={this.vcoConfig}
-        style={this.shapeStyle}
-        class={['shape__wrapper', { 'shape__wrapper-active': this.active }]}
-        data-id={id++}
+        style={this.getStyle(this.shapeStyle)}
+        class={['shape-layer', { active: this.active }]}
         onMousedown={this.handleShapeDown}
         ref="shape"
       >
-        <div class="content">{this.$slots.default}</div>
+        <div class="shape-content">{this.$slots.default}</div>
         <div class="control">
           {points.map(v => (
             <div
               v-show={this.active}
               style={this[`${v}PointStyle`]}
-              class="shape__scale-point"
+              class="shape-scale__point"
               data-point={v}
               onMousedown={this.handlePointDown.bind(this, v)}
             ></div>

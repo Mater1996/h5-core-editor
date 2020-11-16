@@ -2,7 +2,7 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-11-02 09:25:51
- * @LastEditTime: 2020-11-12 09:30:52
+ * @LastEditTime: 2020-11-13 10:35:05
  * @Description:
 -->
 <template>
@@ -34,25 +34,9 @@ export default {
                 props: {
                   uuid: 1602484481828,
                   imgSrc: '',
-                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                  top: 100,
-                  left: 100,
-                  width: 100,
-                  height: 40,
-                  textAlign: 'center',
-                  color: '#000000',
-                  fontSize: 14
+                  isRem: false,
                 },
-                events: [],
-                animations: [],
-                isRem: false
-              },
-              {
-                name: 'lbp-picture',
-                uuid: 1602484484973,
-                props: {
-                  uuid: 1602484484973,
-                  imgSrc: 'https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg!0x0.webp',
+                style: {
                   fillType: 'contain',
                   top: 140,
                   left: 57,
@@ -61,18 +45,19 @@ export default {
                   textAlign: 'center',
                   color: '#000000',
                   backgroundColor: 'rgba(255, 255, 255, 0)',
-                  fontSize: 14
+                  fontSize: 14,
                 },
-                events: [],
-                animations: [],
-                isRem: false
               },
               {
                 name: 'lbp-picture',
                 uuid: 1602484484973,
                 props: {
                   uuid: 1602484484973,
-                  imgSrc: 'https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg!0x0.webp',
+                  imgSrc:
+                    'https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg!0x0.webp',
+                  isRem: false,
+                },
+                style: {
                   fillType: 'contain',
                   top: 140,
                   left: 57,
@@ -81,18 +66,19 @@ export default {
                   textAlign: 'center',
                   color: '#000000',
                   backgroundColor: 'rgba(255, 255, 255, 0)',
-                  fontSize: 14
+                  fontSize: 14,
                 },
-                events: [],
-                animations: [],
-                isRem: false
               },
               {
                 name: 'lbp-picture',
                 uuid: 1602484484973,
                 props: {
                   uuid: 1602484484973,
-                  imgSrc: 'https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg!0x0.webp',
+                  imgSrc:
+                    'https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg!0x0.webp',
+                  isRem: false,
+                },
+                style: {
                   fillType: 'contain',
                   top: 140,
                   left: 57,
@@ -101,23 +87,41 @@ export default {
                   textAlign: 'center',
                   color: '#000000',
                   backgroundColor: 'rgba(255, 255, 255, 0)',
-                  fontSize: 14
+                  fontSize: 14,
                 },
-                events: [],
-                animations: [],
-                isRem: false
-              }
-            ]
-          }
+              },
+              {
+                name: 'lbp-picture',
+                uuid: 1602484484973,
+                props: {
+                  uuid: 1602484484973,
+                  imgSrc:
+                    'https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg!0x0.webp',
+                  isRem: false,
+                },
+                style: {
+                  fillType: 'contain',
+                  top: 140,
+                  left: 57,
+                  width: 186,
+                  height: 292,
+                  textAlign: 'center',
+                  color: '#000000',
+                  backgroundColor: 'rgba(255, 255, 255, 0)',
+                  fontSize: 14,
+                },
+              },
+            ],
+          },
         ],
         is_publish: 0,
         is_template: 0,
         created_at: '2020-10-12T06:34:41.000Z',
         updated_at: '2020-10-28T01:24:23.000Z',
-        page_mode: 'h5_swipper'
-      }
+        page_mode: 'h5_swipper',
+      },
     }
   },
-  components: {}
+  components: {},
 }
 </script>

@@ -2,41 +2,50 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-12 15:49:25
+ * @LastEditTime : 2020-11-16 14:24:01
  * @Description :
  */
 
-import { ShapeLayerDefaultProps } from '../components/ShapeLayer'
+import { ShapeLayerDefaultProps } from '../components/Element/ShapeLayer/'
 import pluginsControl from '@/plugins'
+import { isFunction } from 'lodash'
 
 class LbpElement {
-  constructor({
-    name = '',
-    uuid = +new Date(),
-    isRem = false,
-    events = [],
-    animations = [],
-    props = {},
-    disabled = false,
-    vm = null
-  } = {}) {
+  constructor(options = {}) {
+    const {
+      name = '',
+      uuid = +new Date(),
+      props = {},
+      style = {},
+      attrs = {},
+      animations = [],
+      vm = null
+    } = options
     if (name) {
       this.name = name
       this.uuid = uuid
-      this.isRem = isRem
       this.vm = vm
-      this.disabled = disabled
       const plugin = pluginsControl.getPlugin(name)
-      const defaultPluginProps = LbpElement.getPluginProps(plugin.component)
+      const pluginDefaultProps = LbpElement.getPluginProps(plugin.component)
+      // 传入具体的element render
       this.props = {
-        ...ShapeLayerDefaultProps,
-        ...defaultPluginProps,
+        ...pluginDefaultProps,
         ...props
       }
-      this.events = events
-      this.animations = animations
+      this.attrs = {
+        ...attrs
+      }
+      this.class = {
+        ...options.class
+      }
+      // 传入shapeLayer
+      this.style = {
+        ...ShapeLayerDefaultProps,
+        ...style
+      }
+      this.animations = [...animations]
     } else {
-      console.error('lbcanvas need a name of plugin')
+      console.error('lbpElement need a name of plugin')
     }
   }
 
@@ -53,12 +62,13 @@ class LbpElement {
     })
   }
 
-  updateProps(props) {
-    return Object.assign(this.props, props)
-  }
-
-  updateAnimations(animations) {
-    return (this.animations = animations)
+  update({ props, style, animations }) {
+    props && Object.assign(this.props, props)
+    style && Object.assign(this.style, style)
+    if (animations) {
+      Object.assign(this.animations, animations)
+      this.animations.length = animations.length
+    }
   }
 
   setVm(vm) {
@@ -79,7 +89,7 @@ class LbpElement {
       return undefined
     }
     const def = prop.default
-    return typeof def === 'function' ? def.call(vm) : def
+    return isFunction(def) ? def.call(vm) : def
   }
 }
 

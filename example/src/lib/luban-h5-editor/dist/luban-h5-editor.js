@@ -862,133 +862,6 @@
 
   var defineProperty$2 = _defineProperty;
 
-  var arrayMethodIsStrict = function (METHOD_NAME, argument) {
-    var method = [][METHOD_NAME];
-    return !!method && fails(function () {
-      // eslint-disable-next-line no-useless-call,no-throw-literal
-      method.call(null, argument || function () { throw 1; }, 1);
-    });
-  };
-
-  var $forEach = arrayIteration.forEach;
-
-
-
-  var STRICT_METHOD = arrayMethodIsStrict('forEach');
-  var USES_TO_LENGTH$1 = arrayMethodUsesToLength('forEach');
-
-  // `Array.prototype.forEach` method implementation
-  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
-  var arrayForEach = (!STRICT_METHOD || !USES_TO_LENGTH$1) ? function forEach(callbackfn /* , thisArg */) {
-    return $forEach(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
-  } : [].forEach;
-
-  // `Array.prototype.forEach` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
-  _export({ target: 'Array', proto: true, forced: [].forEach != arrayForEach }, {
-    forEach: arrayForEach
-  });
-
-  // iterable DOM collections
-  // flag - `iterable` interface - 'entries', 'keys', 'values', 'forEach' methods
-  var domIterables = {
-    CSSRuleList: 0,
-    CSSStyleDeclaration: 0,
-    CSSValueList: 0,
-    ClientRectList: 0,
-    DOMRectList: 0,
-    DOMStringList: 0,
-    DOMTokenList: 1,
-    DataTransferItemList: 0,
-    FileList: 0,
-    HTMLAllCollection: 0,
-    HTMLCollection: 0,
-    HTMLFormElement: 0,
-    HTMLSelectElement: 0,
-    MediaList: 0,
-    MimeTypeArray: 0,
-    NamedNodeMap: 0,
-    NodeList: 1,
-    PaintRequestList: 0,
-    Plugin: 0,
-    PluginArray: 0,
-    SVGLengthList: 0,
-    SVGNumberList: 0,
-    SVGPathSegList: 0,
-    SVGPointList: 0,
-    SVGStringList: 0,
-    SVGTransformList: 0,
-    SourceBufferList: 0,
-    StyleSheetList: 0,
-    TextTrackCueList: 0,
-    TextTrackList: 0,
-    TouchList: 0
-  };
-
-  for (var COLLECTION_NAME in domIterables) {
-    var Collection = global_1[COLLECTION_NAME];
-    var CollectionPrototype = Collection && Collection.prototype;
-    // some Chrome versions have non-configurable methods on DOMTokenList
-    if (CollectionPrototype && CollectionPrototype.forEach !== arrayForEach) try {
-      createNonEnumerableProperty(CollectionPrototype, 'forEach', arrayForEach);
-    } catch (error) {
-      CollectionPrototype.forEach = arrayForEach;
-    }
-  }
-
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
-
-  var classCallCheck = _classCallCheck;
-
-  function _defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
-
-  function _createClass(Constructor, protoProps, staticProps) {
-    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) _defineProperties(Constructor, staticProps);
-    return Constructor;
-  }
-
-  var createClass = _createClass;
-
-  /*
-   * @author : Mater
-   * @Email : bxh8640@gmail.com
-   * @Date : 2020-11-11 19:49:19
-   * @LastEditTime : 2020-11-12 09:32:42
-   * @Description :
-   */
-  var LbpPlugin = function LbpPlugin() {
-    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-        name = _ref.name,
-        _ref$i18nTitle = _ref.i18nTitle,
-        i18nTitle = _ref$i18nTitle === void 0 ? {} : _ref$i18nTitle,
-        title = _ref.title,
-        icon = _ref.icon,
-        visible = _ref.visible,
-        component = _ref.component;
-
-    classCallCheck(this, LbpPlugin);
-
-    this.name = name;
-    this.i18nTitle = i18nTitle;
-    this.title = title;
-    this.icon = icon;
-    this.visible = visible;
-    this.component = component;
-  };
-
   var aPossiblePrototype = function (it) {
     if (!isObject(it) && it !== null) {
       throw TypeError("Can't set " + String(it) + ' as a prototype');
@@ -2030,6 +1903,80 @@
   //     outline: none;
   //   }
   // }
+
+  var arrayMethodIsStrict = function (METHOD_NAME, argument) {
+    var method = [][METHOD_NAME];
+    return !!method && fails(function () {
+      // eslint-disable-next-line no-useless-call,no-throw-literal
+      method.call(null, argument || function () { throw 1; }, 1);
+    });
+  };
+
+  var $forEach = arrayIteration.forEach;
+
+
+
+  var STRICT_METHOD = arrayMethodIsStrict('forEach');
+  var USES_TO_LENGTH$1 = arrayMethodUsesToLength('forEach');
+
+  // `Array.prototype.forEach` method implementation
+  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
+  var arrayForEach = (!STRICT_METHOD || !USES_TO_LENGTH$1) ? function forEach(callbackfn /* , thisArg */) {
+    return $forEach(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
+  } : [].forEach;
+
+  // `Array.prototype.forEach` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
+  _export({ target: 'Array', proto: true, forced: [].forEach != arrayForEach }, {
+    forEach: arrayForEach
+  });
+
+  // iterable DOM collections
+  // flag - `iterable` interface - 'entries', 'keys', 'values', 'forEach' methods
+  var domIterables = {
+    CSSRuleList: 0,
+    CSSStyleDeclaration: 0,
+    CSSValueList: 0,
+    ClientRectList: 0,
+    DOMRectList: 0,
+    DOMStringList: 0,
+    DOMTokenList: 1,
+    DataTransferItemList: 0,
+    FileList: 0,
+    HTMLAllCollection: 0,
+    HTMLCollection: 0,
+    HTMLFormElement: 0,
+    HTMLSelectElement: 0,
+    MediaList: 0,
+    MimeTypeArray: 0,
+    NamedNodeMap: 0,
+    NodeList: 1,
+    PaintRequestList: 0,
+    Plugin: 0,
+    PluginArray: 0,
+    SVGLengthList: 0,
+    SVGNumberList: 0,
+    SVGPathSegList: 0,
+    SVGPointList: 0,
+    SVGStringList: 0,
+    SVGTransformList: 0,
+    SourceBufferList: 0,
+    StyleSheetList: 0,
+    TextTrackCueList: 0,
+    TextTrackList: 0,
+    TouchList: 0
+  };
+
+  for (var COLLECTION_NAME in domIterables) {
+    var Collection = global_1[COLLECTION_NAME];
+    var CollectionPrototype = Collection && Collection.prototype;
+    // some Chrome versions have non-configurable methods on DOMTokenList
+    if (CollectionPrototype && CollectionPrototype.forEach !== arrayForEach) try {
+      createNonEnumerableProperty(CollectionPrototype, 'forEach', arrayForEach);
+    } catch (error) {
+      CollectionPrototype.forEach = arrayForEach;
+    }
+  }
 
   var LbpFormButton = {
     render: function render() {
@@ -63652,6 +63599,32 @@
   module.exports = _typeof;
   });
 
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+
+  var classCallCheck = _classCallCheck;
+
+  function _defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  function _createClass(Constructor, protoProps, staticProps) {
+    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) _defineProperties(Constructor, staticProps);
+    return Constructor;
+  }
+
+  var createClass = _createClass;
+
   /**
    *
    declare module ExcelRows {
@@ -64189,7 +64162,7 @@
     }
   };
 
-  var plugins = [{
+  var _plugins = [{
     i18nTitle: {
       'en-US': 'RadarChart',
       'zh-CN': '雷达图'
@@ -64439,15 +64412,51 @@
     component: LbpNewsList
   }];
 
-  var PluginController = /*#__PURE__*/function () {
-    function PluginController() {
-      classCallCheck(this, PluginController);
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-16 15:12:42
+   * @LastEditTime : 2020-11-16 15:12:49
+   * @Description :
+   */
+  var LbpPlugin = function LbpPlugin() {
+    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+        name = _ref.name,
+        _ref$i18nTitle = _ref.i18nTitle,
+        i18nTitle = _ref$i18nTitle === void 0 ? {} : _ref$i18nTitle,
+        title = _ref.title,
+        icon = _ref.icon,
+        visible = _ref.visible,
+        component = _ref.component;
+
+    classCallCheck(this, LbpPlugin);
+
+    this.name = name;
+    this.i18nTitle = i18nTitle;
+    this.title = title;
+    this.icon = icon;
+    this.visible = visible;
+    this.component = component;
+  };
+
+  var LbpPluginController = /*#__PURE__*/function () {
+    function LbpPluginController() {
+      var _this = this;
+
+      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [],
+          _ref$plugins = _ref.plugins,
+          plugins = _ref$plugins === void 0 ? [] : _ref$plugins;
+
+      classCallCheck(this, LbpPluginController);
 
       this._plugins = [];
       this._pluginsMap = {};
+      plugins.forEach(function (v) {
+        return _this.registerPlugin(v);
+      });
     }
 
-    createClass(PluginController, [{
+    createClass(LbpPluginController, [{
       key: "registerPlugin",
       value: function registerPlugin() {
         var option = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -64475,12 +64484,18 @@
       }
     }]);
 
-    return PluginController;
+    return LbpPluginController;
   }();
 
-  var pluginController = new PluginController();
-  plugins.forEach(function (v) {
-    return pluginController.registerPlugin(v);
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-11 19:49:25
+   * @LastEditTime : 2020-11-16 15:18:02
+   * @Description :
+   */
+  var lbpPluginController = new LbpPluginController({
+    plugins: _plugins
   });
 
   var UndoRedoHistory = /*#__PURE__*/function () {
@@ -64625,8 +64640,6 @@
     });
   }
 
-  function _extends$6(){return _extends$6=Object.assign||function(a){for(var b,c=1;c<arguments.length;c++)for(var d in b=arguments[c],b)Object.prototype.hasOwnProperty.call(b,d)&&(a[d]=b[d]);return a},_extends$6.apply(this,arguments)}var normalMerge=["attrs","props","domProps"],toArrayMerge=["class","style","directives"],functionalMerge=["on","nativeOn"],mergeJsxProps=function(a){return a.reduce(function(c,a){for(var b in a)if(!c[b])c[b]=a[b];else if(-1!==normalMerge.indexOf(b))c[b]=_extends$6({},c[b],a[b]);else if(-1!==toArrayMerge.indexOf(b)){var d=c[b]instanceof Array?c[b]:[c[b]],e=a[b]instanceof Array?a[b]:[a[b]];c[b]=d.concat(e);}else if(-1!==functionalMerge.indexOf(b)){for(var f in a[b])if(c[b][f]){var g=c[b][f]instanceof Array?c[b][f]:[c[b][f]],h=a[b][f]instanceof Array?a[b][f]:[a[b][f]];c[b][f]=g.concat(h);}else c[b][f]=a[b][f];}else if("hook"==b)for(var i in a[b])c[b][i]=c[b][i]?mergeFn(c[b][i],a[b][i]):a[b][i];else c[b]=a[b];return c},{})},mergeFn=function(a,b){return function(){a&&a.apply(this,arguments),b&&b.apply(this,arguments);}};var helper$5=mergeJsxProps;
-
   var nativeAssign = Object.assign;
   var defineProperty$8 = Object.defineProperty;
 
@@ -64677,6 +64690,8 @@
     assign: objectAssign
   });
 
+  function _extends$6(){return _extends$6=Object.assign||function(a){for(var b,c=1;c<arguments.length;c++)for(var d in b=arguments[c],b)Object.prototype.hasOwnProperty.call(b,d)&&(a[d]=b[d]);return a},_extends$6.apply(this,arguments)}var normalMerge=["attrs","props","domProps"],toArrayMerge=["class","style","directives"],functionalMerge=["on","nativeOn"],mergeJsxProps=function(a){return a.reduce(function(c,a){for(var b in a)if(!c[b])c[b]=a[b];else if(-1!==normalMerge.indexOf(b))c[b]=_extends$6({},c[b],a[b]);else if(-1!==toArrayMerge.indexOf(b)){var d=c[b]instanceof Array?c[b]:[c[b]],e=a[b]instanceof Array?a[b]:[a[b]];c[b]=d.concat(e);}else if(-1!==functionalMerge.indexOf(b)){for(var f in a[b])if(c[b][f]){var g=c[b][f]instanceof Array?c[b][f]:[c[b][f]],h=a[b][f]instanceof Array?a[b][f]:[a[b][f]];c[b][f]=g.concat(h);}else c[b][f]=a[b][f];}else if("hook"==b)for(var i in a[b])c[b][i]=c[b][i]?mergeFn(c[b][i],a[b][i]):a[b][i];else c[b]=a[b];return c},{})},mergeFn=function(a,b){return function(){a&&a.apply(this,arguments),b&&b.apply(this,arguments);}};var helper$5=mergeJsxProps;
+
   var $entries = objectToArray.entries;
 
   // `Object.entries` method
@@ -64686,52 +64701,6 @@
       return $entries(O);
     }
   });
-
-  var EventBus = new Vue__default['default'](); // event bus
-
-  var animationsMixin = {
-    methods: {
-      runAnimations: function runAnimations() {
-        if (!this.activeElement) return;
-        var animationQueue = this.activeElement.animations || [];
-        var len = animationQueue.length;
-        if (len === 0) return;
-        var parentNode = this.activeElement.vm.$el;
-        var animIdx = 0;
-        runAnimation();
-
-        function runAnimation() {
-          if (animIdx < len) {
-            var animation = animationQueue[animIdx];
-            Object.assign(parentNode.style, {
-              animationName: animation.type,
-              animationDuration: "".concat(animation.duration, "s"),
-              animationIterationCount: animation.infinite ? 'infinite' : animation.interationCount,
-              animationDelay: "".concat(animation.delay, "s"),
-              animationFillMode: 'both'
-            });
-            animIdx++;
-          } else {
-            Object.assign(parentNode.style, {
-              animationName: null,
-              animationDuration: null,
-              animationIterationCount: null,
-              animationDelay: null,
-              animationFillMode: null
-            });
-          }
-        }
-
-        parentNode.addEventListener('animationend', runAnimation, false);
-      }
-    },
-    created: function created() {
-      var that = this;
-      EventBus && EventBus.$on('RUN_ANIMATIONS', function () {
-        that.runAnimations();
-      });
-    }
-  };
 
   /**
    * 增加范围node 以限制触发点击外部的 区域范围
@@ -64917,6 +64886,438 @@
   };
   var vClickOutside = HAS_WINDOWS ? directive : {};
 
+  // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError,
+  // so we use an intermediate function.
+  function RE(s, f) {
+    return RegExp(s, f);
+  }
+
+  var UNSUPPORTED_Y = fails(function () {
+    // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError
+    var re = RE('a', 'y');
+    re.lastIndex = 2;
+    return re.exec('abcd') != null;
+  });
+
+  var BROKEN_CARET = fails(function () {
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=773687
+    var re = RE('^r', 'gy');
+    re.lastIndex = 2;
+    return re.exec('str') != null;
+  });
+
+  var regexpStickyHelpers = {
+  	UNSUPPORTED_Y: UNSUPPORTED_Y,
+  	BROKEN_CARET: BROKEN_CARET
+  };
+
+  var nativeExec = RegExp.prototype.exec;
+  // This always refers to the native implementation, because the
+  // String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.js,
+  // which loads this file before patching the method.
+  var nativeReplace = String.prototype.replace;
+
+  var patchedExec = nativeExec;
+
+  var UPDATES_LAST_INDEX_WRONG = (function () {
+    var re1 = /a/;
+    var re2 = /b*/g;
+    nativeExec.call(re1, 'a');
+    nativeExec.call(re2, 'a');
+    return re1.lastIndex !== 0 || re2.lastIndex !== 0;
+  })();
+
+  var UNSUPPORTED_Y$1 = regexpStickyHelpers.UNSUPPORTED_Y || regexpStickyHelpers.BROKEN_CARET;
+
+  // nonparticipating capturing group, copied from es5-shim's String#split patch.
+  var NPCG_INCLUDED = /()??/.exec('')[1] !== undefined;
+
+  var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED || UNSUPPORTED_Y$1;
+
+  if (PATCH) {
+    patchedExec = function exec(str) {
+      var re = this;
+      var lastIndex, reCopy, match, i;
+      var sticky = UNSUPPORTED_Y$1 && re.sticky;
+      var flags = regexpFlags.call(re);
+      var source = re.source;
+      var charsAdded = 0;
+      var strCopy = str;
+
+      if (sticky) {
+        flags = flags.replace('y', '');
+        if (flags.indexOf('g') === -1) {
+          flags += 'g';
+        }
+
+        strCopy = String(str).slice(re.lastIndex);
+        // Support anchored sticky behavior.
+        if (re.lastIndex > 0 && (!re.multiline || re.multiline && str[re.lastIndex - 1] !== '\n')) {
+          source = '(?: ' + source + ')';
+          strCopy = ' ' + strCopy;
+          charsAdded++;
+        }
+        // ^(? + rx + ) is needed, in combination with some str slicing, to
+        // simulate the 'y' flag.
+        reCopy = new RegExp('^(?:' + source + ')', flags);
+      }
+
+      if (NPCG_INCLUDED) {
+        reCopy = new RegExp('^' + source + '$(?!\\s)', flags);
+      }
+      if (UPDATES_LAST_INDEX_WRONG) lastIndex = re.lastIndex;
+
+      match = nativeExec.call(sticky ? reCopy : re, strCopy);
+
+      if (sticky) {
+        if (match) {
+          match.input = match.input.slice(charsAdded);
+          match[0] = match[0].slice(charsAdded);
+          match.index = re.lastIndex;
+          re.lastIndex += match[0].length;
+        } else re.lastIndex = 0;
+      } else if (UPDATES_LAST_INDEX_WRONG && match) {
+        re.lastIndex = re.global ? match.index + match[0].length : lastIndex;
+      }
+      if (NPCG_INCLUDED && match && match.length > 1) {
+        // Fix browsers whose `exec` methods don't consistently return `undefined`
+        // for NPCG, like IE8. NOTE: This doesn' work for /(.?)?/
+        nativeReplace.call(match[0], reCopy, function () {
+          for (i = 1; i < arguments.length - 2; i++) {
+            if (arguments[i] === undefined) match[i] = undefined;
+          }
+        });
+      }
+
+      return match;
+    };
+  }
+
+  var regexpExec = patchedExec;
+
+  _export({ target: 'RegExp', proto: true, forced: /./.exec !== regexpExec }, {
+    exec: regexpExec
+  });
+
+  // TODO: Remove from `core-js@4` since it's moved to entry points
+
+
+
+
+
+
+
+  var SPECIES$6 = wellKnownSymbol('species');
+
+  var REPLACE_SUPPORTS_NAMED_GROUPS = !fails(function () {
+    // #replace needs built-in support for named groups.
+    // #match works fine because it just return the exec results, even if it has
+    // a "grops" property.
+    var re = /./;
+    re.exec = function () {
+      var result = [];
+      result.groups = { a: '7' };
+      return result;
+    };
+    return ''.replace(re, '$<a>') !== '7';
+  });
+
+  // IE <= 11 replaces $0 with the whole match, as if it was $&
+  // https://stackoverflow.com/questions/6024666/getting-ie-to-replace-a-regex-with-the-literal-string-0
+  var REPLACE_KEEPS_$0 = (function () {
+    return 'a'.replace(/./, '$0') === '$0';
+  })();
+
+  var REPLACE = wellKnownSymbol('replace');
+  // Safari <= 13.0.3(?) substitutes nth capture where n>m with an empty string
+  var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = (function () {
+    if (/./[REPLACE]) {
+      return /./[REPLACE]('a', '$0') === '';
+    }
+    return false;
+  })();
+
+  // Chrome 51 has a buggy "split" implementation when RegExp#exec !== nativeExec
+  // Weex JS has frozen built-in prototypes, so use try / catch wrapper
+  var SPLIT_WORKS_WITH_OVERWRITTEN_EXEC = !fails(function () {
+    var re = /(?:)/;
+    var originalExec = re.exec;
+    re.exec = function () { return originalExec.apply(this, arguments); };
+    var result = 'ab'.split(re);
+    return result.length !== 2 || result[0] !== 'a' || result[1] !== 'b';
+  });
+
+  var fixRegexpWellKnownSymbolLogic = function (KEY, length, exec, sham) {
+    var SYMBOL = wellKnownSymbol(KEY);
+
+    var DELEGATES_TO_SYMBOL = !fails(function () {
+      // String methods call symbol-named RegEp methods
+      var O = {};
+      O[SYMBOL] = function () { return 7; };
+      return ''[KEY](O) != 7;
+    });
+
+    var DELEGATES_TO_EXEC = DELEGATES_TO_SYMBOL && !fails(function () {
+      // Symbol-named RegExp methods call .exec
+      var execCalled = false;
+      var re = /a/;
+
+      if (KEY === 'split') {
+        // We can't use real regex here since it causes deoptimization
+        // and serious performance degradation in V8
+        // https://github.com/zloirock/core-js/issues/306
+        re = {};
+        // RegExp[@@split] doesn't call the regex's exec method, but first creates
+        // a new one. We need to return the patched regex when creating the new one.
+        re.constructor = {};
+        re.constructor[SPECIES$6] = function () { return re; };
+        re.flags = '';
+        re[SYMBOL] = /./[SYMBOL];
+      }
+
+      re.exec = function () { execCalled = true; return null; };
+
+      re[SYMBOL]('');
+      return !execCalled;
+    });
+
+    if (
+      !DELEGATES_TO_SYMBOL ||
+      !DELEGATES_TO_EXEC ||
+      (KEY === 'replace' && !(
+        REPLACE_SUPPORTS_NAMED_GROUPS &&
+        REPLACE_KEEPS_$0 &&
+        !REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE
+      )) ||
+      (KEY === 'split' && !SPLIT_WORKS_WITH_OVERWRITTEN_EXEC)
+    ) {
+      var nativeRegExpMethod = /./[SYMBOL];
+      var methods = exec(SYMBOL, ''[KEY], function (nativeMethod, regexp, str, arg2, forceStringMethod) {
+        if (regexp.exec === regexpExec) {
+          if (DELEGATES_TO_SYMBOL && !forceStringMethod) {
+            // The native String method already delegates to @@method (this
+            // polyfilled function), leasing to infinite recursion.
+            // We avoid it by directly calling the native @@method method.
+            return { done: true, value: nativeRegExpMethod.call(regexp, str, arg2) };
+          }
+          return { done: true, value: nativeMethod.call(str, regexp, arg2) };
+        }
+        return { done: false };
+      }, {
+        REPLACE_KEEPS_$0: REPLACE_KEEPS_$0,
+        REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE: REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE
+      });
+      var stringMethod = methods[0];
+      var regexMethod = methods[1];
+
+      redefine(String.prototype, KEY, stringMethod);
+      redefine(RegExp.prototype, SYMBOL, length == 2
+        // 21.2.5.8 RegExp.prototype[@@replace](string, replaceValue)
+        // 21.2.5.11 RegExp.prototype[@@split](string, limit)
+        ? function (string, arg) { return regexMethod.call(string, this, arg); }
+        // 21.2.5.6 RegExp.prototype[@@match](string)
+        // 21.2.5.9 RegExp.prototype[@@search](string)
+        : function (string) { return regexMethod.call(string, this); }
+      );
+    }
+
+    if (sham) createNonEnumerableProperty(RegExp.prototype[SYMBOL], 'sham', true);
+  };
+
+  // `String.prototype.{ codePointAt, at }` methods implementation
+  var createMethod$5 = function (CONVERT_TO_STRING) {
+    return function ($this, pos) {
+      var S = String(requireObjectCoercible($this));
+      var position = toInteger(pos);
+      var size = S.length;
+      var first, second;
+      if (position < 0 || position >= size) return CONVERT_TO_STRING ? '' : undefined;
+      first = S.charCodeAt(position);
+      return first < 0xD800 || first > 0xDBFF || position + 1 === size
+        || (second = S.charCodeAt(position + 1)) < 0xDC00 || second > 0xDFFF
+          ? CONVERT_TO_STRING ? S.charAt(position) : first
+          : CONVERT_TO_STRING ? S.slice(position, position + 2) : (first - 0xD800 << 10) + (second - 0xDC00) + 0x10000;
+    };
+  };
+
+  var stringMultibyte = {
+    // `String.prototype.codePointAt` method
+    // https://tc39.github.io/ecma262/#sec-string.prototype.codepointat
+    codeAt: createMethod$5(false),
+    // `String.prototype.at` method
+    // https://github.com/mathiasbynens/String.prototype.at
+    charAt: createMethod$5(true)
+  };
+
+  var charAt = stringMultibyte.charAt;
+
+  // `AdvanceStringIndex` abstract operation
+  // https://tc39.github.io/ecma262/#sec-advancestringindex
+  var advanceStringIndex = function (S, index, unicode) {
+    return index + (unicode ? charAt(S, index).length : 1);
+  };
+
+  // `RegExpExec` abstract operation
+  // https://tc39.github.io/ecma262/#sec-regexpexec
+  var regexpExecAbstract = function (R, S) {
+    var exec = R.exec;
+    if (typeof exec === 'function') {
+      var result = exec.call(R, S);
+      if (typeof result !== 'object') {
+        throw TypeError('RegExp exec method returned something other than an Object or null');
+      }
+      return result;
+    }
+
+    if (classofRaw(R) !== 'RegExp') {
+      throw TypeError('RegExp#exec called on incompatible receiver');
+    }
+
+    return regexpExec.call(R, S);
+  };
+
+  var max$5 = Math.max;
+  var min$5 = Math.min;
+  var floor$1 = Math.floor;
+  var SUBSTITUTION_SYMBOLS = /\$([$&'`]|\d\d?|<[^>]*>)/g;
+  var SUBSTITUTION_SYMBOLS_NO_NAMED = /\$([$&'`]|\d\d?)/g;
+
+  var maybeToString = function (it) {
+    return it === undefined ? it : String(it);
+  };
+
+  // @@replace logic
+  fixRegexpWellKnownSymbolLogic('replace', 2, function (REPLACE, nativeReplace, maybeCallNative, reason) {
+    var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = reason.REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE;
+    var REPLACE_KEEPS_$0 = reason.REPLACE_KEEPS_$0;
+    var UNSAFE_SUBSTITUTE = REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE ? '$' : '$0';
+
+    return [
+      // `String.prototype.replace` method
+      // https://tc39.github.io/ecma262/#sec-string.prototype.replace
+      function replace(searchValue, replaceValue) {
+        var O = requireObjectCoercible(this);
+        var replacer = searchValue == undefined ? undefined : searchValue[REPLACE];
+        return replacer !== undefined
+          ? replacer.call(searchValue, O, replaceValue)
+          : nativeReplace.call(String(O), searchValue, replaceValue);
+      },
+      // `RegExp.prototype[@@replace]` method
+      // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@replace
+      function (regexp, replaceValue) {
+        if (
+          (!REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE && REPLACE_KEEPS_$0) ||
+          (typeof replaceValue === 'string' && replaceValue.indexOf(UNSAFE_SUBSTITUTE) === -1)
+        ) {
+          var res = maybeCallNative(nativeReplace, regexp, this, replaceValue);
+          if (res.done) return res.value;
+        }
+
+        var rx = anObject(regexp);
+        var S = String(this);
+
+        var functionalReplace = typeof replaceValue === 'function';
+        if (!functionalReplace) replaceValue = String(replaceValue);
+
+        var global = rx.global;
+        if (global) {
+          var fullUnicode = rx.unicode;
+          rx.lastIndex = 0;
+        }
+        var results = [];
+        while (true) {
+          var result = regexpExecAbstract(rx, S);
+          if (result === null) break;
+
+          results.push(result);
+          if (!global) break;
+
+          var matchStr = String(result[0]);
+          if (matchStr === '') rx.lastIndex = advanceStringIndex(S, toLength(rx.lastIndex), fullUnicode);
+        }
+
+        var accumulatedResult = '';
+        var nextSourcePosition = 0;
+        for (var i = 0; i < results.length; i++) {
+          result = results[i];
+
+          var matched = String(result[0]);
+          var position = max$5(min$5(toInteger(result.index), S.length), 0);
+          var captures = [];
+          // NOTE: This is equivalent to
+          //   captures = result.slice(1).map(maybeToString)
+          // but for some reason `nativeSlice.call(result, 1, result.length)` (called in
+          // the slice polyfill when slicing native arrays) "doesn't work" in safari 9 and
+          // causes a crash (https://pastebin.com/N21QzeQA) when trying to debug it.
+          for (var j = 1; j < result.length; j++) captures.push(maybeToString(result[j]));
+          var namedCaptures = result.groups;
+          if (functionalReplace) {
+            var replacerArgs = [matched].concat(captures, position, S);
+            if (namedCaptures !== undefined) replacerArgs.push(namedCaptures);
+            var replacement = String(replaceValue.apply(undefined, replacerArgs));
+          } else {
+            replacement = getSubstitution(matched, S, position, captures, namedCaptures, replaceValue);
+          }
+          if (position >= nextSourcePosition) {
+            accumulatedResult += S.slice(nextSourcePosition, position) + replacement;
+            nextSourcePosition = position + matched.length;
+          }
+        }
+        return accumulatedResult + S.slice(nextSourcePosition);
+      }
+    ];
+
+    // https://tc39.github.io/ecma262/#sec-getsubstitution
+    function getSubstitution(matched, str, position, captures, namedCaptures, replacement) {
+      var tailPos = position + matched.length;
+      var m = captures.length;
+      var symbols = SUBSTITUTION_SYMBOLS_NO_NAMED;
+      if (namedCaptures !== undefined) {
+        namedCaptures = toObject(namedCaptures);
+        symbols = SUBSTITUTION_SYMBOLS;
+      }
+      return nativeReplace.call(replacement, symbols, function (match, ch) {
+        var capture;
+        switch (ch.charAt(0)) {
+          case '$': return '$';
+          case '&': return matched;
+          case '`': return str.slice(0, position);
+          case "'": return str.slice(tailPos);
+          case '<':
+            capture = namedCaptures[ch.slice(1, -1)];
+            break;
+          default: // \d\d?
+            var n = +ch;
+            if (n === 0) return match;
+            if (n > m) {
+              var f = floor$1(n / 10);
+              if (f === 0) return match;
+              if (f <= m) return captures[f - 1] === undefined ? ch.charAt(1) : captures[f - 1] + ch.charAt(1);
+              return match;
+            }
+            capture = captures[n - 1];
+        }
+        return capture === undefined ? '' : capture;
+      });
+    }
+  });
+
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-13 11:32:12
+   * @LastEditTime : 2020-11-13 11:32:31
+   * @Description :
+   */
+  var hyphenateStyleName = function hyphenateStyleName(name) {
+    var uppercasePattern = /([A-Z])/g;
+    var msPattern = /^ms-/;
+    return name.replace(uppercasePattern, '-$1').toLowerCase().replace(msPattern, '-ms-');
+  };
+
+  function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var ShapeLayerDefaultProps = {
     top: 0,
     left: 0,
@@ -64924,42 +65325,30 @@
     height: 40
   };
   var points$2 = ['lt', 'rt', 'lb', 'rb', 'lm', 'rm', 'tm', 'bm'];
-  var id$1 = 0;
   var ShapeLayer = {
-    mixins: [animationsMixin],
     directives: {
       clickOutside: vClickOutside
     },
     props: {
-      width: {
-        type: Number,
-        default: ShapeLayerDefaultProps.width
-      },
-      height: {
-        type: Number,
-        default: ShapeLayerDefaultProps.height
-      },
-      left: {
-        type: Number,
-        default: ShapeLayerDefaultProps.left
-      },
-      top: {
-        type: Number,
-        default: ShapeLayerDefaultProps.top
+      elStyle: {
+        type: Object,
+        default: function _default() {
+          return {};
+        }
       },
       disable: {
         type: Boolean,
         default: ShapeLayerDefaultProps.disable
       }
     },
+    inject: ['canvas'],
+    created: function created() {
+      console.log(this.canvas);
+    },
     data: function data() {
       return {
-        rect: {
-          width: this.width,
-          height: this.height,
-          left: this.left,
-          top: this.top
-        },
+        rect: this.getReact(this.elStyle),
+        shapeStyle: this.getStyle(this.elStyle),
         startY: 0,
         startX: 0,
         point: '',
@@ -64967,27 +65356,7 @@
         vcoConfig: {}
       };
     },
-    mounted: function mounted() {
-      this.vcoConfig = {
-        events: ['mousedown'],
-        handler: this.onClickOutside,
-        scopeNode: document.querySelector('.lb-canvas')
-      };
-    },
     computed: {
-      shapeStyle: function shapeStyle() {
-        var _this$rect = this.rect,
-            left = _this$rect.left,
-            top = _this$rect.top,
-            width = _this$rect.width,
-            height = _this$rect.height;
-        return {
-          left: "".concat(left, "px"),
-          top: "".concat(top, "px"),
-          width: "".concat(width, "px"),
-          height: "".concat(height, "px")
-        };
-      },
       ltPointStyle: function ltPointStyle() {
         return {
           left: "".concat(0, "px"),
@@ -65009,9 +65378,9 @@
         };
       },
       rbPointStyle: function rbPointStyle() {
-        var _this$rect2 = this.rect,
-            width = _this$rect2.width,
-            height = _this$rect2.height;
+        var _this$rect = this.rect,
+            width = _this$rect.width,
+            height = _this$rect.height;
         return {
           left: "".concat(width, "px"),
           top: "".concat(height, "px")
@@ -65025,9 +65394,9 @@
         };
       },
       rmPointStyle: function rmPointStyle() {
-        var _this$rect3 = this.rect,
-            width = _this$rect3.width,
-            height = _this$rect3.height;
+        var _this$rect2 = this.rect,
+            width = _this$rect2.width,
+            height = _this$rect2.height;
         return {
           left: "".concat(width, "px"),
           top: "".concat(height / 2, "px")
@@ -65041,24 +65410,68 @@
         };
       },
       bmPointStyle: function bmPointStyle() {
-        var _this$rect4 = this.rect,
-            width = _this$rect4.width,
-            height = _this$rect4.height;
+        var _this$rect3 = this.rect,
+            width = _this$rect3.width,
+            height = _this$rect3.height;
         return {
           left: "".concat(width / 2, "px"),
           top: "".concat(height, "px")
         };
+      },
+      bound: function bound() {
+        return {
+          left: 0,
+          top: 0,
+          right: this.canvas.width,
+          bottom: this.canvas.height
+        };
       }
     },
+    mounted: function mounted() {
+      this.vcoConfig = {
+        events: ['mousedown'],
+        handler: this.onClickOutside,
+        scopeNode: document.querySelector('.lb-canvas-wrapper')
+      };
+    },
     watch: {
+      elStyle: function elStyle() {
+        var elStyle = this.elStyle;
+        this.rect = this.getReact(elStyle);
+        this.shapeStyle = this.getStyle(elStyle);
+      },
       rect: {
-        handler: function handler(newValue) {
-          this.$emit('change', newValue);
+        handler: function handler() {
+          var newStyle = _objectSpread$1(_objectSpread$1({}, this.elStyle), this.rect);
+
+          this.shapeStyle = _objectSpread$1(_objectSpread$1({}, this.shapeStyle), this.getStyle(this.rect));
+          this.$emit('change', newStyle);
         },
         deep: true
       }
     },
     methods: {
+      getReact: function getReact(elStyle) {
+        return {
+          left: elStyle.left,
+          top: elStyle.top,
+          width: elStyle.width,
+          height: elStyle.height
+        };
+      },
+      getStyle: function getStyle(style) {
+        var newStyle = {};
+        Object.entries(style).forEach(function (_ref) {
+          var _ref2 = slicedToArray(_ref, 2),
+              key = _ref2[0],
+              value = _ref2[1];
+
+          var v = typeof value === 'number' ? "".concat(value, "px") : value;
+          var n = hyphenateStyleName(key);
+          newStyle[n] = v;
+        });
+        return newStyle;
+      },
       setActive: function setActive(active) {
         if (this.active === active) return;
         active ? this.$emit('active', active) : this.$emit('deactive', active);
@@ -65067,34 +65480,48 @@
       onClickOutside: function onClickOutside() {
         this.setActive(false);
       },
-      addWidth: function addWidth(width) {
-        var currentWidth = this.rect.width;
-        var nextWidth = currentWidth + width;
+      addWidth: function addWidth(distance) {
+        var _this$rect4 = this.rect,
+            currentLeft = _this$rect4.left,
+            currentWidth = _this$rect4.width;
+        var boundRight = this.bound.right;
+        var nextWidth = currentWidth + distance;
         if (nextWidth < 0) nextWidth = 0;
+        if (currentLeft + nextWidth > boundRight) return;
         return this.rect.width = nextWidth;
       },
-      addHeight: function addHeight(height) {
-        var currentHeight = this.rect.height;
-        var nextHeight = currentHeight + height;
+      addHeight: function addHeight(distance) {
+        var _this$rect5 = this.rect,
+            currentTop = _this$rect5.top,
+            currentHeight = _this$rect5.height;
+        var boundBottom = this.bound.bottom;
+        var nextHeight = currentHeight + distance;
         if (nextHeight < 0) nextHeight = 0;
+        if (currentTop + nextHeight > boundBottom) return;
         return this.rect.height = nextHeight;
       },
-      addLeft: function addLeft(left) {
-        var _this$rect5 = this.rect,
-            currentLeft = _this$rect5.left,
-            currentWidth = _this$rect5.width;
-        left = currentWidth > left ? left : currentWidth;
-        var nextLeft = currentLeft + left;
-        if (nextLeft < 0) nextLeft = 0;
+      addLeft: function addLeft(distance) {
+        var _this$rect6 = this.rect,
+            currentLeft = _this$rect6.left,
+            currentWidth = _this$rect6.width;
+        var _this$bound = this.bound,
+            boundLeft = _this$bound.left,
+            boundRight = _this$bound.right;
+        var nextLeft = currentLeft + distance;
+        if (nextLeft < boundLeft) nextLeft = boundLeft;
+        if (nextLeft + currentWidth > boundRight) return;
         return this.rect.left = nextLeft;
       },
-      addTop: function addTop(top) {
-        var _this$rect6 = this.rect,
-            currentTop = _this$rect6.top,
-            currentHeight = _this$rect6.height;
-        top = currentHeight > top ? top : currentHeight;
-        var nextTop = currentTop + top;
-        if (nextTop < 0) nextTop = 0;
+      addTop: function addTop(distance) {
+        var _this$rect7 = this.rect,
+            currentTop = _this$rect7.top,
+            currentHeight = _this$rect7.height;
+        var _this$bound2 = this.bound,
+            boundTop = _this$bound2.top,
+            boundBottom = _this$bound2.bottom;
+        var nextTop = currentTop + distance;
+        if (nextTop < boundTop) nextTop = boundTop;
+        if (nextTop + currentHeight > boundBottom) return;
         return this.rect.top = nextTop;
       },
       handleShapeDown: function handleShapeDown(e) {
@@ -65141,10 +65568,27 @@
         var distanceY = e.clientY - this.startY;
         this.startX = e.clientX;
         this.startY = e.clientY;
-        effectLeft && this.addLeft(distanceX);
-        effectLeft && this.addWidth(-distanceX);
-        effectTop && this.addTop(distanceY);
-        effectTop && this.addHeight(-distanceY);
+
+        if (effectLeft) {
+          var _this$rect8 = this.rect,
+              currentLeft = _this$rect8.left,
+              currentWidth = _this$rect8.width;
+          var effectLeftDistance = Math.min(currentWidth, distanceX);
+          var effectWidthDistance = Math.min(currentLeft, -distanceX);
+          this.addLeft(effectLeftDistance);
+          this.addWidth(effectWidthDistance);
+        }
+
+        if (effectTop) {
+          var _this$rect9 = this.rect,
+              currentTop = _this$rect9.top,
+              currentHeight = _this$rect9.height;
+          var effectTopDistance = Math.min(currentHeight, distanceY);
+          var effectHeightDistance = Math.min(currentTop, -distanceY);
+          this.addTop(effectTopDistance);
+          this.addHeight(effectHeightDistance);
+        }
+
         effectWidth && this.addWidth(distanceX);
         effectHeight && this.addHeight(distanceY);
       },
@@ -65159,23 +65603,22 @@
       var h = arguments[0];
       return h("div", {
         "attrs": {
-          "tabindex": "0",
-          "data-id": id$1++
+          "tabindex": "0"
         },
         "directives": [{
           name: "click-outside",
           value: this.vcoConfig
         }],
-        "style": this.shapeStyle,
-        "class": ['shape__wrapper', {
-          'shape__wrapper-active': this.active
+        "style": this.getStyle(this.shapeStyle),
+        "class": ['shape-layer', {
+          active: this.active
         }],
         "on": {
           "mousedown": this.handleShapeDown
         },
         "ref": "shape"
       }, [h("div", {
-        "class": "content"
+        "class": "shape-content"
       }, [this.$slots.default]), h("div", {
         "class": "control"
       }, [points$2.map(function (v) {
@@ -65185,7 +65628,7 @@
             value: _this2.active
           }],
           "style": _this2["".concat(v, "PointStyle")],
-          "class": "shape__scale-point",
+          "class": "shape-scale__point",
           "attrs": {
             "data-point": v
           },
@@ -65197,74 +65640,79 @@
     }
   };
 
-  function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   var LbpElement = /*#__PURE__*/function () {
     function LbpElement() {
-      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-          _ref$name = _ref.name,
-          name = _ref$name === void 0 ? '' : _ref$name,
-          _ref$uuid = _ref.uuid,
-          uuid = _ref$uuid === void 0 ? +new Date() : _ref$uuid,
-          _ref$isRem = _ref.isRem,
-          isRem = _ref$isRem === void 0 ? false : _ref$isRem,
-          _ref$events = _ref.events,
-          events = _ref$events === void 0 ? [] : _ref$events,
-          _ref$animations = _ref.animations,
-          animations = _ref$animations === void 0 ? [] : _ref$animations,
-          _ref$props = _ref.props,
-          props = _ref$props === void 0 ? {} : _ref$props,
-          _ref$disabled = _ref.disabled,
-          disabled = _ref$disabled === void 0 ? false : _ref$disabled,
-          _ref$vm = _ref.vm,
-          vm = _ref$vm === void 0 ? null : _ref$vm;
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
       classCallCheck(this, LbpElement);
+
+      var _options$name = options.name,
+          name = _options$name === void 0 ? '' : _options$name,
+          _options$uuid = options.uuid,
+          uuid = _options$uuid === void 0 ? +new Date() : _options$uuid,
+          _options$props = options.props,
+          props = _options$props === void 0 ? {} : _options$props,
+          _options$style = options.style,
+          style = _options$style === void 0 ? {} : _options$style,
+          _options$attrs = options.attrs,
+          attrs = _options$attrs === void 0 ? {} : _options$attrs,
+          _options$animations = options.animations,
+          animations = _options$animations === void 0 ? [] : _options$animations,
+          _options$vm = options.vm,
+          vm = _options$vm === void 0 ? null : _options$vm;
 
       if (name) {
         this.name = name;
         this.uuid = uuid;
-        this.isRem = isRem;
         this.vm = vm;
-        this.disabled = disabled;
-        var plugin = pluginController.getPlugin(name);
-        var defaultPluginProps = LbpElement.getPluginProps(plugin.component);
-        this.props = _objectSpread$1(_objectSpread$1(_objectSpread$1({}, ShapeLayerDefaultProps), defaultPluginProps), props);
-        this.events = events;
-        this.animations = animations;
+        var plugin = lbpPluginController.getPlugin(name);
+        var pluginDefaultProps = LbpElement.getPluginProps(plugin.component); // 传入具体的element render
+
+        this.props = _objectSpread$2(_objectSpread$2({}, pluginDefaultProps), props);
+        this.attrs = _objectSpread$2({}, attrs);
+        this.class = _objectSpread$2({}, options.class); // 传入shapeLayer
+
+        this.style = _objectSpread$2(_objectSpread$2({}, ShapeLayerDefaultProps), style);
+        this.animations = toConsumableArray(animations);
       } else {
-        console.error('lbcanvas need a name of plugin');
+        console.error('lbpElement need a name of plugin');
       }
     }
 
     createClass(LbpElement, [{
       key: "clone",
       value: function clone() {
-        var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            _ref2$zIndex = _ref2.zIndex,
-            zIndex = _ref2$zIndex === void 0 ? this.zIndex + 1 : _ref2$zIndex;
+        var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            _ref$zIndex = _ref.zIndex,
+            zIndex = _ref$zIndex === void 0 ? this.zIndex + 1 : _ref$zIndex;
 
         return new LbpElement({
           zIndex: zIndex,
           name: this.name,
           pluginProps: this.pluginProps,
-          commonStyle: _objectSpread$1(_objectSpread$1({}, this.commonStyle), {}, {
+          commonStyle: _objectSpread$2(_objectSpread$2({}, this.commonStyle), {}, {
             top: this.commonStyle.top + 20,
             left: this.commonStyle.left + 20
           })
         });
       }
     }, {
-      key: "updateProps",
-      value: function updateProps(props) {
-        return Object.assign(this.props, props);
-      }
-    }, {
-      key: "updateAnimations",
-      value: function updateAnimations(animations) {
-        return this.animations = animations;
+      key: "update",
+      value: function update(_ref2) {
+        var props = _ref2.props,
+            style = _ref2.style,
+            animations = _ref2.animations;
+        props && Object.assign(this.props, props);
+        style && Object.assign(this.style, style);
+
+        if (animations) {
+          Object.assign(this.animations, animations);
+          this.animations.length = animations.length;
+        }
       }
     }, {
       key: "setVm",
@@ -65293,29 +65741,135 @@
         }
 
         var def = prop.default;
-        return typeof def === 'function' ? def.call(vm) : def;
+        return lodash.isFunction(def) ? def.call(vm) : def;
       }
     }]);
 
     return LbpElement;
   }();
 
+  var Render = {
+    props: {
+      elName: {
+        type: String,
+        require: true
+      },
+      elProps: {
+        type: Object,
+        require: true
+      }
+    },
+    render: function render() {
+      var h = arguments[0];
+      var component = lbpPluginController.getPlugin(this.elName).component;
+      return h(component, helper$5([{}, {
+        "props": this.elProps
+      }]));
+    }
+  };
+
+  var EventBus = new Vue__default['default'](); // event bus
+
+  var animationsMixin = {
+    methods: {
+      runAnimations: function runAnimations() {
+        if (!this.animations) return;
+        var animationQueue = this.animations || [];
+        var len = animationQueue.length;
+        if (len === 0) return;
+        var parentNode = this.$el;
+        var animIdx = 0;
+        runAnimation();
+
+        function runAnimation() {
+          if (animIdx < len) {
+            var animation = animationQueue[animIdx];
+            Object.assign(parentNode.style, {
+              animationName: animation.type,
+              animationDuration: "".concat(animation.duration, "s"),
+              animationIterationCount: animation.infinite ? 'infinite' : animation.interationCount,
+              animationDelay: "".concat(animation.delay, "s"),
+              animationFillMode: 'both'
+            });
+            animIdx++;
+          } else {
+            Object.assign(parentNode.style, {
+              animationName: null,
+              animationDuration: null,
+              animationIterationCount: null,
+              animationDelay: null,
+              animationFillMode: null
+            });
+          }
+        }
+
+        parentNode.addEventListener('animationend', runAnimation, false);
+      }
+    },
+    created: function created() {
+      var that = this;
+      EventBus && EventBus.$on('RUN_ANIMATIONS', function () {
+        that.runAnimations();
+      });
+    }
+  };
+
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-16 14:11:44
+   * @LastEditTime : 2020-11-16 14:33:15
+   * @Description :
+   */
+  var AnimateLayer = {
+    mixins: [animationsMixin],
+    props: {
+      animations: {
+        type: Array,
+        default: function _default() {
+          return [];
+        }
+      }
+    },
+    render: function render() {
+      var h = arguments[0];
+      return h("div", {
+        "class": "animate-layer"
+      }, [this.$slots.default]);
+    }
+  };
+
   var ElementRender = {
     props: {
       element: {
         type: LbpElement,
-        require: true
+        default: function _default() {
+          return new LbpElement({});
+        }
       }
     },
     created: function created() {
       this.element.setVm(this);
     },
-    render: function render(h) {
+    render: function render() {
+      var h = arguments[0];
       var element = this.element;
-      var component = pluginController.getPlugin(element.name).component;
-      return h(component, {
-        props: element.props
-      });
+      return h(ShapeLayer, helper$5([{
+        "attrs": {
+          "elStyle": element.style
+        }
+      }, {
+        "on": this.$listeners
+      }]), [h(AnimateLayer, {
+        "attrs": {
+          "animations": element.animations
+        }
+      }, [h(Render, {
+        "attrs": {
+          "elProps": element.props,
+          "elName": element.name
+        }
+      })])]);
     }
   };
 
@@ -65332,18 +65886,38 @@
         default: 0
       }
     },
+    provide: function provide() {
+      return {
+        canvas: this.canvas
+      };
+    },
     data: function data() {
       return {
         activeElement: null,
-        elements: []
+        elements: [],
+        canvas: {
+          width: this.width,
+          height: this.height
+        }
       };
+    },
+    watch: {
+      width: function width(_width) {
+        this.updateCanvas({
+          width: _width
+        });
+      },
+      height: function height(_height) {
+        this.updateCanvas({
+          height: _height
+        });
+      }
     },
     computed: {
       canvasStyle: function canvasStyle() {
         return {
           width: "".concat(this.width, "px"),
-          height: "".concat(this.height, "px"),
-          position: 'relative'
+          height: "".concat(this.height, "px")
         };
       }
     },
@@ -65359,13 +65933,12 @@
 
         this.$emit('deactive', deactiveElement);
       },
-      updateActiveElement: function updateActiveElement(_ref) {
-        var props = _ref.props,
-            animations = _ref.animations;
-
+      updateCanvas: function updateCanvas(data) {
+        Object.assign(this.canvas, data);
+      },
+      updateElement: function updateElement(data) {
         if (this.activeElement) {
-          props && this.activeElement.updateProps(props);
-          animations && this.activeElement.updateAnimations(animations);
+          data && this.activeElement.update(data);
         }
       },
       addElement: function addElement() {
@@ -65381,8 +65954,10 @@
           }
         });
       },
-      handleElementRectChange: function handleElementRectChange(props) {
-        this.updateActiveElement(props);
+      handleElementRectChange: function handleElementRectChange(style) {
+        this.updateElement({
+          style: style
+        });
       },
       clear: function clear() {
         this.elements = [];
@@ -65393,16 +65968,17 @@
 
       var h = arguments[0];
       return h("div", {
-        "class": "lb-canvas-wrapper"
+        "class": "lb-canvas"
       }, [h("div", {
-        "class": "lb-canvas",
+        "class": "lb-canvas-wrapper",
         "style": this.canvasStyle
       }, [h("div", {
         "class": "elements"
       }, [this.elements.map(function (element) {
-        return h(ShapeLayer, helper$5([{}, {
-          "props": element.props
-        }, {
+        return h(ElementRender, {
+          "attrs": {
+            "element": element
+          },
           "on": {
             "active": function active() {
               return _this2.handleElementActive(element);
@@ -65412,11 +65988,7 @@
             },
             "change": _this2.handleElementRectChange
           }
-        }]), [h(ElementRender, {
-          "attrs": {
-            "element": element
-          }
-        })]);
+        });
       })])])]);
     }
   };
@@ -65658,9 +66230,9 @@
   // https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
   addToUnscopables(FIND);
 
-  function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$3(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   var actions$2 = {
     setEditingElement: function setEditingElement(_ref, payload) {
@@ -65692,7 +66264,7 @@
       state.editingElement = payload;
     },
     setElementCommonStyle: function setElementCommonStyle(state, payload) {
-      state.editingElement.commonStyle = _objectSpread$2(_objectSpread$2({}, state.editingElement.commonStyle), payload);
+      state.editingElement.commonStyle = _objectSpread$3(_objectSpread$3({}, state.editingElement.commonStyle), payload);
     },
     elementManager: function elementManager(state, _ref6) {
       var type = _ref6.type,
@@ -65797,9 +66369,9 @@
     }
   });
 
-  function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$3(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var actions$3 = {
     updateWork: function updateWork(_ref) {
       var commit = _ref.commit,
@@ -65807,7 +66379,7 @@
       var payload = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       // update work with strapi
-      var work = _objectSpread$3(_objectSpread$3({}, state.work), payload);
+      var work = _objectSpread$4(_objectSpread$4({}, state.work), payload);
 
       commit('setWork', work);
     }
@@ -65856,9 +66428,9 @@
     }
   };
 
-  function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$6(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$5(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var state = {
     works: [],
     work: new Work(),
@@ -65876,10 +66448,10 @@
 
   var getters = {}; // actions
 
-  var actions$4 = _objectSpread$4(_objectSpread$4(_objectSpread$4(_objectSpread$4({}, actions$2), actions$1), actions$3), actions); // mutations
+  var actions$4 = _objectSpread$5(_objectSpread$5(_objectSpread$5(_objectSpread$5({}, actions$2), actions$1), actions$3), actions); // mutations
 
 
-  var mutations$4 = _objectSpread$4(_objectSpread$4(_objectSpread$4(_objectSpread$4({}, mutations$2), mutations$1), mutations$3), mutations);
+  var mutations$4 = _objectSpread$5(_objectSpread$5(_objectSpread$5(_objectSpread$5({}, mutations$2), mutations$1), mutations$3), mutations);
 
   var editor = {
     namespaced: true,
@@ -66117,13 +66689,13 @@
     }
   };
 
-  function ownKeys$6(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$7(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$5(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$7(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   Vue__default['default'].use(VueI18n__default['default']);
   var messages = {
-    "en-US": _objectSpread$5({}, enUSLang),
-    "zh-CN": _objectSpread$5({}, zhCNLang)
+    "en-US": _objectSpread$6({}, enUSLang),
+    "zh-CN": _objectSpread$6({}, zhCNLang)
   };
   var defaultLang = "zh-CN";
   var i18n = new VueI18n__default['default']({
@@ -66273,12 +66845,12 @@
 
   var _components;
 
-  function ownKeys$7(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$8(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$7(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$7(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$8(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$8(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var FixedTools = {
     components: (_components = {}, defineProperty$2(_components, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$2(_components, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$2(_components, antDesignVue.Tooltip.name, antDesignVue.Tooltip), defineProperty$2(_components, antDesignVue.Button.name, antDesignVue.Button), _components),
-    computed: _objectSpread$6({}, Vuex.mapState('editor', {
+    computed: _objectSpread$7({}, Vuex.mapState('editor', {
       scaleRate: function scaleRate(state) {
         return state.scaleRate;
       }
@@ -66780,9 +67352,9 @@
 
   var _components$3;
 
-  function ownKeys$8(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$7(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$8(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$8(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$8(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$9(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$9(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var RenderPropsEditor = {
     components: (_components$3 = {}, defineProperty$2(_components$3, antDesignVue.Form.name, antDesignVue.Form), defineProperty$2(_components$3, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$2(_components$3, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$2(_components$3, antDesignVue.Button.name, antDesignVue.Button), defineProperty$2(_components$3, antDesignVue.Radio.name, antDesignVue.Radio), defineProperty$2(_components$3, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$2(_components$3, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$2(_components$3, antDesignVue.Input.name, antDesignVue.Input), defineProperty$2(_components$3, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$2(_components$3, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$2(_components$3, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$2(_components$3, antDesignVue.Select.name, antDesignVue.Select), defineProperty$2(_components$3, "colorsPanel", colorsPanel), defineProperty$2(_components$3, "lbsTextAlign", lbsTextAlign), defineProperty$2(_components$3, "lbsExcelEditor", lbsExcelEditor), defineProperty$2(_components$3, "lbpSlideCustomEditor", lbpSlideCustomEditor), _components$3),
     data: function data() {
@@ -66846,7 +67418,7 @@
         var editor = propConfig.editor;
         if (!editor) return;
         var formItemData = {
-          props: _objectSpread$7(_objectSpread$7(_objectSpread$7({}, this.formItemLayout), editor.layout), {}, {
+          props: _objectSpread$8(_objectSpread$8(_objectSpread$8({}, this.formItemLayout), editor.layout), {}, {
             label: editor.label
           })
         };
@@ -66894,296 +67466,6 @@
     render: function render(h) {
       return h("span", [this.$t("editor.editPanel.common.empty")]);
     }
-  };
-
-  // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError,
-  // so we use an intermediate function.
-  function RE(s, f) {
-    return RegExp(s, f);
-  }
-
-  var UNSUPPORTED_Y = fails(function () {
-    // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError
-    var re = RE('a', 'y');
-    re.lastIndex = 2;
-    return re.exec('abcd') != null;
-  });
-
-  var BROKEN_CARET = fails(function () {
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=773687
-    var re = RE('^r', 'gy');
-    re.lastIndex = 2;
-    return re.exec('str') != null;
-  });
-
-  var regexpStickyHelpers = {
-  	UNSUPPORTED_Y: UNSUPPORTED_Y,
-  	BROKEN_CARET: BROKEN_CARET
-  };
-
-  var nativeExec = RegExp.prototype.exec;
-  // This always refers to the native implementation, because the
-  // String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.js,
-  // which loads this file before patching the method.
-  var nativeReplace = String.prototype.replace;
-
-  var patchedExec = nativeExec;
-
-  var UPDATES_LAST_INDEX_WRONG = (function () {
-    var re1 = /a/;
-    var re2 = /b*/g;
-    nativeExec.call(re1, 'a');
-    nativeExec.call(re2, 'a');
-    return re1.lastIndex !== 0 || re2.lastIndex !== 0;
-  })();
-
-  var UNSUPPORTED_Y$1 = regexpStickyHelpers.UNSUPPORTED_Y || regexpStickyHelpers.BROKEN_CARET;
-
-  // nonparticipating capturing group, copied from es5-shim's String#split patch.
-  var NPCG_INCLUDED = /()??/.exec('')[1] !== undefined;
-
-  var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED || UNSUPPORTED_Y$1;
-
-  if (PATCH) {
-    patchedExec = function exec(str) {
-      var re = this;
-      var lastIndex, reCopy, match, i;
-      var sticky = UNSUPPORTED_Y$1 && re.sticky;
-      var flags = regexpFlags.call(re);
-      var source = re.source;
-      var charsAdded = 0;
-      var strCopy = str;
-
-      if (sticky) {
-        flags = flags.replace('y', '');
-        if (flags.indexOf('g') === -1) {
-          flags += 'g';
-        }
-
-        strCopy = String(str).slice(re.lastIndex);
-        // Support anchored sticky behavior.
-        if (re.lastIndex > 0 && (!re.multiline || re.multiline && str[re.lastIndex - 1] !== '\n')) {
-          source = '(?: ' + source + ')';
-          strCopy = ' ' + strCopy;
-          charsAdded++;
-        }
-        // ^(? + rx + ) is needed, in combination with some str slicing, to
-        // simulate the 'y' flag.
-        reCopy = new RegExp('^(?:' + source + ')', flags);
-      }
-
-      if (NPCG_INCLUDED) {
-        reCopy = new RegExp('^' + source + '$(?!\\s)', flags);
-      }
-      if (UPDATES_LAST_INDEX_WRONG) lastIndex = re.lastIndex;
-
-      match = nativeExec.call(sticky ? reCopy : re, strCopy);
-
-      if (sticky) {
-        if (match) {
-          match.input = match.input.slice(charsAdded);
-          match[0] = match[0].slice(charsAdded);
-          match.index = re.lastIndex;
-          re.lastIndex += match[0].length;
-        } else re.lastIndex = 0;
-      } else if (UPDATES_LAST_INDEX_WRONG && match) {
-        re.lastIndex = re.global ? match.index + match[0].length : lastIndex;
-      }
-      if (NPCG_INCLUDED && match && match.length > 1) {
-        // Fix browsers whose `exec` methods don't consistently return `undefined`
-        // for NPCG, like IE8. NOTE: This doesn' work for /(.?)?/
-        nativeReplace.call(match[0], reCopy, function () {
-          for (i = 1; i < arguments.length - 2; i++) {
-            if (arguments[i] === undefined) match[i] = undefined;
-          }
-        });
-      }
-
-      return match;
-    };
-  }
-
-  var regexpExec = patchedExec;
-
-  _export({ target: 'RegExp', proto: true, forced: /./.exec !== regexpExec }, {
-    exec: regexpExec
-  });
-
-  // TODO: Remove from `core-js@4` since it's moved to entry points
-
-
-
-
-
-
-
-  var SPECIES$6 = wellKnownSymbol('species');
-
-  var REPLACE_SUPPORTS_NAMED_GROUPS = !fails(function () {
-    // #replace needs built-in support for named groups.
-    // #match works fine because it just return the exec results, even if it has
-    // a "grops" property.
-    var re = /./;
-    re.exec = function () {
-      var result = [];
-      result.groups = { a: '7' };
-      return result;
-    };
-    return ''.replace(re, '$<a>') !== '7';
-  });
-
-  // IE <= 11 replaces $0 with the whole match, as if it was $&
-  // https://stackoverflow.com/questions/6024666/getting-ie-to-replace-a-regex-with-the-literal-string-0
-  var REPLACE_KEEPS_$0 = (function () {
-    return 'a'.replace(/./, '$0') === '$0';
-  })();
-
-  var REPLACE = wellKnownSymbol('replace');
-  // Safari <= 13.0.3(?) substitutes nth capture where n>m with an empty string
-  var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = (function () {
-    if (/./[REPLACE]) {
-      return /./[REPLACE]('a', '$0') === '';
-    }
-    return false;
-  })();
-
-  // Chrome 51 has a buggy "split" implementation when RegExp#exec !== nativeExec
-  // Weex JS has frozen built-in prototypes, so use try / catch wrapper
-  var SPLIT_WORKS_WITH_OVERWRITTEN_EXEC = !fails(function () {
-    var re = /(?:)/;
-    var originalExec = re.exec;
-    re.exec = function () { return originalExec.apply(this, arguments); };
-    var result = 'ab'.split(re);
-    return result.length !== 2 || result[0] !== 'a' || result[1] !== 'b';
-  });
-
-  var fixRegexpWellKnownSymbolLogic = function (KEY, length, exec, sham) {
-    var SYMBOL = wellKnownSymbol(KEY);
-
-    var DELEGATES_TO_SYMBOL = !fails(function () {
-      // String methods call symbol-named RegEp methods
-      var O = {};
-      O[SYMBOL] = function () { return 7; };
-      return ''[KEY](O) != 7;
-    });
-
-    var DELEGATES_TO_EXEC = DELEGATES_TO_SYMBOL && !fails(function () {
-      // Symbol-named RegExp methods call .exec
-      var execCalled = false;
-      var re = /a/;
-
-      if (KEY === 'split') {
-        // We can't use real regex here since it causes deoptimization
-        // and serious performance degradation in V8
-        // https://github.com/zloirock/core-js/issues/306
-        re = {};
-        // RegExp[@@split] doesn't call the regex's exec method, but first creates
-        // a new one. We need to return the patched regex when creating the new one.
-        re.constructor = {};
-        re.constructor[SPECIES$6] = function () { return re; };
-        re.flags = '';
-        re[SYMBOL] = /./[SYMBOL];
-      }
-
-      re.exec = function () { execCalled = true; return null; };
-
-      re[SYMBOL]('');
-      return !execCalled;
-    });
-
-    if (
-      !DELEGATES_TO_SYMBOL ||
-      !DELEGATES_TO_EXEC ||
-      (KEY === 'replace' && !(
-        REPLACE_SUPPORTS_NAMED_GROUPS &&
-        REPLACE_KEEPS_$0 &&
-        !REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE
-      )) ||
-      (KEY === 'split' && !SPLIT_WORKS_WITH_OVERWRITTEN_EXEC)
-    ) {
-      var nativeRegExpMethod = /./[SYMBOL];
-      var methods = exec(SYMBOL, ''[KEY], function (nativeMethod, regexp, str, arg2, forceStringMethod) {
-        if (regexp.exec === regexpExec) {
-          if (DELEGATES_TO_SYMBOL && !forceStringMethod) {
-            // The native String method already delegates to @@method (this
-            // polyfilled function), leasing to infinite recursion.
-            // We avoid it by directly calling the native @@method method.
-            return { done: true, value: nativeRegExpMethod.call(regexp, str, arg2) };
-          }
-          return { done: true, value: nativeMethod.call(str, regexp, arg2) };
-        }
-        return { done: false };
-      }, {
-        REPLACE_KEEPS_$0: REPLACE_KEEPS_$0,
-        REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE: REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE
-      });
-      var stringMethod = methods[0];
-      var regexMethod = methods[1];
-
-      redefine(String.prototype, KEY, stringMethod);
-      redefine(RegExp.prototype, SYMBOL, length == 2
-        // 21.2.5.8 RegExp.prototype[@@replace](string, replaceValue)
-        // 21.2.5.11 RegExp.prototype[@@split](string, limit)
-        ? function (string, arg) { return regexMethod.call(string, this, arg); }
-        // 21.2.5.6 RegExp.prototype[@@match](string)
-        // 21.2.5.9 RegExp.prototype[@@search](string)
-        : function (string) { return regexMethod.call(string, this); }
-      );
-    }
-
-    if (sham) createNonEnumerableProperty(RegExp.prototype[SYMBOL], 'sham', true);
-  };
-
-  // `String.prototype.{ codePointAt, at }` methods implementation
-  var createMethod$5 = function (CONVERT_TO_STRING) {
-    return function ($this, pos) {
-      var S = String(requireObjectCoercible($this));
-      var position = toInteger(pos);
-      var size = S.length;
-      var first, second;
-      if (position < 0 || position >= size) return CONVERT_TO_STRING ? '' : undefined;
-      first = S.charCodeAt(position);
-      return first < 0xD800 || first > 0xDBFF || position + 1 === size
-        || (second = S.charCodeAt(position + 1)) < 0xDC00 || second > 0xDFFF
-          ? CONVERT_TO_STRING ? S.charAt(position) : first
-          : CONVERT_TO_STRING ? S.slice(position, position + 2) : (first - 0xD800 << 10) + (second - 0xDC00) + 0x10000;
-    };
-  };
-
-  var stringMultibyte = {
-    // `String.prototype.codePointAt` method
-    // https://tc39.github.io/ecma262/#sec-string.prototype.codepointat
-    codeAt: createMethod$5(false),
-    // `String.prototype.at` method
-    // https://github.com/mathiasbynens/String.prototype.at
-    charAt: createMethod$5(true)
-  };
-
-  var charAt = stringMultibyte.charAt;
-
-  // `AdvanceStringIndex` abstract operation
-  // https://tc39.github.io/ecma262/#sec-advancestringindex
-  var advanceStringIndex = function (S, index, unicode) {
-    return index + (unicode ? charAt(S, index).length : 1);
-  };
-
-  // `RegExpExec` abstract operation
-  // https://tc39.github.io/ecma262/#sec-regexpexec
-  var regexpExecAbstract = function (R, S) {
-    var exec = R.exec;
-    if (typeof exec === 'function') {
-      var result = exec.call(R, S);
-      if (typeof result !== 'object') {
-        throw TypeError('RegExp exec method returned something other than an Object or null');
-      }
-      return result;
-    }
-
-    if (classofRaw(R) !== 'RegExp') {
-      throw TypeError('RegExp#exec called on incompatible receiver');
-    }
-
-    return regexpExec.call(R, S);
   };
 
   // @@match logic
@@ -68129,7 +68411,7 @@
         var element = this.element;
 
         if (element && element.name) {
-          var _pluginsControl$getPl = pluginController.getPlugin(element.name),
+          var _pluginsControl$getPl = lbpPluginController.getPlugin(element.name),
               component = _pluginsControl$getPl.component;
 
           return this.getPropsWithEditor(component.props);
@@ -68312,137 +68594,11 @@
     }
   };
 
-  var max$5 = Math.max;
-  var min$5 = Math.min;
-  var floor$1 = Math.floor;
-  var SUBSTITUTION_SYMBOLS = /\$([$&'`]|\d\d?|<[^>]*>)/g;
-  var SUBSTITUTION_SYMBOLS_NO_NAMED = /\$([$&'`]|\d\d?)/g;
-
-  var maybeToString = function (it) {
-    return it === undefined ? it : String(it);
-  };
-
-  // @@replace logic
-  fixRegexpWellKnownSymbolLogic('replace', 2, function (REPLACE, nativeReplace, maybeCallNative, reason) {
-    var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = reason.REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE;
-    var REPLACE_KEEPS_$0 = reason.REPLACE_KEEPS_$0;
-    var UNSAFE_SUBSTITUTE = REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE ? '$' : '$0';
-
-    return [
-      // `String.prototype.replace` method
-      // https://tc39.github.io/ecma262/#sec-string.prototype.replace
-      function replace(searchValue, replaceValue) {
-        var O = requireObjectCoercible(this);
-        var replacer = searchValue == undefined ? undefined : searchValue[REPLACE];
-        return replacer !== undefined
-          ? replacer.call(searchValue, O, replaceValue)
-          : nativeReplace.call(String(O), searchValue, replaceValue);
-      },
-      // `RegExp.prototype[@@replace]` method
-      // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@replace
-      function (regexp, replaceValue) {
-        if (
-          (!REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE && REPLACE_KEEPS_$0) ||
-          (typeof replaceValue === 'string' && replaceValue.indexOf(UNSAFE_SUBSTITUTE) === -1)
-        ) {
-          var res = maybeCallNative(nativeReplace, regexp, this, replaceValue);
-          if (res.done) return res.value;
-        }
-
-        var rx = anObject(regexp);
-        var S = String(this);
-
-        var functionalReplace = typeof replaceValue === 'function';
-        if (!functionalReplace) replaceValue = String(replaceValue);
-
-        var global = rx.global;
-        if (global) {
-          var fullUnicode = rx.unicode;
-          rx.lastIndex = 0;
-        }
-        var results = [];
-        while (true) {
-          var result = regexpExecAbstract(rx, S);
-          if (result === null) break;
-
-          results.push(result);
-          if (!global) break;
-
-          var matchStr = String(result[0]);
-          if (matchStr === '') rx.lastIndex = advanceStringIndex(S, toLength(rx.lastIndex), fullUnicode);
-        }
-
-        var accumulatedResult = '';
-        var nextSourcePosition = 0;
-        for (var i = 0; i < results.length; i++) {
-          result = results[i];
-
-          var matched = String(result[0]);
-          var position = max$5(min$5(toInteger(result.index), S.length), 0);
-          var captures = [];
-          // NOTE: This is equivalent to
-          //   captures = result.slice(1).map(maybeToString)
-          // but for some reason `nativeSlice.call(result, 1, result.length)` (called in
-          // the slice polyfill when slicing native arrays) "doesn't work" in safari 9 and
-          // causes a crash (https://pastebin.com/N21QzeQA) when trying to debug it.
-          for (var j = 1; j < result.length; j++) captures.push(maybeToString(result[j]));
-          var namedCaptures = result.groups;
-          if (functionalReplace) {
-            var replacerArgs = [matched].concat(captures, position, S);
-            if (namedCaptures !== undefined) replacerArgs.push(namedCaptures);
-            var replacement = String(replaceValue.apply(undefined, replacerArgs));
-          } else {
-            replacement = getSubstitution(matched, S, position, captures, namedCaptures, replaceValue);
-          }
-          if (position >= nextSourcePosition) {
-            accumulatedResult += S.slice(nextSourcePosition, position) + replacement;
-            nextSourcePosition = position + matched.length;
-          }
-        }
-        return accumulatedResult + S.slice(nextSourcePosition);
-      }
-    ];
-
-    // https://tc39.github.io/ecma262/#sec-getsubstitution
-    function getSubstitution(matched, str, position, captures, namedCaptures, replacement) {
-      var tailPos = position + matched.length;
-      var m = captures.length;
-      var symbols = SUBSTITUTION_SYMBOLS_NO_NAMED;
-      if (namedCaptures !== undefined) {
-        namedCaptures = toObject(namedCaptures);
-        symbols = SUBSTITUTION_SYMBOLS;
-      }
-      return nativeReplace.call(replacement, symbols, function (match, ch) {
-        var capture;
-        switch (ch.charAt(0)) {
-          case '$': return '$';
-          case '&': return matched;
-          case '`': return str.slice(0, position);
-          case "'": return str.slice(tailPos);
-          case '<':
-            capture = namedCaptures[ch.slice(1, -1)];
-            break;
-          default: // \d\d?
-            var n = +ch;
-            if (n === 0) return match;
-            if (n > m) {
-              var f = floor$1(n / 10);
-              if (f === 0) return match;
-              if (f <= m) return captures[f - 1] === undefined ? ch.charAt(1) : captures[f - 1] + ch.charAt(1);
-              return match;
-            }
-            capture = captures[n - 1];
-        }
-        return capture === undefined ? '' : capture;
-      });
-    }
-  });
-
   var _components$8;
 
-  function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$8(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$9(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$9(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$9(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var script$1 = {
     components: (_components$8 = {}, defineProperty$2(_components$8, antDesignVue.Modal.name, antDesignVue.Modal), defineProperty$2(_components$8, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$2(_components$8, antDesignVue.Button.name, antDesignVue.Button), _components$8),
     data: function data() {
@@ -68472,7 +68628,7 @@
 
         var npmPackages = new Function("return ".concat(this.text).replace('\n', ''))();
         npmPackages = npmPackages.map(function (pluginInfo) {
-          return _objectSpread$8(_objectSpread$8({}, pluginInfo), {}, {
+          return _objectSpread$9(_objectSpread$9({}, pluginInfo), {}, {
             // src: `https://cdn.jsdelivr.net/npm/${pluginInfo}/dist/${pluginInfo.name}.umd.js`
             // src: `https://unpkg.com/${pluginInfo}/dist/${pluginName}.umd.js`
             src: "https://cdn.jsdelivr.net/npm/".concat(pluginInfo.package, "@").concat(pluginInfo.version, "/dist/").concat(pluginInfo.name, ".umd.js")
@@ -68588,25 +68744,25 @@
       undefined
     );
 
-  function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$b(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$9(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$a(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$b(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var langMixin = {
-    computed: _objectSpread$9({}, Vuex.mapState({
+    computed: _objectSpread$a({}, Vuex.mapState({
       currentLang: function currentLang(state) {
         return state.i18n.lang;
       }
     })),
-    methods: _objectSpread$9(_objectSpread$9({}, Vuex.mapActions('i18n', ['SetLang'])), {}, {
+    methods: _objectSpread$a(_objectSpread$a({}, Vuex.mapActions('i18n', ['SetLang'])), {}, {
       setLang: function setLang(lang) {
         this.SetLang(lang);
       }
     })
   };
 
-  function ownKeys$b(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$c(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$a(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$b(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$b(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$c(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$c(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   /*
    * @Author: ly525
@@ -68752,7 +68908,7 @@
         if (!canMousedown) return;
         var canvasWrapper = document.querySelector('.lb-canvas');
         var position = canvasWrapper.getBoundingClientRect();
-        this.dragElement && this.clone(_objectSpread$a(_objectSpread$a({}, this.dragElement), {}, {
+        this.dragElement && this.clone(_objectSpread$b(_objectSpread$b({}, this.dragElement), {}, {
           dragStyle: {
             left: e.clientX - layerX - position.left,
             top: e.clientY - layerY - position.top
@@ -68793,7 +68949,7 @@
 
       return h("a-row", {
         "style": "padding-bottom: 24px"
-      }, [h(UsageTip), [].concat(pluginController.getPlugins(), this.npmPackages).filter(function (plugin) {
+      }, [h(UsageTip), [].concat(lbpPluginController.getPlugins(), this.npmPackages).filter(function (plugin) {
         return plugin.visible;
       }).map(function (plugin) {
         return h("a-col", {
@@ -68966,9 +69122,9 @@
     }
   };
 
-  function ownKeys$c(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$d(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$b(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$c(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$c(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$c(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$d(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$d(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var RenderPageManager = {
     name: 'page-manager',
     components: defineProperty$2({}, antDesignVue.Button.name, antDesignVue.Button),
@@ -68978,7 +69134,7 @@
 
       };
     },
-    computed: _objectSpread$b({}, Vuex.mapState('editor', {
+    computed: _objectSpread$c({}, Vuex.mapState('editor', {
       editingPage: function editingPage(state) {
         return state.editingPage;
       },
@@ -68986,7 +69142,7 @@
         return state.work.pages;
       }
     })),
-    methods: _objectSpread$b(_objectSpread$b({}, Vuex.mapActions('editor', ['elementManager', 'pageManager', 'saveWork', 'setEditingPage'])), {}, {
+    methods: _objectSpread$c(_objectSpread$c({}, Vuex.mapActions('editor', ['elementManager', 'pageManager', 'saveWork', 'setEditingPage'])), {}, {
       onSelectMenuItem: function onSelectMenuItem(menuKey) {
         this.pageManager({
           type: menuKey
@@ -69063,9 +69219,9 @@
     }
   };
 
-  function ownKeys$d(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$e(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$c(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$d(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$d(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$d(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$e(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$e(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   function getTreeNode(ele) {
     return {
@@ -69077,7 +69233,7 @@
 
   var script$2 = {
     name: 'page-tree',
-    computed: _objectSpread$c(_objectSpread$c({}, Vuex.mapState('editor', {
+    computed: _objectSpread$d(_objectSpread$d({}, Vuex.mapState('editor', {
       elements: function elements(state) {
         return state.editingPage.elements;
       }
@@ -69383,8 +69539,6 @@
       }
     },
     render: function render() {
-      var _this2 = this;
-
       var h = arguments[0];
       return h("div", {
         "style": {
@@ -69413,11 +69567,7 @@
         },
         "style": "margin: 0 4px; width:60px;",
         "on": {
-          "change": function change(height) {
-            _this2.updateWork({
-              height: height
-            });
-          }
+          "change": this.updateWorkHeight
         }
       }), h("span", ["px"])])])]);
     }
@@ -69551,13 +69701,12 @@
         }
       },
       handlePropsChange: function handlePropsChange(value) {
-        this.$refs['editor'].updateActiveElement({
+        this.$refs['editor'].updateElement({
           props: value
         });
       },
       handleAnimationsChange: function handleAnimationsChange(value) {
-        console.log(value);
-        this.$refs['editor'].updateActiveElement({
+        this.$refs['editor'].updateElement({
           animations: value
         });
       },

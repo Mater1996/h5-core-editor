@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-06 11:03:51
- * @LastEditTime : 2020-11-11 10:37:46
+ * @LastEditTime : 2020-11-16 17:20:42
  * @Description :
  */
 import { InputNumber } from 'ant-design-vue'
@@ -76,9 +76,7 @@ export default {
               size="small"
               style="margin: 0 4px; width:60px;"
               value={this.height}
-              onChange={height => {
-                this.updateWork({ height })
-              }}
+              onChange={this.updateWorkHeight}
             />
             <span>px</span>
           </div>

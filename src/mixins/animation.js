@@ -2,7 +2,7 @@
  * @Author: ly525
  * @Date: 2019-11-24 18:51:58
  * @LastEditors : Please set LastEditors
- * @LastEditTime : 2020-11-12 16:33:52
+ * @LastEditTime : 2020-11-16 14:31:41
  * @FilePath: /luban-h5/front-end/h5/src/components/@/mixins/animation.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description:
@@ -13,11 +13,11 @@ import EventBus from '@/bus'
 export default {
   methods: {
     runAnimations() {
-      if (!this.activeElement) return
-      const animationQueue = this.activeElement.animations || []
+      if (!this.animations) return
+      const animationQueue = this.animations || []
       const len = animationQueue.length
       if (len === 0) return
-      const parentNode = this.activeElement.vm.$el
+      const parentNode = this.$el
       let animIdx = 0
       runAnimation()
       function runAnimation() {

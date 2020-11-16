@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-11 18:18:26
- * @LastEditTime : 2020-11-12 10:04:39
+ * @LastEditTime : 2020-11-16 15:01:17
  * @Description :
  */
 
@@ -294,6 +294,6 @@ export default [
     icon: 'list',
     visible: true,
     name: LbpNewsList.name,
-    component: LbpNewsList
+    component: LbpNewsList,
   }
 ]

@@ -2,14 +2,13 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-12 15:45:49
+ * @LastEditTime : 2020-11-16 17:19:24
  * @Description :
  */
 import './css/common.scss'
 import './css/lb-canvas.scss'
+import ElementRender from './components/Element'
 import Element from './models/element'
-import ShapeLayer from './components/ShapeLayer'
-import ElementRender from './components/ElementRender'
 import animationsMixin from '@/mixins/animation'
 
 export default {
@@ -25,16 +24,34 @@ export default {
       default: 0
     }
   },
-  data: () => ({
-    activeElement: null,
-    elements: []
-  }),
+  provide() {
+    return {
+      canvas: this.canvas
+    }
+  },
+  data() {
+    return {
+      activeElement: null,
+      elements: [],
+      canvas: {
+        width: this.width,
+        height: this.height
+      }
+    }
+  },
+  watch: {
+    width(width) {
+      this.updateCanvas({ width })
+    },
+    height(height) {
+      this.updateCanvas({ height })
+    }
+  },
   computed: {
     canvasStyle() {
       return {
         width: `${this.width}px`,
-        height: `${this.height}px`,
-        position: 'relative'
+        height: `${this.height}px`
       }
     }
   },
@@ -49,10 +66,12 @@ export default {
       }
       this.$emit('deactive', deactiveElement)
     },
-    updateActiveElement({ props, animations }) {
+    updateCanvas(data) {
+      Object.assign(this.canvas, data)
+    },
+    updateElement(data) {
       if (this.activeElement) {
-        props && this.activeElement.updateProps(props)
-        animations && this.activeElement.updateAnimations(animations)
+        data && this.activeElement.update(data)
       }
     },
     addElement(...elements) {
@@ -62,8 +81,8 @@ export default {
         }
       })
     },
-    handleElementRectChange(props) {
-      this.updateActiveElement(props)
+    handleElementRectChange(style) {
+      this.updateElement({ style })
     },
     clear() {
       this.elements = []
@@ -71,18 +90,16 @@ export default {
   },
   render() {
     return (
-      <div class="lb-canvas-wrapper">
-        <div class="lb-canvas" style={this.canvasStyle}>
+      <div class="lb-canvas">
+        <div class="lb-canvas-wrapper" style={this.canvasStyle}>
           <div class="elements">
             {this.elements.map(element => (
-              <ShapeLayer
-                props={element.props}
+              <ElementRender
+                element={element}
                 onActive={() => this.handleElementActive(element)}
                 onDeactive={() => this.handleElementDeactive(element)}
                 onChange={this.handleElementRectChange}
-              >
-                <ElementRender element={element}></ElementRender>
-              </ShapeLayer>
+              ></ElementRender>
             ))}
           </div>
         </div>
