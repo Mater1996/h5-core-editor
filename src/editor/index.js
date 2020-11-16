@@ -2,10 +2,9 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-16 18:15:12
+ * @LastEditTime : 2020-11-16 18:32:39
  * @Description :
  */
-import 'animate.css/animate.css'
 import 'font-awesome/css/font-awesome.min.css'
 import 'ant-design-vue/dist/antd.css'
 import { Layout } from 'ant-design-vue'

@@ -2,7 +2,7 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-11-02 09:25:51
- * @LastEditTime: 2020-11-13 10:35:05
+ * @LastEditTime: 2020-11-16 18:30:03
  * @Description:
 -->
 <template>
@@ -25,14 +25,11 @@ export default {
         cover_image_url: null,
         pages: [
           {
-            uuid: 1602484481828,
             title: '',
             elements: [
               {
                 name: 'lbp-background',
-                uuid: 1602484481828,
                 props: {
-                  uuid: 1602484481828,
                   imgSrc: '',
                   isRem: false,
                 },
@@ -50,9 +47,7 @@ export default {
               },
               {
                 name: 'lbp-picture',
-                uuid: 1602484484973,
                 props: {
-                  uuid: 1602484484973,
                   imgSrc:
                     'https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg!0x0.webp',
                   isRem: false,
@@ -71,9 +66,7 @@ export default {
               },
               {
                 name: 'lbp-picture',
-                uuid: 1602484484973,
                 props: {
-                  uuid: 1602484484973,
                   imgSrc:
                     'https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg!0x0.webp',
                   isRem: false,

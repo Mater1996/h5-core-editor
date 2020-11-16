@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-16 14:24:01
+ * @LastEditTime : 2020-11-16 18:30:23
  * @Description :
  */
 
@@ -14,7 +14,6 @@ class LbpElement {
   constructor(options = {}) {
     const {
       name = '',
-      uuid = +new Date(),
       props = {},
       style = {},
       attrs = {},
@@ -23,7 +22,7 @@ class LbpElement {
     } = options
     if (name) {
       this.name = name
-      this.uuid = uuid
+      this.uuid = +new Date()
       this.vm = vm
       const plugin = pluginsControl.getPlugin(name)
       const pluginDefaultProps = LbpElement.getPluginProps(plugin.component)

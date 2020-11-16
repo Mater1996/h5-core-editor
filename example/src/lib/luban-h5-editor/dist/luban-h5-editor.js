@@ -65649,8 +65649,6 @@
 
       var _options$name = options.name,
           name = _options$name === void 0 ? '' : _options$name,
-          _options$uuid = options.uuid,
-          uuid = _options$uuid === void 0 ? +new Date() : _options$uuid,
           _options$props = options.props,
           props = _options$props === void 0 ? {} : _options$props,
           _options$style = options.style,
@@ -65664,7 +65662,7 @@
 
       if (name) {
         this.name = name;
-        this.uuid = uuid;
+        this.uuid = +new Date();
         this.vm = vm;
         var plugin = lbpPluginController.getPlugin(name);
         var pluginDefaultProps = LbpElement.getPluginProps(plugin.component); // 传入具体的element render
@@ -65767,7 +65765,15 @@
 
   var EventBus = new Vue__default['default'](); // event bus
 
-  var animationsMixin = {
+  var AnimateLayer = {
+    props: {
+      animations: {
+        type: Array,
+        default: function _default() {
+          return [];
+        }
+      }
+    },
     methods: {
       runAnimations: function runAnimations() {
         if (!this.animations) return;
@@ -65804,29 +65810,11 @@
       }
     },
     created: function created() {
-      var that = this;
-      EventBus && EventBus.$on('RUN_ANIMATIONS', function () {
-        that.runAnimations();
-      });
-    }
-  };
+      var _this = this;
 
-  /*
-   * @author : Mater
-   * @Email : bxh8640@gmail.com
-   * @Date : 2020-11-16 14:11:44
-   * @LastEditTime : 2020-11-16 14:33:15
-   * @Description :
-   */
-  var AnimateLayer = {
-    mixins: [animationsMixin],
-    props: {
-      animations: {
-        type: Array,
-        default: function _default() {
-          return [];
-        }
-      }
+      EventBus.$on('RUN_ANIMATIONS', function () {
+        _this.runAnimations();
+      });
     },
     render: function render() {
       var h = arguments[0];
@@ -65872,7 +65860,6 @@
 
   var CoreRender = {
     Element: LbpElement,
-    mixins: [animationsMixin],
     props: {
       width: {
         type: Number,
