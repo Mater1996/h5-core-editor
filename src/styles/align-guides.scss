@@ -4,11 +4,7 @@
  */
 
 .luban-auxiliary-line {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
 }
 
 // 垂直对齐参考线
@@ -18,6 +14,7 @@
   width: 1px;
   top: 0;
   background-color: #94f5ff;
+  z-index: 999;
 }
 
 // 水平对齐参考线
@@ -27,4 +24,5 @@
   width: 100%;
   left: 0;
   background-color: #94f5ff;
+  z-index: 999;
 }

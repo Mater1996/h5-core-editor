@@ -65342,9 +65342,6 @@
       }
     },
     inject: ['canvas'],
-    created: function created() {
-      console.log(this.canvas);
-    },
     data: function data() {
       return {
         rect: this.getReact(this.elStyle),
@@ -65968,10 +65965,10 @@
 
       var h = arguments[0];
       return h("div", {
-        "class": "lb-canvas"
-      }, [h("div", {
-        "class": "lb-canvas-wrapper",
+        "class": "lb-canvas",
         "style": this.canvasStyle
+      }, [h("div", {
+        "class": "lb-canvas-wrapper"
       }, [h("div", {
         "class": "elements"
       }, [this.elements.map(function (element) {
@@ -69350,7 +69347,7 @@
    * @author : Mater
    * @Email : bxh8640@gmail.com
    * @Date : 2020-11-06 10:50:05
-   * @LastEditTime : 2020-11-06 14:44:50
+   * @LastEditTime : 2020-11-16 18:07:04
    * @Description :
    */
   var AuxiliayLine = {
@@ -69466,6 +69463,8 @@
       }
     },
     render: function render() {
+      var _this2 = this;
+
       var h = arguments[0];
       return h("div", {
         "class": "luban-auxiliary-line"
@@ -69473,14 +69472,16 @@
         return h("div", {
           "class": "v-line",
           "style": {
-            left: "".concat(line.left, "px")
+            left: "".concat(line.left, "px"),
+            height: "".concat(_this2.height, "px")
           }
         });
       }), this.hLines.map(function (line) {
         return h("div", {
           "class": "h-line",
           "style": {
-            top: "".concat(line.top, "px")
+            top: "".concat(line.top, "px"),
+            width: "".concat(_this2.width, "px")
           }
         });
       })]);
@@ -69514,7 +69515,7 @@
 
         var startY = e.clientY;
         var startHeight = this.height;
-        var canvasOuterWrapper = document.querySelector('#canvas-outer-wrapper .ant-layout');
+        var canvasOuterWrapper = document.querySelector('#editor-wrapper .ant-layout');
 
         var move = function move(moveEvent) {
           // !#zh 移动的时候，不需要向后代元素传递事件，只需要单纯的移动就OK
@@ -69667,8 +69668,8 @@
       },
       elementsRect: function elementsRect() {
         return this.currentPage.elements.map(function (_ref) {
-          var props = _ref.props;
-          return props;
+          var style = _ref.style;
+          return style;
         });
       }
     },
@@ -69701,18 +69702,18 @@
         }
       },
       handlePropsChange: function handlePropsChange(value) {
-        this.$refs['editor'].updateElement({
+        this.$editor.updateElement({
           props: value
         });
       },
       handleAnimationsChange: function handleAnimationsChange(value) {
-        this.$refs['editor'].updateElement({
+        this.$editor.updateElement({
           animations: value
         });
       },
       handleAddElement: function handleAddElement(_ref2) {
         var name = _ref2.name;
-        this.$refs['editor'].addElement(new CoreRender.Element({
+        this.$editor.addElement(new CoreRender.Element({
           name: name
         }));
       }
@@ -69721,7 +69722,7 @@
       var _this = this;
 
       var h = arguments[0];
-      return h("a-layout", [h("a-layout", {
+      return h("a-layout", {
         "style": {
           height: '100%'
         }
@@ -69731,16 +69732,16 @@
         }
       }), h("a-layout", {
         "attrs": {
-          "id": "canvas-outer-wrapper"
+          "id": "editor-wrapper"
         }
       }, [h("a-layout-content", {
-        "class": "scroll-view remove-scrollbar",
+        "class": "scroll-view remove-scrollbar"
+      }, [h("div", {
+        "class": "editor-content",
         "on": {
           "mouseup": this.hideAuxiliay,
           "mousedown": this.showAuxiliay
         }
-      }, [h("div", {
-        "class": "content"
       }, [h(AuxiliayLine, {
         "attrs": {
           "data": this.elementsRect,
@@ -69783,7 +69784,7 @@
           "propsChange": this.handlePropsChange,
           "animationsChange": this.handleAnimationsChange
         }
-      })])]);
+      })]);
     }
   };
 

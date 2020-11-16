@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-16 17:18:10
+ * @LastEditTime : 2020-11-16 18:15:12
  * @Description :
  */
 import 'animate.css/animate.css'
@@ -63,7 +63,7 @@ const Editor = {
       return pages[this.pageIndex]
     },
     elementsRect() {
-      return this.currentPage.elements.map(({ props }) => props)
+      return this.currentPage.elements.map(({ style }) => style)
     }
   },
   mounted() {
@@ -92,60 +92,58 @@ const Editor = {
       }
     },
     handlePropsChange(value) {
-      this.$refs['editor'].updateElement({ props: value })
+      this.$editor.updateElement({ props: value })
     },
     handleAnimationsChange(value) {
-      this.$refs['editor'].updateElement({ animations: value })
+      this.$editor.updateElement({ animations: value })
     },
     handleAddElement({ name }) {
-      this.$refs['editor'].addElement(new CoreRender.Element({ name }))
+      this.$editor.addElement(new CoreRender.Element({ name }))
     }
   },
   render() {
     return (
-      <a-layout>
-        <a-layout style={{ height: '100%' }}>
-          <EditorLeftPanel onAdd={this.handleAddElement} />
-          <a-layout id="canvas-outer-wrapper">
-            <a-layout-content
-              class="scroll-view remove-scrollbar"
+      <a-layout style={{ height: '100%' }}>
+        <EditorLeftPanel onAdd={this.handleAddElement} />
+        <a-layout id="editor-wrapper">
+          <a-layout-content class="scroll-view remove-scrollbar">
+            <div
+              class="editor-content"
               onMouseup={this.hideAuxiliay}
               onMousedown={this.showAuxiliay}
             >
-              <div class="content">
-                <AuxiliayLine
-                  data={this.elementsRect}
-                  width={this.currentPage.width}
-                  height={this.currentPage.height}
-                  v-show={this.auxiliayVisible}
-                />
-                <CoreRender
-                  ref="editor"
-                  width={this.currentPage.width}
-                  height={this.currentPage.height}
-                  onActive={this.handleElementActive}
-                  onDeactive={this.handleElementDeactive}
-                />
-                <AdjustHeight
-                  height={this.currentPage.height}
-                  onChange={this.handlePageHeightChange}
-                />
-              </div>
-            </a-layout-content>
-          </a-layout>
-          <AdjustLineV
-            onLineMove={offset => {
-              this.rightPanelWidth += offset
-            }}
-          />
-          <FixedTools />
-          <EditorRightPanel
-            width={this.rightPanelWidth}
-            element={this.activeElement}
-            onPropsChange={this.handlePropsChange}
-            onAnimationsChange={this.handleAnimationsChange}
-          />
+              <AuxiliayLine
+                data={this.elementsRect}
+                width={this.currentPage.width}
+                height={this.currentPage.height}
+                v-show={this.auxiliayVisible}
+              />
+              <CoreRender
+                ref="editor"
+                width={this.currentPage.width}
+                height={this.currentPage.height}
+                onActive={this.handleElementActive}
+                onDeactive={this.handleElementDeactive}
+              />
+              <AdjustHeight
+                height={this.currentPage.height}
+                onChange={this.handlePageHeightChange}
+              />
+            </div>
+          </a-layout-content>
         </a-layout>
+        <AdjustLineV
+          onLineMove={offset => {
+            this.rightPanelWidth += offset
+          }}
+        />
+        <FixedTools />
+        <EditorRightPanel
+          width={this.rightPanelWidth}
+          element={this.activeElement}
+          onPropsChange={this.handlePropsChange}
+          onAnimationsChange={this.handleAnimationsChange}
+        />
       </a-layout>
     )
   }

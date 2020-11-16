@@ -37,7 +37,6 @@
 
 // 动画编辑面板定制
 #animation-right-panel {
-
   .ant-collapse-header {
     padding: 6px 0 6px 40px;
   }
@@ -147,16 +146,31 @@ $activeHoverColor: #1593ff;
 /**
  * 编辑器中间的画布
  */
-#canvas-outer-wrapper {
+#editor-wrapper {
   padding: 60px 16px 24px;
 }
 
-#canvas-outer-wrapper .scroll-view {
+#editor-wrapper .scroll-view {
   overflow: auto;
 }
 
-#canvas-outer-wrapper .scroll-view .content{
+#editor-wrapper .scroll-view .editor-content {
+  display: inline-block;
   position: relative;
+  align-self: center;
+}
+
+.remove-scrollbar::-webkit-scrollbar {
+  height: 0 !important;
+  width: 0 !important;
+}
+
+.remove-scrollbar::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.remove-scrollbar::-webkit-scrollbar-thumb {
+  background-color: transparent;
 }
 
 // 切换编辑、预览模式 的按钮组

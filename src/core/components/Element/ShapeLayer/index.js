@@ -37,9 +37,6 @@ export default {
     }
   },
   inject: ['canvas'],
-  created() {
-    console.log(this.canvas)
-  },
   data() {
     return {
       rect: this.getReact(this.elStyle),

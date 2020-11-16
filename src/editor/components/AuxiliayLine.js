@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-06 10:50:05
- * @LastEditTime : 2020-11-06 14:44:50
+ * @LastEditTime : 2020-11-16 18:07:04
  * @Description :
  */
 export default {
@@ -95,10 +95,16 @@ export default {
     return (
       <div class="luban-auxiliary-line">
         {this.vLines.map(line => (
-          <div class="v-line" style={{ left: `${line.left}px` }}></div>
+          <div
+            class="v-line"
+            style={{ left: `${line.left}px`, height: `${this.height}px` }}
+          ></div>
         ))}
         {this.hLines.map(line => (
-          <div class="h-line" style={{ top: `${line.top}px` }}></div>
+          <div
+            class="h-line"
+            style={{ top: `${line.top}px`, width: `${this.width}px` }}
+          ></div>
         ))}
       </div>
     )

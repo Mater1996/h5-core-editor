@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-06 11:03:51
- * @LastEditTime : 2020-11-16 17:20:42
+ * @LastEditTime : 2020-11-16 17:41:14
  * @Description :
  */
 import { InputNumber } from 'ant-design-vue'
@@ -34,7 +34,7 @@ export default {
       const startY = e.clientY
       const startHeight = this.height
       const canvasOuterWrapper = document.querySelector(
-        '#canvas-outer-wrapper .ant-layout'
+        '#editor-wrapper .ant-layout'
       )
       const move = moveEvent => {
         // !#zh 移动的时候，不需要向后代元素传递事件，只需要单纯的移动就OK
