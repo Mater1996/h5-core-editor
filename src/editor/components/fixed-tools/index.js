@@ -2,10 +2,9 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-12 16:40:37
+ * @LastEditTime : 2020-11-17 14:52:03
  * @Description :
  */
-import { mapState } from 'vuex'
 import { Layout, Button, Tooltip } from 'ant-design-vue'
 import hotkeys from 'hotkeys-js'
 import fixedTools from './options'
@@ -17,10 +16,10 @@ export default {
     [Tooltip.name]: Tooltip,
     [Button.name]: Button
   },
-  computed: {
-    ...mapState('editor', {
-      scaleRate: state => state.scaleRate
-    })
+  data () {
+    return {
+      scaleRate: 1
+    }
   },
   render () {
     return (

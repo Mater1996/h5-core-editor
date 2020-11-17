@@ -1,3 +1,10 @@
+/*
+ * @author : Mater
+ * @Email : bxh8640@gmail.com
+ * @Date : 2020-11-17 14:57:05
+ * @LastEditTime : 2020-11-17 14:57:22
+ * @Description :
+ */
 import { cloneDeep } from 'lodash'
 
 class UndoRedoHistory {
@@ -29,10 +36,6 @@ class UndoRedoHistory {
     undo () {
       if (!this.canUndo) return
       const prevState = this.history[this.currentIndex - 1]
-      // take a copy of the history state
-      // because it would be changed during store mutations
-      // what would corrupt the undo-redo-history
-      // (same on redo)
       this.store.replaceState(cloneDeep(prevState))
       this.currentIndex--
     }

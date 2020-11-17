@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 14:39:39
- * @LastEditTime : 2020-11-17 13:00:00
+ * @LastEditTime : 2020-11-17 15:22:09
  * @Description :
  */
 const path = require('path')
@@ -51,7 +51,6 @@ const globals = {
   vue: 'Vue',
   vant: 'vant',
   'resize-detector': 'resizeDetector',
-  vuex: 'Vuex',
   'hotkeys-js': 'hotkeys',
   lodash: 'lodash',
   'ant-design-vue': 'ant-design-vue',
@@ -71,7 +70,6 @@ const external = [
   'quill',
   'animate.css',
   'vue',
-  'vuex',
   'vant',
   'resize-detector',
   'hotkeys-js',

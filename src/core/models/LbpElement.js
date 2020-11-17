@@ -6,7 +6,7 @@
  * @Description :
  */
 
-import { ShapeLayerDefaultProps } from '@/core/components/Element/ShapeLayer'
+import { ShapeLayerDefaultProps } from '@/core/components/ElementRender/ShapeLayer'
 import pluginsControl from '@/plugins'
 import { isFunction } from 'lodash'
 

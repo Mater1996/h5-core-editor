@@ -17,8 +17,6 @@
     elementBlackList: Array || RegExp
   })
  */
-
-import { mapState } from 'vuex'
 import { Menu, Card } from 'ant-design-vue'
 
 function isRegExp (value) {
@@ -94,7 +92,6 @@ export default {
     [Card.name]: Card
   },
   computed: {
-    ...mapState('editor', ['editingElement', 'work']),
     /**
      * 做一下扩展，提供：黑白名单，来针对某些特定组件，展示特定右键菜单
      *

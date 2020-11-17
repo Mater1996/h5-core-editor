@@ -1,14 +1,13 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('ant-design-vue'), require('v-click-outside'), require('vue-quill-editor'), require('vue'), require('vant'), require('resize-detector'), require('vuex'), require('lodash'), require('vue-i18n'), require('hotkeys-js'), require('x-data-spreadsheet'), require('papaparse')) :
-  typeof define === 'function' && define.amd ? define(['ant-design-vue', 'v-click-outside', 'vue-quill-editor', 'vue', 'vant', 'resize-detector', 'vuex', 'lodash', 'vue-i18n', 'hotkeys-js', 'x-data-spreadsheet', 'papaparse'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['luban-h5-editor'] = factory(global['ant-design-vue'], global.vClickOutside$1, global.VueQuillEditor, global.Vue, global.vant, global.resizeDetector, global.Vuex, global.lodash, global.VueI18n, global.hotkeys, global.x_spreadsheet, global.papaparse));
-}(this, (function (antDesignVue, vClickOutside$1, vueQuillEditor, Vue, vant, resizeDetector, Vuex, lodash, VueI18n, hotkeys, Spreadsheet, Papa) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('ant-design-vue'), require('v-click-outside'), require('vue-quill-editor'), require('vue'), require('vant'), require('resize-detector'), require('vue-i18n'), require('lodash'), require('hotkeys-js'), require('x-data-spreadsheet'), require('papaparse')) :
+  typeof define === 'function' && define.amd ? define(['ant-design-vue', 'v-click-outside', 'vue-quill-editor', 'vue', 'vant', 'resize-detector', 'vue-i18n', 'lodash', 'hotkeys-js', 'x-data-spreadsheet', 'papaparse'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['luban-h5-editor'] = factory(global['ant-design-vue'], global.vClickOutside$1, global.VueQuillEditor, global.Vue, global.vant, global.resizeDetector, global.VueI18n, global.lodash, global.hotkeys, global.x_spreadsheet, global.papaparse));
+}(this, (function (antDesignVue, vClickOutside$1, vueQuillEditor, Vue, vant, resizeDetector, VueI18n, lodash, hotkeys, Spreadsheet, Papa) { 'use strict';
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
   var vClickOutside__default = /*#__PURE__*/_interopDefaultLegacy(vClickOutside$1);
   var Vue__default = /*#__PURE__*/_interopDefaultLegacy(Vue);
-  var Vuex__default = /*#__PURE__*/_interopDefaultLegacy(Vuex);
   var VueI18n__default = /*#__PURE__*/_interopDefaultLegacy(VueI18n);
   var hotkeys__default = /*#__PURE__*/_interopDefaultLegacy(hotkeys);
   var Spreadsheet__default = /*#__PURE__*/_interopDefaultLegacy(Spreadsheet);
@@ -2238,16 +2237,6 @@
     }, { unsafe: true });
   }
 
-  var styleKey = 'commonStyle';
-  function getVM(pluginName) {
-    var Ctor = Vue__default['default'].component(pluginName);
-    return new Ctor();
-  }
-  function swapZindex(x, y) {
-    var tmp = y[styleKey].zindex;
-    y[styleKey].zindex = x[styleKey].zindex;
-    x[styleKey].zindex = tmp;
-  }
   var genUUID = function genUUID() {
     // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -64494,159 +64483,260 @@
     plugins: _plugins
   });
 
-  var UndoRedoHistory = /*#__PURE__*/function () {
-    function UndoRedoHistory() {
-      classCallCheck(this, UndoRedoHistory);
-
-      defineProperty$2(this, "store", void 0);
-
-      defineProperty$2(this, "history", []);
-
-      defineProperty$2(this, "currentIndex", -1);
-    }
-
-    createClass(UndoRedoHistory, [{
-      key: "init",
-      value: function init(store) {
-        this.store = store;
-      }
-    }, {
-      key: "addState",
-      value: function addState(state) {
-        // may be we have to remove redo steps
-        if (this.currentIndex + 1 < this.history.length) {
-          this.history.splice(this.currentIndex + 1);
+  var enUSLang = {
+    app: {
+      title: 'Luban H5'
+    },
+    header: {
+      chineseDocument: '中文文档',
+      englishDocument: 'Document(En)',
+      chat: 'Discussion Group',
+      //
+      logout: 'Logout'
+    },
+    sidebar: {
+      myWorks: 'My Works',
+      dataCenter: 'Data Center',
+      basicData: 'Basic Data',
+      templateCenter: 'Templates',
+      freeTemplates: 'Templates List',
+      accountCenter: 'Account'
+    },
+    workCard: {
+      description: 'Desc',
+      createTime: 'Time',
+      useNow: 'Use it Now',
+      preview: 'Preview',
+      edit: 'Edit',
+      createNewWork: 'Create New',
+      view: 'View Work'
+    },
+    basicData: {
+      viewData: 'View Data'
+    },
+    editor: {
+      sidebar: {
+        components: 'Components',
+        pages: 'Pages',
+        templates: 'Templates',
+        tree: 'Tree'
+      },
+      pageManager: {
+        title: 'Page {index}',
+        action: {
+          add: 'Add Page',
+          copy: 'Copy Page',
+          delete: 'Delete Page'
         }
-
-        this.history.push(state);
-        this.currentIndex++;
+      },
+      header: {
+        preview: 'Preview',
+        save: 'Save',
+        publish: 'Publish',
+        setAsTemplate: 'Set As Template'
+      },
+      centerPanel: {
+        mode: {
+          edit: 'Edit',
+          preview: 'Preview'
+        },
+        contextMenu: {
+          copy: 'Copy',
+          delete: 'Delete',
+          moveToTop: 'Move To Top',
+          moveToBottom: 'Move To Bottom',
+          moveUp: 'Move Up',
+          moveDown: 'Move Down',
+          showOnlyButton: 'showOnlyButton',
+          showExcludePicture: 'showExcludePicture'
+        }
+      },
+      fixedTool: {
+        undo: 'Undo{hotkey}',
+        redo: 'Redo{hotkey}',
+        preview: 'Preview',
+        copyCurrentPage: 'CopyCurrentPage',
+        copyCurrentElement: 'copyCurrentElement',
+        importPSD: 'Import PSD',
+        zoomIn: 'Zoom In{hotkey}',
+        zoomOut: 'Zoom Out{hotkey}',
+        issues: 'Issues'
+      },
+      editPanel: {
+        tab: {
+          prop: 'Prop',
+          animation: 'Animation',
+          action: 'Action',
+          script: 'Script',
+          page: 'Page'
+        },
+        animation: {
+          add: 'Add',
+          run: 'Run',
+          type: 'Type',
+          duration: 'Duration',
+          delay: 'Delay',
+          iteration: 'Iteration',
+          inifinite: 'Inifinite',
+          list: 'Select Animation',
+          title: 'Animation {index}'
+        },
+        common: {
+          empty: 'Select an element first please!'
+        }
+      },
+      tip: {
+        componentUsage: 'Tip: just {0} on component',
+        click: 'click/drag'
       }
-    }, {
-      key: "undo",
-      value: function undo() {
-        if (!this.canUndo) return;
-        var prevState = this.history[this.currentIndex - 1]; // take a copy of the history state
-        // because it would be changed during store mutations
-        // what would corrupt the undo-redo-history
-        // (same on redo)
-
-        this.store.replaceState(lodash.cloneDeep(prevState));
-        this.currentIndex--;
-      }
-    }, {
-      key: "redo",
-      value: function redo() {
-        if (!this.canRedo) return;
-        var nextState = this.history[this.currentIndex + 1];
-        this.store.replaceState(lodash.cloneDeep(nextState));
-        this.currentIndex++;
-      }
-    }, {
-      key: "canUndo",
-      get: function get() {
-        return this.currentIndex > 0;
-      }
-    }, {
-      key: "canRedo",
-      get: function get() {
-        return this.history.length > this.currentIndex + 1;
-      }
-    }]);
-
-    return UndoRedoHistory;
-  }();
-
-  var undoRedoHistory = new UndoRedoHistory();
-
-  /**
-   * #!zh: setElementCommonStyle 因为是在 mousemove 时候触发的，执行过于频繁，没有必要计入history，因此需要过滤。
-   * 主要记录：拖动完成时候(mouseup)时候的位置、删除元素之前的状态等
-   */
-  // const unRecordHistoryMutationTypes = ['editor/setElementCommonStyle']
-
-  var recordHistoryMutationTypes = ['editor/recordRect', 'editor/elementManager', 'editor/setEditingPage' // 用作 firstState，类似打开文件编辑之前的原始文件
-  ];
-
-  var undoRedoPlugin = function undoRedoPlugin(store) {
-    // initialize and save the starting stage
-    undoRedoHistory.init(store);
-    /**
-     *
-     * 注释addState(firstState) 代码
-     * 因为 firstState 如果不注释则是整个editor的状态，而非作品的初始状态
-     * 作品的初始状态<editor/setEditingPage>，也就是页面有内容最开始有内容时候的状态，注意不是setWork<此时editingPage 仍然为空，也不是 setEditingElement 因为用户可能不操作，直接从左侧列表选择组件，加到画布中>)
-     * 如果添加到到history中，会导致history 变为：[editorState, workState1, workState2]
-     * 这样执行 ctrl+z 的时候，会导致撤销的到最后一个时候(canUndo-> currentIndex > 0)
-     * 其实是 editorState，导致画布区域显示空白（因为那时候 editorState 中的 work 为null，并没有加载work）
-     * 为何 canUndo = currentIndex>0，因为 currentIndex = 0 的时候，说明 history 数组中只有一个状态了，也就是最开始时候的状态，回退最终也只能回退到 firstState，不能再退了
-     * 类似打开sublime编辑文件，无论怎么改动，撤退到最后一步，其实就是是文件打开时候的状态
-     * 同理 在 setWork 的时候，应该进行 undoRedoHistory.addState(firstState)
-     */
-    // let firstState = cloneDeep(store.state)
-    // undoRedoHistory.addState(firstState)
-
-    store.subscribe(function (mutation, state) {
-      var type = mutation.type;
-      if (!recordHistoryMutationTypes.includes(type)) return; // is called AFTER every mutation
-
-      undoRedoHistory.addState(lodash.cloneDeep(state));
-    });
+    }
   };
 
-  var defineProperty$7 = objectDefineProperty.f;
-
-
-  var NativeSymbol = global_1.Symbol;
-
-  if (descriptors && typeof NativeSymbol == 'function' && (!('description' in NativeSymbol.prototype) ||
-    // Safari 12 bug
-    NativeSymbol().description !== undefined
-  )) {
-    var EmptyStringDescriptionStore = {};
-    // wrap Symbol constructor for correct work with undefined description
-    var SymbolWrapper = function Symbol() {
-      var description = arguments.length < 1 || arguments[0] === undefined ? undefined : String(arguments[0]);
-      var result = this instanceof SymbolWrapper
-        ? new NativeSymbol(description)
-        // in Edge 13, String(Symbol(undefined)) === 'Symbol(undefined)'
-        : description === undefined ? NativeSymbol() : NativeSymbol(description);
-      if (description === '') EmptyStringDescriptionStore[result] = true;
-      return result;
-    };
-    copyConstructorProperties(SymbolWrapper, NativeSymbol);
-    var symbolPrototype = SymbolWrapper.prototype = NativeSymbol.prototype;
-    symbolPrototype.constructor = SymbolWrapper;
-
-    var symbolToString = symbolPrototype.toString;
-    var native = String(NativeSymbol('test')) == 'Symbol(test)';
-    var regexp = /^Symbol\((.*)\)[^)]+$/;
-    defineProperty$7(symbolPrototype, 'description', {
-      configurable: true,
-      get: function description() {
-        var symbol = isObject(this) ? this.valueOf() : this;
-        var string = symbolToString.call(symbol);
-        if (has(EmptyStringDescriptionStore, symbol)) return '';
-        var desc = native ? string.slice(7, -1) : string.replace(regexp, '$1');
-        return desc === '' ? undefined : desc;
+  /*
+   * @Author: ly525
+   * @Date: 2019-11-24 18:51:58
+   * @LastEditors: ly525
+   * @LastEditTime: 2020-10-13 01:29:21
+   * @FilePath: /h5/src/locales/lang/zh-CN.js
+   * @Github: https://github.com/ly525/luban-h5
+   * @Description: Do not edit
+   * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
+   */
+  var zhCNLang = {
+    app: {
+      title: '鲁班 H5'
+    },
+    header: {
+      chineseDocument: '中文文档',
+      englishDocument: '英文文档',
+      chat: '交流群',
+      //  Discussion Group
+      logout: '退出登录'
+    },
+    sidebar: {
+      myWorks: '我的作品',
+      dataCenter: '数据中心',
+      basicData: '基础数据',
+      templateCenter: '模板中心',
+      freeTemplates: '模板列表',
+      accountCenter: '账号中心'
+    },
+    workCard: {
+      description: '描述',
+      createTime: '时间',
+      useNow: '立即查看',
+      preview: '预览',
+      createNewWork: '创建新作品',
+      edit: '编辑',
+      view: '查看作品'
+    },
+    basicData: {
+      viewData: '查看数据'
+    },
+    editor: {
+      sidebar: {
+        components: '组件列表',
+        pages: '页面管理',
+        templates: '模板',
+        tree: '组件树'
+      },
+      pageManager: {
+        title: '第{index}页面',
+        action: {
+          add: '新增页面',
+          copy: '复制页面',
+          delete: '删除页面'
+        }
+      },
+      header: {
+        preview: '预览',
+        save: '保存',
+        publish: '发布',
+        setAsTemplate: '设置为模板'
+      },
+      centerPanel: {
+        mode: {
+          edit: 'Edit',
+          preview: 'Preview'
+        },
+        contextMenu: {
+          copy: '复制',
+          delete: '删除',
+          moveToTop: '置顶',
+          moveToBottom: '置底',
+          moveUp: '上移',
+          moveDown: '下移',
+          showOnlyButton: '只有按钮才显示该选项',
+          showExcludePicture: '除了图片都显示该选项'
+        }
+      },
+      fixedTool: {
+        undo: '撤销{hotkey}',
+        redo: '重做{hotkey}',
+        preview: '预览',
+        copyCurrentPage: '复制当前页面',
+        copyCurrentElement: '复制当前元素',
+        importPSD: '导入PSD',
+        zoomIn: '缩小{hotkey}',
+        zoomOut: '放大{hotkey}',
+        issues: '常见问题'
+      },
+      editPanel: {
+        tab: {
+          prop: '属性',
+          animation: '动画',
+          action: '动作',
+          script: '脚本',
+          page: '页面'
+        },
+        animation: {
+          add: '添加动画',
+          run: '运行动画',
+          type: '动画类型',
+          duration: '动画时长',
+          delay: '动画延时',
+          iteration: '运行次数',
+          inifinite: '循环播放',
+          list: '选择动画',
+          title: 'Animation {index}'
+        },
+        common: {
+          empty: 'Select an element first please!'
+        }
+      },
+      tip: {
+        componentUsage: '使用提示: {0} 组件即可',
+        click: '点击或拖拽'
       }
-    });
+    }
+  };
 
-    _export({ global: true, forced: true }, {
-      Symbol: SymbolWrapper
-    });
-  }
+  function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  Vue__default['default'].use(VueI18n__default['default']);
+  var messages = {
+    'en-US': _objectSpread$1({}, enUSLang),
+    'zh-CN': _objectSpread$1({}, zhCNLang)
+  };
+  var defaultLang = 'zh-CN';
+  var i18n = new VueI18n__default['default']({
+    locale: defaultLang,
+    fallbackLocale: defaultLang,
+    messages: messages
+  });
 
   var nativeAssign = Object.assign;
-  var defineProperty$8 = Object.defineProperty;
+  var defineProperty$7 = Object.defineProperty;
 
   // `Object.assign` method
   // https://tc39.github.io/ecma262/#sec-object.assign
   var objectAssign = !nativeAssign || fails(function () {
     // should have correct order of operations (Edge bug)
-    if (descriptors && nativeAssign({ b: 1 }, nativeAssign(defineProperty$8({}, 'a', {
+    if (descriptors && nativeAssign({ b: 1 }, nativeAssign(defineProperty$7({}, 'a', {
       enumerable: true,
       get: function () {
-        defineProperty$8(this, 'b', {
+        defineProperty$7(this, 'b', {
           value: 3,
           enumerable: false
         });
@@ -65311,9 +65401,9 @@
     return name.replace(uppercasePattern, '-$1').toLowerCase().replace(msPattern, '-ms-');
   };
 
-  function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   /**
    * #!zh: 上下左右 对应的 东南西北
    * #!en: top(north)、bottom(south)、left(west)、right(east)
@@ -65446,9 +65536,9 @@
       },
       rect: {
         handler: function handler() {
-          var newStyle = _objectSpread$1(_objectSpread$1({}, this.elStyle), this.rect);
+          var newStyle = _objectSpread$2(_objectSpread$2({}, this.elStyle), this.rect);
 
-          this.shapeStyle = _objectSpread$1(_objectSpread$1({}, this.shapeStyle), this.getStyle(this.rect));
+          this.shapeStyle = _objectSpread$2(_objectSpread$2({}, this.shapeStyle), this.getStyle(this.rect));
           this.$emit('change', newStyle);
         },
         deep: true
@@ -65644,9 +65734,9 @@
     }
   };
 
-  function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$3(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var id$1 = 0;
 
   var LbpElement = /*#__PURE__*/function () {
@@ -65675,13 +65765,13 @@
             component = _pluginsControl$getPl.component; // 传入具体的element render 的 参数
 
 
-        this.props = _objectSpread$2(_objectSpread$2({}, LbpElement.getPluginProps(component)), props); // 传入具体的element render 的 属性
+        this.props = _objectSpread$3(_objectSpread$3({}, LbpElement.getPluginProps(component)), props); // 传入具体的element render 的 属性
 
-        this.attrs = _objectSpread$2({}, attrs); // 传入具体的element render 的 样式
+        this.attrs = _objectSpread$3({}, attrs); // 传入具体的element render 的 样式
 
-        this.class = _objectSpread$2({}, options.class); // 传入 shapeLayer 以改变位置以及大小
+        this.class = _objectSpread$3({}, options.class); // 传入 shapeLayer 以改变位置以及大小
 
-        this.style = _objectSpread$2(_objectSpread$2({}, ShapeLayerDefaultProps), style); // 传入 animateLayer 以实现动画效果
+        this.style = _objectSpread$3(_objectSpread$3({}, ShapeLayerDefaultProps), style); // 传入 animateLayer 以实现动画效果
 
         this.animations = toConsumableArray(animations);
       } else {
@@ -65700,7 +65790,7 @@
           zIndex: zIndex,
           name: this.name,
           pluginProps: this.pluginProps,
-          commonStyle: _objectSpread$2(_objectSpread$2({}, this.commonStyle), {}, {
+          commonStyle: _objectSpread$3(_objectSpread$3({}, this.commonStyle), {}, {
             top: this.commonStyle.top + 20,
             left: this.commonStyle.left + 20
           })
@@ -65993,798 +66083,20 @@
    * @author : Mater
    * @Email : bxh8640@gmail.com
    * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-06 14:56:14
+   * @LastEditTime : 2020-11-17 14:58:22
    * @Description :
    */
-
-  /**
-    * 页面模式，枚举值
-    * h5_swipper 翻页H5
-    * h5_long_page 长页面H5
-   */
-  var PAGE_MODE = {
-    SWIPPER_PAGE: 'h5_swipper',
-    LONG_PAGE: 'h5_long_page',
-    WIDTH: 375,
-    HEIGHT: 667
-  };
-  var PAGE_MODE_LABEL = {
-    SWIPPER_PAGE: '翻页H5',
-    LONG_PAGE: '长页面'
-  };
-
-  var LbpElement$1 = CoreRender.LbpElement;
-
-  var Page = /*#__PURE__*/function () {
-    function Page() {
-      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-          _ref$title = _ref.title,
-          title = _ref$title === void 0 ? '' : _ref$title,
-          _ref$elements = _ref.elements,
-          elements = _ref$elements === void 0 ? [] : _ref$elements,
-          _ref$height = _ref.height,
-          height = _ref$height === void 0 ? PAGE_MODE.HEIGHT : _ref$height,
-          _ref$width = _ref.width,
-          width = _ref$width === void 0 ? PAGE_MODE.WIDTH : _ref$width,
-          _ref$pageMode = _ref.pageMode,
-          pageMode = _ref$pageMode === void 0 ? PAGE_MODE.SWIPPER_PAGE : _ref$pageMode;
-
-      classCallCheck(this, Page);
-
-      this.id = +new Date();
-      this.title = title;
-      this.width = width >= 0 ? width : PAGE_MODE.WIDTH;
-      this.height = height >= 0 ? height : PAGE_MODE.HEIGHT;
-      this.pageMode = pageMode;
-      this.elements = this.genElements(elements);
-    }
-
-    createClass(Page, [{
-      key: "clone",
-      value: function clone() {
-        var elements = this.elements.map(function (element) {
-          return new LbpElement$1(element);
-        });
-        return new Page({
-          title: this.title,
-          elements: elements
-        });
-      }
-    }, {
-      key: "genElements",
-      value: function genElements() {
-        var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-        return Array.isArray(elements) && elements.length > 0 ? elements.map(function (v) {
-          return new LbpElement$1(v);
-        }) : [new LbpElement$1({
-          name: LbpBackground.name
-        })];
-      }
-    }]);
-
-    return Page;
-  }();
-
-  var Work = /*#__PURE__*/function () {
-    function Work() {
-      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-          id = _ref.id,
-          _ref$title = _ref.title,
-          title = _ref$title === void 0 ? '标题' : _ref$title,
-          _ref$description = _ref.description,
-          description = _ref$description === void 0 ? '描述' : _ref$description,
-          _ref$pages = _ref.pages,
-          pages = _ref$pages === void 0 ? [] : _ref$pages,
-          isPublish = _ref.isPublish,
-          isTemplate = _ref.isTemplate;
-
-      classCallCheck(this, Work);
-
-      this.id = id;
-      this.title = title;
-      this.description = description;
-      this.pages = this.genPages(pages);
-      this.cover_image_url = '';
-      this.is_publish = !!isPublish;
-      this.is_template = !!isTemplate;
-    }
-
-    createClass(Work, [{
-      key: "genPages",
-      value: function genPages(pages) {
-        return Array.isArray(pages) && pages.length > 0 ? pages.map(function (v) {
-          return new Page(v);
-        }) : [new Page()];
-      }
-    }]);
-
-    return Work;
-  }();
-
-  // actions
-  var actions = {
-    updateScaleRate: function updateScaleRate(_ref, payload) {
-      var commit = _ref.commit;
-      commit('updateScaleRate', payload);
-    }
-  }; // mutations
-
-  var mutations = {
-    /**
-     *
-     * @param {*} state
-     * @param {Number} scaleRateDiff 放大: 0.25, 缩小: -0.25
-     */
-    updateScaleRate: function updateScaleRate(state, scaleRateDiff) {
-      state.scaleRate += scaleRateDiff;
-    }
-  };
-
-  var $findIndex = arrayIteration.findIndex;
-
-
-
-  var FIND_INDEX = 'findIndex';
-  var SKIPS_HOLES = true;
-
-  var USES_TO_LENGTH$8 = arrayMethodUsesToLength(FIND_INDEX);
-
-  // Shouldn't skip holes
-  if (FIND_INDEX in []) Array(1)[FIND_INDEX](function () { SKIPS_HOLES = false; });
-
-  // `Array.prototype.findIndex` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.findindex
-  _export({ target: 'Array', proto: true, forced: SKIPS_HOLES || !USES_TO_LENGTH$8 }, {
-    findIndex: function findIndex(callbackfn /* , that = undefined */) {
-      return $findIndex(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
-    }
-  });
-
-  // https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
-  addToUnscopables(FIND_INDEX);
-
-  var actions$1 = {
-    setEditingPage: function setEditingPage(_ref) {
-      var commit = _ref.commit;
-      var pageIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-      commit('setEditingPage', pageIndex);
-    },
-    pageManager: function pageManager(_ref2, payload) {
-      var commit = _ref2.commit;
-      commit('pageManager', payload);
-    }
-  }; // mutations
-
-  var mutations$1 = {
-    setEditingPage: function setEditingPage(state) {
-      var pageIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-      state.editingPage = state.work.pages[pageIndex];
-    },
-    pageManager: function pageManager(state, _ref3) {
-      var type = _ref3.type,
-          value = _ref3.value;
-
-      switch (type) {
-        case 'editTitle':
-          var pageIndex = value.pageIndex,
-              newTitle = value.newTitle;
-          state.work.pages[pageIndex].title = newTitle;
-          break;
-
-        case 'add':
-          var page = new Page(value);
-          state.work.pages.push(page);
-          break;
-
-        case 'copy':
-          state.work.pages.push(state.editingPage.clone());
-          break;
-
-        case 'delete':
-          if (state.work.pages.length === 1) {
-            // #!zh: 作品中至少需要保留一个页面
-            // #!en: At least one page needs to be kept in the work
-            antDesignVue.message.info('作品中至少需要保留一个页面');
-            return;
-          }
-
-          var work = state.work,
-              editingPage = state.editingPage;
-          var index = work.pages.findIndex(function (page) {
-            return page.uuid === editingPage.uuid;
-          });
-
-          if (index !== -1) {
-            var newPages = work.pages.slice();
-            newPages.splice(index, 1);
-            state.work.pages = newPages;
-          }
-
-          break;
-      }
-    }
-  };
-
-  var $find = arrayIteration.find;
-
-
-
-  var FIND = 'find';
-  var SKIPS_HOLES$1 = true;
-
-  var USES_TO_LENGTH$9 = arrayMethodUsesToLength(FIND);
-
-  // Shouldn't skip holes
-  if (FIND in []) Array(1)[FIND](function () { SKIPS_HOLES$1 = false; });
-
-  // `Array.prototype.find` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.find
-  _export({ target: 'Array', proto: true, forced: SKIPS_HOLES$1 || !USES_TO_LENGTH$9 }, {
-    find: function find(callbackfn /* , that = undefined */) {
-      return $find(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
-    }
-  });
-
-  // https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
-  addToUnscopables(FIND);
-
-  function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$3(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-  var actions$2 = {
-    setEditingElement: function setEditingElement(_ref, payload) {
-      var commit = _ref.commit;
-      commit('setEditingElement', payload);
-      payload && EventBus.$emit('setEditingElement', payload);
-    },
-    setElementPosition: function setElementPosition(_ref2, payload) {
-      var commit = _ref2.commit;
-      commit('setElementCommonStyle', payload);
-    },
-    setElementShape: function setElementShape(_ref3, payload) {
-      var commit = _ref3.commit;
-      commit('setElementCommonStyle', payload);
-    },
-    recordElementRect: function recordElementRect(_ref4) {
-      var commit = _ref4.commit;
-      var payload = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      commit('recordRect', payload);
-    },
-    elementManager: function elementManager(_ref5, payload) {
-      var commit = _ref5.commit;
-      commit('elementManager', payload);
-    }
-  }; // mutations
-
-  var mutations$2 = {
-    setEditingElement: function setEditingElement(state, payload) {
-      state.editingElement = payload;
-    },
-    setElementCommonStyle: function setElementCommonStyle(state, payload) {
-      state.editingElement.commonStyle = _objectSpread$3(_objectSpread$3({}, state.editingElement.commonStyle), payload);
-    },
-    elementManager: function elementManager(state, _ref6) {
-      var type = _ref6.type,
-          value = _ref6.value;
-      var editingPage = state.editingPage,
-          editingElement = state.editingElement;
-      var elements = editingPage.elements;
-      var len = elements.length;
-
-      switch (type) {
-        case 'add':
-          var vm = getVM(value.name);
-          vm.$options.shortcutProps = value.shortcutProps; // 用于拖拽结束，确定最终放置的位置
-
-          vm.$options.dragStyle = value.dragStyle; // {left: Number, top: Number}
-
-          var element = new CoreRender.Element(vm.$options);
-          elements.push(element);
-          break;
-
-        case 'copy':
-          elements.push(state.editingElement.clone({
-            zindex: len + 1
-          }));
-          break;
-
-        case 'delete':
-          {
-            var index = elements.findIndex(function (e) {
-              return e.uuid === editingElement.uuid;
-            });
-
-            if (index !== -1) {
-              // let newElements = elements.slice()
-              // newElements.splice(index, 1)
-              // state.editingPage.elements = newElements
-              state.editingPage.elements.splice(index, 1);
-            }
-
-            state.editingElement = null;
-          }
-          break;
-
-        case 'move2Top':
-        case 'move2Bottom':
-          {
-            var _index = elements.findIndex(function (e) {
-              return e.uuid === editingElement.uuid;
-            });
-
-            elements.splice(_index, 1);
-            var newElements = type === 'move2Top' ? [].concat(toConsumableArray(elements), [editingElement]) : [editingElement].concat(toConsumableArray(elements));
-            newElements.forEach(function (ele, i, arr) {
-              ele.commonStyle.zindex = i + 1;
-            });
-            state.editingPage.elements = newElements;
-          }
-          break;
-
-        case 'addZindex':
-        case 'minusZindex':
-          var maxZindex = elements.length;
-          var eleZindex = editingElement.commonStyle.zindex;
-          if (eleZindex === maxZindex || eleZindex === 1) return;
-          var flag = type === 'addZindex' ? 1 : -1;
-          var swapElement = elements.find(function (ele) {
-            return ele.commonStyle.zindex === eleZindex + flag * 1;
-          });
-          swapZindex(editingElement, swapElement);
-          break;
-      }
-    },
-    recordRect: function recordRect(state, _ref7) {
-      var type = _ref7.type,
-          value = _ref7.value;
-    }
-  };
-
-  var test$1 = [];
-  var nativeSort = test$1.sort;
-
-  // IE8-
-  var FAILS_ON_UNDEFINED = fails(function () {
-    test$1.sort(undefined);
-  });
-  // V8 bug
-  var FAILS_ON_NULL = fails(function () {
-    test$1.sort(null);
-  });
-  // Old WebKit
-  var STRICT_METHOD$4 = arrayMethodIsStrict('sort');
-
-  var FORCED$3 = FAILS_ON_UNDEFINED || !FAILS_ON_NULL || !STRICT_METHOD$4;
-
-  // `Array.prototype.sort` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.sort
-  _export({ target: 'Array', proto: true, forced: FORCED$3 }, {
-    sort: function sort(comparefn) {
-      return comparefn === undefined
-        ? nativeSort.call(toObject(this))
-        : nativeSort.call(toObject(this), aFunction$1(comparefn));
-    }
-  });
-
-  function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var actions$3 = {
-    updateWork: function updateWork(_ref) {
-      var commit = _ref.commit,
-          state = _ref.state;
-      var payload = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-      // update work with strapi
-      var work = _objectSpread$4(_objectSpread$4({}, state.work), payload);
-
-      commit('setWork', work);
-    }
-  }; // mutations
-
-  var mutations$3 = {
-    setWorkCover: function setWorkCover(state, _ref2) {
-      var type = _ref2.type,
-          value = _ref2.value;
-
-      var _value = slicedToArray(value, 1),
-          cover = _value[0];
-
-      state.work.cover_image_url = cover.url;
-    },
-    setWorkTemplates: function setWorkTemplates(state, _ref3) {
-      var type = _ref3.type,
-          value = _ref3.value;
-      value.sort(function (a, b) {
-        return b.id - a.id;
-      });
-      state.workTemplates = value;
-    },
-    setWork: function setWork(state, work) {
-      window.__work = work;
-      work.pages = work.pages.map(function (page) {
-        page.elements = page.elements.map(function (element) {
-          return new CoreRender.Element(element);
-        });
-        return new Page(page);
-      });
-      state.work = new Work(work);
-    },
-    previewWork: function previewWork(state, _ref4) {
-      var type = _ref4.type,
-          value = _ref4.value;
-    },
-    deployWork: function deployWork(state, _ref5) {
-      var type = _ref5.type,
-          value = _ref5.value;
-    },
-    formDetailOfWork: function formDetailOfWork(state, _ref6) {
-      var type = _ref6.type,
-          value = _ref6.value;
-      state.formDetailOfWork = value;
-    }
-  };
-
-  function ownKeys$6(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$5(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var state = {
-    works: [],
-    work: new Work(),
-    editingPage: {
-      elements: []
-    },
-    editingElement: null,
-    formDetailOfWork: {
-      uuidMap2Name: {},
-      formRecords: []
-    },
-    workTemplates: [],
-    scaleRate: 1
-  }; // getters
-
-  var getters = {}; // actions
-
-  var actions$4 = _objectSpread$5(_objectSpread$5(_objectSpread$5(_objectSpread$5({}, actions$2), actions$1), actions$3), actions); // mutations
-
-
-  var mutations$4 = _objectSpread$5(_objectSpread$5(_objectSpread$5(_objectSpread$5({}, mutations$2), mutations$1), mutations$3), mutations);
-
-  var editor = {
-    namespaced: true,
-    state: state,
-    getters: getters,
-    actions: actions$4,
-    mutations: mutations$4
-  };
-
-  var enUSLang = {
-    app: {
-      title: 'Luban H5'
-    },
-    header: {
-      chineseDocument: '中文文档',
-      englishDocument: 'Document(En)',
-      chat: 'Discussion Group',
-      //
-      logout: 'Logout'
-    },
-    sidebar: {
-      myWorks: 'My Works',
-      dataCenter: 'Data Center',
-      basicData: 'Basic Data',
-      templateCenter: 'Templates',
-      freeTemplates: 'Templates List',
-      accountCenter: 'Account'
-    },
-    workCard: {
-      description: 'Desc',
-      createTime: 'Time',
-      useNow: 'Use it Now',
-      preview: 'Preview',
-      edit: 'Edit',
-      createNewWork: 'Create New',
-      view: 'View Work'
-    },
-    basicData: {
-      viewData: 'View Data'
-    },
-    editor: {
-      sidebar: {
-        components: 'Components',
-        pages: 'Pages',
-        templates: 'Templates',
-        tree: 'Tree'
-      },
-      pageManager: {
-        title: 'Page {index}',
-        action: {
-          add: 'Add Page',
-          copy: 'Copy Page',
-          delete: 'Delete Page'
-        }
-      },
-      header: {
-        preview: 'Preview',
-        save: 'Save',
-        publish: 'Publish',
-        setAsTemplate: 'Set As Template'
-      },
-      centerPanel: {
-        mode: {
-          edit: 'Edit',
-          preview: 'Preview'
-        },
-        contextMenu: {
-          copy: 'Copy',
-          delete: 'Delete',
-          moveToTop: 'Move To Top',
-          moveToBottom: 'Move To Bottom',
-          moveUp: 'Move Up',
-          moveDown: 'Move Down',
-          showOnlyButton: 'showOnlyButton',
-          showExcludePicture: 'showExcludePicture'
-        }
-      },
-      fixedTool: {
-        undo: 'Undo{hotkey}',
-        redo: 'Redo{hotkey}',
-        preview: 'Preview',
-        copyCurrentPage: 'CopyCurrentPage',
-        copyCurrentElement: 'copyCurrentElement',
-        importPSD: 'Import PSD',
-        zoomIn: 'Zoom In{hotkey}',
-        zoomOut: 'Zoom Out{hotkey}',
-        issues: 'Issues'
-      },
-      editPanel: {
-        tab: {
-          prop: 'Prop',
-          animation: 'Animation',
-          action: 'Action',
-          script: 'Script',
-          page: 'Page'
-        },
-        animation: {
-          add: 'Add',
-          run: 'Run',
-          type: 'Type',
-          duration: 'Duration',
-          delay: 'Delay',
-          iteration: 'Iteration',
-          inifinite: 'Inifinite',
-          list: 'Select Animation',
-          title: 'Animation {index}'
-        },
-        common: {
-          empty: 'Select an element first please!'
-        }
-      },
-      tip: {
-        componentUsage: 'Tip: just {0} on component',
-        click: 'click/drag'
-      }
-    }
-  };
-
-  /*
-   * @Author: ly525
-   * @Date: 2019-11-24 18:51:58
-   * @LastEditors: ly525
-   * @LastEditTime: 2020-10-13 01:29:21
-   * @FilePath: /h5/src/locales/lang/zh-CN.js
-   * @Github: https://github.com/ly525/luban-h5
-   * @Description: Do not edit
-   * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
-   */
-  var zhCNLang = {
-    app: {
-      title: '鲁班 H5'
-    },
-    header: {
-      chineseDocument: '中文文档',
-      englishDocument: '英文文档',
-      chat: '交流群',
-      //  Discussion Group
-      logout: '退出登录'
-    },
-    sidebar: {
-      myWorks: '我的作品',
-      dataCenter: '数据中心',
-      basicData: '基础数据',
-      templateCenter: '模板中心',
-      freeTemplates: '模板列表',
-      accountCenter: '账号中心'
-    },
-    workCard: {
-      description: '描述',
-      createTime: '时间',
-      useNow: '立即查看',
-      preview: '预览',
-      createNewWork: '创建新作品',
-      edit: '编辑',
-      view: '查看作品'
-    },
-    basicData: {
-      viewData: '查看数据'
-    },
-    editor: {
-      sidebar: {
-        components: '组件列表',
-        pages: '页面管理',
-        templates: '模板',
-        tree: '组件树'
-      },
-      pageManager: {
-        title: '第{index}页面',
-        action: {
-          add: '新增页面',
-          copy: '复制页面',
-          delete: '删除页面'
-        }
-      },
-      header: {
-        preview: '预览',
-        save: '保存',
-        publish: '发布',
-        setAsTemplate: '设置为模板'
-      },
-      centerPanel: {
-        mode: {
-          edit: 'Edit',
-          preview: 'Preview'
-        },
-        contextMenu: {
-          copy: '复制',
-          delete: '删除',
-          moveToTop: '置顶',
-          moveToBottom: '置底',
-          moveUp: '上移',
-          moveDown: '下移',
-          showOnlyButton: '只有按钮才显示该选项',
-          showExcludePicture: '除了图片都显示该选项'
-        }
-      },
-      fixedTool: {
-        undo: '撤销{hotkey}',
-        redo: '重做{hotkey}',
-        preview: '预览',
-        copyCurrentPage: '复制当前页面',
-        copyCurrentElement: '复制当前元素',
-        importPSD: '导入PSD',
-        zoomIn: '缩小{hotkey}',
-        zoomOut: '放大{hotkey}',
-        issues: '常见问题'
-      },
-      editPanel: {
-        tab: {
-          prop: '属性',
-          animation: '动画',
-          action: '动作',
-          script: '脚本',
-          page: '页面'
-        },
-        animation: {
-          add: '添加动画',
-          run: '运行动画',
-          type: '动画类型',
-          duration: '动画时长',
-          delay: '动画延时',
-          iteration: '运行次数',
-          inifinite: '循环播放',
-          list: '选择动画',
-          title: 'Animation {index}'
-        },
-        common: {
-          empty: 'Select an element first please!'
-        }
-      },
-      tip: {
-        componentUsage: '使用提示: {0} 组件即可',
-        click: '点击或拖拽'
-      }
-    }
-  };
-
-  function ownKeys$7(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$7(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  Vue__default['default'].use(VueI18n__default['default']);
-  var messages = {
-    'en-US': _objectSpread$6({}, enUSLang),
-    'zh-CN': _objectSpread$6({}, zhCNLang)
-  };
-  var defaultLang = 'zh-CN';
-  var i18n = new VueI18n__default['default']({
-    locale: defaultLang,
-    fallbackLocale: defaultLang,
-    messages: messages
-  });
-  var loadedLanguages = [defaultLang];
-
-  function setI18nLanguage(lang) {
-    i18n.locale = lang;
-    document.querySelector('html').setAttribute('lang', lang);
-    return lang;
-  }
-
-  function loadLanguageAsync() {
-    var lang = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultLang;
-    return new Promise(function (resolve) {
-      if (i18n.locale !== lang) {
-        if (!loadedLanguages.includes(lang)) {
-          i18n.setLocaleMessage(messages[lang], msg.default);
-          loadedLanguages.push(lang);
-          return setI18nLanguage(lang);
-        }
-
-        return resolve(setI18nLanguage(lang));
-      }
-
-      return resolve(lang);
-    });
-  }
-
-  var i18n$1 = {
-    namespaced: true,
-    state: {
-      lang: 'zh-CN'
-    },
-    mutations: {
-      SET_LANG: function SET_LANG(state, lang) {
-        state.lang = lang;
-      }
-    },
-    actions: {
-      // 设置界面语言
-      SetLang: function SetLang(_ref, lang) {
-        var commit = _ref.commit;
-        return new Promise(function (resolve) {
-          commit('SET_LANG', lang);
-          loadLanguageAsync(lang);
-          resolve();
-        });
-      }
-    }
-  };
-
-  /*
-   * @Author: ly525
-   * @Date: 2020-10-11 10:13:51
-   * @LastEditors : Please set LastEditors
-   * @LastEditTime : 2020-10-29 10:03:39
-   * @FilePath: /luban-h5/front-end/h5/src/components/@/store/index.js
-   * @Github: https://github.com/ly525/luban-h5
-   * @Description: Do not edit
-   * @Copyright 2018 - 2019 luban-h5. All Rights Reserved
-   */
-  Vue__default['default'].use(Vuex__default['default']);
-  var store$2 = new Vuex__default['default'].Store({
-    state: {},
-    mutations: {},
-    actions: {},
-    modules: {
-      editor: editor,
-      i18n: i18n$1
-    },
-    plugins: [undoRedoPlugin]
-  });
-
+  // import undoRedoHistory from '@/store/plugins/undo-redo/History'
   var fixedTools = [{
     i18nTooltip: 'editor.fixedTool.undo',
     icon: 'mail-reply',
-    action: function action() {
-      return undoRedoHistory.undo();
-    },
+    // action: () => undoRedoHistory.undo(),
     hotkey: 'ctrl&z,⌘&z',
     hotkeyTooltip: '(ctrl+z)'
   }, {
     i18nTooltip: 'editor.fixedTool.redo',
     icon: 'mail-forward',
-    action: function action() {
-      return undoRedoHistory.redo();
-    },
+    // action: () => undoRedoHistory.redo(),
     hotkey: 'ctrl&y,⌘&u',
     hotkeyTooltip: '(ctrl+y)'
   }, {
@@ -66842,17 +66154,13 @@
   }];
 
   var _components;
-
-  function ownKeys$8(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$7(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$8(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$8(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var FixedTools = {
     components: (_components = {}, defineProperty$2(_components, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$2(_components, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$2(_components, antDesignVue.Tooltip.name, antDesignVue.Tooltip), defineProperty$2(_components, antDesignVue.Button.name, antDesignVue.Button), _components),
-    computed: _objectSpread$7({}, Vuex.mapState('editor', {
-      scaleRate: function scaleRate(state) {
-        return state.scaleRate;
-      }
-    })),
+    data: function data() {
+      return {
+        scaleRate: 1
+      };
+    },
     render: function render() {
       var _this = this;
 
@@ -67350,9 +66658,9 @@
 
   var _components$3;
 
-  function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$8(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$9(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$9(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var RenderPropsEditor = {
     components: (_components$3 = {}, defineProperty$2(_components$3, antDesignVue.Form.name, antDesignVue.Form), defineProperty$2(_components$3, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$2(_components$3, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$2(_components$3, antDesignVue.Button.name, antDesignVue.Button), defineProperty$2(_components$3, antDesignVue.Radio.name, antDesignVue.Radio), defineProperty$2(_components$3, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$2(_components$3, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$2(_components$3, antDesignVue.Input.name, antDesignVue.Input), defineProperty$2(_components$3, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$2(_components$3, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$2(_components$3, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$2(_components$3, antDesignVue.Select.name, antDesignVue.Select), defineProperty$2(_components$3, "colorsPanel", colorsPanel), defineProperty$2(_components$3, "lbsTextAlign", lbsTextAlign), defineProperty$2(_components$3, "lbsExcelEditor", lbsExcelEditor), defineProperty$2(_components$3, "lbpSlideCustomEditor", lbpSlideCustomEditor), _components$3),
     data: function data() {
@@ -67416,7 +66724,7 @@
         var editor = propConfig.editor;
         if (!editor) return;
         var formItemData = {
-          props: _objectSpread$8(_objectSpread$8(_objectSpread$8({}, this.formItemLayout), editor.layout), {}, {
+          props: _objectSpread$4(_objectSpread$4(_objectSpread$4({}, this.formItemLayout), editor.layout), {}, {
             label: editor.label
           })
         };
@@ -68333,6 +67641,30 @@
     }
   });
 
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-02 16:12:09
+   * @LastEditTime : 2020-11-06 14:56:14
+   * @Description :
+   */
+
+  /**
+    * 页面模式，枚举值
+    * h5_swipper 翻页H5
+    * h5_long_page 长页面H5
+   */
+  var PAGE_MODE = {
+    SWIPPER_PAGE: 'h5_swipper',
+    LONG_PAGE: 'h5_long_page',
+    WIDTH: 375,
+    HEIGHT: 667
+  };
+  var PAGE_MODE_LABEL = {
+    SWIPPER_PAGE: '翻页H5',
+    LONG_PAGE: '长页面'
+  };
+
   var _components$6;
   var RenderBackgroundEditor = {
     components: (_components$6 = {}, defineProperty$2(_components$6, antDesignVue.Form.name, antDesignVue.Form), defineProperty$2(_components$6, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$2(_components$6, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$2(_components$6, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), _components$6),
@@ -68594,9 +67926,9 @@
 
   var _components$8;
 
-  function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$6(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$9(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$5(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var script$1 = {
     components: (_components$8 = {}, defineProperty$2(_components$8, antDesignVue.Modal.name, antDesignVue.Modal), defineProperty$2(_components$8, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$2(_components$8, antDesignVue.Button.name, antDesignVue.Button), _components$8),
     data: function data() {
@@ -68626,7 +67958,7 @@
 
         var npmPackages = new Function("return ".concat(this.text).replace('\n', ''))();
         npmPackages = npmPackages.map(function (pluginInfo) {
-          return _objectSpread$9(_objectSpread$9({}, pluginInfo), {}, {
+          return _objectSpread$5(_objectSpread$5({}, pluginInfo), {}, {
             // src: `https://cdn.jsdelivr.net/npm/${pluginInfo}/dist/${pluginInfo.name}.umd.js`
             // src: `https://unpkg.com/${pluginInfo}/dist/${pluginName}.umd.js`
             src: "https://cdn.jsdelivr.net/npm/".concat(pluginInfo.package, "@").concat(pluginInfo.version, "/dist/").concat(pluginInfo.name, ".umd.js")
@@ -68742,25 +68074,9 @@
       undefined
     );
 
-  function ownKeys$b(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$7(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$a(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$b(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var langMixin = {
-    computed: _objectSpread$a({}, Vuex.mapState({
-      currentLang: function currentLang(state) {
-        return state.i18n.lang;
-      }
-    })),
-    methods: _objectSpread$a(_objectSpread$a({}, Vuex.mapActions('i18n', ['SetLang'])), {}, {
-      setLang: function setLang(lang) {
-        this.SetLang(lang);
-      }
-    })
-  };
-
-  function ownKeys$c(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$b(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$c(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$c(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$7(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   /*
    * @Author: ly525
@@ -68906,7 +68222,7 @@
         if (!canMousedown) return;
         var canvasWrapper = document.querySelector('.lb-canvas');
         var position = canvasWrapper.getBoundingClientRect();
-        this.dragElement && this.clone(_objectSpread$b(_objectSpread$b({}, this.dragElement), {}, {
+        this.dragElement && this.clone(_objectSpread$6(_objectSpread$6({}, this.dragElement), {}, {
           dragStyle: {
             left: e.clientX - layerX - position.left,
             top: e.clientY - layerY - position.top
@@ -68931,7 +68247,7 @@
   var RenderShortcutsPanel = {
     name: 'shotcuts-panel',
     components: (_components$9 = {}, defineProperty$2(_components$9, antDesignVue.Row.name, antDesignVue.Row), defineProperty$2(_components$9, antDesignVue.Col.name, antDesignVue.Col), _components$9),
-    mixins: [langMixin, dragMixin],
+    mixins: [dragMixin],
     data: function data() {
       return {
         npmPackages: []
@@ -68961,7 +68277,7 @@
           "attrs": {
             "clickFn": _this.clone.bind(_this, plugin),
             "mousedownFn": _this.handleDragStartFromMixin.bind(_this, plugin),
-            "title": plugin.i18nTitle[_this.currentLang] || plugin.title,
+            "title": plugin.i18nTitle[_this.$i18n.locale] || plugin.title,
             "faIcon": plugin.icon,
             "disabled": plugin.disabled
           }
@@ -69614,6 +68930,137 @@
     }
   };
 
+  var defineProperty$8 = objectDefineProperty.f;
+
+
+  var NativeSymbol = global_1.Symbol;
+
+  if (descriptors && typeof NativeSymbol == 'function' && (!('description' in NativeSymbol.prototype) ||
+    // Safari 12 bug
+    NativeSymbol().description !== undefined
+  )) {
+    var EmptyStringDescriptionStore = {};
+    // wrap Symbol constructor for correct work with undefined description
+    var SymbolWrapper = function Symbol() {
+      var description = arguments.length < 1 || arguments[0] === undefined ? undefined : String(arguments[0]);
+      var result = this instanceof SymbolWrapper
+        ? new NativeSymbol(description)
+        // in Edge 13, String(Symbol(undefined)) === 'Symbol(undefined)'
+        : description === undefined ? NativeSymbol() : NativeSymbol(description);
+      if (description === '') EmptyStringDescriptionStore[result] = true;
+      return result;
+    };
+    copyConstructorProperties(SymbolWrapper, NativeSymbol);
+    var symbolPrototype = SymbolWrapper.prototype = NativeSymbol.prototype;
+    symbolPrototype.constructor = SymbolWrapper;
+
+    var symbolToString = symbolPrototype.toString;
+    var native = String(NativeSymbol('test')) == 'Symbol(test)';
+    var regexp = /^Symbol\((.*)\)[^)]+$/;
+    defineProperty$8(symbolPrototype, 'description', {
+      configurable: true,
+      get: function description() {
+        var symbol = isObject(this) ? this.valueOf() : this;
+        var string = symbolToString.call(symbol);
+        if (has(EmptyStringDescriptionStore, symbol)) return '';
+        var desc = native ? string.slice(7, -1) : string.replace(regexp, '$1');
+        return desc === '' ? undefined : desc;
+      }
+    });
+
+    _export({ global: true, forced: true }, {
+      Symbol: SymbolWrapper
+    });
+  }
+
+  var LbpElement$1 = CoreRender.LbpElement;
+
+  var Page = /*#__PURE__*/function () {
+    function Page() {
+      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+          _ref$title = _ref.title,
+          title = _ref$title === void 0 ? '' : _ref$title,
+          _ref$elements = _ref.elements,
+          elements = _ref$elements === void 0 ? [] : _ref$elements,
+          _ref$height = _ref.height,
+          height = _ref$height === void 0 ? PAGE_MODE.HEIGHT : _ref$height,
+          _ref$width = _ref.width,
+          width = _ref$width === void 0 ? PAGE_MODE.WIDTH : _ref$width,
+          _ref$pageMode = _ref.pageMode,
+          pageMode = _ref$pageMode === void 0 ? PAGE_MODE.SWIPPER_PAGE : _ref$pageMode;
+
+      classCallCheck(this, Page);
+
+      this.id = +new Date();
+      this.title = title;
+      this.width = width >= 0 ? width : PAGE_MODE.WIDTH;
+      this.height = height >= 0 ? height : PAGE_MODE.HEIGHT;
+      this.pageMode = pageMode;
+      this.elements = this.genElements(elements);
+    }
+
+    createClass(Page, [{
+      key: "clone",
+      value: function clone() {
+        var elements = this.elements.map(function (element) {
+          return new LbpElement$1(element);
+        });
+        return new Page({
+          title: this.title,
+          elements: elements
+        });
+      }
+    }, {
+      key: "genElements",
+      value: function genElements() {
+        var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+        return Array.isArray(elements) && elements.length > 0 ? elements.map(function (v) {
+          return new LbpElement$1(v);
+        }) : [new LbpElement$1({
+          name: LbpBackground.name
+        })];
+      }
+    }]);
+
+    return Page;
+  }();
+
+  var Work = /*#__PURE__*/function () {
+    function Work() {
+      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+          id = _ref.id,
+          _ref$title = _ref.title,
+          title = _ref$title === void 0 ? '标题' : _ref$title,
+          _ref$description = _ref.description,
+          description = _ref$description === void 0 ? '描述' : _ref$description,
+          _ref$pages = _ref.pages,
+          pages = _ref$pages === void 0 ? [] : _ref$pages,
+          isPublish = _ref.isPublish,
+          isTemplate = _ref.isTemplate;
+
+      classCallCheck(this, Work);
+
+      this.id = id;
+      this.title = title;
+      this.description = description;
+      this.pages = this.genPages(pages);
+      this.cover_image_url = '';
+      this.is_publish = !!isPublish;
+      this.is_template = !!isTemplate;
+    }
+
+    createClass(Work, [{
+      key: "genPages",
+      value: function genPages(pages) {
+        return Array.isArray(pages) && pages.length > 0 ? pages.map(function (v) {
+          return new Page(v);
+        }) : [new Page()];
+      }
+    }]);
+
+    return Work;
+  }();
+
   /*
    * @author : Mater
    * @Email : bxh8640@gmail.com
@@ -69628,7 +69075,6 @@
   var _components$d;
   var Editor = {
     name: 'lbp-editor',
-    store: store$2,
     i18n: i18n,
     components: (_components$d = {}, defineProperty$2(_components$d, antDesignVue.Layout.name, antDesignVue.Layout), defineProperty$2(_components$d, antDesignVue.Layout.Content.name, antDesignVue.Layout), _components$d),
     props: {

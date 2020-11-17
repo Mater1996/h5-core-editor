@@ -2,11 +2,11 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-17 13:39:23
+ * @LastEditTime : 2020-11-17 15:04:44
  * @Description :
  */
 import './index.scss'
-import ElementRender from './components/Element'
+import ElementRender from './components/ElementRender'
 import LbpElement from './models/LbpElement'
 
 export default {

@@ -2,12 +2,12 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-29 09:41:50
- * @LastEditTime : 2020-10-29 10:36:32
+ * @LastEditTime : 2020-11-17 14:44:02
  * @Description :
  */
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
-// default language
+
 import enUSLang from './lang/en-US'
 import zhCNLang from './lang/zh-CN'
 
@@ -29,8 +29,6 @@ const i18n = new VueI18n({
   messages
 })
 
-export default i18n
-
 const loadedLanguages = [defaultLang]
 
 function setI18nLanguage (lang) {
@@ -43,7 +41,7 @@ export function loadLanguageAsync (lang = defaultLang) {
   return new Promise(resolve => {
     if (i18n.locale !== lang) {
       if (!loadedLanguages.includes(lang)) {
-        i18n.setLocaleMessage(messages[lang], msg.default)
+        i18n.setLocaleMessage(messages[lang], messages.default)
         loadedLanguages.push(lang)
         return setI18nLanguage(lang)
       }
@@ -52,3 +50,5 @@ export function loadLanguageAsync (lang = defaultLang) {
     return resolve(lang)
   })
 }
+
+export default i18n

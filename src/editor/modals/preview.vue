@@ -1,5 +1,4 @@
 <script>
-import { mapActions } from 'vuex'
 import QRCode from 'qrcode'
 import { Row, Col, Button } from 'ant-design-vue'
 
@@ -24,9 +23,6 @@ export default {
     }
   },
   computed: {
-    // ...mapState('editor', {
-    //   work: state => state.work
-    // }),
     releaseUrl () {
       return `${window.location.origin}/works/preview/${this.work.id}?view_mode=preview`
     }
@@ -44,7 +40,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions('editor', ['saveWork', 'updateWork']),
     handleOk (e) {
       this.confirmLoading = true
       this.saveWork().then((res) => {
@@ -209,11 +204,11 @@ export default {
   .phone-wrapper {
     position: absolute;
     box-sizing: content-box;
+
     .phone {
       position: absolute;
       width: 375px;
       height: 568px;
-
       display: inline-block;
       background: #fff;
       box-sizing: content-box;
@@ -252,16 +247,19 @@ export default {
       }
     }
   }
+
   .setting {
     color: #4a4a4a;
     font-size: 14px;
     float: right;
     width: 380px;
+
     .info {
       .input {
         margin-top: 10px;
       }
     }
+
     .qrcode {
       margin-top: 20px;
 
@@ -269,26 +267,32 @@ export default {
         margin-right: 10px;
       }
     }
+
     .code {
       // !#zh 防止浮动塌陷
       overflow: hidden;
+
       .radios {
         width: 80px;
         margin-top: 5px;
         margin-left: 30px;
+
         label {
-          margin-left: 0px;
+          margin-left: 0;
           margin-top: 10px;
         }
+
         button {
           margin-top: 15px;
         }
       }
     }
+
     .link {
       width: 100%;
       display: block;
     }
+
     .edit {
       text-align: center;
       margin-top: 20px;

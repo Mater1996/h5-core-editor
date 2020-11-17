@@ -1,17 +1,24 @@
-import undoRedoHistory from '@/store/plugins/undo-redo/History'
+/*
+ * @author : Mater
+ * @Email : bxh8640@gmail.com
+ * @Date : 2020-11-02 16:12:09
+ * @LastEditTime : 2020-11-17 14:58:22
+ * @Description :
+ */
+// import undoRedoHistory from '@/store/plugins/undo-redo/History'
 
 const fixedTools = [
   {
     i18nTooltip: 'editor.fixedTool.undo',
     icon: 'mail-reply',
-    action: () => undoRedoHistory.undo(),
+    // action: () => undoRedoHistory.undo(),
     hotkey: 'ctrl&z,⌘&z',
     hotkeyTooltip: '(ctrl+z)'
   },
   {
     i18nTooltip: 'editor.fixedTool.redo',
     icon: 'mail-forward',
-    action: () => undoRedoHistory.redo(),
+    // action: () => undoRedoHistory.redo(),
     hotkey: 'ctrl&y,⌘&u',
     hotkeyTooltip: '(ctrl+y)'
   },
