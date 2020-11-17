@@ -2,13 +2,13 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-17 14:49:21
+ * @LastEditTime : 2020-11-17 17:06:22
  * @Description :
  */
 import ShortcutButton from './shortcut-button'
 import UsageTip from './usage-tip'
 import LoadNpmPlugins from './load-npm-plugins.vue'
-import dragMixin from '@/mixins/drag'
+import dragMixin from './mixins/drag'
 import pluginsControl from '@/plugins'
 import { Row, Col } from 'ant-design-vue'
 

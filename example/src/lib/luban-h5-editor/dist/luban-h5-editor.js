@@ -1,12 +1,11 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('ant-design-vue'), require('v-click-outside'), require('vue-quill-editor'), require('vue'), require('vant'), require('resize-detector'), require('vue-i18n'), require('lodash'), require('hotkeys-js'), require('x-data-spreadsheet'), require('papaparse')) :
-  typeof define === 'function' && define.amd ? define(['ant-design-vue', 'v-click-outside', 'vue-quill-editor', 'vue', 'vant', 'resize-detector', 'vue-i18n', 'lodash', 'hotkeys-js', 'x-data-spreadsheet', 'papaparse'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['luban-h5-editor'] = factory(global['ant-design-vue'], global.vClickOutside$1, global.VueQuillEditor, global.Vue, global.vant, global.resizeDetector, global.VueI18n, global.lodash, global.hotkeys, global.x_spreadsheet, global.papaparse));
-}(this, (function (antDesignVue, vClickOutside$1, vueQuillEditor, Vue, vant, resizeDetector, VueI18n, lodash, hotkeys, Spreadsheet, Papa) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('ant-design-vue'), require('vue-quill-editor'), require('vant'), require('resize-detector'), require('vue'), require('vue-i18n'), require('lodash'), require('hotkeys-js'), require('x-data-spreadsheet'), require('papaparse')) :
+  typeof define === 'function' && define.amd ? define(['ant-design-vue', 'vue-quill-editor', 'vant', 'resize-detector', 'vue', 'vue-i18n', 'lodash', 'hotkeys-js', 'x-data-spreadsheet', 'papaparse'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['luban-h5-editor'] = factory(global['ant-design-vue'], global.VueQuillEditor, global.vant, global.resizeDetector, global.Vue, global.VueI18n, global.lodash, global.hotkeys, global.x_spreadsheet, global.papaparse));
+}(this, (function (antDesignVue, vueQuillEditor, vant, resizeDetector, Vue, VueI18n, lodash, hotkeys, Spreadsheet, Papa) { 'use strict';
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-  var vClickOutside__default = /*#__PURE__*/_interopDefaultLegacy(vClickOutside$1);
   var Vue__default = /*#__PURE__*/_interopDefaultLegacy(Vue);
   var VueI18n__default = /*#__PURE__*/_interopDefaultLegacy(VueI18n);
   var hotkeys__default = /*#__PURE__*/_interopDefaultLegacy(hotkeys);
@@ -721,6 +720,57 @@
     findIndex: createMethod$1(6)
   };
 
+  var arrayMethodIsStrict = function (METHOD_NAME, argument) {
+    var method = [][METHOD_NAME];
+    return !!method && fails(function () {
+      // eslint-disable-next-line no-useless-call,no-throw-literal
+      method.call(null, argument || function () { throw 1; }, 1);
+    });
+  };
+
+  var defineProperty$1 = Object.defineProperty;
+  var cache = {};
+
+  var thrower = function (it) { throw it; };
+
+  var arrayMethodUsesToLength = function (METHOD_NAME, options) {
+    if (has(cache, METHOD_NAME)) return cache[METHOD_NAME];
+    if (!options) options = {};
+    var method = [][METHOD_NAME];
+    var ACCESSORS = has(options, 'ACCESSORS') ? options.ACCESSORS : false;
+    var argument0 = has(options, 0) ? options[0] : thrower;
+    var argument1 = has(options, 1) ? options[1] : undefined;
+
+    return cache[METHOD_NAME] = !!method && !fails(function () {
+      if (ACCESSORS && !descriptors) return true;
+      var O = { length: -1 };
+
+      if (ACCESSORS) defineProperty$1(O, 1, { enumerable: true, get: thrower });
+      else O[1] = 1;
+
+      method.call(O, argument0, argument1);
+    });
+  };
+
+  var $forEach = arrayIteration.forEach;
+
+
+
+  var STRICT_METHOD = arrayMethodIsStrict('forEach');
+  var USES_TO_LENGTH = arrayMethodUsesToLength('forEach');
+
+  // `Array.prototype.forEach` method implementation
+  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
+  var arrayForEach = (!STRICT_METHOD || !USES_TO_LENGTH) ? function forEach(callbackfn /* , thisArg */) {
+    return $forEach(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
+  } : [].forEach;
+
+  // `Array.prototype.forEach` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
+  _export({ target: 'Array', proto: true, forced: [].forEach != arrayForEach }, {
+    forEach: arrayForEach
+  });
+
   var engineUserAgent = getBuiltIn('navigator', 'userAgent') || '';
 
   var process = global_1.process;
@@ -757,46 +807,125 @@
     });
   };
 
-  var defineProperty$1 = Object.defineProperty;
-  var cache = {};
-
-  var thrower = function (it) { throw it; };
-
-  var arrayMethodUsesToLength = function (METHOD_NAME, options) {
-    if (has(cache, METHOD_NAME)) return cache[METHOD_NAME];
-    if (!options) options = {};
-    var method = [][METHOD_NAME];
-    var ACCESSORS = has(options, 'ACCESSORS') ? options.ACCESSORS : false;
-    var argument0 = has(options, 0) ? options[0] : thrower;
-    var argument1 = has(options, 1) ? options[1] : undefined;
-
-    return cache[METHOD_NAME] = !!method && !fails(function () {
-      if (ACCESSORS && !descriptors) return true;
-      var O = { length: -1 };
-
-      if (ACCESSORS) defineProperty$1(O, 1, { enumerable: true, get: thrower });
-      else O[1] = 1;
-
-      method.call(O, argument0, argument1);
-    });
-  };
-
   var $map = arrayIteration.map;
 
 
 
   var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('map');
   // FF49- issue
-  var USES_TO_LENGTH = arrayMethodUsesToLength('map');
+  var USES_TO_LENGTH$1 = arrayMethodUsesToLength('map');
 
   // `Array.prototype.map` method
   // https://tc39.github.io/ecma262/#sec-array.prototype.map
   // with adding support of @@species
-  _export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT || !USES_TO_LENGTH }, {
+  _export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT || !USES_TO_LENGTH$1 }, {
     map: function map(callbackfn /* , thisArg */) {
       return $map(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
     }
   });
+
+  // `Object.keys` method
+  // https://tc39.github.io/ecma262/#sec-object.keys
+  var objectKeys = Object.keys || function keys(O) {
+    return objectKeysInternal(O, enumBugKeys);
+  };
+
+  var nativeAssign = Object.assign;
+  var defineProperty$2 = Object.defineProperty;
+
+  // `Object.assign` method
+  // https://tc39.github.io/ecma262/#sec-object.assign
+  var objectAssign = !nativeAssign || fails(function () {
+    // should have correct order of operations (Edge bug)
+    if (descriptors && nativeAssign({ b: 1 }, nativeAssign(defineProperty$2({}, 'a', {
+      enumerable: true,
+      get: function () {
+        defineProperty$2(this, 'b', {
+          value: 3,
+          enumerable: false
+        });
+      }
+    }), { b: 2 })).b !== 1) return true;
+    // should work with symbols and should have deterministic property order (V8 bug)
+    var A = {};
+    var B = {};
+    // eslint-disable-next-line no-undef
+    var symbol = Symbol();
+    var alphabet = 'abcdefghijklmnopqrst';
+    A[symbol] = 7;
+    alphabet.split('').forEach(function (chr) { B[chr] = chr; });
+    return nativeAssign({}, A)[symbol] != 7 || objectKeys(nativeAssign({}, B)).join('') != alphabet;
+  }) ? function assign(target, source) { // eslint-disable-line no-unused-vars
+    var T = toObject(target);
+    var argumentsLength = arguments.length;
+    var index = 1;
+    var getOwnPropertySymbols = objectGetOwnPropertySymbols.f;
+    var propertyIsEnumerable = objectPropertyIsEnumerable.f;
+    while (argumentsLength > index) {
+      var S = indexedObject(arguments[index++]);
+      var keys = getOwnPropertySymbols ? objectKeys(S).concat(getOwnPropertySymbols(S)) : objectKeys(S);
+      var length = keys.length;
+      var j = 0;
+      var key;
+      while (length > j) {
+        key = keys[j++];
+        if (!descriptors || propertyIsEnumerable.call(S, key)) T[key] = S[key];
+      }
+    } return T;
+  } : nativeAssign;
+
+  // `Object.assign` method
+  // https://tc39.github.io/ecma262/#sec-object.assign
+  _export({ target: 'Object', stat: true, forced: Object.assign !== objectAssign }, {
+    assign: objectAssign
+  });
+
+  // iterable DOM collections
+  // flag - `iterable` interface - 'entries', 'keys', 'values', 'forEach' methods
+  var domIterables = {
+    CSSRuleList: 0,
+    CSSStyleDeclaration: 0,
+    CSSValueList: 0,
+    ClientRectList: 0,
+    DOMRectList: 0,
+    DOMStringList: 0,
+    DOMTokenList: 1,
+    DataTransferItemList: 0,
+    FileList: 0,
+    HTMLAllCollection: 0,
+    HTMLCollection: 0,
+    HTMLFormElement: 0,
+    HTMLSelectElement: 0,
+    MediaList: 0,
+    MimeTypeArray: 0,
+    NamedNodeMap: 0,
+    NodeList: 1,
+    PaintRequestList: 0,
+    Plugin: 0,
+    PluginArray: 0,
+    SVGLengthList: 0,
+    SVGNumberList: 0,
+    SVGPathSegList: 0,
+    SVGPointList: 0,
+    SVGStringList: 0,
+    SVGTransformList: 0,
+    SourceBufferList: 0,
+    StyleSheetList: 0,
+    TextTrackCueList: 0,
+    TextTrackList: 0,
+    TouchList: 0
+  };
+
+  for (var COLLECTION_NAME in domIterables) {
+    var Collection = global_1[COLLECTION_NAME];
+    var CollectionPrototype = Collection && Collection.prototype;
+    // some Chrome versions have non-configurable methods on DOMTokenList
+    if (CollectionPrototype && CollectionPrototype.forEach !== arrayForEach) try {
+      createNonEnumerableProperty(CollectionPrototype, 'forEach', arrayForEach);
+    } catch (error) {
+      CollectionPrototype.forEach = arrayForEach;
+    }
+  }
 
   function _arrayLikeToArray(arr, len) {
     if (len == null || len > arr.length) len = arr.length;
@@ -860,7 +989,7 @@
     return obj;
   }
 
-  var defineProperty$2 = _defineProperty;
+  var defineProperty$3 = _defineProperty;
 
   var aPossiblePrototype = function (it) {
     if (!isObject(it) && it !== null) {
@@ -903,12 +1032,6 @@
       NewTargetPrototype !== Wrapper.prototype
     ) objectSetPrototypeOf($this, NewTargetPrototype);
     return $this;
-  };
-
-  // `Object.keys` method
-  // https://tc39.github.io/ecma262/#sec-object.keys
-  var objectKeys = Object.keys || function keys(O) {
-    return objectKeysInternal(O, enumBugKeys);
   };
 
   // `Object.defineProperties` method
@@ -1028,7 +1151,7 @@
 
   var getOwnPropertyNames = objectGetOwnPropertyNames.f;
   var getOwnPropertyDescriptor$2 = objectGetOwnPropertyDescriptor.f;
-  var defineProperty$3 = objectDefineProperty.f;
+  var defineProperty$4 = objectDefineProperty.f;
   var trim = stringTrim.trim;
 
   var NUMBER = 'Number';
@@ -1086,7 +1209,7 @@
       'MIN_SAFE_INTEGER,parseFloat,parseInt,isInteger'
     ).split(','), j = 0, key; keys$1.length > j; j++) {
       if (has(NativeNumber, key = keys$1[j]) && !has(NumberWrapper, key)) {
-        defineProperty$3(NumberWrapper, key, getOwnPropertyDescriptor$2(NativeNumber, key));
+        defineProperty$4(NumberWrapper, key, getOwnPropertyDescriptor$2(NativeNumber, key));
       }
     }
     NumberWrapper.prototype = NumberPrototype;
@@ -1514,7 +1637,7 @@
    * @Author: ly525
    * @Date: 2019-12-01 18:11:50
    * @LastEditors : Please set LastEditors
-   * @LastEditTime : 2020-10-28 09:23:27
+   * @LastEditTime : 2020-11-17 16:52:08
    * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-video.js
    * @Github: https://github.com/ly525/luban-h5
    * @Description: Do not edit
@@ -1663,9 +1786,6 @@
   });
 
   var LbpText = {
-    directives: {
-      clickOutside: vClickOutside__default['default'].directive
-    },
     render: function render(h) {
       var _this = this;
 
@@ -1714,12 +1834,6 @@
             }
           }
         },
-        "directives": [{
-          name: "click-outside",
-          value: function value(e) {
-            _this.canEdit = false;
-          }
-        }],
         "style": style
       }, [canEdit ? h(vueQuillEditor.quillEditor, {
         "attrs": {
@@ -1898,80 +2012,6 @@
   //     outline: none;
   //   }
   // }
-
-  var arrayMethodIsStrict = function (METHOD_NAME, argument) {
-    var method = [][METHOD_NAME];
-    return !!method && fails(function () {
-      // eslint-disable-next-line no-useless-call,no-throw-literal
-      method.call(null, argument || function () { throw 1; }, 1);
-    });
-  };
-
-  var $forEach = arrayIteration.forEach;
-
-
-
-  var STRICT_METHOD = arrayMethodIsStrict('forEach');
-  var USES_TO_LENGTH$1 = arrayMethodUsesToLength('forEach');
-
-  // `Array.prototype.forEach` method implementation
-  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
-  var arrayForEach = (!STRICT_METHOD || !USES_TO_LENGTH$1) ? function forEach(callbackfn /* , thisArg */) {
-    return $forEach(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
-  } : [].forEach;
-
-  // `Array.prototype.forEach` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
-  _export({ target: 'Array', proto: true, forced: [].forEach != arrayForEach }, {
-    forEach: arrayForEach
-  });
-
-  // iterable DOM collections
-  // flag - `iterable` interface - 'entries', 'keys', 'values', 'forEach' methods
-  var domIterables = {
-    CSSRuleList: 0,
-    CSSStyleDeclaration: 0,
-    CSSValueList: 0,
-    ClientRectList: 0,
-    DOMRectList: 0,
-    DOMStringList: 0,
-    DOMTokenList: 1,
-    DataTransferItemList: 0,
-    FileList: 0,
-    HTMLAllCollection: 0,
-    HTMLCollection: 0,
-    HTMLFormElement: 0,
-    HTMLSelectElement: 0,
-    MediaList: 0,
-    MimeTypeArray: 0,
-    NamedNodeMap: 0,
-    NodeList: 1,
-    PaintRequestList: 0,
-    Plugin: 0,
-    PluginArray: 0,
-    SVGLengthList: 0,
-    SVGNumberList: 0,
-    SVGPathSegList: 0,
-    SVGPointList: 0,
-    SVGStringList: 0,
-    SVGTransformList: 0,
-    SourceBufferList: 0,
-    StyleSheetList: 0,
-    TextTrackCueList: 0,
-    TextTrackList: 0,
-    TouchList: 0
-  };
-
-  for (var COLLECTION_NAME in domIterables) {
-    var Collection = global_1[COLLECTION_NAME];
-    var CollectionPrototype = Collection && Collection.prototype;
-    // some Chrome versions have non-configurable methods on DOMTokenList
-    if (CollectionPrototype && CollectionPrototype.forEach !== arrayForEach) try {
-      createNonEnumerableProperty(CollectionPrototype, 'forEach', arrayForEach);
-    } catch (error) {
-      CollectionPrototype.forEach = arrayForEach;
-    }
-  }
 
   var LbpFormButton = {
     render: function render() {
@@ -2161,87 +2201,6 @@
     }
   });
 
-  var TO_STRING_TAG = wellKnownSymbol('toStringTag');
-  var test = {};
-
-  test[TO_STRING_TAG] = 'z';
-
-  var toStringTagSupport = String(test) === '[object z]';
-
-  var TO_STRING_TAG$1 = wellKnownSymbol('toStringTag');
-  // ES3 wrong here
-  var CORRECT_ARGUMENTS = classofRaw(function () { return arguments; }()) == 'Arguments';
-
-  // fallback for IE11 Script Access Denied error
-  var tryGet = function (it, key) {
-    try {
-      return it[key];
-    } catch (error) { /* empty */ }
-  };
-
-  // getting tag from ES6+ `Object.prototype.toString`
-  var classof = toStringTagSupport ? classofRaw : function (it) {
-    var O, tag, result;
-    return it === undefined ? 'Undefined' : it === null ? 'Null'
-      // @@toStringTag case
-      : typeof (tag = tryGet(O = Object(it), TO_STRING_TAG$1)) == 'string' ? tag
-      // builtinTag case
-      : CORRECT_ARGUMENTS ? classofRaw(O)
-      // ES3 arguments fallback
-      : (result = classofRaw(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : result;
-  };
-
-  // `Object.prototype.toString` method implementation
-  // https://tc39.github.io/ecma262/#sec-object.prototype.tostring
-  var objectToString = toStringTagSupport ? {}.toString : function toString() {
-    return '[object ' + classof(this) + ']';
-  };
-
-  // `Object.prototype.toString` method
-  // https://tc39.github.io/ecma262/#sec-object.prototype.tostring
-  if (!toStringTagSupport) {
-    redefine(Object.prototype, 'toString', objectToString, { unsafe: true });
-  }
-
-  // `RegExp.prototype.flags` getter implementation
-  // https://tc39.github.io/ecma262/#sec-get-regexp.prototype.flags
-  var regexpFlags = function () {
-    var that = anObject(this);
-    var result = '';
-    if (that.global) result += 'g';
-    if (that.ignoreCase) result += 'i';
-    if (that.multiline) result += 'm';
-    if (that.dotAll) result += 's';
-    if (that.unicode) result += 'u';
-    if (that.sticky) result += 'y';
-    return result;
-  };
-
-  var TO_STRING = 'toString';
-  var RegExpPrototype = RegExp.prototype;
-  var nativeToString = RegExpPrototype[TO_STRING];
-
-  var NOT_GENERIC = fails(function () { return nativeToString.call({ source: 'a', flags: 'b' }) != '/a/b'; });
-  // FF44- RegExp#toString has a wrong name
-  var INCORRECT_NAME = nativeToString.name != TO_STRING;
-
-  // `RegExp.prototype.toString` method
-  // https://tc39.github.io/ecma262/#sec-regexp.prototype.tostring
-  if (NOT_GENERIC || INCORRECT_NAME) {
-    redefine(RegExp.prototype, TO_STRING, function toString() {
-      var R = anObject(this);
-      var p = String(R.source);
-      var rf = R.flags;
-      var f = String(rf === undefined && R instanceof RegExp && !('flags' in RegExpPrototype) ? regexpFlags.call(R) : rf);
-      return '/' + p + '/' + f;
-    }, { unsafe: true });
-  }
-
-  var genUUID = function genUUID() {
-    // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-  };
-
   var LbpFormRadio = {
     name: 'lbp-form-radio',
     props: {
@@ -2291,7 +2250,7 @@
           disabled = this.disabled,
           checked = this.checked,
           value = this.value;
-      var uuid = +new Date() + genUUID();
+      var uuid = +new Date();
       return h("div", {
         "class": ['lbp-' + this.type + '-wrapper', 'lbp-rc-wrapper']
       }, [h("span", {
@@ -2702,24 +2661,24 @@
   	f: f$6
   };
 
-  var defineProperty$4 = objectDefineProperty.f;
+  var defineProperty$5 = objectDefineProperty.f;
 
   var defineWellKnownSymbol = function (NAME) {
     var Symbol = path.Symbol || (path.Symbol = {});
-    if (!has(Symbol, NAME)) defineProperty$4(Symbol, NAME, {
+    if (!has(Symbol, NAME)) defineProperty$5(Symbol, NAME, {
       value: wellKnownSymbolWrapped.f(NAME)
     });
   };
 
-  var defineProperty$5 = objectDefineProperty.f;
+  var defineProperty$6 = objectDefineProperty.f;
 
 
 
-  var TO_STRING_TAG$2 = wellKnownSymbol('toStringTag');
+  var TO_STRING_TAG = wellKnownSymbol('toStringTag');
 
   var setToStringTag = function (it, TAG, STATIC) {
-    if (it && !has(it = STATIC ? it : it.prototype, TO_STRING_TAG$2)) {
-      defineProperty$5(it, TO_STRING_TAG$2, { configurable: true, value: TAG });
+    if (it && !has(it = STATIC ? it : it.prototype, TO_STRING_TAG)) {
+      defineProperty$6(it, TO_STRING_TAG, { configurable: true, value: TAG });
     }
   };
 
@@ -3058,12 +3017,11 @@
     }
   });
 
-  /**
-   *
-   * @param {*} param0 canvas 实现 watermark
-   */
+  function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function renderWaterMark() {
+  function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { defineProperty$3(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+  function _renderWaterMark() {
     var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
         _ref$container = _ref.container,
         container = _ref$container === void 0 ? document.body : _ref$container,
@@ -3109,9 +3067,6 @@
     }
   }
 
-  function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var LbpBackground = {
     name: 'lbp-background',
     props: {
@@ -3140,8 +3095,8 @@
       })
     },
     methods: {
-      renderWaterMark: function renderWaterMark$1() {
-        renderWaterMark({
+      renderWaterMark: function renderWaterMark() {
+        _renderWaterMark({
           container: this.$refs.root,
           content: this.waterMarkText,
           fontSize: this.waterMarkFontSize,
@@ -3257,8 +3212,8 @@
   /*
    * @Author: ly525
    * @Date: 2020-01-03 23:43:34
-   * @LastEditors: ly525
-   * @LastEditTime: 2020-10-10 23:32:41
+   * @LastEditors : Please set LastEditors
+   * @LastEditTime : 2020-11-17 16:49:11
    * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-bg-music.js
    * @Github: https://github.com/ly525/luban-h5
    * @Description: Do not edit
@@ -3495,6 +3450,48 @@
       return $trim(this);
     }
   });
+
+  var TO_STRING_TAG$1 = wellKnownSymbol('toStringTag');
+  var test = {};
+
+  test[TO_STRING_TAG$1] = 'z';
+
+  var toStringTagSupport = String(test) === '[object z]';
+
+  var TO_STRING_TAG$2 = wellKnownSymbol('toStringTag');
+  // ES3 wrong here
+  var CORRECT_ARGUMENTS = classofRaw(function () { return arguments; }()) == 'Arguments';
+
+  // fallback for IE11 Script Access Denied error
+  var tryGet = function (it, key) {
+    try {
+      return it[key];
+    } catch (error) { /* empty */ }
+  };
+
+  // getting tag from ES6+ `Object.prototype.toString`
+  var classof = toStringTagSupport ? classofRaw : function (it) {
+    var O, tag, result;
+    return it === undefined ? 'Undefined' : it === null ? 'Null'
+      // @@toStringTag case
+      : typeof (tag = tryGet(O = Object(it), TO_STRING_TAG$2)) == 'string' ? tag
+      // builtinTag case
+      : CORRECT_ARGUMENTS ? classofRaw(O)
+      // ES3 arguments fallback
+      : (result = classofRaw(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : result;
+  };
+
+  // `Object.prototype.toString` method implementation
+  // https://tc39.github.io/ecma262/#sec-object.prototype.tostring
+  var objectToString = toStringTagSupport ? {}.toString : function toString() {
+    return '[object ' + classof(this) + ']';
+  };
+
+  // `Object.prototype.toString` method
+  // https://tc39.github.io/ecma262/#sec-object.prototype.tostring
+  if (!toStringTagSupport) {
+    redefine(Object.prototype, 'toString', objectToString, { unsafe: true });
+  }
 
   var nativePromiseConstructor = global_1.Promise;
 
@@ -59662,7 +59659,7 @@
 
   var Core$3 = _interopDefault$5(core_1);
 
-  var defineProperty$6 = function (obj, key, value) {
+  var defineProperty$7 = function (obj, key, value) {
     if (key in obj) {
       Object.defineProperty(obj, key, {
         value: value,
@@ -59852,7 +59849,7 @@
     });
     series = Object.keys(seriesTemp).map(function (item, index) {
       var data = dimAxisType === 'value' ? getValueData(seriesTemp[item], dims) : seriesTemp[item];
-      var seriesItem = defineProperty$6({
+      var seriesItem = defineProperty$7({
         name: labelMap[item] != null ? labelMap[item] : item,
         type: ~showLine.indexOf(item) ? 'line' : 'bar',
         data: data
@@ -63805,7 +63802,7 @@
    * @author : Mater
    * @Email : bxh8640@gmail.com
    * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-10 15:09:15
+   * @LastEditTime : 2020-11-17 16:44:01
    * @Description :
    */
 
@@ -64085,6 +64082,197 @@
     }
   };
 
+  /**
+   *
+   declare module ExcelRows {
+    export interface cell {
+        text: string;
+    }
+    export interface Cells {
+      0: cell;
+      1: cell;
+      2: cell;
+    }
+    export interface ExcelRows {
+      cells: Cells;
+    }
+  }
+   */
+
+  /**
+    *
+    BinaryMatrix = [
+      [any, any, any, ...],
+      [any, any, any, ...],
+      [any, any, any, ...],
+    ]
+
+    ExcelDataType = [
+      {
+        cells: {
+          0: { text: any },
+          1: { text: any },
+          2: { text: any }
+        }
+      },
+      {
+        cells: {
+          0: { text: any },
+          1: { text: any },
+          2: { text: any }
+        }
+      },
+    ]
+    */
+  var Parser$1 = /*#__PURE__*/function () {
+    function Parser() {
+      classCallCheck(this, Parser);
+    }
+
+    createClass(Parser, null, [{
+      key: "dataset2excel",
+
+      /**
+       *
+       * @param {*} dataset ExcelDataType
+       */
+      value: function dataset2excel(dataset) {
+        return dataset.map(function (item) {
+          return {
+            cells: {
+              0: {
+                text: item.x
+              },
+              1: {
+                text: item.y
+              },
+              2: {
+                text: item.s
+              }
+            }
+          };
+        });
+      }
+      /**
+       *
+        [
+          [1,2,3,4],
+          [5,6,7,8],
+          [9,10,11,12]
+        ]
+       * @param {Object} BinaryMatrix
+       * @returns {Object} ExcelDataType
+       */
+
+    }, {
+      key: "binaryMatrix2excel",
+      value: function binaryMatrix2excel() {
+        var binaryMatrix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+        var excelData = binaryMatrix.map(function (row, rowIndex) {
+          // cells: {
+          //   0: { text: item.x },
+          //   1: { text: item.y },
+          //   2: { text: item.s }
+          // }
+          var cells = {};
+          row.forEach(function (cellValue, cellIndex) {
+            cells[cellIndex] = {
+              text: cellValue
+            };
+          });
+          return {
+            cells: cells
+          };
+        });
+        return excelData;
+      }
+    }, {
+      key: "excel2chartDataSet",
+      value: function excel2chartDataSet(excelData) {
+        var rowsArray = Object.values(excelData.rows).filter(function (item) {
+          return _typeof_1(item) === 'object';
+        });
+        var dataset = rowsArray.map(function (row) {
+          var _Object$values$map = Object.values(row.cells).map(function (item) {
+            return item.text;
+          }),
+              _Object$values$map2 = slicedToArray(_Object$values$map, 3),
+              x = _Object$values$map2[0],
+              y = _Object$values$map2[1],
+              s = _Object$values$map2[2];
+
+          return {
+            x: x,
+            y: y,
+            s: s
+          };
+        });
+        return dataset;
+      }
+    }, {
+      key: "excel2BinaryMatrix",
+      value: function excel2BinaryMatrix(excelData) {
+        var rowsArray = Object.values(excelData.rows).filter(function (item) {
+          return _typeof_1(item) === 'object';
+        });
+        var dataset = rowsArray.map(function (row) {
+          // [1,2,3,4]
+          var cells = Object.values(row.cells).map(function (item) {
+            return item.text;
+          });
+          return cells;
+        });
+        console.log('dataset', dataset);
+        return dataset;
+      }
+      /**
+      *
+      * @param {Array} csvArray
+      *    [
+             ['日期', '销售量'],
+             ["1月1日",123],
+             ["1月2日",1223],
+             ["1月3日",2123],
+             ["1月4日",4123],
+             ["1月5日",3123],
+             ["1月6日",7123]
+           ]
+      * @returns {Object}
+         {
+           columns: ['日期', '销售量'],
+           rows:[
+             { '日期': '1月1日', '销售量': 123 },
+             { '日期': '1月2日', '销售量': 1223 },
+             { '日期': '1月3日', '销售量': 2123 },
+             { '日期': '1月4日', '销售量': 4123 },
+             { '日期': '1月5日', '销售量': 3123 },
+             { '日期': '1月6日', '销售量': 7123 }
+           ]
+         }
+      */
+
+    }, {
+      key: "csv2VChartJson",
+      value: function csv2VChartJson(csvArray) {
+        var columns = csvArray[0];
+        var rows = csvArray.slice(1);
+        var json = {
+          columns: columns,
+          rows: rows.map(function (row, index) {
+            var obj = {};
+            columns.forEach(function (col, colIndex) {
+              obj[col.trim()] = row[colIndex];
+            });
+            return obj;
+          })
+        };
+        return json;
+      }
+    }]);
+
+    return Parser;
+  }();
+
   var LbpNewsList = {
     name: 'lbp-news-list',
     props: {
@@ -64117,7 +64305,7 @@
           '来源': '',
         }
        */
-      var _Parser$csv2VChartJso = Parser.csv2VChartJson(this.dataset),
+      var _Parser$csv2VChartJso = Parser$1.csv2VChartJson(this.dataset),
           rows = _Parser$csv2VChartJso.rows;
 
       return h("div", {
@@ -64713,7 +64901,7 @@
 
   function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty$3(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   Vue__default['default'].use(VueI18n__default['default']);
   var messages = {
     'en-US': _objectSpread$1({}, enUSLang),
@@ -64724,56 +64912,6 @@
     locale: defaultLang,
     fallbackLocale: defaultLang,
     messages: messages
-  });
-
-  var nativeAssign = Object.assign;
-  var defineProperty$7 = Object.defineProperty;
-
-  // `Object.assign` method
-  // https://tc39.github.io/ecma262/#sec-object.assign
-  var objectAssign = !nativeAssign || fails(function () {
-    // should have correct order of operations (Edge bug)
-    if (descriptors && nativeAssign({ b: 1 }, nativeAssign(defineProperty$7({}, 'a', {
-      enumerable: true,
-      get: function () {
-        defineProperty$7(this, 'b', {
-          value: 3,
-          enumerable: false
-        });
-      }
-    }), { b: 2 })).b !== 1) return true;
-    // should work with symbols and should have deterministic property order (V8 bug)
-    var A = {};
-    var B = {};
-    // eslint-disable-next-line no-undef
-    var symbol = Symbol();
-    var alphabet = 'abcdefghijklmnopqrst';
-    A[symbol] = 7;
-    alphabet.split('').forEach(function (chr) { B[chr] = chr; });
-    return nativeAssign({}, A)[symbol] != 7 || objectKeys(nativeAssign({}, B)).join('') != alphabet;
-  }) ? function assign(target, source) { // eslint-disable-line no-unused-vars
-    var T = toObject(target);
-    var argumentsLength = arguments.length;
-    var index = 1;
-    var getOwnPropertySymbols = objectGetOwnPropertySymbols.f;
-    var propertyIsEnumerable = objectPropertyIsEnumerable.f;
-    while (argumentsLength > index) {
-      var S = indexedObject(arguments[index++]);
-      var keys = getOwnPropertySymbols ? objectKeys(S).concat(getOwnPropertySymbols(S)) : objectKeys(S);
-      var length = keys.length;
-      var j = 0;
-      var key;
-      while (length > j) {
-        key = keys[j++];
-        if (!descriptors || propertyIsEnumerable.call(S, key)) T[key] = S[key];
-      }
-    } return T;
-  } : nativeAssign;
-
-  // `Object.assign` method
-  // https://tc39.github.io/ecma262/#sec-object.assign
-  _export({ target: 'Object', stat: true, forced: Object.assign !== objectAssign }, {
-    assign: objectAssign
   });
 
   function _extends$6(){return _extends$6=Object.assign||function(a){for(var b,c=1;c<arguments.length;c++)for(var d in b=arguments[c],b)Object.prototype.hasOwnProperty.call(b,d)&&(a[d]=b[d]);return a},_extends$6.apply(this,arguments)}var normalMerge=["attrs","props","domProps"],toArrayMerge=["class","style","directives"],functionalMerge=["on","nativeOn"],mergeJsxProps=function(a){return a.reduce(function(c,a){for(var b in a)if(!c[b])c[b]=a[b];else if(-1!==normalMerge.indexOf(b))c[b]=_extends$6({},c[b],a[b]);else if(-1!==toArrayMerge.indexOf(b)){var d=c[b]instanceof Array?c[b]:[c[b]],e=a[b]instanceof Array?a[b]:[a[b]];c[b]=d.concat(e);}else if(-1!==functionalMerge.indexOf(b)){for(var f in a[b])if(c[b][f]){var g=c[b][f]instanceof Array?c[b][f]:[c[b][f]],h=a[b][f]instanceof Array?a[b][f]:[a[b][f]];c[b][f]=g.concat(h);}else c[b][f]=a[b][f];}else if("hook"==b)for(var i in a[b])c[b][i]=c[b][i]?mergeFn(c[b][i],a[b][i]):a[b][i];else c[b]=a[b];return c},{})},mergeFn=function(a,b){return function(){a&&a.apply(this,arguments),b&&b.apply(this,arguments);}};var helper$5=mergeJsxProps;
@@ -64788,189 +64926,19 @@
     }
   });
 
-  /**
-   * 增加范围node 以限制触发点击外部的 区域范围
-   */
-  var HANDLERS_PROPERTY = '__v-click-outside';
-  var HAS_WINDOWS = typeof window !== 'undefined';
-  var HAS_NAVIGATOR = typeof navigator !== 'undefined';
-  var IS_TOUCH = HAS_WINDOWS && ('ontouchstart' in window || HAS_NAVIGATOR && navigator.msMaxTouchPoints > 0);
-  var EVENTS = IS_TOUCH ? ['touchstart'] : ['click'];
-
-  function processDirectiveArguments(bindingValue) {
-    var isFunction = typeof bindingValue === 'function';
-
-    if (!isFunction && _typeof_1(bindingValue) !== 'object') {
-      throw new Error('v-click-outside: Binding value must be a function or an object');
-    }
-
-    return {
-      handler: isFunction ? bindingValue : bindingValue.handler,
-      middleware: bindingValue.middleware || function (item) {
-        return item;
-      },
-      events: bindingValue.events || EVENTS,
-      isActive: !(bindingValue.isActive === false),
-      detectIframe: !(bindingValue.detectIframe === false),
-      capture: !!bindingValue.capture,
-      scopeNode: bindingValue.scopeNode || document.documentElement
-    };
-  }
-
-  function execHandler(_ref) {
-    var event = _ref.event,
-        handler = _ref.handler,
-        middleware = _ref.middleware;
-
-    if (middleware(event)) {
-      handler && handler(event);
-    }
-  }
-
-  function onFauxIframeClick(_ref2) {
-    var el = _ref2.el,
-        event = _ref2.event,
-        handler = _ref2.handler,
-        middleware = _ref2.middleware;
-    // Note: on firefox clicking on iframe triggers blur, but only on
-    //       next event loop it becomes document.activeElement
-    // https://stackoverflow.com/q/2381336#comment61192398_23231136
-    setTimeout(function () {
-      var _document = document,
-          activeElement = _document.activeElement;
-
-      if (activeElement && activeElement.tagName === 'IFRAME' && !el.contains(activeElement)) {
-        execHandler({
-          event: event,
-          handler: handler,
-          middleware: middleware
-        });
-      }
-    }, 0);
-  }
-
-  function onEvent(_ref3) {
-    var el = _ref3.el,
-        event = _ref3.event,
-        handler = _ref3.handler,
-        middleware = _ref3.middleware,
-        scopeNode = _ref3.scopeNode;
-    // Note: composedPath is not supported on IE and Edge, more information here:
-    //       https://developer.mozilla.org/en-US/docs/Web/API/Event/composedPath
-    //       In the meanwhile, we are using el.contains for those browsers, not
-    //       the ideal solution, but using IE or EDGE is not ideal either.
-    var path = event.path || event.composedPath && event.composedPath();
-    var isClickOutside = path ? path.indexOf(el) < 0 && path.indexOf(scopeNode) > -1 : !el.contains(event.target) && scopeNode.contains(event.target);
-
-    if (!isClickOutside) {
-      return;
-    }
-
-    execHandler({
-      event: event,
-      handler: handler,
-      middleware: middleware
-    });
-  }
-
-  function bind$4(el, _ref4) {
-    var value = _ref4.value;
-
-    var _processDirectiveArgu = processDirectiveArguments(value),
-        events = _processDirectiveArgu.events,
-        _handler = _processDirectiveArgu.handler,
-        middleware = _processDirectiveArgu.middleware,
-        isActive = _processDirectiveArgu.isActive,
-        detectIframe = _processDirectiveArgu.detectIframe,
-        capture = _processDirectiveArgu.capture,
-        scopeNode = _processDirectiveArgu.scopeNode;
-
-    if (!isActive || !_handler) {
-      return;
-    }
-
-    el[HANDLERS_PROPERTY] = events.map(function (eventName) {
-      return {
-        event: eventName,
-        srcTarget: document.documentElement,
-        handler: function handler(event) {
-          return onEvent({
-            el: el,
-            event: event,
-            handler: _handler,
-            middleware: middleware,
-            scopeNode: scopeNode
-          });
-        },
-        capture: capture
-      };
-    });
-
-    if (detectIframe) {
-      var detectIframeEvent = {
-        event: 'blur',
-        srcTarget: window,
-        handler: function handler(event) {
-          return onFauxIframeClick({
-            el: el,
-            event: event,
-            handler: _handler,
-            middleware: middleware
-          });
-        },
-        capture: capture
-      };
-      el[HANDLERS_PROPERTY] = [].concat(toConsumableArray(el[HANDLERS_PROPERTY]), [detectIframeEvent]);
-    }
-
-    el[HANDLERS_PROPERTY].forEach(function (_ref5) {
-      var event = _ref5.event,
-          srcTarget = _ref5.srcTarget,
-          handler = _ref5.handler;
-      return setTimeout(function () {
-        // Note: More info about this implementation can be found here:
-        //       https://github.com/ndelvalle/v-click-outside/issues/137
-        if (!el[HANDLERS_PROPERTY]) {
-          return;
-        }
-
-        srcTarget.addEventListener(event, handler, capture);
-      }, 0);
-    });
-  }
-
-  function unbind(el) {
-    var handlers = el[HANDLERS_PROPERTY] || [];
-    handlers.forEach(function (_ref6) {
-      var event = _ref6.event,
-          srcTarget = _ref6.srcTarget,
-          handler = _ref6.handler,
-          capture = _ref6.capture;
-      return srcTarget.removeEventListener(event, handler, capture);
-    });
-    delete el[HANDLERS_PROPERTY];
-  }
-
-  function update(el, _ref7) {
-    var value = _ref7.value,
-        oldValue = _ref7.oldValue;
-
-    if (JSON.stringify(value) === JSON.stringify(oldValue)) {
-      return;
-    }
-
-    unbind(el);
-    bind$4(el, {
-      value: value
-    });
-  }
-
-  var directive = {
-    bind: bind$4,
-    update: update,
-    unbind: unbind
+  // `RegExp.prototype.flags` getter implementation
+  // https://tc39.github.io/ecma262/#sec-get-regexp.prototype.flags
+  var regexpFlags = function () {
+    var that = anObject(this);
+    var result = '';
+    if (that.global) result += 'g';
+    if (that.ignoreCase) result += 'i';
+    if (that.multiline) result += 'm';
+    if (that.dotAll) result += 's';
+    if (that.unicode) result += 'u';
+    if (that.sticky) result += 'y';
+    return result;
   };
-  var vClickOutside = HAS_WINDOWS ? directive : {};
 
   // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError,
   // so we use an intermediate function.
@@ -65391,8 +65359,8 @@
   /*
    * @author : Mater
    * @Email : bxh8640@gmail.com
-   * @Date : 2020-11-13 11:32:12
-   * @LastEditTime : 2020-11-13 11:32:31
+   * @Date : 2020-11-17 16:59:14
+   * @LastEditTime : 2020-11-17 16:59:14
    * @Description :
    */
   var hyphenateStyleName = function hyphenateStyleName(name) {
@@ -65401,9 +65369,194 @@
     return name.replace(uppercasePattern, '-$1').toLowerCase().replace(msPattern, '-ms-');
   };
 
+  /**
+   * 增加范围scopeNode属性 以限制触发点击外部的 区域范围
+   *
+   */
+  var HANDLERS_PROPERTY = '__v-click-outside';
+  var HAS_WINDOWS = typeof window !== 'undefined';
+  var HAS_NAVIGATOR = typeof navigator !== 'undefined';
+  var IS_TOUCH = HAS_WINDOWS && ('ontouchstart' in window || HAS_NAVIGATOR && navigator.msMaxTouchPoints > 0);
+  var EVENTS = IS_TOUCH ? ['touchstart'] : ['click'];
+
+  function processDirectiveArguments(bindingValue) {
+    var isFunction = typeof bindingValue === 'function';
+
+    if (!isFunction && _typeof_1(bindingValue) !== 'object') {
+      throw new Error('v-click-outside: Binding value must be a function or an object');
+    }
+
+    return {
+      handler: isFunction ? bindingValue : bindingValue.handler,
+      middleware: bindingValue.middleware || function (item) {
+        return item;
+      },
+      events: bindingValue.events || EVENTS,
+      isActive: !(bindingValue.isActive === false),
+      detectIframe: !(bindingValue.detectIframe === false),
+      capture: !!bindingValue.capture,
+      scopeNode: bindingValue.scopeNode || document.documentElement
+    };
+  }
+
+  function execHandler(_ref) {
+    var event = _ref.event,
+        handler = _ref.handler,
+        middleware = _ref.middleware;
+
+    if (middleware(event)) {
+      handler && handler(event);
+    }
+  }
+
+  function onFauxIframeClick(_ref2) {
+    var el = _ref2.el,
+        event = _ref2.event,
+        handler = _ref2.handler,
+        middleware = _ref2.middleware;
+    // Note: on firefox clicking on iframe triggers blur, but only on
+    //       next event loop it becomes document.activeElement
+    // https://stackoverflow.com/q/2381336#comment61192398_23231136
+    setTimeout(function () {
+      var _document = document,
+          activeElement = _document.activeElement;
+
+      if (activeElement && activeElement.tagName === 'IFRAME' && !el.contains(activeElement)) {
+        execHandler({
+          event: event,
+          handler: handler,
+          middleware: middleware
+        });
+      }
+    }, 0);
+  }
+
+  function onEvent(_ref3) {
+    var el = _ref3.el,
+        event = _ref3.event,
+        handler = _ref3.handler,
+        middleware = _ref3.middleware,
+        scopeNode = _ref3.scopeNode;
+    // Note: composedPath is not supported on IE and Edge, more information here:
+    //       https://developer.mozilla.org/en-US/docs/Web/API/Event/composedPath
+    //       In the meanwhile, we are using el.contains for those browsers, not
+    //       the ideal solution, but using IE or EDGE is not ideal either.
+    var path = event.path || event.composedPath && event.composedPath();
+    var isClickOutside = path ? path.indexOf(el) < 0 && path.indexOf(scopeNode) > -1 : !el.contains(event.target) && scopeNode.contains(event.target);
+
+    if (!isClickOutside) {
+      return;
+    }
+
+    execHandler({
+      event: event,
+      handler: handler,
+      middleware: middleware
+    });
+  }
+
+  function bind$4(el, _ref4) {
+    var value = _ref4.value;
+
+    var _processDirectiveArgu = processDirectiveArguments(value),
+        events = _processDirectiveArgu.events,
+        _handler = _processDirectiveArgu.handler,
+        middleware = _processDirectiveArgu.middleware,
+        isActive = _processDirectiveArgu.isActive,
+        detectIframe = _processDirectiveArgu.detectIframe,
+        capture = _processDirectiveArgu.capture,
+        scopeNode = _processDirectiveArgu.scopeNode;
+
+    if (!isActive || !_handler) {
+      return;
+    }
+
+    el[HANDLERS_PROPERTY] = events.map(function (eventName) {
+      return {
+        event: eventName,
+        srcTarget: document.documentElement,
+        handler: function handler(event) {
+          return onEvent({
+            el: el,
+            event: event,
+            handler: _handler,
+            middleware: middleware,
+            scopeNode: scopeNode
+          });
+        },
+        capture: capture
+      };
+    });
+
+    if (detectIframe) {
+      var detectIframeEvent = {
+        event: 'blur',
+        srcTarget: window,
+        handler: function handler(event) {
+          return onFauxIframeClick({
+            el: el,
+            event: event,
+            handler: _handler,
+            middleware: middleware
+          });
+        },
+        capture: capture
+      };
+      el[HANDLERS_PROPERTY] = [].concat(toConsumableArray(el[HANDLERS_PROPERTY]), [detectIframeEvent]);
+    }
+
+    el[HANDLERS_PROPERTY].forEach(function (_ref5) {
+      var event = _ref5.event,
+          srcTarget = _ref5.srcTarget,
+          handler = _ref5.handler;
+      return setTimeout(function () {
+        // Note: More info about this implementation can be found here:
+        //       https://github.com/ndelvalle/v-click-outside/issues/137
+        if (!el[HANDLERS_PROPERTY]) {
+          return;
+        }
+
+        srcTarget.addEventListener(event, handler, capture);
+      }, 0);
+    });
+  }
+
+  function unbind(el) {
+    var handlers = el[HANDLERS_PROPERTY] || [];
+    handlers.forEach(function (_ref6) {
+      var event = _ref6.event,
+          srcTarget = _ref6.srcTarget,
+          handler = _ref6.handler,
+          capture = _ref6.capture;
+      return srcTarget.removeEventListener(event, handler, capture);
+    });
+    delete el[HANDLERS_PROPERTY];
+  }
+
+  function update(el, _ref7) {
+    var value = _ref7.value,
+        oldValue = _ref7.oldValue;
+
+    if (JSON.stringify(value) === JSON.stringify(oldValue)) {
+      return;
+    }
+
+    unbind(el);
+    bind$4(el, {
+      value: value
+    });
+  }
+
+  var directive = {
+    bind: bind$4,
+    update: update,
+    unbind: unbind
+  };
+  var vClickOutside = HAS_WINDOWS ? directive : {};
+
   function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { defineProperty$3(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   /**
    * #!zh: 上下左右 对应的 东南西北
    * #!en: top(north)、bottom(south)、left(west)、right(east)
@@ -65736,7 +65889,7 @@
 
   function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$3(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$3(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { defineProperty$3(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var id$1 = 0;
 
   var LbpElement = /*#__PURE__*/function () {
@@ -65959,8 +66112,7 @@
     }
   };
 
-  var CoreRender = {
-    LbpElement: LbpElement,
+  var LbpCanvas = {
     props: {
       width: {
         type: Number,
@@ -65969,6 +66121,12 @@
       height: {
         type: Number,
         default: 0
+      },
+      elements: {
+        type: Array,
+        default: function _default() {
+          return [];
+        }
       }
     },
     provide: function provide() {
@@ -65978,8 +66136,6 @@
     },
     data: function data() {
       return {
-        activeElement: null,
-        elements: [],
         canvas: {
           width: this.width,
           height: this.height
@@ -66007,49 +66163,12 @@
       }
     },
     methods: {
-      handleElementActive: function handleElementActive(activeElement) {
-        this.activeElement = activeElement;
-        this.$emit('active', activeElement);
-      },
-      handleElementDeactive: function handleElementDeactive(deactiveElement) {
-        if (deactiveElement === this.activeElement) {
-          this.activeElement = null;
-        }
-
-        this.$emit('deactive', deactiveElement);
-      },
       updateCanvas: function updateCanvas(data) {
         Object.assign(this.canvas, data);
-      },
-      updateElement: function updateElement(data) {
-        if (this.activeElement) {
-          data && this.activeElement.update(data);
-        }
-      },
-      addElement: function addElement() {
-        var _this = this;
-
-        for (var _len = arguments.length, elements = new Array(_len), _key = 0; _key < _len; _key++) {
-          elements[_key] = arguments[_key];
-        }
-
-        elements.forEach(function (element) {
-          if (element instanceof LbpElement) {
-            _this.elements.push(element);
-          }
-        });
-      },
-      handleElementRectChange: function handleElementRectChange(style) {
-        this.updateElement({
-          style: style
-        });
-      },
-      clear: function clear() {
-        this.elements = [];
       }
     },
     render: function render() {
-      var _this2 = this;
+      var _this = this;
 
       var h = arguments[0];
       return h("div", {
@@ -66067,12 +66186,12 @@
           },
           "on": {
             "active": function active() {
-              return _this2.handleElementActive(element);
+              return _this.$listeners.active(element);
             },
             "deactive": function deactive() {
-              return _this2.handleElementDeactive(element);
+              return _this.$listeners.deactive(element);
             },
-            "change": _this2.handleElementRectChange
+            "change": _this.$listeners.elementRectChange
           }
         });
       })])])]);
@@ -66155,7 +66274,7 @@
 
   var _components;
   var FixedTools = {
-    components: (_components = {}, defineProperty$2(_components, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$2(_components, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$2(_components, antDesignVue.Tooltip.name, antDesignVue.Tooltip), defineProperty$2(_components, antDesignVue.Button.name, antDesignVue.Button), _components),
+    components: (_components = {}, defineProperty$3(_components, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$3(_components, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$3(_components, antDesignVue.Tooltip.name, antDesignVue.Tooltip), defineProperty$3(_components, antDesignVue.Button.name, antDesignVue.Button), _components),
     data: function data() {
       return {
         scaleRate: 1
@@ -66292,7 +66411,7 @@
   var _components$1;
   var lbsTextAlign = {
     name: 'lbs-text-align',
-    components: (_components$1 = {}, defineProperty$2(_components$1, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$2(_components$1, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$2(_components$1, antDesignVue.Tooltip.name, antDesignVue.Tooltip), _components$1),
+    components: (_components$1 = {}, defineProperty$3(_components$1, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$3(_components$1, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$3(_components$1, antDesignVue.Tooltip.name, antDesignVue.Tooltip), _components$1),
     render: function render(h) {
       var _this = this;
 
@@ -66350,6 +66469,197 @@
       };
     }
   };
+
+  /**
+   *
+   declare module ExcelRows {
+    export interface cell {
+        text: string;
+    }
+    export interface Cells {
+      0: cell;
+      1: cell;
+      2: cell;
+    }
+    export interface ExcelRows {
+      cells: Cells;
+    }
+  }
+   */
+
+  /**
+    *
+    BinaryMatrix = [
+      [any, any, any, ...],
+      [any, any, any, ...],
+      [any, any, any, ...],
+    ]
+
+    ExcelDataType = [
+      {
+        cells: {
+          0: { text: any },
+          1: { text: any },
+          2: { text: any }
+        }
+      },
+      {
+        cells: {
+          0: { text: any },
+          1: { text: any },
+          2: { text: any }
+        }
+      },
+    ]
+    */
+  var Parser$2 = /*#__PURE__*/function () {
+    function Parser() {
+      classCallCheck(this, Parser);
+    }
+
+    createClass(Parser, null, [{
+      key: "dataset2excel",
+
+      /**
+       *
+       * @param {*} dataset ExcelDataType
+       */
+      value: function dataset2excel(dataset) {
+        return dataset.map(function (item) {
+          return {
+            cells: {
+              0: {
+                text: item.x
+              },
+              1: {
+                text: item.y
+              },
+              2: {
+                text: item.s
+              }
+            }
+          };
+        });
+      }
+      /**
+       *
+        [
+          [1,2,3,4],
+          [5,6,7,8],
+          [9,10,11,12]
+        ]
+       * @param {Object} BinaryMatrix
+       * @returns {Object} ExcelDataType
+       */
+
+    }, {
+      key: "binaryMatrix2excel",
+      value: function binaryMatrix2excel() {
+        var binaryMatrix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+        var excelData = binaryMatrix.map(function (row, rowIndex) {
+          // cells: {
+          //   0: { text: item.x },
+          //   1: { text: item.y },
+          //   2: { text: item.s }
+          // }
+          var cells = {};
+          row.forEach(function (cellValue, cellIndex) {
+            cells[cellIndex] = {
+              text: cellValue
+            };
+          });
+          return {
+            cells: cells
+          };
+        });
+        return excelData;
+      }
+    }, {
+      key: "excel2chartDataSet",
+      value: function excel2chartDataSet(excelData) {
+        var rowsArray = Object.values(excelData.rows).filter(function (item) {
+          return _typeof_1(item) === 'object';
+        });
+        var dataset = rowsArray.map(function (row) {
+          var _Object$values$map = Object.values(row.cells).map(function (item) {
+            return item.text;
+          }),
+              _Object$values$map2 = slicedToArray(_Object$values$map, 3),
+              x = _Object$values$map2[0],
+              y = _Object$values$map2[1],
+              s = _Object$values$map2[2];
+
+          return {
+            x: x,
+            y: y,
+            s: s
+          };
+        });
+        return dataset;
+      }
+    }, {
+      key: "excel2BinaryMatrix",
+      value: function excel2BinaryMatrix(excelData) {
+        var rowsArray = Object.values(excelData.rows).filter(function (item) {
+          return _typeof_1(item) === 'object';
+        });
+        var dataset = rowsArray.map(function (row) {
+          // [1,2,3,4]
+          var cells = Object.values(row.cells).map(function (item) {
+            return item.text;
+          });
+          return cells;
+        });
+        console.log('dataset', dataset);
+        return dataset;
+      }
+      /**
+      *
+      * @param {Array} csvArray
+      *    [
+             ['日期', '销售量'],
+             ["1月1日",123],
+             ["1月2日",1223],
+             ["1月3日",2123],
+             ["1月4日",4123],
+             ["1月5日",3123],
+             ["1月6日",7123]
+           ]
+      * @returns {Object}
+         {
+           columns: ['日期', '销售量'],
+           rows:[
+             { '日期': '1月1日', '销售量': 123 },
+             { '日期': '1月2日', '销售量': 1223 },
+             { '日期': '1月3日', '销售量': 2123 },
+             { '日期': '1月4日', '销售量': 4123 },
+             { '日期': '1月5日', '销售量': 3123 },
+             { '日期': '1月6日', '销售量': 7123 }
+           ]
+         }
+      */
+
+    }, {
+      key: "csv2VChartJson",
+      value: function csv2VChartJson(csvArray) {
+        var columns = csvArray[0];
+        var rows = csvArray.slice(1);
+        var json = {
+          columns: columns,
+          rows: rows.map(function (row, index) {
+            var obj = {};
+            columns.forEach(function (col, colIndex) {
+              obj[col.trim()] = row[colIndex];
+            });
+            return obj;
+          })
+        };
+        return json;
+      }
+    }]);
+
+    return Parser;
+  }();
 
   var validFileMimeTypes = ['text/csv', 'text/x-csv', 'application/vnd.ms-excel', 'text/plain'];
   var CsvImport = {
@@ -66449,7 +66759,7 @@
    * @author : Mater
    * @Email : bxh8640@gmail.com
    * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-10 19:42:27
+   * @LastEditTime : 2020-11-17 16:45:47
    * @Description :
    */
   var lbsExcelEditor = {
@@ -66465,7 +66775,7 @@
     computed: {
       innerItems: {
         get: function get() {
-          return Parser.binaryMatrix2excel(this.value);
+          return Parser$2.binaryMatrix2excel(this.value);
         },
         set: function set(val) {
           this.$emit('input', val);
@@ -66481,7 +66791,7 @@
     },
     methods: {
       parseCSV: function parseCSV(csv) {
-        var sheetData = Parser.binaryMatrix2excel(csv.data);
+        var sheetData = Parser$2.binaryMatrix2excel(csv.data);
         this.$emit('change', csv.data);
         this.refreshSheet({
           rows: sheetData
@@ -66546,7 +66856,7 @@
 
   var _components$2;
   var lbpSlideCustomEditor = {
-    components: (_components$2 = {}, defineProperty$2(_components$2, antDesignVue.Pagination.name, antDesignVue.Pagination), defineProperty$2(_components$2, antDesignVue.Button.name, antDesignVue.Pagination), _components$2),
+    components: (_components$2 = {}, defineProperty$3(_components$2, antDesignVue.Pagination.name, antDesignVue.Pagination), defineProperty$3(_components$2, antDesignVue.Button.name, antDesignVue.Pagination), _components$2),
     props: {
       elementProps: {
         type: Object,
@@ -66660,9 +66970,9 @@
 
   function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { defineProperty$3(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var RenderPropsEditor = {
-    components: (_components$3 = {}, defineProperty$2(_components$3, antDesignVue.Form.name, antDesignVue.Form), defineProperty$2(_components$3, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$2(_components$3, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$2(_components$3, antDesignVue.Button.name, antDesignVue.Button), defineProperty$2(_components$3, antDesignVue.Radio.name, antDesignVue.Radio), defineProperty$2(_components$3, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$2(_components$3, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$2(_components$3, antDesignVue.Input.name, antDesignVue.Input), defineProperty$2(_components$3, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$2(_components$3, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$2(_components$3, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$2(_components$3, antDesignVue.Select.name, antDesignVue.Select), defineProperty$2(_components$3, "colorsPanel", colorsPanel), defineProperty$2(_components$3, "lbsTextAlign", lbsTextAlign), defineProperty$2(_components$3, "lbsExcelEditor", lbsExcelEditor), defineProperty$2(_components$3, "lbpSlideCustomEditor", lbpSlideCustomEditor), _components$3),
+    components: (_components$3 = {}, defineProperty$3(_components$3, antDesignVue.Form.name, antDesignVue.Form), defineProperty$3(_components$3, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$3(_components$3, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$3(_components$3, antDesignVue.Button.name, antDesignVue.Button), defineProperty$3(_components$3, antDesignVue.Radio.name, antDesignVue.Radio), defineProperty$3(_components$3, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$3(_components$3, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$3(_components$3, antDesignVue.Input.name, antDesignVue.Input), defineProperty$3(_components$3, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$3(_components$3, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$3(_components$3, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$3(_components$3, antDesignVue.Select.name, antDesignVue.Select), defineProperty$3(_components$3, "colorsPanel", colorsPanel), defineProperty$3(_components$3, "lbsTextAlign", lbsTextAlign), defineProperty$3(_components$3, "lbsExcelEditor", lbsExcelEditor), defineProperty$3(_components$3, "lbpSlideCustomEditor", lbpSlideCustomEditor), _components$3),
     data: function data() {
       return {
         loadCustomEditorFlag: false
@@ -66707,7 +67017,7 @@
     },
     computed: {
       formItemLayout: function formItemLayout() {
-        this.layout === 'horizontal' ? {
+        return this.layout === 'horizontal' ? {
           labelCol: {
             span: 6
           },
@@ -66763,7 +67073,7 @@
 
   var _components$4;
   var RenderScriptEditor = {
-    components: (_components$4 = {}, defineProperty$2(_components$4, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$2(_components$4, antDesignVue.Button.name, antDesignVue.Button), _components$4),
+    components: (_components$4 = {}, defineProperty$3(_components$4, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$3(_components$4, antDesignVue.Button.name, antDesignVue.Button), _components$4),
     data: function data() {
       return {
         editorContent: "return {\n      editorMethods: {              // \u6B64\u9879\u914D\u7F6E\u81EA\u5B9A\u4E49\u65B9\u6CD5\u7684\u5728\u7EC4\u4EF6\u914D\u7F6E\u9762\u677F\u5982\u4F55\u5C55\u793A\n        projectJump1: {             // \u65B9\u6CD5\u540D\uFF0C\u5BF9\u5E94\u4E8E methods \u5185\u7684\u67D0\u65B9\u6CD5\n          label: '\u5916\u90E8\u8DF3\u8F6C1',        // \u81EA\u5B9A\u4E49\u65B9\u6CD5\u663E\u793A\u540D\n          params: [                 // \u53C2\u6570\u5217\u8868\uFF0C\u5BF9\u8C61\u6570\u7EC4\n            {\n              label: '\u8DF3\u8F6C\u5730\u5740',     // \u53C2\u65701\u7684\u540D\u79F0\n              desc: '\u9879\u76EE\u76F8\u5BF9\u5730\u5740',   // \u53C2\u65701\u7684\u63CF\u8FF0\n              type: 'string',       // \u53C2\u65701\u7684\u7C7B\u578B\uFF0C\u652F\u6301string|number|boolean|array|object\n              default: ''           // \u53C2\u65701\u9ED8\u8BA4\u503C\n            },\n            {\n              label: '\u53C2\u6570',\n              desc: 'query\u5F62\u5F0F\u53C2\u6570',\n              type: 'object',\n              default: {}\n            }\n          ]\n        }\n      },\n      methods:{\n        projectJump1:function(url, query){\n          console.log(url, query)\n          let win = window.open(url, '_blank')\n          win.focus()\n        }\n      }\n    }"
@@ -67128,7 +67438,7 @@
 
   var _components$5;
   var RenderAnimationEditor = {
-    components: (_components$5 = {}, defineProperty$2(_components$5, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$2(_components$5, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$2(_components$5, antDesignVue.List.name, antDesignVue.List), defineProperty$2(_components$5, antDesignVue.List.Item.name, antDesignVue.List.Item), defineProperty$2(_components$5, antDesignVue.Form.name, antDesignVue.Form), defineProperty$2(_components$5, antDesignVue.Button.name, antDesignVue.Button), defineProperty$2(_components$5, antDesignVue.Popover.name, antDesignVue.Popover), defineProperty$2(_components$5, antDesignVue.Slider.name, antDesignVue.Slider), defineProperty$2(_components$5, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$2(_components$5, antDesignVue.Collapse.name, antDesignVue.Collapse), defineProperty$2(_components$5, antDesignVue.Collapse.Panel.name, antDesignVue.Collapse.Panel), defineProperty$2(_components$5, antDesignVue.Icon.name, antDesignVue.Icon), defineProperty$2(_components$5, antDesignVue.Drawer.name, antDesignVue.Drawer), defineProperty$2(_components$5, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), defineProperty$2(_components$5, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$2(_components$5, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$2(_components$5, antDesignVue.Tag.name, antDesignVue.Tag), _components$5),
+    components: (_components$5 = {}, defineProperty$3(_components$5, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$3(_components$5, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$3(_components$5, antDesignVue.List.name, antDesignVue.List), defineProperty$3(_components$5, antDesignVue.List.Item.name, antDesignVue.List.Item), defineProperty$3(_components$5, antDesignVue.Form.name, antDesignVue.Form), defineProperty$3(_components$5, antDesignVue.Button.name, antDesignVue.Button), defineProperty$3(_components$5, antDesignVue.Popover.name, antDesignVue.Popover), defineProperty$3(_components$5, antDesignVue.Slider.name, antDesignVue.Slider), defineProperty$3(_components$5, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$3(_components$5, antDesignVue.Collapse.name, antDesignVue.Collapse), defineProperty$3(_components$5, antDesignVue.Collapse.Panel.name, antDesignVue.Collapse.Panel), defineProperty$3(_components$5, antDesignVue.Icon.name, antDesignVue.Icon), defineProperty$3(_components$5, antDesignVue.Drawer.name, antDesignVue.Drawer), defineProperty$3(_components$5, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), defineProperty$3(_components$5, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$3(_components$5, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$3(_components$5, antDesignVue.Tag.name, antDesignVue.Tag), _components$5),
     props: {
       value: {
         type: Array,
@@ -67667,7 +67977,7 @@
 
   var _components$6;
   var RenderBackgroundEditor = {
-    components: (_components$6 = {}, defineProperty$2(_components$6, antDesignVue.Form.name, antDesignVue.Form), defineProperty$2(_components$6, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$2(_components$6, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$2(_components$6, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), _components$6),
+    components: (_components$6 = {}, defineProperty$3(_components$6, antDesignVue.Form.name, antDesignVue.Form), defineProperty$3(_components$6, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$3(_components$6, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$3(_components$6, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), _components$6),
     data: function data() {
       return {
         formLayout: 'vertical',
@@ -67723,7 +68033,7 @@
   var _components$7;
   var EditorRightPanel = {
     name: 'ElementPropsEditor',
-    components: (_components$7 = {}, defineProperty$2(_components$7, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$2(_components$7, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$2(_components$7, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), _components$7),
+    components: (_components$7 = {}, defineProperty$3(_components$7, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$3(_components$7, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$3(_components$7, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), _components$7),
     props: {
       width: {
         type: Number,
@@ -67905,7 +68215,7 @@
   };
 
   var UsageTip = {
-    components: defineProperty$2({}, antDesignVue.Icon.name, antDesignVue.Icon),
+    components: defineProperty$3({}, antDesignVue.Icon.name, antDesignVue.Icon),
     render: function render() {
       var h = arguments[0];
       return h("div", {
@@ -67928,9 +68238,9 @@
 
   function ownKeys$6(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$5(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$5(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { defineProperty$3(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var script$1 = {
-    components: (_components$8 = {}, defineProperty$2(_components$8, antDesignVue.Modal.name, antDesignVue.Modal), defineProperty$2(_components$8, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$2(_components$8, antDesignVue.Button.name, antDesignVue.Button), _components$8),
+    components: (_components$8 = {}, defineProperty$3(_components$8, antDesignVue.Modal.name, antDesignVue.Modal), defineProperty$3(_components$8, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$3(_components$8, antDesignVue.Button.name, antDesignVue.Button), _components$8),
     data: function data() {
       return {
         visible: false,
@@ -68076,7 +68386,7 @@
 
   function ownKeys$7(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$7(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$7(Object(source), true).forEach(function (key) { defineProperty$3(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   /*
    * @Author: ly525
@@ -68246,7 +68556,7 @@
   var _components$9;
   var RenderShortcutsPanel = {
     name: 'shotcuts-panel',
-    components: (_components$9 = {}, defineProperty$2(_components$9, antDesignVue.Row.name, antDesignVue.Row), defineProperty$2(_components$9, antDesignVue.Col.name, antDesignVue.Col), _components$9),
+    components: (_components$9 = {}, defineProperty$3(_components$9, antDesignVue.Row.name, antDesignVue.Row), defineProperty$3(_components$9, antDesignVue.Col.name, antDesignVue.Col), _components$9),
     mixins: [dragMixin],
     data: function data() {
       return {
@@ -68294,7 +68604,7 @@
 
   var _components$a;
   var PageTitleEditor = {
-    components: (_components$a = {}, defineProperty$2(_components$a, antDesignVue.Popconfirm.name, antDesignVue.Popconfirm), defineProperty$2(_components$a, antDesignVue.Input.name, antDesignVue.Input), defineProperty$2(_components$a, antDesignVue.Icon.name, antDesignVue.Icon), _components$a),
+    components: (_components$a = {}, defineProperty$3(_components$a, antDesignVue.Popconfirm.name, antDesignVue.Popconfirm), defineProperty$3(_components$a, antDesignVue.Input.name, antDesignVue.Input), defineProperty$3(_components$a, antDesignVue.Icon.name, antDesignVue.Icon), _components$a),
     props: ['page', 'pageIndex'],
     data: function data() {
       return {
@@ -68356,7 +68666,7 @@
 
   var _components$b;
   var PageTitleMenu = {
-    components: (_components$b = {}, defineProperty$2(_components$b, antDesignVue.Dropdown.name, antDesignVue.Dropdown), defineProperty$2(_components$b, antDesignVue.Menu.name, antDesignVue.Menu), defineProperty$2(_components$b, antDesignVue.Menu.Item.name, antDesignVue.Menu.Item), defineProperty$2(_components$b, antDesignVue.Icon.name, antDesignVue.Icon), _components$b),
+    components: (_components$b = {}, defineProperty$3(_components$b, antDesignVue.Dropdown.name, antDesignVue.Dropdown), defineProperty$3(_components$b, antDesignVue.Menu.name, antDesignVue.Menu), defineProperty$3(_components$b, antDesignVue.Menu.Item.name, antDesignVue.Menu.Item), defineProperty$3(_components$b, antDesignVue.Icon.name, antDesignVue.Icon), _components$b),
     render: function render() {
       var _this = this;
 
@@ -68409,7 +68719,7 @@
   };
 
   var PageTitleText = {
-    components: defineProperty$2({}, antDesignVue.Badge.name, antDesignVue.Badge),
+    components: defineProperty$3({}, antDesignVue.Badge.name, antDesignVue.Badge),
     props: ['page', 'pageIndex'],
     methods: {
       getTitle: function getTitle() {
@@ -68444,7 +68754,7 @@
         default: []
       }
     },
-    components: defineProperty$2({}, antDesignVue.Button.name, antDesignVue.Button),
+    components: defineProperty$3({}, antDesignVue.Button.name, antDesignVue.Button),
     data: function data() {
       return {
         pageIndex: 0 // 显示编辑按钮
@@ -68533,7 +68843,7 @@
 
   var script$2 = {
     name: 'page-tree',
-    components: defineProperty$2({}, antDesignVue.Tree.name, antDesignVue.Tree),
+    components: defineProperty$3({}, antDesignVue.Tree.name, antDesignVue.Tree),
     computed: {
       treeData: function treeData() {
         return this.elements.map(getTreeNode);
@@ -68606,7 +68916,7 @@
         }
       }
     },
-    components: (_components$c = {}, defineProperty$2(_components$c, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$2(_components$c, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$2(_components$c, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), _components$c),
+    components: (_components$c = {}, defineProperty$3(_components$c, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$3(_components$c, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$3(_components$c, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), _components$c),
     name: 'EditorLeftPanel',
     render: function render(h) {
       return h("a-layout-sider", {
@@ -68806,7 +69116,7 @@
         default: 0
       }
     },
-    components: defineProperty$2({}, antDesignVue.InputNumber.name, antDesignVue.InputNumber),
+    components: defineProperty$3({}, antDesignVue.InputNumber.name, antDesignVue.InputNumber),
     methods: {
       /**
        * 更新作品高度
@@ -68973,8 +69283,6 @@
     });
   }
 
-  var LbpElement$1 = CoreRender.LbpElement;
-
   var Page = /*#__PURE__*/function () {
     function Page() {
       var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
@@ -69003,7 +69311,7 @@
       key: "clone",
       value: function clone() {
         var elements = this.elements.map(function (element) {
-          return new LbpElement$1(element);
+          return new LbpElement(element);
         });
         return new Page({
           title: this.title,
@@ -69015,8 +69323,8 @@
       value: function genElements() {
         var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
         return Array.isArray(elements) && elements.length > 0 ? elements.map(function (v) {
-          return new LbpElement$1(v);
-        }) : [new LbpElement$1({
+          return new LbpElement(v);
+        }) : [new LbpElement({
           name: LbpBackground.name
         })];
       }
@@ -69076,7 +69384,7 @@
   var Editor = {
     name: 'lbp-editor',
     i18n: i18n,
-    components: (_components$d = {}, defineProperty$2(_components$d, antDesignVue.Layout.name, antDesignVue.Layout), defineProperty$2(_components$d, antDesignVue.Layout.Content.name, antDesignVue.Layout), _components$d),
+    components: (_components$d = {}, defineProperty$3(_components$d, antDesignVue.Layout.name, antDesignVue.Layout), defineProperty$3(_components$d, antDesignVue.Layout.Content.name, antDesignVue.Layout), _components$d),
     props: {
       data: {
         type: Object,
@@ -69122,72 +69430,94 @@
         immediate: true
       },
       currentPage: function currentPage() {
-        var _this$$editor;
-
         var currentPage = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
         var _currentPage$elements2 = currentPage.elements,
             elements = _currentPage$elements2 === void 0 ? [] : _currentPage$elements2;
-        this.$editor.clear();
-
-        (_this$$editor = this.$editor).addElement.apply(_this$$editor, toConsumableArray(elements));
+        this.clear();
+        this.addElements.apply(this, toConsumableArray(elements));
       }
     },
-    mounted: function mounted() {
-      var _this$$editor2;
-
-      this.$editor = this.$refs.editor;
-
-      (_this$$editor2 = this.$editor).addElement.apply(_this$$editor2, toConsumableArray(this.currentPage.elements));
-    },
     methods: {
-      hideAuxiliay: function hideAuxiliay() {
-        this.auxiliayVisible = false;
-      },
-      showAuxiliay: function showAuxiliay() {
-        this.auxiliayVisible = true;
-      },
-      handlePageHeightChange: function handlePageHeightChange(height) {
-        this.currentPage.height = height;
-      },
       getData: function getData() {
-        return this.$store.state.editor.work;
+        return this.work;
       },
-      handleElementActive: function handleElementActive(element) {
-        this.activeElement = element;
-      },
-      handleElementDeactive: function handleElementDeactive(deactiveElement) {
-        if (deactiveElement === this.activeElement) {
-          this.activeElement = null;
-        }
-      },
-      handlePropsChange: function handlePropsChange(value) {
-        this.$editor.updateElement({
-          props: value
-        });
-      },
-      handleAnimationsChange: function handleAnimationsChange(value) {
-        this.$editor.updateElement({
-          animations: value
-        });
-      },
-      handleAddElement: function handleAddElement(_ref2) {
-        var name = _ref2.name;
-        var element = new CoreRender.LbpElement({
-          name: name
-        });
-        this.currentPage.elements.push(element);
-        this.$editor.addElement(element);
-      },
-      handleAddPage: function handleAddPage(title) {
+      addPage: function addPage(title) {
         this.work.pages.push(new Page({
           title: title
         }));
       },
-      handleAdjustLieMove: function handleAdjustLieMove(offset) {
+      changePageIndex: function changePageIndex(index) {
+        this.pageIndex = index;
+      },
+      updatePage: function updatePage(data) {
+        Object.assign(this.currentPage, data);
+      },
+      addElements: function addElements() {
+        for (var _len = arguments.length, element = new Array(_len), _key = 0; _key < _len; _key++) {
+          element[_key] = arguments[_key];
+        }
+
+        element.forEach(this.addElement);
+      },
+      addElement: function addElement(element) {
+        if (element instanceof LbpElement) {
+          this.currentPage.elements.push(element);
+        } else {
+          var lbpElement = new LbpElement(element);
+          this.currentPage.elements.push(lbpElement);
+        }
+      },
+      updateElement: function updateElement(data) {
+        this.activeElement.update(data);
+      },
+      clear: function clear() {
+        this.currentPage.elements = [];
+      },
+      _hideAuxiliay: function _hideAuxiliay() {
+        this.auxiliayVisible = false;
+      },
+      _showAuxiliay: function _showAuxiliay() {
+        this.auxiliayVisible = true;
+      },
+      _handleElementActive: function _handleElementActive(element) {
+        this.activeElement = element;
+      },
+      _handleElementDeactive: function _handleElementDeactive(deactiveElement) {
+        if (deactiveElement === this.activeElement) {
+          this.activeElement = null;
+        }
+      },
+      _handleAdjustLieMove: function _handleAdjustLieMove(offset) {
         this.rightPanelWidth += offset;
       },
-      handlePageChange: function handlePageChange(index) {
-        this.pageIndex = index;
+      _handlePropsChange: function _handlePropsChange(value) {
+        this.updateElement({
+          props: value
+        });
+      },
+      _handleAnimationsChange: function _handleAnimationsChange(value) {
+        this.updateElement({
+          animations: value
+        });
+      },
+      _handleElementRectChange: function _handleElementRectChange(value) {
+        this.updateElement({
+          style: value
+        });
+      },
+      _handleAddElement: function _handleAddElement(data) {
+        this.addElement(data);
+      },
+      _handleAddPage: function _handleAddPage(data) {
+        this.addPage(data);
+      },
+      _handlePageHeightChange: function _handlePageHeightChange(height) {
+        this.updatePage({
+          height: height
+        });
+      },
+      _handlePageIndexChange: function _handlePageIndexChange(index) {
+        this.changePageIndex(index);
       }
     },
     render: function render() {
@@ -69201,9 +69531,9 @@
           "pages": this.work.pages
         },
         "on": {
-          "pageChange": this.handlePageChange,
-          "addElement": this.handleAddElement,
-          "addPage": this.handleAddPage
+          "pageChange": this._handlePageIndexChange,
+          "addElement": this._handleAddElement,
+          "addPage": this._handleAddPage
         }
       }), h("a-layout", {
         "attrs": {
@@ -69214,8 +69544,8 @@
       }, [h("div", {
         "class": "editor-content",
         "on": {
-          "mousedown": this.showAuxiliay,
-          "mouseup": this.hideAuxiliay
+          "mousedown": this._showAuxiliay,
+          "mouseup": this._hideAuxiliay
         }
       }, [h(AuxiliayLine, {
         "attrs": {
@@ -69227,26 +69557,27 @@
           name: "show",
           value: this.auxiliayVisible
         }]
-      }), h(CoreRender, {
-        "ref": "editor",
+      }), h(LbpCanvas, {
         "attrs": {
           "width": this.currentPage.width,
-          "height": this.currentPage.height
+          "height": this.currentPage.height,
+          "elements": this.currentPage.elements
         },
         "on": {
-          "active": this.handleElementActive,
-          "deactive": this.handleElementDeactive
+          "active": this._handleElementActive,
+          "deactive": this._handleElementDeactive,
+          "elementRectChange": this._handleElementRectChange
         }
       }), h(AdjustHeight, {
         "attrs": {
           "height": this.currentPage.height
         },
         "on": {
-          "change": this.handlePageHeightChange
+          "change": this._handlePageHeightChange
         }
       })])])]), h(AdjustLineV, {
         "on": {
-          "lineMove": this.handleAdjustLieMove
+          "lineMove": this._handleAdjustLieMove
         }
       }), h(FixedTools), h(EditorRightPanel, {
         "attrs": {
@@ -69254,8 +69585,8 @@
           "element": this.activeElement
         },
         "on": {
-          "propsChange": this.handlePropsChange,
-          "animationsChange": this.handleAnimationsChange
+          "propsChange": this._handlePropsChange,
+          "animationsChange": this._handleAnimationsChange
         }
       })]);
     }

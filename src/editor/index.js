@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-17 14:56:03
+ * @LastEditTime : 2020-11-17 17:29:00
  * @Description :
  */
 import 'font-awesome/css/font-awesome.min.css'
@@ -12,16 +12,17 @@ import { Layout } from 'ant-design-vue'
 import '@/styles/index.scss'
 import '@/plugins'
 import i18n from '@/locales'
-import CoreRender from '@/core'
 
+import LbpCanvas from './components/lbp-canvas'
 import FixedTools from './components/fixed-tools/index'
-import EditorRightPanel from './components/right-panel/index'
-import EditorLeftPanel from './components/left-panel/index'
+import EditorRightPanel from './components/right-panel'
+import EditorLeftPanel from './components/left-panel'
 import AuxiliayLine from './components/AuxiliayLine'
 import AdjustHeight from './components/AdjustHeight'
 import AdjustLineV from './components/adjust-line/vertical'
-import Work from './models/work'
-import Page from './models/page'
+import LbpWork from './models/LbpWork'
+import LbpPage from './models/LbpPage'
+import LbpElement from './models/LbpElement'
 import config from './config'
 
 const Editor = {
@@ -61,61 +62,84 @@ const Editor = {
   watch: {
     data: {
       handler (data = {}) {
-        this.work = new Work(data)
+        this.work = new LbpWork(data)
         console.log(this.work)
       },
       immediate: true
     },
     currentPage (currentPage = {}) {
       const { elements = [] } = currentPage
-      this.$editor.clear()
-      this.$editor.addElement(...elements)
+      this.clear()
+      this.addElements(...elements)
     }
   },
-  mounted () {
-    this.$editor = this.$refs.editor
-    this.$editor.addElement(...this.currentPage.elements)
-  },
   methods: {
-    hideAuxiliay () {
+    getData () {
+      return this.work
+    },
+    addPage (title) {
+      this.work.pages.push(new LbpPage({ title }))
+    },
+    changePageIndex (index) {
+      this.pageIndex = index
+    },
+    updatePage (data) {
+      Object.assign(this.currentPage, data)
+    },
+    addElements (...element) {
+      element.forEach(this.addElement)
+    },
+    addElement (element) {
+      if (element instanceof LbpElement) {
+        this.currentPage.elements.push(element)
+      } else {
+        const lbpElement = new LbpElement(element)
+        this.currentPage.elements.push(lbpElement)
+      }
+    },
+    updateElement (data) {
+      this.activeElement.update(data)
+    },
+    clear () {
+      this.currentPage.elements = []
+    },
+    _hideAuxiliay () {
       this.auxiliayVisible = false
     },
-    showAuxiliay () {
+    _showAuxiliay () {
       this.auxiliayVisible = true
     },
-    handlePageHeightChange (height) {
-      this.currentPage.height = height
-    },
-    getData () {
-      return this.$store.state.editor.work
-    },
-    handleElementActive (element) {
+    _handleElementActive (element) {
       this.activeElement = element
     },
-    handleElementDeactive (deactiveElement) {
+    _handleElementDeactive (deactiveElement) {
       if (deactiveElement === this.activeElement) {
         this.activeElement = null
       }
     },
-    handlePropsChange (value) {
-      this.$editor.updateElement({ props: value })
-    },
-    handleAnimationsChange (value) {
-      this.$editor.updateElement({ animations: value })
-    },
-    handleAddElement ({ name }) {
-      const element = new CoreRender.LbpElement({ name })
-      this.currentPage.elements.push(element)
-      this.$editor.addElement(element)
-    },
-    handleAddPage (title) {
-      this.work.pages.push(new Page({ title }))
-    },
-    handleAdjustLieMove (offset) {
+    _handleAdjustLieMove (offset) {
       this.rightPanelWidth += offset
     },
-    handlePageChange (index) {
-      this.pageIndex = index
+    _handlePropsChange (value) {
+      this.updateElement({ props: value })
+    },
+    _handleAnimationsChange (value) {
+      this.updateElement({ animations: value })
+    },
+    _handleElementRectChange (value) {
+      this.updateElement({ style: value })
+    },
+    _handleAddElement (data) {
+      this.addElement(data)
+    },
+    _handleAddPage (data) {
+      this.addPage(data)
+    },
+    _handlePageHeightChange (height) {
+      this.updatePage({ height })
+    },
+    _handlePageIndexChange (index) {
+      this.changePageIndex(index)
     }
   },
   render () {
@@ -123,16 +147,16 @@ const Editor = {
       <a-layout style={{ height: '100%' }}>
         <EditorLeftPanel
           pages={this.work.pages}
-          onPageChange={this.handlePageChange}
-          onAddElement={this.handleAddElement}
-          onAddPage={this.handleAddPage}
+          onPageChange={this._handlePageIndexChange}
+          onAddElement={this._handleAddElement}
+          onAddPage={this._handleAddPage}
         />
         <a-layout id="editor-wrapper">
           <a-layout-content class="scroll-view remove-scrollbar">
             <div
               class="editor-content"
-              onMousedown={this.showAuxiliay}
-              onMouseup={this.hideAuxiliay}
+              onMousedown={this._showAuxiliay}
+              onMouseup={this._hideAuxiliay}
             >
               <AuxiliayLine
                 data={this.elementsRect}
@@ -140,27 +164,28 @@ const Editor = {
                 height={this.currentPage.height}
                 v-show={this.auxiliayVisible}
               />
-              <CoreRender
-                ref="editor"
+              <LbpCanvas
                 width={this.currentPage.width}
                 height={this.currentPage.height}
-                onActive={this.handleElementActive}
-                onDeactive={this.handleElementDeactive}
+                elements={this.currentPage.elements}
+                onActive={this._handleElementActive}
+                onDeactive={this._handleElementDeactive}
+                onElementRectChange={this._handleElementRectChange}
               />
               <AdjustHeight
                 height={this.currentPage.height}
-                onChange={this.handlePageHeightChange}
+                onChange={this._handlePageHeightChange}
               />
             </div>
           </a-layout-content>
         </a-layout>
-        <AdjustLineV onLineMove={this.handleAdjustLieMove} />
+        <AdjustLineV onLineMove={this._handleAdjustLieMove} />
         <FixedTools />
         <EditorRightPanel
           width={this.rightPanelWidth}
           element={this.activeElement}
-          onPropsChange={this.handlePropsChange}
-          onAnimationsChange={this.handleAnimationsChange}
+          onPropsChange={this._handlePropsChange}
+          onAnimationsChange={this._handleAnimationsChange}
         />
       </a-layout>
     )

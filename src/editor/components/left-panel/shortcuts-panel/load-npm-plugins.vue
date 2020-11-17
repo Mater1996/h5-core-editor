@@ -2,8 +2,7 @@
  * @Author: ly525
  * @Date: 2019-11-23 12:35:43
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2020-11-02 11:21:57
- * @FilePath: /luban-h5/front-end/h5/src/components/core/editor/left-panel/shortcuts-panel/load-npm-plugins.vue
+ * @LastEditTime: 2020-11-17 16:13:37
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
@@ -11,7 +10,7 @@
 
 <template>
   <div style="text-align: center;">
-    <a-button style="margin-top: 16px" type="primary" @click="showModal">配置 NPM 组件列表</a-button>
+    <a-button style="margin-top: 16px;" type="primary" @click="showModal">配置 NPM 组件列表</a-button>
     <a-modal
       title="NPM 组件列表配置信息"
       :visible="visible"
@@ -34,7 +33,7 @@ export default {
     [Input.TextArea.name]: Input.TextArea,
     [Button.name]: Button
   },
-  data() {
+  data () {
     return {
       visible: false,
       confirmLoading: false,
@@ -59,10 +58,10 @@ export default {
     }
   },
   methods: {
-    showModal() {
+    showModal () {
       this.visible = true
     },
-    handleOk(e) {
+    handleOk (e) {
       const createjs = window.createjs
 
       // eslint-disable-next-line no-new-func
@@ -79,19 +78,19 @@ export default {
       queue.on('complete', handleComplete, this)
 
       queue.loadManifest(npmPackages)
-      function handleComplete(e) {
+      function handleComplete (e) {
         // 可以直接使用 this 的原因： query。on 最后一个参数用来做做 bind this 操作
         this.visible = false
         this.confirmLoading = false
         this.$emit('loadComplete', npmPackages)
       }
 
-      function handleFileLoad(event) {
+      function handleFileLoad (event) {
         const { name } = event.item
         Vue.component(name, window[name])
       }
     },
-    handleCancel(e) {
+    handleCancel (e) {
       this.visible = false
     }
   }

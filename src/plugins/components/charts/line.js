@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-10 15:09:15
+ * @LastEditTime : 2020-11-17 16:44:01
  * @Description :
  */
 import VeLine from 'v-charts/lib/line.common'
@@ -15,7 +15,7 @@ import 'echarts/lib/component/legend'
 import 'echarts/lib/component/markLine'
 import 'echarts/lib/component/markPoint'
 import 'echarts/lib/component/markArea'
-import Parser from '@/utils/excel-parser'
+import Parser from './excel-parser'
 
 // const title = str => str.slice(0, 1).toUpperCase() + str.slice(1)
 
