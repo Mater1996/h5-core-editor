@@ -2,14 +2,15 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-17 10:50:52
+ * @LastEditTime : 2020-11-17 13:29:35
  * @Description :
  */
 
-import { ShapeLayerDefaultProps } from '../components/Element/ShapeLayer/'
+import { ShapeLayerDefaultProps } from '@/core/components/Element/ShapeLayer'
 import pluginsControl from '@/plugins'
 import { isFunction } from 'lodash'
 
+let id = 0
 class LbpElement {
   constructor (options = {}) {
     const {
@@ -17,18 +18,16 @@ class LbpElement {
       props = {},
       style = {},
       attrs = {},
-      animations = [],
-      vm = null
+      animations = []
     } = options
     if (name) {
       this.name = name
-      this.uuid = +new Date()
-      this.vm = vm
-      const plugin = pluginsControl.getPlugin(name)
-      const pluginDefaultProps = LbpElement.getPluginProps(plugin.component)
+      this.id = id++
+      this.vm = null
+      const { component } = pluginsControl.getPlugin(name)
       // 传入具体的element render 的 参数
       this.props = {
-        ...pluginDefaultProps,
+        ...LbpElement.getPluginProps(component),
         ...props
       }
       // 传入具体的element render 的 属性
@@ -87,7 +86,7 @@ class LbpElement {
   }
 
   static getPropDefaultValue (vm, prop) {
-    if (!prop.hasOwnProperty('default')) {
+    if (!Object.prototype.hasOwnProperty.call(prop, 'default')) {
       return undefined
     }
     const def = prop.default

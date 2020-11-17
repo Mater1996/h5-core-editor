@@ -2,15 +2,15 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-17 11:29:04
+ * @LastEditTime : 2020-11-17 13:39:23
  * @Description :
  */
 import './index.scss'
 import ElementRender from './components/Element'
-import Element from './models/element'
+import LbpElement from './models/LbpElement'
 
 export default {
-  Element,
+  LbpElement,
   props: {
     width: {
       type: Number,
@@ -72,9 +72,8 @@ export default {
       }
     },
     addElement (...elements) {
-      debugger
       elements.forEach(element => {
-        if (element instanceof Element) {
+        if (element instanceof LbpElement) {
           this.elements.push(element)
         }
       })
@@ -93,6 +92,7 @@ export default {
           <div class="elements">
             {this.elements.map(element => (
               <ElementRender
+                key={element.id}
                 element={element}
                 onActive={() => this.handleElementActive(element)}
                 onDeactive={() => this.handleElementDeactive(element)}

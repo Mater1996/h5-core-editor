@@ -3176,9 +3176,9 @@
           'background-image': "url(".concat(this.imgSrc, ")")
         });
       } else {
-        style = _objectSpread(_objectSpread({}, style), {}, {
+        style = _objectSpread({
           backgroundColor: this.backgroundColor
-        });
+        }, style);
       }
 
       return (// [知识点:CSS] : https://codesandbox.io/s/ziyuansuzindexzaigao-wufafugaifuyuansudexiongdiyuansu-n15rd?file=/index.html
@@ -65314,6 +65314,17 @@
   function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
   function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  /**
+   * #!zh: 上下左右 对应的 东南西北
+   * #!en: top(north)、bottom(south)、left(west)、right(east)
+   */
+  // const directionKey = {
+  //   t: 'n',
+  //   b: 's',
+  //   l: 'w',
+  //   r: 'e'
+  // }
+
   var ShapeLayerDefaultProps = {
     top: 0,
     left: 0,
@@ -65636,6 +65647,7 @@
   function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
   function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  var id$1 = 0;
 
   var LbpElement = /*#__PURE__*/function () {
     function LbpElement() {
@@ -65652,18 +65664,18 @@
           _options$attrs = options.attrs,
           attrs = _options$attrs === void 0 ? {} : _options$attrs,
           _options$animations = options.animations,
-          animations = _options$animations === void 0 ? [] : _options$animations,
-          _options$vm = options.vm,
-          vm = _options$vm === void 0 ? null : _options$vm;
+          animations = _options$animations === void 0 ? [] : _options$animations;
 
       if (name) {
         this.name = name;
-        this.uuid = +new Date();
-        this.vm = vm;
-        var plugin = lbpPluginController.getPlugin(name);
-        var pluginDefaultProps = LbpElement.getPluginProps(plugin.component); // 传入具体的element render 的 参数
+        this.id = id$1++;
+        this.vm = null;
 
-        this.props = _objectSpread$2(_objectSpread$2({}, pluginDefaultProps), props); // 传入具体的element render 的 属性
+        var _pluginsControl$getPl = lbpPluginController.getPlugin(name),
+            component = _pluginsControl$getPl.component; // 传入具体的element render 的 参数
+
+
+        this.props = _objectSpread$2(_objectSpread$2({}, LbpElement.getPluginProps(component)), props); // 传入具体的element render 的 属性
 
         this.attrs = _objectSpread$2({}, attrs); // 传入具体的element render 的 样式
 
@@ -65730,7 +65742,7 @@
     }, {
       key: "getPropDefaultValue",
       value: function getPropDefaultValue(vm, prop) {
-        if (!prop.hasOwnProperty('default')) {
+        if (!Object.prototype.hasOwnProperty.call(prop, 'default')) {
           return undefined;
         }
 
@@ -65858,7 +65870,7 @@
   };
 
   var CoreRender = {
-    Element: LbpElement,
+    LbpElement: LbpElement,
     props: {
       width: {
         type: Number,
@@ -65927,8 +65939,6 @@
       addElement: function addElement() {
         var _this = this;
 
-        debugger;
-
         for (var _len = arguments.length, elements = new Array(_len), _key = 0; _key < _len; _key++) {
           elements[_key] = arguments[_key];
         }
@@ -65961,6 +65971,7 @@
         "class": "elements"
       }, [this.elements.map(function (element) {
         return h(ElementRender, {
+          "key": element.id,
           "attrs": {
             "element": element
           },
@@ -66002,6 +66013,8 @@
     LONG_PAGE: '长页面'
   };
 
+  var LbpElement$1 = CoreRender.LbpElement;
+
   var Page = /*#__PURE__*/function () {
     function Page() {
       var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
@@ -66018,7 +66031,7 @@
 
       classCallCheck(this, Page);
 
-      this.uuid = +new Date();
+      this.id = +new Date();
       this.title = title;
       this.width = width >= 0 ? width : PAGE_MODE.WIDTH;
       this.height = height >= 0 ? height : PAGE_MODE.HEIGHT;
@@ -66030,7 +66043,7 @@
       key: "clone",
       value: function clone() {
         var elements = this.elements.map(function (element) {
-          return new CoreRender.Element(element);
+          return new LbpElement$1(element);
         });
         return new Page({
           title: this.title,
@@ -66042,8 +66055,8 @@
       value: function genElements() {
         var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
         return Array.isArray(elements) && elements.length > 0 ? elements.map(function (v) {
-          return new CoreRender.Element(v);
-        }) : [new CoreRender.Element({
+          return new LbpElement$1(v);
+        }) : [new LbpElement$1({
           name: LbpBackground.name
         })];
       }
@@ -69118,7 +69131,7 @@
     components: defineProperty$2({}, antDesignVue.Button.name, antDesignVue.Button),
     data: function data() {
       return {
-        pageIndex: -1 // 显示编辑按钮
+        pageIndex: 0 // 显示编辑按钮
 
       };
     },
@@ -69197,7 +69210,7 @@
   function getTreeNode(ele) {
     return {
       title: ele.name,
-      key: ele.uuid,
+      key: ele.id,
       children: (ele.children || []).map(getTreeNode)
     };
   }
@@ -69640,7 +69653,6 @@
         var _this$work$pages = this.work.pages,
             pages = _this$work$pages === void 0 ? [] : _this$work$pages;
         var currentPage = pages[this.pageIndex] || {};
-        console.log(pages, this.pageIndex, pages[this.pageIndex]);
         return currentPage;
       },
       elementsRect: function elementsRect() {
@@ -69714,7 +69726,7 @@
       },
       handleAddElement: function handleAddElement(_ref2) {
         var name = _ref2.name;
-        var element = new CoreRender.Element({
+        var element = new CoreRender.LbpElement({
           name: name
         });
         this.currentPage.elements.push(element);
@@ -69729,7 +69741,6 @@
         this.rightPanelWidth += offset;
       },
       handlePageChange: function handlePageChange(index) {
-        console.log(index);
         this.pageIndex = index;
       }
     },
@@ -69752,7 +69763,7 @@
         "attrs": {
           "id": "editor-wrapper"
         }
-      }, [JSON.stringify(this.elementsRect), h("a-layout-content", {
+      }, [h("a-layout-content", {
         "class": "scroll-view remove-scrollbar"
       }, [h("div", {
         "class": "editor-content",

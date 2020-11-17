@@ -2,13 +2,14 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-17 11:37:49
+ * @LastEditTime : 2020-11-17 13:30:42
  * @Description :
  */
 import CoreRender from '@/core'
 import { PAGE_MODE } from '@/constants/work'
 import LbpBackground from '@/plugins/components/lbp-background'
 
+const { LbpElement } = CoreRender
 class Page {
   constructor ({
     title = '',
@@ -17,7 +18,7 @@ class Page {
     width = PAGE_MODE.WIDTH,
     pageMode = PAGE_MODE.SWIPPER_PAGE
   } = {}) {
-    this.uuid = +new Date()
+    this.id = +new Date()
     this.title = title
     this.width = width >= 0 ? width : PAGE_MODE.WIDTH
     this.height = height >= 0 ? height : PAGE_MODE.HEIGHT
@@ -26,16 +27,14 @@ class Page {
   }
 
   clone () {
-    const elements = this.elements.map(
-      element => new CoreRender.Element(element)
-    )
+    const elements = this.elements.map(element => new LbpElement(element))
     return new Page({ title: this.title, elements })
   }
 
   genElements (elements = []) {
     return Array.isArray(elements) && elements.length > 0
-      ? elements.map(v => new CoreRender.Element(v))
-      : [new CoreRender.Element({ name: LbpBackground.name })]
+      ? elements.map(v => new LbpElement(v))
+      : [new LbpElement({ name: LbpBackground.name })]
   }
 }
 

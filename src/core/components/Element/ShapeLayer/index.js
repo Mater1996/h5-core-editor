@@ -6,12 +6,12 @@ import { hyphenateStyleName } from '@/core/share'
  * #!zh: 上下左右 对应的 东南西北
  * #!en: top(north)、bottom(south)、left(west)、right(east)
  */
-const directionKey = {
-  t: 'n',
-  b: 's',
-  l: 'w',
-  r: 'e'
-}
+// const directionKey = {
+//   t: 'n',
+//   b: 's',
+//   l: 'w',
+//   r: 'e'
+// }
 
 export const ShapeLayerDefaultProps = {
   top: 0,

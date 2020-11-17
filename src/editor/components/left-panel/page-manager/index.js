@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-17 11:08:04
+ * @LastEditTime : 2020-11-17 13:10:47
  * @Description :
  */
 import { Button } from 'ant-design-vue'
@@ -22,7 +22,7 @@ export default {
     [Button.name]: Button
   },
   data: () => ({
-    pageIndex: -1 // 显示编辑按钮
+    pageIndex: 0 // 显示编辑按钮
   }),
   methods: {
     onSelectMenuItem (menuKey) {

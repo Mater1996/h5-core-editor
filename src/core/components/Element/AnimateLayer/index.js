@@ -2,13 +2,13 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-16 14:11:44
- * @LastEditTime : 2020-11-16 18:33:42
+ * @LastEditTime : 2020-11-17 13:23:12
  * @Description :
  */
 
 import 'animate.css/animate.css'
-import './index.scss'
 import EventBus from '@/bus'
+import './index.scss'
 
 const AnimateLayer = {
   props: {

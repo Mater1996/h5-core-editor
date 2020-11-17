@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-17 11:39:59
+ * @LastEditTime : 2020-11-17 13:41:12
  * @Description :
  */
 import 'font-awesome/css/font-awesome.min.css'
@@ -52,7 +52,6 @@ const Editor = {
     currentPage () {
       const { pages = [] } = this.work
       const currentPage = pages[this.pageIndex] || {}
-      console.log(pages, this.pageIndex, pages[this.pageIndex])
       return currentPage
     },
     elementsRect () {
@@ -107,7 +106,7 @@ const Editor = {
       this.$editor.updateElement({ animations: value })
     },
     handleAddElement ({ name }) {
-      const element = new CoreRender.Element({ name })
+      const element = new CoreRender.LbpElement({ name })
       this.currentPage.elements.push(element)
       this.$editor.addElement(element)
     },
@@ -118,7 +117,6 @@ const Editor = {
       this.rightPanelWidth += offset
     },
     handlePageChange (index) {
-      console.log(index)
       this.pageIndex = index
     }
   },
@@ -132,7 +130,6 @@ const Editor = {
           onAddPage={this.handleAddPage}
         />
         <a-layout id="editor-wrapper">
-          {JSON.stringify(this.elementsRect)}
           <a-layout-content class="scroll-view remove-scrollbar">
             <div
               class="editor-content"

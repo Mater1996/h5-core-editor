@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c --prod",
+    "build:example": "npm run --prefix ./example build",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx ./src && npm run lint:style",
     "lint:js": "eslint --ext .js,.jsx,.ts,.tsx ./src",
     "lint:style": "stylelint --fix \"./src/**/*.scss\" --syntax scss",

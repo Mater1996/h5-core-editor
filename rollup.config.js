@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 14:39:39
- * @LastEditTime : 2020-11-12 13:37:56
+ * @LastEditTime : 2020-11-17 13:00:00
  * @Description :
  */
 const path = require('path')
@@ -92,7 +92,7 @@ const external = [
 
 module.exports = args => {
   const isProd = args.prod
-  function resolveUrl(dir) {
+  function resolveUrl (dir) {
     return !isProd
       ? path.join('./example/src/lib/luban-h5-editor', dir)
       : path.join(__dirname, dir)
@@ -118,7 +118,7 @@ module.exports = args => {
       alias({
         resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
         entries: {
-          '@': __dirname + '/src'
+          '@': path.join(__dirname, '/src')
         }
       }),
       image({
