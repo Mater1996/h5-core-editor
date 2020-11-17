@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 14:39:39
- * @LastEditTime : 2020-11-17 15:49:00
+ * @LastEditTime : 2020-11-17 18:06:13
  * @Description :
  */
 const path = require('path')
@@ -49,6 +49,7 @@ const babelConfig = {
 
 const globals = {
   vue: 'Vue',
+  'vue-i18n': 'VueI18n',
   vant: 'vant',
   'resize-detector': 'resizeDetector',
   'hotkeys-js': 'hotkeys',
@@ -57,19 +58,17 @@ const globals = {
   'vue-quill-editor': 'VueQuillEditor',
   'v-charts': 'VeIndex',
   stream: 'stream',
-  'vue-i18n': 'VueI18n',
   'x-data-spreadsheet': 'x_spreadsheet',
-  html2canvas: 'html2canvas',
   papaparse: 'papaparse',
   echarts: 'echarts',
-  qrcode: 'qrcode',
-  'vue-matomo': 'vue-matomo'
+  qrcode: 'qrcode'
 }
 
 const external = [
+  'vue',
+  'vue-i18n',
   'quill',
   'animate.css',
-  'vue',
   'vant',
   'resize-detector',
   'hotkeys-js',
@@ -78,14 +77,11 @@ const external = [
   'vue-quill-editor',
   'v-charts',
   'stream',
-  'vue-i18n',
   'x-data-spreadsheet',
-  'html2canvas',
   'papaparse',
   'echarts',
   'font-awesome',
-  'qrcode',
-  'vue-matomo'
+  'qrcode'
 ]
 
 module.exports = args => {

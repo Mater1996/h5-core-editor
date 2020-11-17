@@ -69468,7 +69468,7 @@
         }
       },
       updateElement: function updateElement(data) {
-        this.activeElement.update(data);
+        this.activeElement && this.activeElement.update(data);
       },
       clear: function clear() {
         this.currentPage.elements = [];

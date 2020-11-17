@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-17 17:29:00
+ * @LastEditTime : 2020-11-17 17:38:15
  * @Description :
  */
 import 'font-awesome/css/font-awesome.min.css'
@@ -98,7 +98,7 @@ const Editor = {
       }
     },
     updateElement (data) {
-      this.activeElement.update(data)
+      this.activeElement && this.activeElement.update(data)
     },
     clear () {
       this.currentPage.elements = []
