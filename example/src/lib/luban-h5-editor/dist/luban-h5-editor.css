@@ -25473,7 +25473,7 @@ li.ant-tree-treenode-disabled > .ant-tree-node-content-wrapper:hover {
   position: relative;
   height: 100%;
   cursor: ew-resize; }
-  .adjust-line-wrapper-v .adjust-button {
+  .adjust-line-wrapper-v.adjust-button {
     position: absolute;
     right: -10px;
     top: 50%;

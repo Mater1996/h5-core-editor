@@ -6,7 +6,7 @@
     "build": "rollup -c --prod",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx ./src && npm run lint:style",
     "lint:js": "eslint --ext .js,.jsx,.ts,.tsx ./src",
-    "lint:style": "stylelint --fix \"src/**/*.less\" --syntax less",
+    "lint:style": "stylelint --fix \"./src/**/*.scss\" --syntax scss",
     "prettier": "prettier -c --write \"**/*\""
   },
   "main": "dist/luban-h5-editor.js",
@@ -26,6 +26,8 @@
     "papaparse": "^5.2.0",
     "qrcode": "^1.4.1",
     "resize-detector": "^0.2.2",
+    "stylelint-config-standard-scss": "^1.1.0",
+    "stylelint-scss": "^3.18.0",
     "v-charts": "^1.19.0",
     "vant": "^2.10.11",
     "vue": "^2.6.10",

@@ -16,7 +16,9 @@ $gutter: 4;
       .p#{str-slice($side, 0, 1)}-#{$space} {
         padding: gen_spacing($space);
       }
-    } @else {
+    }
+
+    @else {
       .m#{str-slice($side, 0, 1)}-#{$space} {
         margin-#{$side}: gen_spacing($space);
       }
