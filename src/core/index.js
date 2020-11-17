@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-16 18:31:23
+ * @LastEditTime : 2020-11-17 11:29:04
  * @Description :
  */
 import './index.scss'
@@ -21,12 +21,12 @@ export default {
       default: 0
     }
   },
-  provide() {
+  provide () {
     return {
       canvas: this.canvas
     }
   },
-  data() {
+  data () {
     return {
       activeElement: null,
       elements: [],
@@ -37,15 +37,15 @@ export default {
     }
   },
   watch: {
-    width(width) {
+    width (width) {
       this.updateCanvas({ width })
     },
-    height(height) {
+    height (height) {
       this.updateCanvas({ height })
     }
   },
   computed: {
-    canvasStyle() {
+    canvasStyle () {
       return {
         width: `${this.width}px`,
         height: `${this.height}px`
@@ -53,39 +53,40 @@ export default {
     }
   },
   methods: {
-    handleElementActive(activeElement) {
+    handleElementActive (activeElement) {
       this.activeElement = activeElement
       this.$emit('active', activeElement)
     },
-    handleElementDeactive(deactiveElement) {
+    handleElementDeactive (deactiveElement) {
       if (deactiveElement === this.activeElement) {
         this.activeElement = null
       }
       this.$emit('deactive', deactiveElement)
     },
-    updateCanvas(data) {
+    updateCanvas (data) {
       Object.assign(this.canvas, data)
     },
-    updateElement(data) {
+    updateElement (data) {
       if (this.activeElement) {
         data && this.activeElement.update(data)
       }
     },
-    addElement(...elements) {
+    addElement (...elements) {
+      debugger
       elements.forEach(element => {
         if (element instanceof Element) {
           this.elements.push(element)
         }
       })
     },
-    handleElementRectChange(style) {
+    handleElementRectChange (style) {
       this.updateElement({ style })
     },
-    clear() {
+    clear () {
       this.elements = []
     }
   },
-  render() {
+  render () {
     return (
       <div class="lb-canvas" style={this.canvasStyle}>
         <div class="lb-canvas-wrapper">

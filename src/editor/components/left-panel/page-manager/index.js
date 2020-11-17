@@ -2,10 +2,9 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-04 14:27:31
+ * @LastEditTime : 2020-11-17 11:08:04
  * @Description :
  */
-import { mapState, mapActions } from 'vuex'
 import { Button } from 'ant-design-vue'
 import PageTitleEditor from './title-editor'
 import PageTitleMenu from './title-menu'
@@ -13,41 +12,34 @@ import PageTitleText from './title-text'
 
 export default {
   name: 'page-manager',
+  props: {
+    pages: {
+      type: Array,
+      default: []
+    }
+  },
   components: {
     [Button.name]: Button
   },
   data: () => ({
-    hoverIndex: -1 // 显示编辑按钮
+    pageIndex: -1 // 显示编辑按钮
   }),
-  computed: {
-    ...mapState('editor', {
-      editingPage: state => state.editingPage,
-      pages: state => state.work.pages
-    })
-  },
   methods: {
-    ...mapActions('editor', [
-      'elementManager',
-      'pageManager',
-      'saveWork',
-      'setEditingPage'
-    ]),
-    onSelectMenuItem(menuKey) {
-      this.pageManager({ type: menuKey })
+    onSelectMenuItem (menuKey) {
+      this.$emit('add')
     },
-    onEditTitle({ pageIndex, newTitle }) {
+    onEditTitle ({ pageIndex, newTitle }) {
       this.pageManager({ type: 'editTitle', value: { pageIndex, newTitle } })
-      this.saveWork({ isSaveCover: false })
     },
-    onSelectPage(pageIndex) {
-      this.setEditingPage(pageIndex)
+    onSelectPage (pageIndex) {
+      this.pageIndex = pageIndex
+      this.$emit('pageChange', pageIndex)
     },
-    onLeave() {
+    onLeave () {
       this.hoverIndex = -1
     }
   },
-  render(h) {
-    const addPageText = this.$t('editor.pageManager.action.add')
+  render (h) {
     return (
       <div class="page-manager-panel">
         {this.pages.map((page, index) => (
@@ -55,10 +47,9 @@ export default {
             class={[
               'cursor-pointer',
               'page-manager-panel__item',
-              page.uuid === this.editingPage.uuid && 'active'
+              index === this.pageIndex && 'active'
             ]}
             onClick={() => this.onSelectPage(index)}
-            // https://github.com/vuetifyjs/vuetify/blob/master/packages/vuetify/src/components/VHover/VHover.ts
             onMouseenter={() => {
               this.hoverIndex = index
             }}
@@ -82,7 +73,7 @@ export default {
           class="footer-actions"
           onClick={() => this.onSelectMenuItem('add')}
         >
-          {addPageText}
+          {this.$t('editor.pageManager.action.add')}
         </a-button>
       </div>
     )

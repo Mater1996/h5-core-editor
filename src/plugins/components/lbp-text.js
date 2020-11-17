@@ -70,11 +70,11 @@ export default {
                   // toolbar: '#toolbar-wrapper'
                   toolbar: [
                     ['bold', 'italic', 'underline', 'strike'], // 切换按钮
-                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                    [{ 'color': [] }, { 'background': [] }], // 主题默认下拉，使用主题提供的值
-                    [{ 'align': [] }],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    [{ color: [] }, { background: [] }], // 主题默认下拉，使用主题提供的值
+                    [{ align: [] }],
                     ['clean'], // 清除格式
-                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }]
+                    [{ header: [1, 2, 3, 4, 5, 6, false] }]
                     // https://github.com/quilljs/quill/issues/1208
                   ]
                 },

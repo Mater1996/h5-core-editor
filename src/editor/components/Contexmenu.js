@@ -18,24 +18,24 @@
   })
  */
 
-import { mapState } from "vuex";
-import { Menu, Card } from "ant-design-vue";
+import { mapState } from 'vuex'
+import { Menu, Card } from 'ant-design-vue'
 
-function isRegExp(value) {
-  return value instanceof RegExp;
+function isRegExp (value) {
+  return value instanceof RegExp
 }
 
 // 垂直菜单
 const contextmenuOptions = [
   {
-    i18nLabel: "editor.centerPanel.contextMenu.copy",
-    label: "复制",
-    value: "copy"
+    i18nLabel: 'editor.centerPanel.contextMenu.copy',
+    label: '复制',
+    value: 'copy'
   },
   {
-    i18nLabel: "editor.centerPanel.contextMenu.delete",
-    label: "删除",
-    value: "delete"
+    i18nLabel: 'editor.centerPanel.contextMenu.delete',
+    label: '删除',
+    value: 'delete'
   },
   /**
    * contextMenu 白名单，只有匹配白名单列表里的元素，才会显示该选项
@@ -44,10 +44,10 @@ const contextmenuOptions = [
    * 正则：RegExp
    */
   {
-    i18nLabel: "editor.centerPanel.contextMenu.showOnlyButton",
-    label: "showOnlyButton",
-    value: "showOnlyButton",
-    elementWhiteList: ["lbp-button"]
+    i18nLabel: 'editor.centerPanel.contextMenu.showOnlyButton',
+    label: 'showOnlyButton',
+    value: 'showOnlyButton',
+    elementWhiteList: ['lbp-button']
   },
   /**
    * contextMenu 黑名单，在黑名单列表里的元素，不会显示该选项
@@ -56,36 +56,36 @@ const contextmenuOptions = [
    * 正则：RegExp
    */
   {
-    i18nLabel: "editor.centerPanel.contextMenu.showExcludePicture",
-    label: "showExcludePicture",
-    value: "showExcludePicture",
+    i18nLabel: 'editor.centerPanel.contextMenu.showExcludePicture',
+    label: 'showExcludePicture',
+    value: 'showExcludePicture',
     elementBlackList: /^lbp-picture/
   }
-];
+]
 
 // 水平菜单
 const zindexContextMenu = [
   {
-    i18nLabel: "editor.centerPanel.contextMenu.moveToTop",
-    label: "置顶",
-    value: "move2Top"
+    i18nLabel: 'editor.centerPanel.contextMenu.moveToTop',
+    label: '置顶',
+    value: 'move2Top'
   },
   {
-    i18nLabel: "editor.centerPanel.contextMenu.moveToBottom",
-    label: "置底",
-    value: "move2Bottom"
+    i18nLabel: 'editor.centerPanel.contextMenu.moveToBottom',
+    label: '置底',
+    value: 'move2Bottom'
   },
   {
-    i18nLabel: "editor.centerPanel.contextMenu.moveUp",
-    label: "上移",
-    value: "addZindex"
+    i18nLabel: 'editor.centerPanel.contextMenu.moveUp',
+    label: '上移',
+    value: 'addZindex'
   },
   {
-    i18nLabel: "editor.centerPanel.contextMenu.moveDown",
-    label: "下移",
-    value: "minusZindex"
+    i18nLabel: 'editor.centerPanel.contextMenu.moveDown',
+    label: '下移',
+    value: 'minusZindex'
   }
-];
+]
 
 export default {
   components: {
@@ -94,27 +94,27 @@ export default {
     [Card.name]: Card
   },
   computed: {
-    ...mapState("editor", ["editingElement", "work"]),
+    ...mapState('editor', ['editingElement', 'work']),
     /**
      * 做一下扩展，提供：黑白名单，来针对某些特定组件，展示特定右键菜单
      *
      */
-    filteredOptions() {
-      const elementName = this.editingElement.name;
+    filteredOptions () {
+      const elementName = this.editingElement.name
       const filteredOptions = contextmenuOptions.filter(option => {
-        const wl = option.elementWhiteList;
-        const bl = option.elementBlackList;
+        const wl = option.elementWhiteList
+        const bl = option.elementBlackList
         if (wl) {
-          if (Array.isArray(wl)) return wl.includes(elementName);
-          if (isRegExp(wl)) return wl.test(elementName);
+          if (Array.isArray(wl)) return wl.includes(elementName)
+          if (isRegExp(wl)) return wl.test(elementName)
         }
         if (bl) {
-          if (Array.isArray(bl)) return !bl.includes(elementName);
-          if (isRegExp(bl)) return !bl.test(elementName);
+          if (Array.isArray(bl)) return !bl.includes(elementName)
+          if (isRegExp(bl)) return !bl.test(elementName)
         }
-        return true;
-      });
-      return filteredOptions;
+        return true
+      })
+      return filteredOptions
     }
   },
   props: {
@@ -124,13 +124,13 @@ export default {
     }
   },
   methods: {
-    handleSelectMenu({ item, key, selectedKeys }) {
-      this.$emit("select", { item, key, selectedKeys }); // elementManager({ type: key })
+    handleSelectMenu ({ item, key, selectedKeys }) {
+      this.$emit('select', { item, key, selectedKeys }) // elementManager({ type: key })
     }
   },
-  render(h) {
+  render (h) {
     return (
-      <a-card bodyStyle={{ padding: "4px" }} class="contextmenu">
+      <a-card bodyStyle={{ padding: '4px' }} class="contextmenu">
         <a-menu
           inlineIndent={4}
           mode="inline"
@@ -163,6 +163,6 @@ export default {
           ))}
         </a-menu>
       </a-card>
-    );
+    )
   }
-};
+}

@@ -2,7 +2,7 @@ export default {
   methods: {
     onMousedown (e) {
       let startX = e.clientX
-      let move = moveEvent => {
+      const move = moveEvent => {
         moveEvent.preventDefault()
         moveEvent.stopPropagation()
         const offset = startX - moveEvent.clientX
@@ -10,7 +10,7 @@ export default {
         startX -= offset
       }
 
-      let up = moveEvent => {
+      const up = moveEvent => {
         document.removeEventListener('mousemove', move, true)
         document.removeEventListener('mouseup', up, true)
       }

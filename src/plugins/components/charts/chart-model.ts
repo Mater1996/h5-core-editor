@@ -5,7 +5,7 @@
  * TODO X轴 formatter：1.只针对 X轴，不针对 tooltip 2. tooltip 和 X轴同时生效
  * TODO legend(series) 到多Y轴的映射
  */
-import _ from "lodash";
+import _ from 'lodash'
 // import numeral from "numeral";
 
 /**
@@ -132,16 +132,16 @@ interface LineChartConfig {
 }
 
 const formatDict: formatDictType = {
-  gp: "$0.00",
-  gross_profit: "$0.00",
-  revenue: "$0.00",
-  reveue_f: "$0.00",
-  cvr: "0.00%",
-  click_count: "0,00",
-  conv: "0,00",
-  show_rate: "0.00%",
-  fill_rate: "0.00%"
-};
+  gp: '$0.00',
+  gross_profit: '$0.00',
+  revenue: '$0.00',
+  reveue_f: '$0.00',
+  cvr: '0.00%',
+  click_count: '0,00',
+  conv: '0,00',
+  show_rate: '0.00%',
+  fill_rate: '0.00%'
+}
 
 export class LineChart {
   // 指定折线采用哪一条Y轴
@@ -149,6 +149,7 @@ export class LineChart {
     // 纬度/折线
     [legendName: string]: number
   };
+
   chartType: string; // 'line' | 'bar' | 'pie'
   // TODO class 里面如何定义 ts
   colors: {
@@ -156,6 +157,7 @@ export class LineChart {
     labelText: any;
     splitLine: string;
   };
+
   // 数据源
   dataset: DataSetItem[];
   keys: {
@@ -163,42 +165,43 @@ export class LineChart {
     yAxis: string;
     legend: string;
   };
+
   legends: string[];
   xAxis: Array<string | number>;
   yAxis: any[];
   series: Array<SeriesItem>;
   tooltip: any;
 
-  constructor({
-      xAxis = [],
-      yIndexMap = {},
-      dataset
-    } : LineChartConfig
+  constructor ({
+    xAxis = [],
+    yIndexMap = {},
+    dataset
+  } : LineChartConfig
   ) {
-    this.chartType = "line";
+    this.chartType = 'line'
     this.colors = {
       series: [
-        { value: "#57b2ff" },
-        { value: "#d70b24" },
-        { value: "#48c765" },
-        { value: "#fbb64e" },
-        { value: "#f95e58" }
+        { value: '#57b2ff' },
+        { value: '#d70b24' },
+        { value: '#48c765' },
+        { value: '#fbb64e' },
+        { value: '#f95e58' }
       ],
       labelText: {
-        xAxis: "rgba(0,0,0,.6)",
-        yAxis: "rgba(0,0,0,.6)"
+        xAxis: 'rgba(0,0,0,.6)',
+        yAxis: 'rgba(0,0,0,.6)'
       },
-      splitLine: "rgba(236, 237, 239, 0.26)"
-    };
-    this.yIndexMap = yIndexMap;
-    this.dataset = dataset;
-    this.keys = { xAxis: "x", yAxis: "y", legend: "s" };
+      splitLine: 'rgba(236, 237, 239, 0.26)'
+    }
+    this.yIndexMap = yIndexMap
+    this.dataset = dataset
+    this.keys = { xAxis: 'x', yAxis: 'y', legend: 's' }
 
-    this.legends = this.getLegends();
-    this.xAxis = (xAxis.length && xAxis) || this.getXAxis();
-    this.yAxis = this.getYAxis(this.legends);
-    this.series = this.getSeries(this.legends, this.xAxis);
-    this.tooltip = this.getTooltip();
+    this.legends = this.getLegends()
+    this.xAxis = (xAxis.length && xAxis) || this.getXAxis()
+    this.yAxis = this.getYAxis(this.legends)
+    this.series = this.getSeries(this.legends, this.xAxis)
+    this.tooltip = this.getTooltip()
   }
 
   /**
@@ -215,12 +218,12 @@ export class LineChart {
    * seriesTemplate -> 循环填充默认值 -> [Object, Object]
    * seriesItemsFromDataSet -> 字典{} -> 循环模板（X轴所有点）-> 找到X轴上点在 seriesItemsFromDataSet字典中的值 ->，替换模板中的默认值 -> 返回填充后的模板
    */
-  padMissingValues(
+  padMissingValues (
     seriesTemplate: Array<string | number>,
     seriesItemsFromDataSet: DataSetItem[],
     options: { legend: string }
   ): DataSetItem[] {
-    const { xAxis, yAxis, legend } = this.keys;
+    const { xAxis, yAxis, legend } = this.keys
 
     const seriesItemsFromDataSetDict: SeriesItemDict = seriesItemsFromDataSet.reduce(
       (obj, curr: DataSetItem) => ({
@@ -228,7 +231,7 @@ export class LineChart {
         [curr[xAxis]]: curr
       }),
       {}
-    );
+    )
 
     const templateWithValue = seriesTemplate.map(xAxis => {
       return (
@@ -237,45 +240,45 @@ export class LineChart {
           [xAxis]: xAxis,
           [yAxis]: null
         }
-      );
-    });
+      )
+    })
 
-    return templateWithValue;
+    return templateWithValue
   }
 
   /**
    * 对于复杂的数据转换，需要写 ts，方便看懂代码之间的数据流转
    * @returns: ['折线图1', '折线图2']
    */
-  getLegends(): string[] {
-    const legendKey = this.keys.legend;
+  getLegends (): string[] {
+    const legendKey = this.keys.legend
     const allLegends: string[] = _.uniqBy(this.dataset, legendKey).map(
       (item: uniqByResultType) => item[legendKey]
-    );
-    const legends: string[] = Array.from(new Set(allLegends));
-    return legends;
+    )
+    const legends: string[] = Array.from(new Set(allLegends))
+    return legends
   }
 
   /**
    * 获取X轴的数据
    * demo: ['01-01', '02-01', '03-01', '04-01']
    */
-  getXAxis(): Array<string | number> {
-    const xAxis = this.dataset.map(item => item[this.keys.xAxis]);
-    return xAxis;
+  getXAxis (): Array<string | number> {
+    const xAxis = this.dataset.map(item => item[this.keys.xAxis])
+    return xAxis
   }
 
-  getTooltip(): any {
+  getTooltip (): any {
     return {
-      trigger: "axis"
-    };
+      trigger: 'axis'
+    }
   }
 
-  getDefaultYAxis(option: YAxisOption) {
-    const { show, axisLabelFormatter } = option;
+  getDefaultYAxis (option: YAxisOption) {
+    const { show, axisLabelFormatter } = option
     return {
       show,
-      type: "value",
+      type: 'value',
       axisLabel: {
         // Y轴文字颜色，
         color: this.colors.labelText.xAxis,
@@ -307,22 +310,22 @@ export class LineChart {
           color: [this.colors.splitLine]
         }
       }
-    };
+    }
   }
 
   /**
    * Y轴数据
    * @param legends
    */
-  getYAxis(legends: string[]): any[] {
+  getYAxis (legends: string[]): any[] {
     // TODO 如果返回值 函数怎么办呢？
-    function getAxisLabelFormatter(legend: string) {
-      return function(value: any) {
+    function getAxisLabelFormatter (legend: string) {
+      return function (value: any) {
         // const format = formatDict[legend] || "0.0a";
         // return numeral(value).format(format);
         // TODO 自己实现 formatter 函数
         return value
-      };
+      }
     }
     const yAxis = legends.map(legend =>
       this.getDefaultYAxis({
@@ -330,8 +333,8 @@ export class LineChart {
         // TODO 外界传进来legendValueFormatter
         axisLabelFormatter: getAxisLabelFormatter(legend)
       })
-    );
-    return yAxis;
+    )
+    return yAxis
   }
 
   /**
@@ -345,7 +348,7 @@ export class LineChart {
 
    }
    */
-  getSeries(legends: string[], xAxis: Array<string | number>): SeriesItem[] {
+  getSeries (legends: string[], xAxis: Array<string | number>): SeriesItem[] {
     /**
       interface groupbyLegend {
         [legendKey1]: [
@@ -355,14 +358,14 @@ export class LineChart {
         ]
       }
      */
-    const groupbyLegend = _.groupBy(this.dataset, this.keys.legend);
+    const groupbyLegend = _.groupBy(this.dataset, this.keys.legend)
     const series = legends.map((legend: string, index: number) => {
-      const seriesItemsFromDataSet: DataSetItem[] = groupbyLegend[legend];
+      const seriesItemsFromDataSet: DataSetItem[] = groupbyLegend[legend]
       const data: Array<string | number> = this.padMissingValues(
         xAxis,
         seriesItemsFromDataSet,
         { legend }
-      ).map(item => item[this.keys.yAxis]);
+      ).map(item => item[this.keys.yAxis])
       return {
         name: legend, // 可选
         type: this.chartType,
@@ -379,44 +382,44 @@ export class LineChart {
         }
         // TODO 指定 Y轴
         // TODO zlevel: 0,
-      };
-    });
-    return series;
+      }
+    })
+    return series
   }
 
-  getDefaultOption() {
+  getDefaultOption () {
     return {
       tooltip: {
         show: true,
-        trigger: "axis"
+        trigger: 'axis'
       },
       axisTick: { show: false },
       xAxis: {
-        type: "category",
+        type: 'category',
         boundaryGap: true,
         axisTick: { show: false },
         axisLine: {
           lineStyle: {
             // x轴颜色, 包含：x轴的颜色、文字颜色
             // 图例： https://jietu.qq.com/upload/index.html?image=http://jietu-10024907.file.myqcloud.com/hwfezrujmosnhjesfoweuqdguwrwyekw.jpg
-            color: "rgba(0,0,0,.6)"
+            color: 'rgba(0,0,0,.6)'
           }
         }
       },
       grid: {
         y: 40, // 图表和legend之间的距离
-        left: "5%", // 图表的x轴的零点距离容器左侧的距离
-        right: "4%", // 图表的x轴的最右点距离容器右侧的距离
+        left: '5%', // 图表的x轴的零点距离容器左侧的距离
+        right: '4%', // 图表的x轴的最右点距离容器右侧的距离
         bottom: 30
       },
       color: this.colors.series
-    };
+    }
   }
 
-  getOption() {
+  getOption () {
     const option = {
       textStyle: {
-        fontFamily: "Roboto"
+        fontFamily: 'Roboto'
       },
       tooltip: this.tooltip,
       series: this.series,
@@ -428,7 +431,7 @@ export class LineChart {
         data: this.xAxis
       },
       yAxis: this.yAxis
-    };
-    return _.merge(option, this.getDefaultOption());
+    }
+    return _.merge(option, this.getDefaultOption())
   }
 }

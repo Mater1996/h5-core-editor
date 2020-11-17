@@ -33,6 +33,7 @@ export class LineChart {
     this.series = this.getSeries(this.legends, this.xAxis)
     this.tooltip = this.getTooltip()
   }
+
   /**
    * 填补缺失值，说白了其实就是 merge
    * seriesTemplate: [{x: '01-01', y: null}, {x: '02-01', y: null}, {x: '03-01', y: null}]
@@ -59,6 +60,7 @@ export class LineChart {
     })
     return templateWithValue
   }
+
   /**
      * 对于复杂的数据转换，需要写 ts，方便看懂代码之间的数据流转
      * @returns: ['折线图1', '折线图2']
@@ -69,6 +71,7 @@ export class LineChart {
     const legends = Array.from(new Set(allLegends))
     return legends
   }
+
   /**
      * 获取X轴的数据
      * demo: ['01-01', '02-01', '03-01', '04-01']
@@ -77,11 +80,13 @@ export class LineChart {
     const xAxis = this.dataset.map(item => item[this.keys.xAxis])
     return xAxis
   }
+
   getTooltip () {
     return {
       trigger: 'axis'
     }
   }
+
   getDefaultYAxis (option) {
     const { show, axisLabelFormatter } = option
     return {
@@ -120,6 +125,7 @@ export class LineChart {
       }
     }
   }
+
   /**
    * Y轴数据
    * @param legends
@@ -141,6 +147,7 @@ export class LineChart {
     }))
     return yAxis
   }
+
   /**
    *
    * @param {*} legends
@@ -186,6 +193,7 @@ export class LineChart {
     })
     return series
   }
+
   getDefaultOption () {
     return {
       tooltip: {
@@ -214,6 +222,7 @@ export class LineChart {
       color: this.colors.series
     }
   }
+
   getOption () {
     const option = {
       textStyle: {

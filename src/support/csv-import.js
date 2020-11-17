@@ -9,7 +9,7 @@ export default {
     },
     validFileMimeType (e) {
       e.preventDefault()
-      let file = this.$refs.csv.files[0]
+      const file = this.$refs.csv.files[0]
       const isValidFileMimeType = this.checkMimeType(file.type)
       if (isValidFileMimeType) this.loadFile()
     },
@@ -49,9 +49,9 @@ export default {
       })
     },
     readFile (callback) {
-      let file = this.$refs.csv.files[0]
+      const file = this.$refs.csv.files[0]
       if (file) {
-        let reader = new FileReader()
+        const reader = new FileReader()
         reader.readAsText(file, 'UTF-8')
         reader.onload = function (evt) {
           callback(evt.target.result)

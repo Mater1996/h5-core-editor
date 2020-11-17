@@ -17,10 +17,10 @@ export default {
       default: () => new Element({})
     }
   },
-  created() {
+  created () {
     this.element.setVm(this)
   },
-  render() {
+  render () {
     const element = this.element
     return (
       <ShapeLayer elStyle={element.style} on={this.$listeners}>

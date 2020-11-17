@@ -35,10 +35,10 @@ export default {
     editingTitle: '' // 临时缓存当前编辑的 title，点击 Yes 再真正用其更新 page title
   }),
   methods: {
-    getTitle(page, index) {
+    getTitle (page, index) {
       return page.title || this.$t('editor.pageManager.title', { index })
     },
-    _renderEditTitle(page, index) {
+    _renderEditTitle (page, index) {
       return (
         <a-popconfirm
           placement="bottom"
@@ -70,7 +70,7 @@ export default {
         </a-popconfirm>
       )
     },
-    _renderTitleMenu(page, index) {
+    _renderTitleMenu (page, index) {
       const addPageText = this.$t('editor.pageManager.action.add')
       const copyPageText = this.$t('editor.pageManager.action.copy')
       const deletePageText = this.$t('editor.pageManager.action.delete')
@@ -99,11 +99,11 @@ export default {
         </a-dropdown>
       )
     },
-    onLeave() {
+    onLeave () {
       this.hoverIndex = -1
     }
   },
-  render(h) {
+  render (h) {
     const addPageText = this.$t('editor.pageManager.action.add')
     return (
       <div class="page-manager-panel">

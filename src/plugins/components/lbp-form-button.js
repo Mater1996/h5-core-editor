@@ -60,10 +60,10 @@ export default {
       if (this.disabled) return
 
       // #!zh: data-type=lbp-form-input 在 lbp-form-input 组件中定义
-      let inputs = document.querySelectorAll("[data-type^='lbp-form-input']")
+      const inputs = document.querySelectorAll("[data-type^='lbp-form-input']")
       if (!inputs.length) return
       const self = this
-      let formData = new FormData()
+      const formData = new FormData()
       inputs.forEach(input => formData.append(input.dataset.uuid, input.value))
       const req = new XMLHttpRequest()
       req.onreadystatechange = function () {

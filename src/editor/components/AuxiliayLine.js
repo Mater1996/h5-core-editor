@@ -31,25 +31,25 @@ export default {
     }
   },
   methods: {
-    drawVLine(newLeft) {
+    drawVLine (newLeft) {
       this.vLines = [{ left: newLeft }]
     },
-    clearVLine() {
+    clearVLine () {
       this.vLines = []
     },
-    drawHLine(newTop) {
+    drawHLine (newTop) {
       this.hLines = [{ top: newTop }]
     },
-    clearHLine() {
+    clearHLine () {
       this.hLines = []
     },
-    genBorder({ left, top, width, height }) {
+    genBorder ({ left, top, width, height }) {
       return [
         [left + width, left + width / 2, left],
         [top + height, top + height / 2, top]
       ]
     },
-    calcVHLine() {
+    calcVHLine () {
       const referElementsXCoords = []
       const referElementsYCoords = []
       let hasVLine = false
@@ -67,7 +67,7 @@ export default {
       })
       exCoords.forEach(eX => {
         referElementsXCoords.forEach(referX => {
-          let offset = referX - eX
+          const offset = referX - eX
           if (Math.abs(offset) <= 5) {
             this.drawVLine(referX)
             hasVLine = true
@@ -76,7 +76,7 @@ export default {
       })
       eyCoords.forEach(eY => {
         referElementsYCoords.forEach(referY => {
-          let offset = referY - eY
+          const offset = referY - eY
           if (Math.abs(offset) <= 5) {
             this.drawHLine(referY)
             hasHLine = true
@@ -91,7 +91,7 @@ export default {
       }
     }
   },
-  render() {
+  render () {
     return (
       <div class="luban-auxiliary-line">
         {this.vLines.map(line => (

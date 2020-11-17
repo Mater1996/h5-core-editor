@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-16 18:30:23
+ * @LastEditTime : 2020-11-17 10:50:52
  * @Description :
  */
 
@@ -11,7 +11,7 @@ import pluginsControl from '@/plugins'
 import { isFunction } from 'lodash'
 
 class LbpElement {
-  constructor(options = {}) {
+  constructor (options = {}) {
     const {
       name = '',
       props = {},
@@ -26,29 +26,32 @@ class LbpElement {
       this.vm = vm
       const plugin = pluginsControl.getPlugin(name)
       const pluginDefaultProps = LbpElement.getPluginProps(plugin.component)
-      // 传入具体的element render
+      // 传入具体的element render 的 参数
       this.props = {
         ...pluginDefaultProps,
         ...props
       }
+      // 传入具体的element render 的 属性
       this.attrs = {
         ...attrs
       }
+      // 传入具体的element render 的 样式
       this.class = {
         ...options.class
       }
-      // 传入shapeLayer
+      // 传入 shapeLayer 以改变位置以及大小
       this.style = {
         ...ShapeLayerDefaultProps,
         ...style
       }
+      // 传入 animateLayer 以实现动画效果
       this.animations = [...animations]
     } else {
       console.error('lbpElement need a name of plugin')
     }
   }
 
-  clone({ zIndex = this.zIndex + 1 } = {}) {
+  clone ({ zIndex = this.zIndex + 1 } = {}) {
     return new LbpElement({
       zIndex,
       name: this.name,
@@ -61,7 +64,7 @@ class LbpElement {
     })
   }
 
-  update({ props, style, animations }) {
+  update ({ props, style, animations }) {
     props && Object.assign(this.props, props)
     style && Object.assign(this.style, style)
     if (animations) {
@@ -70,11 +73,11 @@ class LbpElement {
     }
   }
 
-  setVm(vm) {
+  setVm (vm) {
     this.vm = vm
   }
 
-  static getPluginProps(component) {
+  static getPluginProps (component) {
     const props = {}
     const { props: propsDefine } = component
     Object.entries(propsDefine).forEach(([key, prop]) => {
@@ -83,7 +86,7 @@ class LbpElement {
     return props
   }
 
-  static getPropDefaultValue(vm, prop) {
+  static getPropDefaultValue (vm, prop) {
     if (!prop.hasOwnProperty('default')) {
       return undefined
     }

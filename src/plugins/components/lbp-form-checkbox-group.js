@@ -1,7 +1,7 @@
 import PropTypes from '@/utils/commom-props'
 import LbpFormRadio from './lbp-form-radio.js'
 
-function getDefaultItems() {
+function getDefaultItems () {
   // defaultItems.slice(0)[0] === defaultItems.slice(0)[0] -> true
   // Object.assign(defaultItems)[0] === Object.assign(defaultItems)[0] -> true
   // clone = (val) => JSON.parse(JSON.stringify(val))
@@ -59,14 +59,14 @@ export default {
       }
     }
   },
-  data() {
+  data () {
     return {
       value: this.type === 'radio' ? '' : [],
       uuid: undefined
     }
   },
   computed: {
-    value_() {
+    value_ () {
       if (this.type === 'radio') {
         return this.value
       } else {
@@ -76,18 +76,18 @@ export default {
     }
   },
   watch: {
-    type(type) {
+    type (type) {
       this.value = type === 'radio' ? '' : []
     }
   },
-  mounted() {
+  mounted () {
     this.uuid = this.$el.dataset.uuid
   },
   methods: {
     /**
      * @param {String, Number} val radioValue or checkboxValue
      */
-    onChange(val) {
+    onChange (val) {
       switch (this.type) {
         case 'radio':
           this.toggleRadio(val)
@@ -99,7 +99,7 @@ export default {
           break
       }
     },
-    toggleCheckbox(val) {
+    toggleCheckbox (val) {
       const index = this.value.indexOf(val)
       if (index === -1) {
         this.value.push(val)
@@ -107,11 +107,11 @@ export default {
         this.value.splice(index, 1)
       }
     },
-    toggleRadio(val) {
+    toggleRadio (val) {
       this.value = val
     }
   },
-  render() {
+  render () {
     return (
       <div>
         <h3>{this.aliasName}</h3>

@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-06 17:47:10
+ * @LastEditTime : 2020-11-17 11:44:55
  * @Description :
  */
 export default {
@@ -12,12 +12,12 @@ export default {
       type: [Array, String]
     }
   },
-  render() {
+  render () {
     return (
       <div>
         {Array.isArray(this.value) ? (
           this.value.map((v, index) => {
-            ;<input
+            return <input
               size="small"
               type="color"
               autocomplete

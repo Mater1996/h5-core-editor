@@ -31,7 +31,7 @@ export default {
     }
   },
   computed: {
-    editPropsConfig() {
+    editPropsConfig () {
       const { element } = this
       if (element && element.name) {
         const { component } = pluginsControl.getPlugin(element.name)
@@ -40,7 +40,7 @@ export default {
         return {}
       }
     },
-    editPropsValue() {
+    editPropsValue () {
       const { element, editPropsConfig } = this
       const editPropsConfigKeys = Object.keys(editPropsConfig)
       const props = element ? element.props : {}
@@ -50,7 +50,7 @@ export default {
       })
       return propsValue
     },
-    editAnimationValue() {
+    editAnimationValue () {
       const { element } = this
       const animations = element ? element.animations : []
       return animations
@@ -60,10 +60,10 @@ export default {
     activeTabKey: '属性'
   }),
   methods: {
-    setActiveTab(activeTabKey) {
+    setActiveTab (activeTabKey) {
       this.activeTabKey = activeTabKey
     },
-    getPropsWithEditor(props) {
+    getPropsWithEditor (props) {
       const propsWithEditor = {}
       Object.entries(props).forEach(([key, value]) => {
         if (value.editor) {
@@ -73,7 +73,7 @@ export default {
       return propsWithEditor
     }
   },
-  render() {
+  render () {
     return (
       <a-layout-sider
         width={this.width}

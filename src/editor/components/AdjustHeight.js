@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-06 11:03:51
- * @LastEditTime : 2020-11-16 17:41:14
+ * @LastEditTime : 2020-11-17 11:40:28
  * @Description :
  */
 import { InputNumber } from 'ant-design-vue'
@@ -22,7 +22,7 @@ export default {
      * 更新作品高度
      * @param {Number} height
      */
-    updateWorkHeight(height) {
+    updateWorkHeight (height) {
       this.$emit('change', height)
     },
     /**
@@ -30,7 +30,7 @@ export default {
      * scale: height/width
      * @param {MouseEvent} e
      */
-    mousedownForAdjustLine(e) {
+    mousedownForAdjustLine (e) {
       const startY = e.clientY
       const startHeight = this.height
       const canvasOuterWrapper = document.querySelector(
@@ -44,8 +44,7 @@ export default {
         const moveHeight = currY - startY
         const currentHeight = moveHeight + startHeight
         this.updateWorkHeight(currentHeight)
-        if (canvasOuterWrapper)
-          canvasOuterWrapper.scrollTop = canvasOuterWrapper.scrollHeight
+        if (canvasOuterWrapper) { canvasOuterWrapper.scrollTop = canvasOuterWrapper.scrollHeight }
       }
       const up = () => {
         document.removeEventListener('mousemove', move, true)
@@ -55,12 +54,12 @@ export default {
       document.addEventListener('mouseup', up, true)
     }
   },
-  render() {
+  render () {
     return (
       <div
         style={{
           position: 'absolute',
-          bottom: `0px`,
+          bottom: '0px',
           width: '100%',
           transform: 'translateY(100%)'
         }}

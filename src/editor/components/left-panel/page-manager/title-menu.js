@@ -5,27 +5,27 @@
  * @LastEditTime : 2020-11-02 10:46:49
  * @Description :
  */
-import { Dropdown, Menu, Icon } from "ant-design-vue";
+import { Dropdown, Menu, Icon } from 'ant-design-vue'
 
 export default {
   components: {
     [Dropdown.name]: Dropdown,
     [Menu.name]: Menu,
     [Menu.Item.name]: Menu.Item,
-    [Icon.name]:Icon
+    [Icon.name]: Icon
   },
-  render() {
-    const addPageText = this.$t("editor.pageManager.action.add");
-    const copyPageText = this.$t("editor.pageManager.action.copy");
-    const deletePageText = this.$t("editor.pageManager.action.delete");
+  render () {
+    const addPageText = this.$t('editor.pageManager.action.add')
+    const copyPageText = this.$t('editor.pageManager.action.copy')
+    const deletePageText = this.$t('editor.pageManager.action.delete')
     return (
-      <a-dropdown trigger={["hover"]} placement="bottomCenter">
+      <a-dropdown trigger={['hover']} placement="bottomCenter">
         <a class="ant-dropdown-link" href="#" class="ml-2">
           <a-icon type="down" />
         </a>
         <a-menu
           slot="overlay"
-          onClick={({ key }) => this.$emit("selectMenuItem", key)}
+          onClick={({ key }) => this.$emit('selectMenuItem', key)}
         >
           <a-menu-item key="add">
             <a-icon type="plus" />
@@ -41,6 +41,6 @@ export default {
           </a-menu-item>
         </a-menu>
       </a-dropdown>
-    );
+    )
   }
-};
+}

@@ -16,14 +16,14 @@ export default {
     NodeWrapper
   },
   computed: {
-    elements() {
+    elements () {
       return this.data.elements
     }
   },
   created () {
-    console.log(this.data);
+    console.log(this.data)
   },
-  render(h) {
+  render (h) {
     const pageWrapperStyle = {
       height: this.height || '100%',
       position: 'relative'

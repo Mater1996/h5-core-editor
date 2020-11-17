@@ -6,7 +6,7 @@
  * @Description :
  */
 export default class LbpPlugin {
-  constructor({ name, i18nTitle = {}, title, icon, visible, component } = {}) {
+  constructor ({ name, i18nTitle = {}, title, icon, visible, component } = {}) {
     this.name = name
     this.i18nTitle = i18nTitle
     this.title = title

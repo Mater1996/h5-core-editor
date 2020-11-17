@@ -51,13 +51,13 @@ export default {
     }
   },
   watch: {
-    config() { // config 需要重新render
+    config () { // config 需要重新render
       setTimeout(() => {
         this.form.setFieldsValue(this.value)
       })
     }
   },
-  created() {
+  created () {
     this.form = this.$form.createForm(this, {
       onFieldsChange: () => {
         this.$emit('change', this.form.getFieldsValue())
@@ -65,17 +65,17 @@ export default {
     })
   },
   computed: {
-    formItemLayout() {
+    formItemLayout () {
       this.layout === 'horizontal'
         ? {
-            labelCol: { span: 6 },
-            wrapperCol: { span: 16, offset: 2 }
-          }
+          labelCol: { span: 6 },
+          wrapperCol: { span: 16, offset: 2 }
+        }
         : {}
     }
   },
   methods: {
-    renderPropFormItem(propName, propConfig) {
+    renderPropFormItem (propName, propConfig) {
       const { editor } = propConfig
       if (!editor) return
       const formItemData = {
@@ -95,7 +95,7 @@ export default {
       )
     }
   },
-  render() {
+  render () {
     const configEntries = Object.entries(this.config)
     return (
       <a-form

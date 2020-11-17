@@ -18,7 +18,7 @@ const AnimateLayer = {
     }
   },
   methods: {
-    runAnimations() {
+    runAnimations () {
       if (!this.animations) return
       const animationQueue = this.animations || []
       const len = animationQueue.length
@@ -26,7 +26,7 @@ const AnimateLayer = {
       const parentNode = this.$el
       let animIdx = 0
       runAnimation()
-      function runAnimation() {
+      function runAnimation () {
         if (animIdx < len) {
           const animation = animationQueue[animIdx]
           Object.assign(parentNode.style, {
@@ -52,12 +52,12 @@ const AnimateLayer = {
       parentNode.addEventListener('animationend', runAnimation, false)
     }
   },
-  created() {
+  created () {
     EventBus.$on('RUN_ANIMATIONS', () => {
       this.runAnimations()
     })
   },
-  render() {
+  render () {
     return <div class="animate-layer">{this.$slots.default}</div>
   }
 }

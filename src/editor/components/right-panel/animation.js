@@ -46,7 +46,7 @@ export default {
     }
   },
   computed: {
-    animationQueue() {
+    animationQueue () {
       return this.value || []
     }
   },
@@ -56,7 +56,7 @@ export default {
     drawerVisible: false
   }),
   methods: {
-    addAnimation() {
+    addAnimation () {
       this.animationQueue.push({
         type: '',
         duration: 1,
@@ -67,11 +67,11 @@ export default {
       this.activeCollapsePanel = this.animationQueue.length - 1
       this.$emit('change', this.animationQueue)
     },
-    deleteAnimate(index) {
+    deleteAnimate (index) {
       this.animationQueue.splice(index, 1)
       this.$emit('change', this.animationQueue)
     },
-    updateAnimation(type) {
+    updateAnimation (type) {
       const activeAnimationQueue = this.animationQueue[this.activeCollapsePanel]
       if (activeAnimationQueue) {
         activeAnimationQueue.type = type
@@ -79,10 +79,10 @@ export default {
       this.drawerVisible = false
       this.$emit('change', this.animationQueue)
     },
-    runAnimate() {
+    runAnimate () {
       EventBus.$emit('RUN_ANIMATIONS')
     },
-    renderSecondAnimationTabs(animations) {
+    renderSecondAnimationTabs (animations) {
       return (
         <a-tabs
           defaultActiveKey={animations[0].value}
@@ -122,7 +122,7 @@ export default {
         </a-tabs>
       )
     },
-    renderAvaiableAnimations() {
+    renderAvaiableAnimations () {
       return (
         <a-tabs
           class="avaiable-animations-tabs"
@@ -146,7 +146,7 @@ export default {
         </a-tabs>
       )
     },
-    renderAnimationOptions(animationOption) {
+    renderAnimationOptions (animationOption) {
       return (
         <a-form layout="horizontal">
           <a-form-item
@@ -296,7 +296,7 @@ export default {
       )
     }
   },
-  render(h) {
+  render (h) {
     return (
       <div class="main-animate widget" id="animation-right-panel">
         <a-button-group>

@@ -1,11 +1,12 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('ant-design-vue'), require('vue-quill-editor'), require('vue'), require('vant'), require('resize-detector'), require('vuex'), require('lodash'), require('vue-i18n'), require('hotkeys-js'), require('x-data-spreadsheet'), require('papaparse')) :
-  typeof define === 'function' && define.amd ? define(['ant-design-vue', 'vue-quill-editor', 'vue', 'vant', 'resize-detector', 'vuex', 'lodash', 'vue-i18n', 'hotkeys-js', 'x-data-spreadsheet', 'papaparse'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['luban-h5-editor'] = factory(global['ant-design-vue'], global.VueQuillEditor, global.Vue, global.vant, global.resizeDetector, global.Vuex, global.lodash, global.VueI18n, global.hotkeys, global.x_spreadsheet, global.papaparse));
-}(this, (function (antDesignVue, vueQuillEditor, Vue, vant, resizeDetector, Vuex, lodash, VueI18n, hotkeys, Spreadsheet, Papa) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('ant-design-vue'), require('v-click-outside'), require('vue-quill-editor'), require('vue'), require('vant'), require('resize-detector'), require('vuex'), require('lodash'), require('vue-i18n'), require('hotkeys-js'), require('x-data-spreadsheet'), require('papaparse')) :
+  typeof define === 'function' && define.amd ? define(['ant-design-vue', 'v-click-outside', 'vue-quill-editor', 'vue', 'vant', 'resize-detector', 'vuex', 'lodash', 'vue-i18n', 'hotkeys-js', 'x-data-spreadsheet', 'papaparse'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['luban-h5-editor'] = factory(global['ant-design-vue'], global.vClickOutside$1, global.VueQuillEditor, global.Vue, global.vant, global.resizeDetector, global.Vuex, global.lodash, global.VueI18n, global.hotkeys, global.x_spreadsheet, global.papaparse));
+}(this, (function (antDesignVue, vClickOutside$1, vueQuillEditor, Vue, vant, resizeDetector, Vuex, lodash, VueI18n, hotkeys, Spreadsheet, Papa) { 'use strict';
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
+  var vClickOutside__default = /*#__PURE__*/_interopDefaultLegacy(vClickOutside$1);
   var Vue__default = /*#__PURE__*/_interopDefaultLegacy(Vue);
   var Vuex__default = /*#__PURE__*/_interopDefaultLegacy(Vuex);
   var VueI18n__default = /*#__PURE__*/_interopDefaultLegacy(VueI18n);
@@ -1662,14 +1663,9 @@
     }
   });
 
-  var vClickOutside_umd = createCommonjsModule(function (module, exports) {
-  !function(e,n){module.exports=n();}(commonjsGlobal,function(){var e="undefined"!=typeof window,n="undefined"!=typeof navigator,t=e&&("ontouchstart"in window||n&&navigator.msMaxTouchPoints>0)?["touchstart"]:["click"];function i(e){var n=e.event,t=e.handler;(0, e.middleware)(n)&&t(n);}function r(e,n){var r=function(e){var n="function"==typeof e;if(!n&&"object"!=typeof e)throw new Error("v-click-outside: Binding value must be a function or an object");return {handler:n?e:e.handler,middleware:e.middleware||function(e){return e},events:e.events||t,isActive:!(!1===e.isActive),detectIframe:!(!1===e.detectIframe)}}(n.value),d=r.handler,o=r.middleware,a=r.detectIframe;if(r.isActive){if(e["__v-click-outside"]=r.events.map(function(n){return {event:n,srcTarget:document.documentElement,handler:function(n){return function(e){var n=e.el,t=e.event,r=e.handler,d=e.middleware,o=t.path||t.composedPath&&t.composedPath();(o?o.indexOf(n)<0:!n.contains(t.target))&&i({event:t,handler:r,middleware:d});}({el:e,event:n,handler:d,middleware:o})}}}),a){var c={event:"blur",srcTarget:window,handler:function(n){return function(e){var n=e.el,t=e.event,r=e.handler,d=e.middleware;setTimeout(function(){var e=document.activeElement;e&&"IFRAME"===e.tagName&&!n.contains(e)&&i({event:t,handler:r,middleware:d});},0);}({el:e,event:n,handler:d,middleware:o})}};e["__v-click-outside"]=[].concat(e["__v-click-outside"],[c]);}e["__v-click-outside"].forEach(function(n){var t=n.event,i=n.srcTarget,r=n.handler;return setTimeout(function(){e["__v-click-outside"]&&i.addEventListener(t,r,!1);},0)});}}function d(e){(e["__v-click-outside"]||[]).forEach(function(e){return e.srcTarget.removeEventListener(e.event,e.handler,!1)}),delete e["__v-click-outside"];}var o=e?{bind:r,update:function(e,n){var t=n.value,i=n.oldValue;JSON.stringify(t)!==JSON.stringify(i)&&(d(e),r(e,{value:t}));},unbind:d}:{};return {install:function(e){e.directive("click-outside",o);},directive:o}});
-
-  });
-
   var LbpText = {
     directives: {
-      clickOutside: vClickOutside_umd.directive
+      clickOutside: vClickOutside__default['default'].directive
     },
     render: function render(h) {
       var _this = this;
@@ -1734,19 +1730,19 @@
               // toolbar: '#toolbar-wrapper'
               toolbar: [['bold', 'italic', 'underline', 'strike'], // 切换按钮
               [{
-                'list': 'ordered'
+                list: 'ordered'
               }, {
-                'list': 'bullet'
+                list: 'bullet'
               }], [{
-                'color': []
+                color: []
               }, {
-                'background': []
+                background: []
               }], // 主题默认下拉，使用主题提供的值
               [{
-                'align': []
+                align: []
               }], ['clean'], // 清除格式
               [{
-                'header': [1, 2, 3, 4, 5, 6, false]
+                header: [1, 2, 3, 4, 5, 6, false]
               }] // https://github.com/quilljs/quill/issues/1208
               ]
             },
@@ -2360,7 +2356,7 @@
         default: 120
       },
       aliasName: PropTypes.string({
-        defaultValue: "\u6807\u9898\u6F14\u793A",
+        defaultValue: '标题演示',
         label: '填写标题'
       }),
       items: PropTypes.textOptions({
@@ -64465,7 +64461,7 @@
 
         this._plugins.push(plugin);
 
-        this._pluginsMap[plugin['name']] = plugin;
+        this._pluginsMap[plugin.name] = plugin;
       }
     }, {
       key: "getPlugins",
@@ -65665,13 +65661,16 @@
         this.uuid = +new Date();
         this.vm = vm;
         var plugin = lbpPluginController.getPlugin(name);
-        var pluginDefaultProps = LbpElement.getPluginProps(plugin.component); // 传入具体的element render
+        var pluginDefaultProps = LbpElement.getPluginProps(plugin.component); // 传入具体的element render 的 参数
 
-        this.props = _objectSpread$2(_objectSpread$2({}, pluginDefaultProps), props);
-        this.attrs = _objectSpread$2({}, attrs);
-        this.class = _objectSpread$2({}, options.class); // 传入shapeLayer
+        this.props = _objectSpread$2(_objectSpread$2({}, pluginDefaultProps), props); // 传入具体的element render 的 属性
 
-        this.style = _objectSpread$2(_objectSpread$2({}, ShapeLayerDefaultProps), style);
+        this.attrs = _objectSpread$2({}, attrs); // 传入具体的element render 的 样式
+
+        this.class = _objectSpread$2({}, options.class); // 传入 shapeLayer 以改变位置以及大小
+
+        this.style = _objectSpread$2(_objectSpread$2({}, ShapeLayerDefaultProps), style); // 传入 animateLayer 以实现动画效果
+
         this.animations = toConsumableArray(animations);
       } else {
         console.error('lbpElement need a name of plugin');
@@ -65928,6 +65927,8 @@
       addElement: function addElement() {
         var _this = this;
 
+        debugger;
+
         for (var _len = arguments.length, elements = new Array(_len), _key = 0; _key < _len; _key++) {
           elements[_key] = arguments[_key];
         }
@@ -66004,8 +66005,6 @@
   var Page = /*#__PURE__*/function () {
     function Page() {
       var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-          _ref$uuid = _ref.uuid,
-          uuid = _ref$uuid === void 0 ? +new Date() : _ref$uuid,
           _ref$title = _ref.title,
           title = _ref$title === void 0 ? '' : _ref$title,
           _ref$elements = _ref.elements,
@@ -66014,16 +66013,16 @@
           height = _ref$height === void 0 ? PAGE_MODE.HEIGHT : _ref$height,
           _ref$width = _ref.width,
           width = _ref$width === void 0 ? PAGE_MODE.WIDTH : _ref$width,
-          _ref$page_mode = _ref.page_mode,
-          page_mode = _ref$page_mode === void 0 ? PAGE_MODE.SWIPPER_PAGE : _ref$page_mode;
+          _ref$pageMode = _ref.pageMode,
+          pageMode = _ref$pageMode === void 0 ? PAGE_MODE.SWIPPER_PAGE : _ref$pageMode;
 
       classCallCheck(this, Page);
 
-      this.uuid = uuid;
+      this.uuid = +new Date();
       this.title = title;
       this.width = width >= 0 ? width : PAGE_MODE.WIDTH;
       this.height = height >= 0 ? height : PAGE_MODE.HEIGHT;
-      this.page_mode = page_mode;
+      this.pageMode = pageMode;
       this.elements = this.genElements(elements);
     }
 
@@ -66044,7 +66043,9 @@
         var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
         return Array.isArray(elements) && elements.length > 0 ? elements.map(function (v) {
           return new CoreRender.Element(v);
-        }) : [new CoreRender.Element(LbpBackground)];
+        }) : [new CoreRender.Element({
+          name: LbpBackground.name
+        })];
       }
     }]);
 
@@ -66061,8 +66062,8 @@
           description = _ref$description === void 0 ? '描述' : _ref$description,
           _ref$pages = _ref.pages,
           pages = _ref$pages === void 0 ? [] : _ref$pages,
-          is_publish = _ref.is_publish,
-          is_template = _ref.is_template;
+          isPublish = _ref.isPublish,
+          isTemplate = _ref.isTemplate;
 
       classCallCheck(this, Work);
 
@@ -66071,8 +66072,8 @@
       this.description = description;
       this.pages = this.genPages(pages);
       this.cover_image_url = '';
-      this.is_publish = !!is_publish;
-      this.is_template = !!is_template;
+      this.is_publish = !!isPublish;
+      this.is_template = !!isTemplate;
     }
 
     createClass(Work, [{
@@ -66170,7 +66171,7 @@
           if (state.work.pages.length === 1) {
             // #!zh: 作品中至少需要保留一个页面
             // #!en: At least one page needs to be kept in the work
-            antDesignVue.message.info("\u4F5C\u54C1\u4E2D\u81F3\u5C11\u9700\u8981\u4FDD\u7559\u4E00\u4E2A\u9875\u9762");
+            antDesignVue.message.info('作品中至少需要保留一个页面');
             return;
           }
 
@@ -66678,10 +66679,10 @@
   function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$7(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   Vue__default['default'].use(VueI18n__default['default']);
   var messages = {
-    "en-US": _objectSpread$6({}, enUSLang),
-    "zh-CN": _objectSpread$6({}, zhCNLang)
+    'en-US': _objectSpread$6({}, enUSLang),
+    'zh-CN': _objectSpread$6({}, zhCNLang)
   };
-  var defaultLang = "zh-CN";
+  var defaultLang = 'zh-CN';
   var i18n = new VueI18n__default['default']({
     locale: defaultLang,
     fallbackLocale: defaultLang,
@@ -66691,7 +66692,7 @@
 
   function setI18nLanguage(lang) {
     i18n.locale = lang;
-    document.querySelector("html").setAttribute("lang", lang);
+    document.querySelector('html').setAttribute('lang', lang);
     return lang;
   }
 
@@ -66915,7 +66916,7 @@
    * @author : Mater
    * @Email : bxh8640@gmail.com
    * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-06 17:47:10
+   * @LastEditTime : 2020-11-17 11:44:55
    * @Description :
    */
   var colorsPanel = {
@@ -66930,7 +66931,7 @@
 
       var h = arguments[0];
       return h("div", [Array.isArray(this.value) ? this.value.map(function (v, index) {
-        h("input", {
+        return h("input", {
           "attrs": {
             "size": "small",
             "type": "color",
@@ -67252,10 +67253,10 @@
 
         var h = this.$createElement;
 
-        if (type === "prev") {
+        if (type === 'prev') {
           return h("a-button", {
             "style": {
-              marginRight: "8px"
+              marginRight: '8px'
             },
             "attrs": {
               "size": "small",
@@ -67268,10 +67269,10 @@
               }
             }
           });
-        } else if (type === "next") {
+        } else if (type === 'next') {
           return h("a-button", {
             "style": {
-              marginLeft: "8px"
+              marginLeft: '8px'
             },
             "attrs": {
               "size": "small",
@@ -67287,7 +67288,7 @@
       },
       add: function add() {
         this.elementProps.items.push({
-          image: "",
+          image: '',
           value: "\u9009\u9879".concat(this.innerItems.length + 1, "-value"),
           label: "\u9009\u9879".concat(this.innerItems.length + 1, "-label")
         });
@@ -67320,7 +67321,7 @@
         }
       }), h("lbs-image-gallery", {
         "style": {
-          margin: "16px 0"
+          margin: '16px 0'
         },
         "attrs": {
           "value": currentItem.image
@@ -67448,7 +67449,7 @@
       };
     },
     render: function render(h) {
-      return h("span", [this.$t("editor.editPanel.common.empty")]);
+      return h("span", [this.$t('editor.editPanel.common.empty')]);
     }
   };
 
@@ -68574,7 +68575,7 @@
           "tag": "span"
         },
         "class": "ml-1"
-      }, [h("strong", [this.$t("editor.tip.click")]), this.$t("editor.tip.click")])]);
+      }, [h("strong", [this.$t('editor.tip.click')]), this.$t('editor.tip.click')])]);
     }
   };
 
@@ -68965,16 +68966,16 @@
   var _components$a;
   var PageTitleEditor = {
     components: (_components$a = {}, defineProperty$2(_components$a, antDesignVue.Popconfirm.name, antDesignVue.Popconfirm), defineProperty$2(_components$a, antDesignVue.Input.name, antDesignVue.Input), defineProperty$2(_components$a, antDesignVue.Icon.name, antDesignVue.Icon), _components$a),
-    props: ["page", "pageIndex"],
+    props: ['page', 'pageIndex'],
     data: function data() {
       return {
-        editingTitle: "" // 临时缓存当前编辑的 title，点击 Yes 再真正用其更新 page title
+        editingTitle: '' // 临时缓存当前编辑的 title，点击 Yes 再真正用其更新 page title
 
       };
     },
     methods: {
       getTitle: function getTitle() {
-        return this.page.title || this.$t("editor.pageManager.title", {
+        return this.page.title || this.$t('editor.pageManager.title', {
           index: this.pageIndex
         });
       }
@@ -68991,7 +68992,7 @@
         },
         "on": {
           "confirm": function confirm() {
-            _this.$emit("editTitle", {
+            _this.$emit('editTitle', {
               newTitle: _this.editingTitle,
               pageIndex: _this.pageIndex
             });
@@ -69031,12 +69032,12 @@
       var _this = this;
 
       var h = arguments[0];
-      var addPageText = this.$t("editor.pageManager.action.add");
-      var copyPageText = this.$t("editor.pageManager.action.copy");
-      var deletePageText = this.$t("editor.pageManager.action.delete");
+      var addPageText = this.$t('editor.pageManager.action.add');
+      var copyPageText = this.$t('editor.pageManager.action.copy');
+      var deletePageText = this.$t('editor.pageManager.action.delete');
       return h("a-dropdown", {
         "attrs": {
-          "trigger": ["hover"],
+          "trigger": ['hover'],
           "placement": "bottomCenter"
         }
       }, [h("a", {
@@ -69053,7 +69054,7 @@
         "on": {
           "click": function click(_ref) {
             var key = _ref.key;
-            return _this.$emit("selectMenuItem", key);
+            return _this.$emit('selectMenuItem', key);
           }
         }
       }, [h("a-menu-item", {
@@ -69080,10 +69081,10 @@
 
   var PageTitleText = {
     components: defineProperty$2({}, antDesignVue.Badge.name, antDesignVue.Badge),
-    props: ["page", "pageIndex"],
+    props: ['page', 'pageIndex'],
     methods: {
       getTitle: function getTitle() {
-        return this.page.title || this.$t("editor.pageManager.title", {
+        return this.page.title || this.$t('editor.pageManager.title', {
           index: this.pageIndex
         });
       }
@@ -69095,9 +69096,9 @@
         "attrs": {
           "count": this.pageIndex + 1,
           "numberStyle": {
-            backgroundColor: "#fff",
-            color: "#999",
-            boxShadow: "0 0 0 1px #d9d9d9 inset"
+            backgroundColor: '#fff',
+            color: '#999',
+            boxShadow: '0 0 0 1px #d9d9d9 inset'
           }
         }
       }), h("span", {
@@ -69106,31 +69107,24 @@
     }
   };
 
-  function ownKeys$d(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$c(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$d(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$d(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var RenderPageManager = {
     name: 'page-manager',
+    props: {
+      pages: {
+        type: Array,
+        default: []
+      }
+    },
     components: defineProperty$2({}, antDesignVue.Button.name, antDesignVue.Button),
     data: function data() {
       return {
-        hoverIndex: -1 // 显示编辑按钮
+        pageIndex: -1 // 显示编辑按钮
 
       };
     },
-    computed: _objectSpread$c({}, Vuex.mapState('editor', {
-      editingPage: function editingPage(state) {
-        return state.editingPage;
-      },
-      pages: function pages(state) {
-        return state.work.pages;
-      }
-    })),
-    methods: _objectSpread$c(_objectSpread$c({}, Vuex.mapActions('editor', ['elementManager', 'pageManager', 'saveWork', 'setEditingPage'])), {}, {
+    methods: {
       onSelectMenuItem: function onSelectMenuItem(menuKey) {
-        this.pageManager({
-          type: menuKey
-        });
+        this.$emit('add');
       },
       onEditTitle: function onEditTitle(_ref) {
         var pageIndex = _ref.pageIndex,
@@ -69142,26 +69136,23 @@
             newTitle: newTitle
           }
         });
-        this.saveWork({
-          isSaveCover: false
-        });
       },
       onSelectPage: function onSelectPage(pageIndex) {
-        this.setEditingPage(pageIndex);
+        this.pageIndex = pageIndex;
+        this.$emit('pageChange', pageIndex);
       },
       onLeave: function onLeave() {
         this.hoverIndex = -1;
       }
-    }),
+    },
     render: function render(h) {
       var _this = this;
 
-      var addPageText = this.$t('editor.pageManager.action.add');
       return h("div", {
         "class": "page-manager-panel"
       }, [this.pages.map(function (page, index) {
         return h("span", {
-          "class": ['cursor-pointer', 'page-manager-panel__item', page.uuid === _this.editingPage.uuid && 'active'],
+          "class": ['cursor-pointer', 'page-manager-panel__item', index === _this.pageIndex && 'active'],
           "on": {
             "click": function click() {
               return _this.onSelectPage(index);
@@ -69199,13 +69190,9 @@
             return _this.onSelectMenuItem('add');
           }
         }
-      }, [addPageText])]);
+      }, [this.$t('editor.pageManager.action.add')])]);
     }
   };
-
-  function ownKeys$e(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$d(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$e(Object(source), true).forEach(function (key) { defineProperty$2(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$e(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   function getTreeNode(ele) {
     return {
@@ -69217,24 +69204,17 @@
 
   var script$2 = {
     name: 'page-tree',
-    computed: _objectSpread$d(_objectSpread$d({}, Vuex.mapState('editor', {
-      elements: function elements(state) {
-        return state.editingPage.elements;
-      }
-    })), {}, {
+    components: defineProperty$2({}, antDesignVue.Tree.name, antDesignVue.Tree),
+    computed: {
       treeData: function treeData() {
         return this.elements.map(getTreeNode);
       }
-    }),
+    },
     data: function data() {
       return {
         gData: [],
         expandedKeys: []
       };
-    },
-    methods: {
-      onDragEnter: function onDragEnter(info) {},
-      onDrop: function onDrop(info) {}
     }
   };
 
@@ -69252,8 +69232,7 @@
         "default-expanded-keys": _vm.expandedKeys,
         draggable: "",
         "tree-data": _vm.treeData
-      },
-      on: { dragenter: _vm.onDragEnter, drop: _vm.onDrop }
+      }
     })
   };
   var __vue_staticRenderFns__$2 = [];
@@ -69290,8 +69269,16 @@
 
   var _components$c;
   var EditorLeftPanel = {
+    props: {
+      pages: {
+        type: Array,
+        default: function _default() {
+          return [];
+        }
+      }
+    },
     components: (_components$c = {}, defineProperty$2(_components$c, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$2(_components$c, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$2(_components$c, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), _components$c),
-    name: "EditorLeftPanel",
+    name: 'EditorLeftPanel',
     render: function render(h) {
       return h("a-layout-sider", {
         "attrs": {
@@ -69299,9 +69286,9 @@
           "theme": "light"
         },
         "style": {
-          padding: "0 12px",
+          padding: '0 12px',
           height: '100%',
-          'overflow': 'auto'
+          overflow: 'auto'
         }
       }, [h("a-tabs", {
         "attrs": {
@@ -69310,21 +69297,29 @@
       }, [h("a-tab-pane", {
         "key": "plugin-list",
         "attrs": {
-          "tab": this.$t("editor.sidebar.components")
+          "tab": this.$t('editor.sidebar.components')
         }
       }, [h(RenderShortcutsPanel, {
         "on": {
-          "add": this.$listeners.add
+          "add": this.$listeners.addElement
         }
       })]), h("a-tab-pane", {
         "key": "page-manager",
         "attrs": {
-          "tab": this.$t("editor.sidebar.pages")
+          "tab": this.$t('editor.sidebar.pages')
         }
-      }, [h(RenderPageManager)]), h("a-tab-pane", {
+      }, [h(RenderPageManager, {
+        "attrs": {
+          "pages": this.pages
+        },
+        "on": {
+          "add": this.$listeners.addPage,
+          "pageChange": this.$listeners.pageChange
+        }
+      })]), h("a-tab-pane", {
         "key": "page-tree",
         "attrs": {
-          "tab": this.$t("editor.sidebar.tree")
+          "tab": this.$t('editor.sidebar.tree')
         }
       }, [h(__vue_component__$2)])])]);
     }
@@ -69514,7 +69509,9 @@
 
           _this.updateWorkHeight(currentHeight);
 
-          if (canvasOuterWrapper) canvasOuterWrapper.scrollTop = canvasOuterWrapper.scrollHeight;
+          if (canvasOuterWrapper) {
+            canvasOuterWrapper.scrollTop = canvasOuterWrapper.scrollHeight;
+          }
         };
 
         var up = function up() {
@@ -69531,7 +69528,7 @@
       return h("div", {
         "style": {
           position: 'absolute',
-          bottom: "0px",
+          bottom: '0px',
           width: '100%',
           transform: 'translateY(100%)'
         }
@@ -69638,34 +69635,51 @@
         rightPanelWidth: config$1.rightPanelWidth
       };
     },
-    watch: {
-      data: {
-        handler: function handler(data) {
-          this.work = new Work(data);
-          console.log(this.work);
-        },
-        immediate: true
-      }
-    },
     computed: {
       currentPage: function currentPage() {
         var _this$work$pages = this.work.pages,
             pages = _this$work$pages === void 0 ? [] : _this$work$pages;
-        return pages[this.pageIndex];
+        var currentPage = pages[this.pageIndex] || {};
+        console.log(pages, this.pageIndex, pages[this.pageIndex]);
+        return currentPage;
       },
       elementsRect: function elementsRect() {
-        return this.currentPage.elements.map(function (_ref) {
+        var _this$currentPage = this.currentPage,
+            currentPage = _this$currentPage === void 0 ? {} : _this$currentPage;
+        var _currentPage$elements = currentPage.elements,
+            elements = _currentPage$elements === void 0 ? [] : _currentPage$elements;
+        return elements.map(function (_ref) {
           var style = _ref.style;
           return style;
         });
       }
     },
+    watch: {
+      data: {
+        handler: function handler() {
+          var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+          this.work = new Work(data);
+          console.log(this.work);
+        },
+        immediate: true
+      },
+      currentPage: function currentPage() {
+        var _this$$editor;
+
+        var currentPage = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        var _currentPage$elements2 = currentPage.elements,
+            elements = _currentPage$elements2 === void 0 ? [] : _currentPage$elements2;
+        this.$editor.clear();
+
+        (_this$$editor = this.$editor).addElement.apply(_this$$editor, toConsumableArray(elements));
+      }
+    },
     mounted: function mounted() {
-      var _this$$editor;
+      var _this$$editor2;
 
-      this.$editor = this.$refs['editor'];
+      this.$editor = this.$refs.editor;
 
-      (_this$$editor = this.$editor).addElement.apply(_this$$editor, toConsumableArray(this.currentPage.elements));
+      (_this$$editor2 = this.$editor).addElement.apply(_this$$editor2, toConsumableArray(this.currentPage.elements));
     },
     methods: {
       hideAuxiliay: function hideAuxiliay() {
@@ -69700,34 +69714,51 @@
       },
       handleAddElement: function handleAddElement(_ref2) {
         var name = _ref2.name;
-        this.$editor.addElement(new CoreRender.Element({
+        var element = new CoreRender.Element({
           name: name
+        });
+        this.currentPage.elements.push(element);
+        this.$editor.addElement(element);
+      },
+      handleAddPage: function handleAddPage(title) {
+        this.work.pages.push(new Page({
+          title: title
         }));
+      },
+      handleAdjustLieMove: function handleAdjustLieMove(offset) {
+        this.rightPanelWidth += offset;
+      },
+      handlePageChange: function handlePageChange(index) {
+        console.log(index);
+        this.pageIndex = index;
       }
     },
     render: function render() {
-      var _this = this;
-
       var h = arguments[0];
       return h("a-layout", {
         "style": {
           height: '100%'
         }
       }, [h(EditorLeftPanel, {
+        "attrs": {
+          "pages": this.work.pages
+        },
         "on": {
-          "add": this.handleAddElement
+          "pageChange": this.handlePageChange,
+          "addElement": this.handleAddElement,
+          "addPage": this.handleAddPage
         }
       }), h("a-layout", {
         "attrs": {
           "id": "editor-wrapper"
         }
-      }, [h("a-layout-content", {
+      }, [JSON.stringify(this.elementsRect), h("a-layout-content", {
         "class": "scroll-view remove-scrollbar"
       }, [h("div", {
         "class": "editor-content",
         "on": {
-          "mouseup": this.hideAuxiliay,
-          "mousedown": this.showAuxiliay
+          "mousedown": this.showAuxiliay,
+          "mouseup": this.hideAuxiliay
         }
       }, [h(AuxiliayLine, {
         "attrs": {
@@ -69758,9 +69789,7 @@
         }
       })])])]), h(AdjustLineV, {
         "on": {
-          "lineMove": function lineMove(offset) {
-            _this.rightPanelWidth += offset;
-          }
+          "lineMove": this.handleAdjustLieMove
         }
       }), h(FixedTools), h(EditorRightPanel, {
         "attrs": {

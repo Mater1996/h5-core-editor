@@ -5,7 +5,7 @@
  * @LastEditTime : 2020-11-12 16:39:37
  * @Description :
  */
-import { Button, Input } from "ant-design-vue";
+import { Button, Input } from 'ant-design-vue'
 
 export default {
   components: {
@@ -42,24 +42,24 @@ export default {
       }
     }`
   }),
-  render(h) {
-    const ele = null;
-    if (!ele) return <span>{this.$t("editor.editPanel.common.empty")}</span>;
+  render (h) {
+    const ele = null
+    if (!ele) return <span>{this.$t('editor.editPanel.common.empty')}</span>
     return (
       <div>
         <a-button onClick={this.mixinScript} disabled>
           使用脚本
         </a-button>
-        <div style={{ margin: "20px" }}></div>
+        <div style={{ margin: '20px' }}></div>
         <a-textarea
           rows={12}
           placeholder="Basic usage"
           value={this.editorContent}
           onChange={e => {
-            this.editorContent = e.target.value;
+            this.editorContent = e.target.value
           }}
         />
       </div>
-    );
+    )
   }
-};
+}

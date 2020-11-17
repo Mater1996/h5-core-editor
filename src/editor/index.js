@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-16 18:32:39
+ * @LastEditTime : 2020-11-17 11:39:59
  * @Description :
  */
 import 'font-awesome/css/font-awesome.min.css'
@@ -22,6 +22,7 @@ import AuxiliayLine from './components/AuxiliayLine'
 import AdjustHeight from './components/AdjustHeight'
 import AdjustLineV from './components/adjust-line/vertical'
 import Work from './models/work'
+import Page from './models/page'
 import config from './config'
 
 const Editor = {
@@ -35,7 +36,7 @@ const Editor = {
   props: {
     data: {
       type: Object,
-      default() {
+      default () {
         return {}
       }
     }
@@ -47,69 +48,96 @@ const Editor = {
     auxiliayVisible: false,
     rightPanelWidth: config.rightPanelWidth
   }),
+  computed: {
+    currentPage () {
+      const { pages = [] } = this.work
+      const currentPage = pages[this.pageIndex] || {}
+      console.log(pages, this.pageIndex, pages[this.pageIndex])
+      return currentPage
+    },
+    elementsRect () {
+      const { currentPage = {} } = this
+      const { elements = [] } = currentPage
+      return elements.map(({ style }) => style)
+    }
+  },
   watch: {
     data: {
-      handler(data) {
+      handler (data = {}) {
         this.work = new Work(data)
         console.log(this.work)
       },
       immediate: true
-    }
-  },
-  computed: {
-    currentPage() {
-      const { pages = [] } = this.work
-      return pages[this.pageIndex]
     },
-    elementsRect() {
-      return this.currentPage.elements.map(({ style }) => style)
+    currentPage (currentPage = {}) {
+      const { elements = [] } = currentPage
+      this.$editor.clear()
+      this.$editor.addElement(...elements)
     }
   },
-  mounted() {
-    this.$editor = this.$refs['editor']
+  mounted () {
+    this.$editor = this.$refs.editor
     this.$editor.addElement(...this.currentPage.elements)
   },
   methods: {
-    hideAuxiliay() {
+    hideAuxiliay () {
       this.auxiliayVisible = false
     },
-    showAuxiliay() {
+    showAuxiliay () {
       this.auxiliayVisible = true
     },
-    handlePageHeightChange(height) {
+    handlePageHeightChange (height) {
       this.currentPage.height = height
     },
-    getData() {
+    getData () {
       return this.$store.state.editor.work
     },
-    handleElementActive(element) {
+    handleElementActive (element) {
       this.activeElement = element
     },
-    handleElementDeactive(deactiveElement) {
+    handleElementDeactive (deactiveElement) {
       if (deactiveElement === this.activeElement) {
         this.activeElement = null
       }
     },
-    handlePropsChange(value) {
+    handlePropsChange (value) {
       this.$editor.updateElement({ props: value })
     },
-    handleAnimationsChange(value) {
+    handleAnimationsChange (value) {
       this.$editor.updateElement({ animations: value })
     },
-    handleAddElement({ name }) {
-      this.$editor.addElement(new CoreRender.Element({ name }))
+    handleAddElement ({ name }) {
+      const element = new CoreRender.Element({ name })
+      this.currentPage.elements.push(element)
+      this.$editor.addElement(element)
+    },
+    handleAddPage (title) {
+      this.work.pages.push(new Page({ title }))
+    },
+    handleAdjustLieMove (offset) {
+      this.rightPanelWidth += offset
+    },
+    handlePageChange (index) {
+      console.log(index)
+      this.pageIndex = index
     }
   },
-  render() {
+  render () {
     return (
       <a-layout style={{ height: '100%' }}>
-        <EditorLeftPanel onAdd={this.handleAddElement} />
+        <EditorLeftPanel
+          pages={this.work.pages}
+          onPageChange={this.handlePageChange}
+          onAddElement={this.handleAddElement}
+          onAddPage={this.handleAddPage}
+        />
         <a-layout id="editor-wrapper">
+          {JSON.stringify(this.elementsRect)}
           <a-layout-content class="scroll-view remove-scrollbar">
             <div
               class="editor-content"
-              onMouseup={this.hideAuxiliay}
               onMousedown={this.showAuxiliay}
+              onMouseup={this.hideAuxiliay}
             >
               <AuxiliayLine
                 data={this.elementsRect}
@@ -131,11 +159,7 @@ const Editor = {
             </div>
           </a-layout-content>
         </a-layout>
-        <AdjustLineV
-          onLineMove={offset => {
-            this.rightPanelWidth += offset
-          }}
-        />
+        <AdjustLineV onLineMove={this.handleAdjustLieMove} />
         <FixedTools />
         <EditorRightPanel
           width={this.rightPanelWidth}

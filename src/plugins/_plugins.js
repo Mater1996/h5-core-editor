@@ -294,6 +294,6 @@ export default [
     icon: 'list',
     visible: true,
     name: LbpNewsList.name,
-    component: LbpNewsList,
+    component: LbpNewsList
   }
 ]

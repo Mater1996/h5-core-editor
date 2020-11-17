@@ -42,7 +42,7 @@ export default {
       default: 120
     },
     aliasName: PropTypes.string({
-      defaultValue: `标题演示`,
+      defaultValue: '标题演示',
       label: '填写标题'
     }),
     items: PropTypes.textOptions({

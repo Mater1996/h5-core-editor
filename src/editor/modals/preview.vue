@@ -27,25 +27,25 @@ export default {
     // ...mapState('editor', {
     //   work: state => state.work
     // }),
-    releaseUrl() {
+    releaseUrl () {
       return `${window.location.origin}/works/preview/${this.work.id}?view_mode=preview`
     }
   },
-  data() {
+  data () {
     return {
       confirmLoading: false,
       qrcodeSize: 500
     }
   },
   watch: {
-    visible(val) {
+    visible (val) {
       if (!val) return
       this.$nextTick(() => this.drawQRcode())
     }
   },
   methods: {
     ...mapActions('editor', ['saveWork', 'updateWork']),
-    handleOk(e) {
+    handleOk (e) {
       this.confirmLoading = true
       this.saveWork().then((res) => {
         this.handleClose()
@@ -54,22 +54,22 @@ export default {
       // setTimeout(() => {
       // }, 2000);
     },
-    handleCancel(e) {
+    handleCancel (e) {
       console.log('Clicked cancel button')
       this.handleClose()
     },
-    drawQRcode() {
+    drawQRcode () {
       var canvas = document.getElementById('qrcode-container')
       QRCode.toCanvas(canvas, this.releaseUrl, { scale: 4 }, (err) => {
         console.log(err)
       })
     },
-    postMessage2Iframe(message) {
-      let iframeWin = document.getElementById('iframe-for-preview')
+    postMessage2Iframe (message) {
+      const iframeWin = document.getElementById('iframe-for-preview')
         .contentWindow
       iframeWin.postMessage(message, window.location.origin)
     },
-    openNewTab(urlType) {
+    openNewTab (urlType) {
       switch (urlType) {
         case 'openPreviewPage':
           window.open(this.releaseUrl)
@@ -82,7 +82,7 @@ export default {
       }
     }
   },
-  render(h) {
+  render (h) {
     return (
       <a-modal
         visible={this.visible}

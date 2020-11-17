@@ -19,7 +19,7 @@ export default {
     [Radio.Group.name]: Radio.Group,
     [Radio.Button.name]: Radio.Button
   },
-  data() {
+  data () {
     return {
       formLayout: 'vertical',
       PAGE_MODE: Object.freeze(PAGE_MODE),
@@ -28,15 +28,15 @@ export default {
   },
   computed: {
     pageMode: {
-      get() {
+      get () {
         return this.work.page_mode || PAGE_MODE.SWIPPER_PAGE
       },
-      set(pageMode) {
+      set (pageMode) {
         this.updateWork({ page_mode: pageMode })
       }
     }
   },
-  render() {
+  render () {
     return (
       <div>
         <a-form layout={this.formLayout}>

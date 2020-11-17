@@ -19,5 +19,5 @@ export const PAGE_MODE = {
 
 export const PAGE_MODE_LABEL = {
   SWIPPER_PAGE: '翻页H5',
-  LONG_PAGE: '长页面',
+  LONG_PAGE: '长页面'
 }

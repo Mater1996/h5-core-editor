@@ -18,7 +18,7 @@ export default {
       require: true
     }
   },
-  render() {
+  render () {
     const component = pluginsControl.getPlugin(this.elName).component
     return <component props={this.elProps}></component>
   }

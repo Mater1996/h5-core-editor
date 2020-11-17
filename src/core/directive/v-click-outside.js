@@ -11,7 +11,7 @@ const IS_TOUCH =
     (HAS_NAVIGATOR && navigator.msMaxTouchPoints > 0))
 const EVENTS = IS_TOUCH ? ['touchstart'] : ['click']
 
-function processDirectiveArguments(bindingValue) {
+function processDirectiveArguments (bindingValue) {
   const isFunction = typeof bindingValue === 'function'
   if (!isFunction && typeof bindingValue !== 'object') {
     throw new Error(
@@ -30,13 +30,13 @@ function processDirectiveArguments(bindingValue) {
   }
 }
 
-function execHandler({ event, handler, middleware }) {
+function execHandler ({ event, handler, middleware }) {
   if (middleware(event)) {
     handler && handler(event)
   }
 }
 
-function onFauxIframeClick({ el, event, handler, middleware }) {
+function onFauxIframeClick ({ el, event, handler, middleware }) {
   // Note: on firefox clicking on iframe triggers blur, but only on
   //       next event loop it becomes document.activeElement
   // https://stackoverflow.com/q/2381336#comment61192398_23231136
@@ -52,7 +52,7 @@ function onFauxIframeClick({ el, event, handler, middleware }) {
   }, 0)
 }
 
-function onEvent({ el, event, handler, middleware, scopeNode }) {
+function onEvent ({ el, event, handler, middleware, scopeNode }) {
   // Note: composedPath is not supported on IE and Edge, more information here:
   //       https://developer.mozilla.org/en-US/docs/Web/API/Event/composedPath
   //       In the meanwhile, we are using el.contains for those browsers, not
@@ -67,7 +67,7 @@ function onEvent({ el, event, handler, middleware, scopeNode }) {
   execHandler({ event, handler, middleware })
 }
 
-function bind(el, { value }) {
+function bind (el, { value }) {
   const {
     events,
     handler,
@@ -112,7 +112,7 @@ function bind(el, { value }) {
   )
 }
 
-function unbind(el) {
+function unbind (el) {
   const handlers = el[HANDLERS_PROPERTY] || []
   handlers.forEach(({ event, srcTarget, handler, capture }) =>
     srcTarget.removeEventListener(event, handler, capture)
@@ -120,7 +120,7 @@ function unbind(el) {
   delete el[HANDLERS_PROPERTY]
 }
 
-function update(el, { value, oldValue }) {
+function update (el, { value, oldValue }) {
   if (JSON.stringify(value) === JSON.stringify(oldValue)) {
     return
   }

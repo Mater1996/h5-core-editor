@@ -22,7 +22,7 @@ export default {
       scaleRate: state => state.scaleRate
     })
   },
-  render() {
+  render () {
     return (
       <a-layout-sider
         width="40"
@@ -65,7 +65,7 @@ export default {
       </a-layout-sider>
     )
   },
-  mounted() {
+  mounted () {
     fixedTools.map(tool => {
       tool.hotkey &&
         hotkeys(tool.hotkey, { splitKey: '&' }, (event, handler) => {

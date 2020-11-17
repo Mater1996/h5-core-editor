@@ -35,7 +35,7 @@ export default {
   }),
   methods: {
     toggle () {
-      let bgAudio = this.$refs.bgAudio
+      const bgAudio = this.$refs.bgAudio
       if (!bgAudio) return
 
       this.isPlaying ? bgAudio.pause() : bgAudio.play()

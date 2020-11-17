@@ -13,7 +13,7 @@
 
 let dragDom = null
 
-let dragConfig = {
+const dragConfig = {
   isPreDrag: false, // 准备拖拽
   isDrag: false, // 正式拖拽
   origin: {

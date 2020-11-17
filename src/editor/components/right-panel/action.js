@@ -7,7 +7,7 @@
  */
 export default {
   data: () => ({}),
-  render() {
+  render () {
     const ele = this.editingElement
     if (!ele) return <span>{this.$t('editor.editPanel.common.empty')}</span>
     return <div>TODO</div>

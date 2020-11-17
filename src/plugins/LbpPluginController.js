@@ -9,28 +9,28 @@
 import LbpPlugin from './LbpPlugin'
 
 class LbpPluginController {
-  constructor({ plugins = [] } = []) {
+  constructor ({ plugins = [] } = []) {
     this._plugins = []
     this._pluginsMap = {}
     plugins.forEach(v => this.registerPlugin(v))
   }
 
-  registerPlugin(option = {}) {
+  registerPlugin (option = {}) {
     if (!option.name) return
     const plugin = new LbpPlugin(option)
     this._plugins.push(plugin)
-    this._pluginsMap[plugin['name']] = plugin
+    this._pluginsMap[plugin.name] = plugin
   }
 
-  getPlugins() {
+  getPlugins () {
     return this._plugins
   }
 
-  getPluginsMap() {
+  getPluginsMap () {
     return this._pluginsMap
   }
 
-  getPlugin(name) {
+  getPlugin (name) {
     return this.getPluginsMap()[name]
   }
 }

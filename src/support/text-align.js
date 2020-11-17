@@ -20,7 +20,7 @@ export default {
     [Radio.Button.name]: Radio.Button,
     [Tooltip.name]: Tooltip
   },
-  render(h) {
+  render (h) {
     return (
       <div class="wrap">
         <a-radio-group

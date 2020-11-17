@@ -7,7 +7,7 @@
  */
 import CoreEditor from '@/core'
 import { swapZindex, getVM } from '@/utils/element'
-import EventBus from "@/bus"
+import EventBus from '@/bus'
 // actions
 export const actions = {
   setEditingElement ({ commit }, payload) {

@@ -5,7 +5,7 @@
  * @LastEditTime : 2020-11-13 11:32:31
  * @Description :
  */
-export const hyphenateStyleName = function(name) {
+export const hyphenateStyleName = function (name) {
   const uppercasePattern = /([A-Z])/g
   const msPattern = /^ms-/
   return name

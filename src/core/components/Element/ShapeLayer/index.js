@@ -37,7 +37,7 @@ export default {
     }
   },
   inject: ['canvas'],
-  data() {
+  data () {
     return {
       rect: this.getReact(this.elStyle),
       shapeStyle: this.getStyle(this.elStyle),
@@ -49,62 +49,62 @@ export default {
     }
   },
   computed: {
-    ltPointStyle() {
+    ltPointStyle () {
       return {
         left: `${0}px`,
         top: `${0}px`
       }
     },
-    rtPointStyle() {
+    rtPointStyle () {
       const { width } = this.rect
       return {
         left: `${width}px`,
         top: `${0}px`
       }
     },
-    lbPointStyle() {
+    lbPointStyle () {
       const { height } = this.rect
       return {
         left: `${0}px`,
         top: `${height}px`
       }
     },
-    rbPointStyle() {
+    rbPointStyle () {
       const { width, height } = this.rect
       return {
         left: `${width}px`,
         top: `${height}px`
       }
     },
-    lmPointStyle() {
+    lmPointStyle () {
       const { height } = this.rect
       return {
         left: `${0}px`,
         top: `${height / 2}px`
       }
     },
-    rmPointStyle() {
+    rmPointStyle () {
       const { width, height } = this.rect
       return {
         left: `${width}px`,
         top: `${height / 2}px`
       }
     },
-    tmPointStyle() {
+    tmPointStyle () {
       const { width } = this.rect
       return {
         left: `${width / 2}px`,
         top: `${0}px`
       }
     },
-    bmPointStyle() {
+    bmPointStyle () {
       const { width, height } = this.rect
       return {
         left: `${width / 2}px`,
         top: `${height}px`
       }
     },
-    bound() {
+    bound () {
       return {
         left: 0,
         top: 0,
@@ -113,7 +113,7 @@ export default {
       }
     }
   },
-  mounted() {
+  mounted () {
     this.vcoConfig = {
       events: ['mousedown'],
       handler: this.onClickOutside,
@@ -121,13 +121,13 @@ export default {
     }
   },
   watch: {
-    elStyle() {
+    elStyle () {
       const { elStyle } = this
       this.rect = this.getReact(elStyle)
       this.shapeStyle = this.getStyle(elStyle)
     },
     rect: {
-      handler() {
+      handler () {
         const newStyle = {
           ...this.elStyle,
           ...this.rect
@@ -142,7 +142,7 @@ export default {
     }
   },
   methods: {
-    getReact(elStyle) {
+    getReact (elStyle) {
       return {
         left: elStyle.left,
         top: elStyle.top,
@@ -150,7 +150,7 @@ export default {
         height: elStyle.height
       }
     },
-    getStyle(style) {
+    getStyle (style) {
       const newStyle = {}
       Object.entries(style).forEach(([key, value]) => {
         const v = typeof value === 'number' ? `${value}px` : value
@@ -159,15 +159,15 @@ export default {
       })
       return newStyle
     },
-    setActive(active) {
+    setActive (active) {
       if (this.active === active) return
       active ? this.$emit('active', active) : this.$emit('deactive', active)
       this.active = active
     },
-    onClickOutside() {
+    onClickOutside () {
       this.setActive(false)
     },
-    addWidth(distance) {
+    addWidth (distance) {
       const { left: currentLeft, width: currentWidth } = this.rect
       const { right: boundRight } = this.bound
       let nextWidth = currentWidth + distance
@@ -175,7 +175,7 @@ export default {
       if (currentLeft + nextWidth > boundRight) return
       return (this.rect.width = nextWidth)
     },
-    addHeight(distance) {
+    addHeight (distance) {
       const { top: currentTop, height: currentHeight } = this.rect
       const { bottom: boundBottom } = this.bound
       let nextHeight = currentHeight + distance
@@ -183,7 +183,7 @@ export default {
       if (currentTop + nextHeight > boundBottom) return
       return (this.rect.height = nextHeight)
     },
-    addLeft(distance) {
+    addLeft (distance) {
       const { left: currentLeft, width: currentWidth } = this.rect
       const { left: boundLeft, right: boundRight } = this.bound
       let nextLeft = currentLeft + distance
@@ -191,7 +191,7 @@ export default {
       if (nextLeft + currentWidth > boundRight) return
       return (this.rect.left = nextLeft)
     },
-    addTop(distance) {
+    addTop (distance) {
       const { top: currentTop, height: currentHeight } = this.rect
       const { top: boundTop, bottom: boundBottom } = this.bound
       let nextTop = currentTop + distance
@@ -199,14 +199,14 @@ export default {
       if (nextTop + currentHeight > boundBottom) return
       return (this.rect.top = nextTop)
     },
-    handleShapeDown(e) {
+    handleShapeDown (e) {
       this.setActive(true)
       this.startY = e.clientY
       this.startX = e.clientX
       document.addEventListener('mousemove', this.handleShapeMove)
       document.addEventListener('mouseup', this.handleShapeUp)
     },
-    handleShapeMove(e) {
+    handleShapeMove (e) {
       e.preventDefault()
       const distanceX = e.clientX - this.startX
       const distanceY = e.clientY - this.startY
@@ -215,18 +215,18 @@ export default {
       this.addLeft(distanceX)
       this.addTop(distanceY)
     },
-    handleShapeUp() {
+    handleShapeUp () {
       document.removeEventListener('mousemove', this.handleShapeMove)
       document.removeEventListener('mouseup', this.handleShapeUp)
     },
-    handlePointDown(point, e) {
+    handlePointDown (point, e) {
       this.startY = e.clientY
       this.startX = e.clientX
       this.point = point
       document.addEventListener('mousemove', this.handlePointMove)
       document.addEventListener('mouseup', this.handlePointUp)
     },
-    handlePointMove(e) {
+    handlePointMove (e) {
       const effect = [/l/, /t/, /r/, /b/].map(v => v.test(this.point))
       const [effectLeft, effectTop, effectWidth, effectHeight] = effect
       const distanceX = e.clientX - this.startX
@@ -250,12 +250,12 @@ export default {
       effectWidth && this.addWidth(distanceX)
       effectHeight && this.addHeight(distanceY)
     },
-    handlePointUp() {
+    handlePointUp () {
       document.removeEventListener('mousemove', this.handlePointMove)
       document.removeEventListener('mouseup', this.handlePointUp)
     }
   },
-  render() {
+  render () {
     return (
       <div
         tabindex="0"

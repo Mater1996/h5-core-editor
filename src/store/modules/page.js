@@ -44,14 +44,14 @@ export const mutations = {
         if (state.work.pages.length === 1) {
           // #!zh: 作品中至少需要保留一个页面
           // #!en: At least one page needs to be kept in the work
-          message.info(`作品中至少需要保留一个页面`)
+          message.info('作品中至少需要保留一个页面')
           return
         }
 
         const { work, editingPage } = state
-        let index = work.pages.findIndex(page => page.uuid === editingPage.uuid)
+        const index = work.pages.findIndex(page => page.uuid === editingPage.uuid)
         if (index !== -1) {
-          let newPages = work.pages.slice()
+          const newPages = work.pages.slice()
           newPages.splice(index, 1)
           state.work.pages = newPages
         }

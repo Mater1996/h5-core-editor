@@ -9,7 +9,7 @@
 import PropTypes from '@/utils/commom-props'
 
 export default {
-  render() {
+  render () {
     const {
       color,
       textAlign,

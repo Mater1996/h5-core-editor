@@ -37,7 +37,7 @@ export default {
     })
   },
   methods: {
-    renderWaterMark() {
+    renderWaterMark () {
       renderWaterMark({
         container: this.$refs.root,
         content: this.waterMarkText,
@@ -47,7 +47,7 @@ export default {
       })
     }
   },
-  render() {
+  render () {
     let style = {
       width: '100%',
       height: '100%'
@@ -78,7 +78,7 @@ export default {
       </div>
     )
   },
-  mounted() {
+  mounted () {
     this.renderWaterMark()
     ;[
       'waterMarkText',

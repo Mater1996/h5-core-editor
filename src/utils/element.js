@@ -2,12 +2,12 @@ import Vue from 'vue'
 
 const styleKey = 'commonStyle'
 
-export function getVM(pluginName) {
+export function getVM (pluginName) {
   const Ctor = Vue.component(pluginName)
   return new Ctor()
 }
 
-export function swapZindex(x, y) {
+export function swapZindex (x, y) {
   const tmp = y[styleKey].zindex
   y[styleKey].zindex = x[styleKey].zindex
   x[styleKey].zindex = tmp
@@ -17,7 +17,7 @@ export function swapZindex(x, y) {
  * !#zh 将 px 转换为 rem
  * @param {Number} px
  */
-function px2Rem(px) {
+function px2Rem (px) {
   const rem = (px * 2) / 100 + 'rem'
   return rem
 }
@@ -27,7 +27,7 @@ function px2Rem(px) {
  * @param {Number} px 元素的某个属性的像素值，比如 height
  * @param {Boolean} isToRem 是否将 px 转换为 rem
  */
-export function parsePx(px, isRem = false) {
+export function parsePx (px, isRem = false) {
   if (isRem) return px2Rem(px)
   return `${px}px`
 }

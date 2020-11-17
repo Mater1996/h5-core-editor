@@ -24,11 +24,11 @@ export default {
     npmPackages: []
   }),
   methods: {
-    clone(shortcutItem) {
+    clone (shortcutItem) {
       this.$emit('add', shortcutItem)
     }
   },
-  render(h) {
+  render (h) {
     return (
       <a-row style="padding-bottom: 24px">
         <UsageTip />
