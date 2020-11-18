@@ -2,7 +2,7 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-11-02 09:25:51
- * @LastEditTime: 2020-11-18 10:10:19
+ * @LastEditTime: 2020-11-18 12:02:46
  * @Description:
 -->
 <template>
@@ -27,24 +27,62 @@ export default {
           {
             title: '',
             elements: [
-              {
-                name: 'lbp-background',
-                props: {
-                  imgSrc: '',
-                  isRem: false,
-                },
-                style: {
-                  fillType: 'contain',
-                  top: 140,
-                  left: 57,
-                  width: 186,
-                  height: 292,
-                  textAlign: 'center',
-                  color: '#000000',
-                  backgroundColor: 'rgba(255, 255, 255, 0)',
-                  fontSize: 14,
-                },
-              },
+              // {
+              //   name: 'lbp-background',
+              //   props: {
+              //     imgSrc: '',
+              //     isRem: false,
+              //   },
+              //   style: {
+              //     fillType: 'contain',
+              //     top: 140,
+              //     left: 57,
+              //     width: 186,
+              //     height: 292,
+              //     textAlign: 'center',
+              //     color: '#000000',
+              //     backgroundColor: 'rgba(255, 255, 255, 0)',
+              //     fontSize: 14,
+              //   },
+              // },
+              // {
+              //   name: 'lbp-picture',
+              //   props: {
+              //     imgSrc:
+              //       'https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg!0x0.webp',
+              //     isRem: false,
+              //   },
+              //   style: {
+              //     fillType: 'contain',
+              //     top: 140,
+              //     left: 57,
+              //     width: 186,
+              //     height: 292,
+              //     textAlign: 'center',
+              //     color: '#000000',
+              //     backgroundColor: 'rgba(255, 255, 255, 0)',
+              //     fontSize: 14,
+              //   },
+              // },
+              // {
+              //   name: 'lbp-picture',
+              //   props: {
+              //     imgSrc:
+              //       'https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg!0x0.webp',
+              //     isRem: false,
+              //   },
+              //   style: {
+              //     fillType: 'contain',
+              //     top: 140,
+              //     left: 57,
+              //     width: 186,
+              //     height: 292,
+              //     textAlign: 'center',
+              //     color: '#000000',
+              //     backgroundColor: 'rgba(255, 255, 255, 0)',
+              //     fontSize: 14,
+              //   },
+              // },
               {
                 name: 'lbp-picture',
                 props: {
@@ -54,46 +92,8 @@ export default {
                 },
                 style: {
                   fillType: 'contain',
-                  top: 140,
-                  left: 57,
-                  width: 186,
-                  height: 292,
-                  textAlign: 'center',
-                  color: '#000000',
-                  backgroundColor: 'rgba(255, 255, 255, 0)',
-                  fontSize: 14,
-                },
-              },
-              {
-                name: 'lbp-picture',
-                props: {
-                  imgSrc:
-                    'https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg!0x0.webp',
-                  isRem: false,
-                },
-                style: {
-                  fillType: 'contain',
-                  top: 140,
-                  left: 57,
-                  width: 186,
-                  height: 292,
-                  textAlign: 'center',
-                  color: '#000000',
-                  backgroundColor: 'rgba(255, 255, 255, 0)',
-                  fontSize: 14,
-                },
-              },
-              {
-                name: 'lbp-picture',
-                props: {
-                  imgSrc:
-                    'https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg!0x0.webp',
-                  isRem: false,
-                },
-                style: {
-                  fillType: 'contain',
-                  top: 140,
-                  left: 57,
+                  top: 0,
+                  left: 0,
                   width: 186,
                   height: 292,
                   textAlign: 'center',

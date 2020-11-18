@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('ant-design-vue'), require('vue-quill-editor'), require('vant'), require('resize-detector'), require('vue'), require('vue-i18n'), require('lodash'), require('hotkeys-js'), require('x-data-spreadsheet'), require('papaparse')) :
-  typeof define === 'function' && define.amd ? define(['ant-design-vue', 'vue-quill-editor', 'vant', 'resize-detector', 'vue', 'vue-i18n', 'lodash', 'hotkeys-js', 'x-data-spreadsheet', 'papaparse'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['luban-h5-editor'] = factory(global['ant-design-vue'], global.VueQuillEditor, global.vant, global.resizeDetector, global.Vue, global.VueI18n, global.lodash, global.hotkeys, global.x_spreadsheet, global.papaparse));
-}(this, (function (antDesignVue, vueQuillEditor, vant, resizeDetector, Vue, VueI18n, lodash, hotkeys, Spreadsheet, Papa) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('ant-design-vue'), require('lodash'), require('vue-quill-editor'), require('vant'), require('resize-detector'), require('vue'), require('vue-i18n'), require('immutable'), require('hotkeys-js'), require('x-data-spreadsheet'), require('papaparse')) :
+  typeof define === 'function' && define.amd ? define(['ant-design-vue', 'lodash', 'vue-quill-editor', 'vant', 'resize-detector', 'vue', 'vue-i18n', 'immutable', 'hotkeys-js', 'x-data-spreadsheet', 'papaparse'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['luban-h5-editor'] = factory(global['ant-design-vue'], global.lodash, global.VueQuillEditor, global.vant, global.resizeDetector, global.Vue, global.VueI18n, global.immutable, global.hotkeys, global.x_spreadsheet, global.papaparse));
+}(this, (function (antDesignVue, lodash, vueQuillEditor, vant, resizeDetector, Vue, VueI18n, immutable, hotkeys, Spreadsheet, Papa) { 'use strict';
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -926,53 +926,6 @@
       CollectionPrototype.forEach = arrayForEach;
     }
   }
-
-  function _arrayLikeToArray(arr, len) {
-    if (len == null || len > arr.length) len = arr.length;
-
-    for (var i = 0, arr2 = new Array(len); i < len; i++) {
-      arr2[i] = arr[i];
-    }
-
-    return arr2;
-  }
-
-  var arrayLikeToArray = _arrayLikeToArray;
-
-  function _arrayWithoutHoles(arr) {
-    if (Array.isArray(arr)) return arrayLikeToArray(arr);
-  }
-
-  var arrayWithoutHoles = _arrayWithoutHoles;
-
-  function _iterableToArray(iter) {
-    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
-  }
-
-  var iterableToArray = _iterableToArray;
-
-  function _unsupportedIterableToArray(o, minLen) {
-    if (!o) return;
-    if (typeof o === "string") return arrayLikeToArray(o, minLen);
-    var n = Object.prototype.toString.call(o).slice(8, -1);
-    if (n === "Object" && o.constructor) n = o.constructor.name;
-    if (n === "Map" || n === "Set") return Array.from(o);
-    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return arrayLikeToArray(o, minLen);
-  }
-
-  var unsupportedIterableToArray = _unsupportedIterableToArray;
-
-  function _nonIterableSpread() {
-    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-  }
-
-  var nonIterableSpread = _nonIterableSpread;
-
-  function _toConsumableArray(arr) {
-    return arrayWithoutHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableSpread();
-  }
-
-  var toConsumableArray = _toConsumableArray;
 
   function _defineProperty(obj, key, value) {
     if (key in obj) {
@@ -63549,6 +63502,29 @@
 
   var iterableToArrayLimit = _iterableToArrayLimit;
 
+  function _arrayLikeToArray(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+
+    for (var i = 0, arr2 = new Array(len); i < len; i++) {
+      arr2[i] = arr[i];
+    }
+
+    return arr2;
+  }
+
+  var arrayLikeToArray = _arrayLikeToArray;
+
+  function _unsupportedIterableToArray(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(o);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return arrayLikeToArray(o, minLen);
+  }
+
+  var unsupportedIterableToArray = _unsupportedIterableToArray;
+
   function _nonIterableRest() {
     throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
@@ -63942,6 +63918,30 @@
       return $reduce(this, callbackfn, arguments.length, arguments.length > 1 ? arguments[1] : undefined);
     }
   });
+
+  function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) return arrayLikeToArray(arr);
+  }
+
+  var arrayWithoutHoles = _arrayWithoutHoles;
+
+  function _iterableToArray(iter) {
+    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+  }
+
+  var iterableToArray = _iterableToArray;
+
+  function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  var nonIterableSpread = _nonIterableSpread;
+
+  function _toConsumableArray(arr) {
+    return arrayWithoutHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableSpread();
+  }
+
+  var toConsumableArray = _toConsumableArray;
 
   function sum() {
     var arr = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
@@ -64913,6 +64913,62 @@
     fallbackLocale: defaultLang,
     messages: messages
   });
+
+  function fromJSGreedy(js) {
+    return _typeof_1(js) !== 'object' || js === null ? js : Array.isArray(js) ? immutable.Seq(js).map(fromJSGreedy).toList() : immutable.Seq(js).map(fromJSGreedy).toMap();
+  }
+
+  var UndoRedoHistory = /*#__PURE__*/function () {
+    function UndoRedoHistory() {
+      classCallCheck(this, UndoRedoHistory);
+
+      defineProperty$3(this, "state", void 0);
+
+      defineProperty$3(this, "history", []);
+
+      defineProperty$3(this, "currentIndex", 0);
+    }
+
+    createClass(UndoRedoHistory, [{
+      key: "init",
+      value: function init(state) {
+        this.state = fromJSGreedy(state);
+        this.history = [this.state];
+      }
+    }, {
+      key: "addState",
+      value: function addState(state) {
+        if (this.currentIndex + 1 < this.history.length) {
+          this.history.splice(this.currentIndex + 1);
+        }
+
+        this.currentIndex++;
+        var newState = this.state.merge(fromJSGreedy(state));
+        this.history.push(newState);
+      }
+    }, {
+      key: "undo",
+      value: function undo() {
+        var prevIndex = Math.max(this.currentIndex - 1, 0);
+        console.log(prevIndex);
+        var prevState = this.history[prevIndex];
+        this.currentIndex = prevIndex;
+        return prevState.toJS();
+      }
+    }, {
+      key: "redo",
+      value: function redo() {
+        var nextIndex = Math.min(this.history.length - 1, this.currentIndex + 1);
+        var nextState = this.history[nextIndex];
+        this.currentIndex = nextIndex;
+        return nextState.toJS();
+      }
+    }]);
+
+    return UndoRedoHistory;
+  }();
+
+  var history = new UndoRedoHistory();
 
   function _extends$6(){return _extends$6=Object.assign||function(a){for(var b,c=1;c<arguments.length;c++)for(var d in b=arguments[c],b)Object.prototype.hasOwnProperty.call(b,d)&&(a[d]=b[d]);return a},_extends$6.apply(this,arguments)}var normalMerge=["attrs","props","domProps"],toArrayMerge=["class","style","directives"],functionalMerge=["on","nativeOn"],mergeJsxProps=function(a){return a.reduce(function(c,a){for(var b in a)if(!c[b])c[b]=a[b];else if(-1!==normalMerge.indexOf(b))c[b]=_extends$6({},c[b],a[b]);else if(-1!==toArrayMerge.indexOf(b)){var d=c[b]instanceof Array?c[b]:[c[b]],e=a[b]instanceof Array?a[b]:[a[b]];c[b]=d.concat(e);}else if(-1!==functionalMerge.indexOf(b)){for(var f in a[b])if(c[b][f]){var g=c[b][f]instanceof Array?c[b][f]:[c[b][f]],h=a[b][f]instanceof Array?a[b][f]:[a[b][f]];c[b][f]=g.concat(h);}else c[b][f]=a[b][f];}else if("hook"==b)for(var i in a[b])c[b][i]=c[b][i]?mergeFn(c[b][i],a[b][i]):a[b][i];else c[b]=a[b];return c},{})},mergeFn=function(a,b){return function(){a&&a.apply(this,arguments),b&&b.apply(this,arguments);}};var helper$5=mergeJsxProps;
 
@@ -65912,7 +65968,6 @@
       if (name) {
         this.name = name;
         this.id = id$1++;
-        this.vm = null;
 
         var _pluginsControl$getPl = lbpPluginController.getPlugin(name),
             component = _pluginsControl$getPl.component; // 传入具体的element render 的 参数
@@ -65962,11 +66017,6 @@
           Object.assign(this.animations, animations);
           this.animations.length = animations.length;
         }
-      }
-    }, {
-      key: "setVm",
-      value: function setVm(vm) {
-        this.vm = vm;
       }
     }], [{
       key: "getPluginProps",
@@ -66115,9 +66165,6 @@
         }
       }
     },
-    created: function created() {
-      this.element.setVm(this);
-    },
     render: function render() {
       var h = arguments[0];
       var element = this.element;
@@ -66230,20 +66277,24 @@
    * @author : Mater
    * @Email : bxh8640@gmail.com
    * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-17 14:58:22
+   * @LastEditTime : 2020-11-18 10:37:34
    * @Description :
    */
   // import undoRedoHistory from '@/store/plugins/undo-redo/History'
   var fixedTools = [{
     i18nTooltip: 'editor.fixedTool.undo',
     icon: 'mail-reply',
-    // action: () => undoRedoHistory.undo(),
+    action: function action() {
+      this.$emit('undo');
+    },
     hotkey: 'ctrl&z,⌘&z',
     hotkeyTooltip: '(ctrl+z)'
   }, {
     i18nTooltip: 'editor.fixedTool.redo',
     icon: 'mail-forward',
-    // action: () => undoRedoHistory.redo(),
+    action: function action() {
+      this.$emit('redo');
+    },
     hotkey: 'ctrl&y,⌘&u',
     hotkeyTooltip: '(ctrl+y)'
   }, {
@@ -69454,52 +69505,62 @@
           var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
           this.work = new Work(data);
           console.log(this.work);
+          history.init(this.work);
         },
         immediate: true
-      },
-      currentPage: function currentPage() {
-        var currentPage = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        var _currentPage$elements2 = currentPage.elements,
-            elements = _currentPage$elements2 === void 0 ? [] : _currentPage$elements2;
-        this.clear();
-        this.addElements.apply(this, toConsumableArray(elements));
       }
     },
     methods: {
+      record: lodash.debounce(function () {
+        history.addState(this.work);
+      }, 80),
       getData: function getData() {
         return this.work;
+      },
+      changePageIndex: function changePageIndex(index) {
+        this.pageIndex = index;
       },
       addPage: function addPage(title) {
         this.work.pages.push(new Page({
           title: title
         }));
-      },
-      changePageIndex: function changePageIndex(index) {
-        this.pageIndex = index;
+        this.record();
       },
       updatePage: function updatePage(data) {
         Object.assign(this.currentPage, data);
+        this.record();
       },
-      addElements: function addElements() {
-        for (var _len = arguments.length, element = new Array(_len), _key = 0; _key < _len; _key++) {
-          element[_key] = arguments[_key];
+      addElement: function addElement() {
+        var _this = this;
+
+        for (var _len = arguments.length, elements = new Array(_len), _key = 0; _key < _len; _key++) {
+          elements[_key] = arguments[_key];
         }
 
-        element.forEach(this.addElement);
-      },
-      addElement: function addElement(element) {
-        if (element instanceof LbpElement) {
-          this.currentPage.elements.push(element);
-        } else {
-          var lbpElement = new LbpElement(element);
-          this.currentPage.elements.push(lbpElement);
-        }
+        elements.forEach(function (element) {
+          if (element instanceof LbpElement) {
+            _this.currentPage.elements.push(element);
+          } else {
+            var lbpElement = new LbpElement(element);
+
+            _this.currentPage.elements.push(lbpElement);
+          }
+        });
+        this.record();
       },
       updateElement: function updateElement(data) {
         this.activeElement && this.activeElement.update(data);
+        this.record();
       },
       clear: function clear() {
         this.currentPage.elements = [];
+        this.record();
+      },
+      undo: function undo() {
+        this.work = new Work(history.undo());
+      },
+      redo: function redo() {
+        this.work = new Work(history.redo());
       },
       _hideAuxiliay: function _hideAuxiliay() {
         this.auxiliayVisible = false;
@@ -69546,6 +69607,12 @@
       },
       _handlePageIndexChange: function _handlePageIndexChange(index) {
         this.changePageIndex(index);
+      },
+      _handleRedo: function _handleRedo() {
+        this.redo();
+      },
+      _handleUndo: function _handleUndo() {
+        this.undo();
       }
     },
     render: function render() {
@@ -69607,7 +69674,12 @@
         "on": {
           "lineMove": this._handleAdjustLieMove
         }
-      }), h(FixedTools), h(EditorRightPanel, {
+      }), h(FixedTools, {
+        "on": {
+          "redo": this._handleRedo,
+          "undo": this._handleUndo
+        }
+      }), h(EditorRightPanel, {
         "attrs": {
           "width": this.rightPanelWidth,
           "element": this.activeElement

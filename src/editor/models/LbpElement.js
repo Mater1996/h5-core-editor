@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-17 17:00:45
+ * @LastEditTime : 2020-11-18 10:33:43
  * @Description :
  */
 
@@ -23,7 +23,6 @@ class LbpElement {
     if (name) {
       this.name = name
       this.id = id++
-      this.vm = null
       const { component } = pluginsControl.getPlugin(name)
       // 传入具体的element render 的 参数
       this.props = {
@@ -70,10 +69,6 @@ class LbpElement {
       Object.assign(this.animations, animations)
       this.animations.length = animations.length
     }
-  }
-
-  setVm (vm) {
-    this.vm = vm
   }
 
   static getPluginProps (component) {

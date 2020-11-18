@@ -2,52 +2,55 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-17 14:57:05
- * @LastEditTime : 2020-11-17 14:57:22
+ * @LastEditTime : 2020-11-18 14:28:05
  * @Description :
  */
-import { cloneDeep } from 'lodash'
+import { Seq } from 'immutable'
 
+function fromJSGreedy (js) {
+  return typeof js !== 'object' || js === null
+    ? js
+    : Array.isArray(js)
+      ? Seq(js)
+        .map(fromJSGreedy)
+        .toList()
+      : Seq(js)
+        .map(fromJSGreedy)
+        .toMap()
+}
 class UndoRedoHistory {
-    store;
-    history = [];
-    currentIndex = -1;
+  state
+  history = []
+  currentIndex = 0
 
-    get canUndo () {
-      return this.currentIndex > 0
-    }
+  init (state) {
+    this.state = fromJSGreedy(state)
+    this.history = [this.state]
+  }
 
-    get canRedo () {
-      return this.history.length > this.currentIndex + 1
+  addState (state) {
+    if (this.currentIndex + 1 < this.history.length) {
+      this.history.splice(this.currentIndex + 1)
     }
+    this.currentIndex++
+    const newState = this.state.merge(fromJSGreedy(state))
+    this.history.push(newState)
+  }
 
-    init (store) {
-      this.store = store
-    }
+  undo () {
+    const prevIndex = Math.max(this.currentIndex - 1, 0)
+    console.log(prevIndex)
+    const prevState = this.history[prevIndex]
+    this.currentIndex = prevIndex
+    return prevState.toJS()
+  }
 
-    addState (state) {
-      // may be we have to remove redo steps
-      if (this.currentIndex + 1 < this.history.length) {
-        this.history.splice(this.currentIndex + 1)
-      }
-      this.history.push(state)
-      this.currentIndex++
-    }
-
-    undo () {
-      if (!this.canUndo) return
-      const prevState = this.history[this.currentIndex - 1]
-      this.store.replaceState(cloneDeep(prevState))
-      this.currentIndex--
-    }
-
-    redo () {
-      if (!this.canRedo) return
-      const nextState = this.history[this.currentIndex + 1]
-      this.store.replaceState(cloneDeep(nextState))
-      this.currentIndex++
-    }
+  redo () {
+    const nextIndex = Math.min(this.history.length - 1, this.currentIndex + 1)
+    const nextState = this.history[nextIndex]
+    this.currentIndex = nextIndex
+    return nextState.toJS()
+  }
 }
 
-const undoRedoHistory = new UndoRedoHistory()
-
-export default undoRedoHistory
+export default new UndoRedoHistory()

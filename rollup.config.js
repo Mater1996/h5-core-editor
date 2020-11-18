@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 14:39:39
- * @LastEditTime : 2020-11-17 18:06:13
+ * @LastEditTime : 2020-11-18 11:22:11
  * @Description :
  */
 const path = require('path')
@@ -61,7 +61,8 @@ const globals = {
   'x-data-spreadsheet': 'x_spreadsheet',
   papaparse: 'papaparse',
   echarts: 'echarts',
-  qrcode: 'qrcode'
+  qrcode: 'qrcode',
+  immutable: 'immutable'
 }
 
 const external = [
@@ -81,7 +82,8 @@ const external = [
   'papaparse',
   'echarts',
   'font-awesome',
-  'qrcode'
+  'qrcode',
+  'immutable'
 ]
 
 module.exports = args => {

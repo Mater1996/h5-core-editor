@@ -2,16 +2,18 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-17 17:38:15
+ * @LastEditTime : 2020-11-18 14:30:46
  * @Description :
  */
 import 'font-awesome/css/font-awesome.min.css'
 import 'ant-design-vue/dist/antd.css'
 import { Layout } from 'ant-design-vue'
+import { debounce } from 'lodash'
 
 import '@/styles/index.scss'
 import '@/plugins'
 import i18n from '@/locales'
+import history from '@/utils/history'
 
 import LbpCanvas from './components/lbp-canvas'
 import FixedTools from './components/fixed-tools/index'
@@ -64,44 +66,53 @@ const Editor = {
       handler (data = {}) {
         this.work = new LbpWork(data)
         console.log(this.work)
+        history.init(this.work)
       },
       immediate: true
-    },
-    currentPage (currentPage = {}) {
-      const { elements = [] } = currentPage
-      this.clear()
-      this.addElements(...elements)
     }
   },
   methods: {
+    record: debounce(function () {
+      history.addState(this.work)
+    }, 80),
     getData () {
       return this.work
-    },
-    addPage (title) {
-      this.work.pages.push(new LbpPage({ title }))
     },
     changePageIndex (index) {
       this.pageIndex = index
     },
+    addPage (title) {
+      this.work.pages.push(new LbpPage({ title }))
+      this.record()
+    },
     updatePage (data) {
       Object.assign(this.currentPage, data)
+      this.record()
     },
-    addElements (...element) {
-      element.forEach(this.addElement)
-    },
-    addElement (element) {
-      if (element instanceof LbpElement) {
-        this.currentPage.elements.push(element)
-      } else {
-        const lbpElement = new LbpElement(element)
-        this.currentPage.elements.push(lbpElement)
-      }
+    addElement (...elements) {
+      elements.forEach(element => {
+        if (element instanceof LbpElement) {
+          this.currentPage.elements.push(element)
+        } else {
+          const lbpElement = new LbpElement(element)
+          this.currentPage.elements.push(lbpElement)
+        }
+      })
+      this.record()
     },
     updateElement (data) {
       this.activeElement && this.activeElement.update(data)
+      this.record()
     },
     clear () {
       this.currentPage.elements = []
+      this.record()
+    },
+    undo () {
+      this.work = new LbpWork(history.undo())
+    },
+    redo () {
+      this.work = new LbpWork(history.redo())
     },
     _hideAuxiliay () {
       this.auxiliayVisible = false
@@ -140,6 +151,12 @@ const Editor = {
     },
     _handlePageIndexChange (index) {
       this.changePageIndex(index)
+    },
+    _handleRedo () {
+      this.redo()
+    },
+    _handleUndo () {
+      this.undo()
     }
   },
   render () {
@@ -180,7 +197,7 @@ const Editor = {
           </a-layout-content>
         </a-layout>
         <AdjustLineV onLineMove={this._handleAdjustLieMove} />
-        <FixedTools />
+        <FixedTools onRedo={this._handleRedo} onUndo={this._handleUndo} />
         <EditorRightPanel
           width={this.rightPanelWidth}
           element={this.activeElement}
