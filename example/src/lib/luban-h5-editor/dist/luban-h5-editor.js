@@ -66019,6 +66019,13 @@
 
   var EventBus = new Vue__default['default'](); // event bus
 
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-16 14:11:44
+   * @LastEditTime : 2020-11-18 10:08:24
+   * @Description :
+   */
   var AnimateLayer = {
     props: {
       animations: {
@@ -66028,39 +66035,27 @@
         }
       }
     },
-    methods: {
-      runAnimations: function runAnimations() {
-        if (!this.animations) return;
-        var animationQueue = this.animations || [];
-        var len = animationQueue.length;
-        if (len === 0) return;
-        var parentNode = this.$el;
-        var animIdx = 0;
-        runAnimation();
-
-        function runAnimation() {
-          if (animIdx < len) {
-            var animation = animationQueue[animIdx];
-            Object.assign(parentNode.style, {
-              animationName: animation.type,
-              animationDuration: "".concat(animation.duration, "s"),
-              animationIterationCount: animation.infinite ? 'infinite' : animation.interationCount,
-              animationDelay: "".concat(animation.delay, "s"),
-              animationFillMode: 'both'
-            });
-            animIdx++;
-          } else {
-            Object.assign(parentNode.style, {
-              animationName: null,
-              animationDuration: null,
-              animationIterationCount: null,
-              animationDelay: null,
-              animationFillMode: null
-            });
-          }
-        }
-
-        parentNode.addEventListener('animationend', runAnimation, false);
+    data: function data() {
+      return {
+        animationIndex: 0,
+        runingAnimation: {}
+      };
+    },
+    computed: {
+      animationStyle: function animationStyle() {
+        var animation = this.runingAnimation;
+        var duration = animation.duration,
+            type = animation.type,
+            infinite = animation.infinite,
+            interationCount = animation.interationCount,
+            delay = animation.delay;
+        return {
+          animationName: type,
+          animationDuration: duration ? "".concat(duration, "s") : null,
+          animationIterationCount: infinite ? 'infinite' : interationCount || null,
+          animationDelay: delay ? "".concat(delay, "s") : null,
+          animationFillMode: 'both'
+        };
       }
     },
     created: function created() {
@@ -66070,10 +66065,43 @@
         _this.runAnimations();
       });
     },
+    methods: {
+      runAnimations: function runAnimations() {
+        this.clear();
+        this.runAnimation(this.animationIndex);
+      },
+      runAnimation: function runAnimation(animationIndex) {
+        var _this2 = this;
+
+        setTimeout(function () {
+          var animations = _this2.animations;
+          _this2.animationIndex = animationIndex;
+          _this2.runingAnimation = animations[animationIndex] || {};
+        });
+      },
+      handleAnimationend: function handleAnimationend() {
+        this.clearAnimation();
+        var len = this.animations.length;
+        var nextIndex = this.animationIndex + 1;
+        if (nextIndex >= len) return;
+        this.runAnimation(nextIndex);
+      },
+      clear: function clear() {
+        this.clearAnimation();
+        this.animationIndex = 0;
+      },
+      clearAnimation: function clearAnimation() {
+        this.runingAnimation = {};
+      }
+    },
     render: function render() {
       var h = arguments[0];
       return h("div", {
-        "class": "animate-layer"
+        "class": "animate-layer",
+        "style": this.animationStyle,
+        "on": {
+          "animationend": this.handleAnimationend
+        }
       }, [this.$slots.default]);
     }
   };

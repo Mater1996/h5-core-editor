@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-16 14:11:44
- * @LastEditTime : 2020-11-17 13:23:12
+ * @LastEditTime : 2020-11-18 10:08:24
  * @Description :
  */
 
@@ -17,39 +17,25 @@ const AnimateLayer = {
       default: () => []
     }
   },
-  methods: {
-    runAnimations () {
-      if (!this.animations) return
-      const animationQueue = this.animations || []
-      const len = animationQueue.length
-      if (len === 0) return
-      const parentNode = this.$el
-      let animIdx = 0
-      runAnimation()
-      function runAnimation () {
-        if (animIdx < len) {
-          const animation = animationQueue[animIdx]
-          Object.assign(parentNode.style, {
-            animationName: animation.type,
-            animationDuration: `${animation.duration}s`,
-            animationIterationCount: animation.infinite
-              ? 'infinite'
-              : animation.interationCount,
-            animationDelay: `${animation.delay}s`,
-            animationFillMode: 'both'
-          })
-          animIdx++
-        } else {
-          Object.assign(parentNode.style, {
-            animationName: null,
-            animationDuration: null,
-            animationIterationCount: null,
-            animationDelay: null,
-            animationFillMode: null
-          })
-        }
+  data () {
+    return {
+      animationIndex: 0,
+      runingAnimation: {}
+    }
+  },
+  computed: {
+    animationStyle () {
+      const animation = this.runingAnimation
+      const { duration, type, infinite, interationCount, delay } = animation
+      return {
+        animationName: type,
+        animationDuration: duration ? `${duration}s` : null,
+        animationIterationCount: infinite
+          ? 'infinite'
+          : interationCount || null,
+        animationDelay: delay ? `${delay}s` : null,
+        animationFillMode: 'both'
       }
-      parentNode.addEventListener('animationend', runAnimation, false)
     }
   },
   created () {
@@ -57,8 +43,43 @@ const AnimateLayer = {
       this.runAnimations()
     })
   },
+  methods: {
+    runAnimations () {
+      this.clear()
+      this.runAnimation(this.animationIndex)
+    },
+    runAnimation (animationIndex) {
+      setTimeout(() => {
+        const animations = this.animations
+        this.animationIndex = animationIndex
+        this.runingAnimation = animations[animationIndex] || {}
+      })
+    },
+    handleAnimationend () {
+      this.clearAnimation()
+      const len = this.animations.length
+      const nextIndex = this.animationIndex + 1
+      if (nextIndex >= len) return
+      this.runAnimation(nextIndex)
+    },
+    clear () {
+      this.clearAnimation()
+      this.animationIndex = 0
+    },
+    clearAnimation () {
+      this.runingAnimation = {}
+    }
+  },
   render () {
-    return <div class="animate-layer">{this.$slots.default}</div>
+    return (
+      <div
+        class="animate-layer"
+        style={this.animationStyle}
+        onAnimationend={this.handleAnimationend}
+      >
+        {this.$slots.default}
+      </div>
+    )
   }
 }
 
