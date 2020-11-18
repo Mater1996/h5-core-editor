@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-11 18:18:26
- * @LastEditTime : 2020-11-17 16:50:08
+ * @LastEditTime : 2020-11-18 18:04:44
  * @Description :
  */
 
@@ -34,10 +34,7 @@ export default [
     icon: 'line-chart',
     visible: true,
     name: LbpLineChart.name,
-    component: LbpLineChart,
-    shortcutProps: {
-      type: 'radar'
-    }
+    component: LbpLineChart
   },
   {
     i18nTitle: {
@@ -48,10 +45,7 @@ export default [
     icon: 'line-chart',
     visible: true,
     name: LbpLineChart.name,
-    component: LbpLineChart,
-    shortcutProps: {
-      type: 'line'
-    }
+    component: LbpLineChart
   },
   {
     i18nTitle: {
@@ -62,10 +56,7 @@ export default [
     icon: 'bar-chart',
     visible: true,
     name: LbpLineChart.name,
-    component: LbpLineChart,
-    shortcutProps: {
-      type: 'histogram'
-    }
+    component: LbpLineChart
   },
   {
     i18nTitle: {
@@ -76,10 +67,7 @@ export default [
     icon: 'pie-chart',
     visible: true,
     name: LbpLineChart.name,
-    component: LbpLineChart,
-    shortcutProps: {
-      type: 'pie'
-    }
+    component: LbpLineChart
   },
   {
     i18nTitle: {

@@ -63778,7 +63778,7 @@
    * @author : Mater
    * @Email : bxh8640@gmail.com
    * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-17 16:44:01
+   * @LastEditTime : 2020-11-18 19:16:46
    * @Description :
    */
 
@@ -63786,12 +63786,6 @@
     name: 'lbp-line-chart',
     // mixins: [ChartMixin],
     props: {
-      width: {
-        default: 120
-      },
-      height: {
-        default: 120
-      },
       dataset: PropTypes.excel({
         defaultValue: function defaultValue() {
           return [['日期', '销售量'], ['1月1日', 123], ['1月2日', 1223], ['1月3日', 2123], ['1月4日', 4123], ['1月5日', 3123], ['1月6日', 7123]];
@@ -64344,10 +64338,7 @@
     icon: 'line-chart',
     visible: true,
     name: LbpLineChart.name,
-    component: LbpLineChart,
-    shortcutProps: {
-      type: 'radar'
-    }
+    component: LbpLineChart
   }, {
     i18nTitle: {
       'en-US': 'LineChart',
@@ -64357,10 +64348,7 @@
     icon: 'line-chart',
     visible: true,
     name: LbpLineChart.name,
-    component: LbpLineChart,
-    shortcutProps: {
-      type: 'line'
-    }
+    component: LbpLineChart
   }, {
     i18nTitle: {
       'en-US': 'LineChart',
@@ -64370,10 +64358,7 @@
     icon: 'bar-chart',
     visible: true,
     name: LbpLineChart.name,
-    component: LbpLineChart,
-    shortcutProps: {
-      type: 'histogram'
-    }
+    component: LbpLineChart
   }, {
     i18nTitle: {
       'en-US': 'LineChart',
@@ -64383,10 +64368,7 @@
     icon: 'pie-chart',
     visible: true,
     name: LbpLineChart.name,
-    component: LbpLineChart,
-    shortcutProps: {
-      type: 'pie'
-    }
+    component: LbpLineChart
   }, {
     i18nTitle: {
       'en-US': 'LineChart',
@@ -65968,12 +65950,9 @@
       if (name) {
         this.name = name;
         this.id = id$1++;
+        this.plugin = lbpPluginController.getPlugin(name); // 传入具体的element render 的 参数
 
-        var _pluginsControl$getPl = lbpPluginController.getPlugin(name),
-            component = _pluginsControl$getPl.component; // 传入具体的element render 的 参数
-
-
-        this.props = _objectSpread$3(_objectSpread$3({}, LbpElement.getPluginProps(component)), props); // 传入具体的element render 的 属性
+        this.props = _objectSpread$3(_objectSpread$3({}, LbpElement.getPluginProps(this.plugin.component)), props); // 传入具体的element render 的 属性
 
         this.attrs = _objectSpread$3({}, attrs); // 传入具体的element render 的 样式
 

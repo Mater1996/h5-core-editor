@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-18 10:33:43
+ * @LastEditTime : 2020-11-18 19:16:30
  * @Description :
  */
 
@@ -23,10 +23,10 @@ class LbpElement {
     if (name) {
       this.name = name
       this.id = id++
-      const { component } = pluginsControl.getPlugin(name)
+      this.plugin = pluginsControl.getPlugin(name)
       // 传入具体的element render 的 参数
       this.props = {
-        ...LbpElement.getPluginProps(component),
+        ...LbpElement.getPluginProps(this.plugin.component),
         ...props
       }
       // 传入具体的element render 的 属性

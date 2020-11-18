@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-17 16:44:01
+ * @LastEditTime : 2020-11-18 19:16:46
  * @Description :
  */
 import VeLine from 'v-charts/lib/line.common'
@@ -23,12 +23,6 @@ export default {
   name: 'lbp-line-chart',
   // mixins: [ChartMixin],
   props: {
-    width: {
-      default: 120
-    },
-    height: {
-      default: 120
-    },
     dataset: PropTypes.excel({
       defaultValue: () => [
         ['日期', '销售量'],

@@ -28,12 +28,12 @@ const contextmenuOptions = [
   {
     i18nLabel: 'editor.centerPanel.contextMenu.copy',
     label: '复制',
-    value: 'copy'
+    key: 'copy'
   },
   {
     i18nLabel: 'editor.centerPanel.contextMenu.delete',
     label: '删除',
-    value: 'delete'
+    key: 'delete'
   },
   /**
    * contextMenu 白名单，只有匹配白名单列表里的元素，才会显示该选项
@@ -44,7 +44,7 @@ const contextmenuOptions = [
   {
     i18nLabel: 'editor.centerPanel.contextMenu.showOnlyButton',
     label: 'showOnlyButton',
-    value: 'showOnlyButton',
+    key: 'showOnlyButton',
     elementWhiteList: ['lbp-button']
   },
   /**
@@ -56,7 +56,7 @@ const contextmenuOptions = [
   {
     i18nLabel: 'editor.centerPanel.contextMenu.showExcludePicture',
     label: 'showExcludePicture',
-    value: 'showExcludePicture',
+    key: 'showExcludePicture',
     elementBlackList: /^lbp-picture/
   }
 ]
@@ -66,22 +66,22 @@ const zindexContextMenu = [
   {
     i18nLabel: 'editor.centerPanel.contextMenu.moveToTop',
     label: '置顶',
-    value: 'move2Top'
+    key: 'move2Top'
   },
   {
     i18nLabel: 'editor.centerPanel.contextMenu.moveToBottom',
     label: '置底',
-    value: 'move2Bottom'
+    key: 'move2Bottom'
   },
   {
     i18nLabel: 'editor.centerPanel.contextMenu.moveUp',
     label: '上移',
-    value: 'addZindex'
+    key: 'addZindex'
   },
   {
     i18nLabel: 'editor.centerPanel.contextMenu.moveDown',
     label: '下移',
-    value: 'minusZindex'
+    key: 'minusZindex'
   }
 ]
 
@@ -136,8 +136,8 @@ export default {
         >
           {this.filteredOptions.map(option => (
             <a-menu-item
-              key={option.value}
-              data-command={option.value}
+              key={option.key}
+              data-command={option.key}
               class="contextmenu__vertical-menus__item"
             >
               {this.$t(option.i18nLabel)}
