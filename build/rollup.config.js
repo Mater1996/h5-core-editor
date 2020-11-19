@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime : 2020-11-19 21:07:08
+ * @LastEditTime : 2020-11-19 21:35:05
  * @Description :
  */
 const path = require('path')
@@ -42,7 +42,9 @@ const babelConfig = {
   plugins: [
     ['@babel/plugin-transform-runtime'],
     ['@babel/plugin-syntax-jsx'],
-    ['@babel/plugin-proposal-class-properties']
+    ['@babel/plugin-proposal-class-properties'],
+    ['import', { libraryName: 'antd', style: true }, 'antd'],
+    ['import', { libraryName: 'lodash', libraryDirectory: '', camel2DashComponentName: false }, 'lodash']
   ],
   externalHelpers: false,
   runtimeHelpers: true,
