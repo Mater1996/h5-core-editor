@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-13 10:09:46
- * @LastEditTime : 2020-11-19 10:24:14
+ * @LastEditTime : 2020-11-19 14:12:47
  * @Description :
  */
 import LbpElement from '@/editor/models/LbpElement'
@@ -18,7 +18,7 @@ export default {
     }
   },
   render () {
-    const element = this.element
+    const { element } = this
     return (
       <ShapeLayer elStyle={element.style} on={this.$listeners}>
         <AnimateLayer animations={element.animations}>

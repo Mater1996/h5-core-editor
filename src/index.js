@@ -2,19 +2,18 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-12 09:17:53
+ * @LastEditTime : 2020-11-19 14:04:17
  * @Description :
  */
-import CoreEditor from '@/editor'
+import LpbH5Editor from '@/editor'
+import LbpH5Preview from '@/editor/preview'
 
-// Vue install, Vue.use 会调用该方法。
-CoreEditor.install = (Vue, opts = {}) => {
-  Vue.component(CoreEditor.name, CoreEditor)
+LpbH5Editor.install = (Vue, opts = {}) => {
+  Vue.component(LpbH5Editor.name, LpbH5Editor)
 }
-
-// 通过script标签引入Vue的环境
 if (typeof window !== 'undefined' && window.Vue) {
-  CoreEditor.install(window.Vue)
+  LpbH5Editor.install(window.Vue)
 }
 
-export default CoreEditor
+export default LpbH5Editor
+export { LbpH5Preview }

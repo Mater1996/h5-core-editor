@@ -6,7 +6,7 @@
  * @Description :
  */
 module.exports = {
-  ignoreFiles: ['**/*.js'],
+  ignoreFiles: ['**/*.js', '/dist'],
   plugins: ['stylelint-scss'],
   extends: ['stylelint-config-standard-scss']
 }

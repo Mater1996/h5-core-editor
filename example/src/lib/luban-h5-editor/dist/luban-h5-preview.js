@@ -1,16 +1,12 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('ant-design-vue'), require('lodash'), require('vue-quill-editor'), require('vant'), require('resize-detector'), require('vue'), require('vue-i18n'), require('immutable'), require('hotkeys-js'), require('x-data-spreadsheet'), require('papaparse')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'ant-design-vue', 'lodash', 'vue-quill-editor', 'vant', 'resize-detector', 'vue', 'vue-i18n', 'immutable', 'hotkeys-js', 'x-data-spreadsheet', 'papaparse'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global['luban-h5-editor'] = {}, global['ant-design-vue'], global.lodash, global.VueQuillEditor, global.vant, global.resizeDetector, global.Vue, global.VueI18n, global.immutable, global.hotkeys, global.x_spreadsheet, global.papaparse));
-}(this, (function (exports, antDesignVue, lodash, vueQuillEditor, vant, resizeDetector, Vue, VueI18n, immutable, hotkeys, Spreadsheet, Papa) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('ant-design-vue'), require('vue-quill-editor'), require('vant'), require('resize-detector'), require('lodash'), require('vue')) :
+  typeof define === 'function' && define.amd ? define(['ant-design-vue', 'vue-quill-editor', 'vant', 'resize-detector', 'lodash', 'vue'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['luban-h5-preview'] = factory(global['ant-design-vue'], global.VueQuillEditor, global.vant, global.resizeDetector, global.lodash, global.Vue));
+}(this, (function (antDesignVue, vueQuillEditor, vant, resizeDetector, lodash, Vue) { 'use strict';
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
   var Vue__default = /*#__PURE__*/_interopDefaultLegacy(Vue);
-  var VueI18n__default = /*#__PURE__*/_interopDefaultLegacy(VueI18n);
-  var hotkeys__default = /*#__PURE__*/_interopDefaultLegacy(hotkeys);
-  var Spreadsheet__default = /*#__PURE__*/_interopDefaultLegacy(Spreadsheet);
-  var Papa__default = /*#__PURE__*/_interopDefaultLegacy(Papa);
 
   var fails = function (exec) {
     try {
@@ -150,22 +146,42 @@
     });
   }
 
-  var nativePropertyIsEnumerable = {}.propertyIsEnumerable;
-  var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+  function _defineProperty(obj, key, value) {
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
 
-  // Nashorn ~ JDK8 bug
-  var NASHORN_BUG = getOwnPropertyDescriptor && !nativePropertyIsEnumerable.call({ 1: 2 }, 1);
+    return obj;
+  }
 
-  // `Object.prototype.propertyIsEnumerable` method implementation
-  // https://tc39.github.io/ecma262/#sec-object.prototype.propertyisenumerable
-  var f$1 = NASHORN_BUG ? function propertyIsEnumerable(V) {
-    var descriptor = getOwnPropertyDescriptor(this, V);
-    return !!descriptor && descriptor.enumerable;
-  } : nativePropertyIsEnumerable;
+  var defineProperty$1 = _defineProperty;
 
-  var objectPropertyIsEnumerable = {
-  	f: f$1
+  var replacement = /#|\.prototype\./;
+
+  var isForced = function (feature, detection) {
+    var value = data[normalize(feature)];
+    return value == POLYFILL ? true
+      : value == NATIVE ? false
+      : typeof detection == 'function' ? fails(detection)
+      : !!detection;
   };
+
+  var normalize = isForced.normalize = function (string) {
+    return String(string).replace(replacement, '.').toLowerCase();
+  };
+
+  var data = isForced.data = {};
+  var NATIVE = isForced.NATIVE = 'N';
+  var POLYFILL = isForced.POLYFILL = 'P';
+
+  var isForced_1 = isForced;
 
   var createPropertyDescriptor = function (bitmap, value) {
     return {
@@ -176,66 +192,17 @@
     };
   };
 
-  var toString = {}.toString;
-
-  var classofRaw = function (it) {
-    return toString.call(it).slice(8, -1);
-  };
-
-  var split = ''.split;
-
-  // fallback for non-array-like ES3 and non-enumerable old V8 strings
-  var indexedObject = fails(function () {
-    // throws an error in rhino, see https://github.com/mozilla/rhino/issues/346
-    // eslint-disable-next-line no-prototype-builtins
-    return !Object('z').propertyIsEnumerable(0);
-  }) ? function (it) {
-    return classofRaw(it) == 'String' ? split.call(it, '') : Object(it);
-  } : Object;
-
-  // `RequireObjectCoercible` abstract operation
-  // https://tc39.github.io/ecma262/#sec-requireobjectcoercible
-  var requireObjectCoercible = function (it) {
-    if (it == undefined) throw TypeError("Can't call method on " + it);
-    return it;
-  };
-
-  // toObject with fallback for non-array-like ES3 strings
-
-
-
-  var toIndexedObject = function (it) {
-    return indexedObject(requireObjectCoercible(it));
+  var createNonEnumerableProperty = descriptors ? function (object, key, value) {
+    return objectDefineProperty.f(object, key, createPropertyDescriptor(1, value));
+  } : function (object, key, value) {
+    object[key] = value;
+    return object;
   };
 
   var hasOwnProperty = {}.hasOwnProperty;
 
   var has = function (it, key) {
     return hasOwnProperty.call(it, key);
-  };
-
-  var nativeGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-
-  // `Object.getOwnPropertyDescriptor` method
-  // https://tc39.github.io/ecma262/#sec-object.getownpropertydescriptor
-  var f$2 = descriptors ? nativeGetOwnPropertyDescriptor : function getOwnPropertyDescriptor(O, P) {
-    O = toIndexedObject(O);
-    P = toPrimitive(P, true);
-    if (ie8DomDefine) try {
-      return nativeGetOwnPropertyDescriptor(O, P);
-    } catch (error) { /* empty */ }
-    if (has(O, P)) return createPropertyDescriptor(!objectPropertyIsEnumerable.f.call(O, P), O[P]);
-  };
-
-  var objectGetOwnPropertyDescriptor = {
-  	f: f$2
-  };
-
-  var createNonEnumerableProperty = descriptors ? function (object, key, value) {
-    return objectDefineProperty.f(object, key, createPropertyDescriptor(1, value));
-  } : function (object, key, value) {
-    object[key] = value;
-    return object;
   };
 
   var setGlobal = function (key, value) {
@@ -375,15 +342,79 @@
   });
   });
 
-  var path = global_1;
+  var toString = {}.toString;
 
-  var aFunction = function (variable) {
-    return typeof variable == 'function' ? variable : undefined;
+  var classofRaw = function (it) {
+    return toString.call(it).slice(8, -1);
   };
 
-  var getBuiltIn = function (namespace, method) {
-    return arguments.length < 2 ? aFunction(path[namespace]) || aFunction(global_1[namespace])
-      : path[namespace] && path[namespace][method] || global_1[namespace] && global_1[namespace][method];
+  var aPossiblePrototype = function (it) {
+    if (!isObject(it) && it !== null) {
+      throw TypeError("Can't set " + String(it) + ' as a prototype');
+    } return it;
+  };
+
+  // `Object.setPrototypeOf` method
+  // https://tc39.github.io/ecma262/#sec-object.setprototypeof
+  // Works with __proto__ only. Old v8 can't work with null proto objects.
+  /* eslint-disable no-proto */
+  var objectSetPrototypeOf = Object.setPrototypeOf || ('__proto__' in {} ? function () {
+    var CORRECT_SETTER = false;
+    var test = {};
+    var setter;
+    try {
+      setter = Object.getOwnPropertyDescriptor(Object.prototype, '__proto__').set;
+      setter.call(test, []);
+      CORRECT_SETTER = test instanceof Array;
+    } catch (error) { /* empty */ }
+    return function setPrototypeOf(O, proto) {
+      anObject(O);
+      aPossiblePrototype(proto);
+      if (CORRECT_SETTER) setter.call(O, proto);
+      else O.__proto__ = proto;
+      return O;
+    };
+  }() : undefined);
+
+  // makes subclassing work correct for wrapped built-ins
+  var inheritIfRequired = function ($this, dummy, Wrapper) {
+    var NewTarget, NewTargetPrototype;
+    if (
+      // it can work only with native `setPrototypeOf`
+      objectSetPrototypeOf &&
+      // we haven't completely correct pre-ES6 way for getting `new.target`, so use this
+      typeof (NewTarget = dummy.constructor) == 'function' &&
+      NewTarget !== Wrapper &&
+      isObject(NewTargetPrototype = NewTarget.prototype) &&
+      NewTargetPrototype !== Wrapper.prototype
+    ) objectSetPrototypeOf($this, NewTargetPrototype);
+    return $this;
+  };
+
+  var split = ''.split;
+
+  // fallback for non-array-like ES3 and non-enumerable old V8 strings
+  var indexedObject = fails(function () {
+    // throws an error in rhino, see https://github.com/mozilla/rhino/issues/346
+    // eslint-disable-next-line no-prototype-builtins
+    return !Object('z').propertyIsEnumerable(0);
+  }) ? function (it) {
+    return classofRaw(it) == 'String' ? split.call(it, '') : Object(it);
+  } : Object;
+
+  // `RequireObjectCoercible` abstract operation
+  // https://tc39.github.io/ecma262/#sec-requireobjectcoercible
+  var requireObjectCoercible = function (it) {
+    if (it == undefined) throw TypeError("Can't call method on " + it);
+    return it;
+  };
+
+  // toObject with fallback for non-array-like ES3 strings
+
+
+
+  var toIndexedObject = function (it) {
+    return indexedObject(requireObjectCoercible(it));
   };
 
   var ceil = Math.ceil;
@@ -470,521 +501,10 @@
     'valueOf'
   ];
 
-  var hiddenKeys$1 = enumBugKeys.concat('length', 'prototype');
-
-  // `Object.getOwnPropertyNames` method
-  // https://tc39.github.io/ecma262/#sec-object.getownpropertynames
-  var f$3 = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
-    return objectKeysInternal(O, hiddenKeys$1);
-  };
-
-  var objectGetOwnPropertyNames = {
-  	f: f$3
-  };
-
-  var f$4 = Object.getOwnPropertySymbols;
-
-  var objectGetOwnPropertySymbols = {
-  	f: f$4
-  };
-
-  // all object keys, includes non-enumerable and symbols
-  var ownKeys = getBuiltIn('Reflect', 'ownKeys') || function ownKeys(it) {
-    var keys = objectGetOwnPropertyNames.f(anObject(it));
-    var getOwnPropertySymbols = objectGetOwnPropertySymbols.f;
-    return getOwnPropertySymbols ? keys.concat(getOwnPropertySymbols(it)) : keys;
-  };
-
-  var copyConstructorProperties = function (target, source) {
-    var keys = ownKeys(source);
-    var defineProperty = objectDefineProperty.f;
-    var getOwnPropertyDescriptor = objectGetOwnPropertyDescriptor.f;
-    for (var i = 0; i < keys.length; i++) {
-      var key = keys[i];
-      if (!has(target, key)) defineProperty(target, key, getOwnPropertyDescriptor(source, key));
-    }
-  };
-
-  var replacement = /#|\.prototype\./;
-
-  var isForced = function (feature, detection) {
-    var value = data[normalize(feature)];
-    return value == POLYFILL ? true
-      : value == NATIVE ? false
-      : typeof detection == 'function' ? fails(detection)
-      : !!detection;
-  };
-
-  var normalize = isForced.normalize = function (string) {
-    return String(string).replace(replacement, '.').toLowerCase();
-  };
-
-  var data = isForced.data = {};
-  var NATIVE = isForced.NATIVE = 'N';
-  var POLYFILL = isForced.POLYFILL = 'P';
-
-  var isForced_1 = isForced;
-
-  var getOwnPropertyDescriptor$1 = objectGetOwnPropertyDescriptor.f;
-
-
-
-
-
-
-  /*
-    options.target      - name of the target object
-    options.global      - target is the global object
-    options.stat        - export as static methods of target
-    options.proto       - export as prototype methods of target
-    options.real        - real prototype method for the `pure` version
-    options.forced      - export even if the native feature is available
-    options.bind        - bind methods to the target, required for the `pure` version
-    options.wrap        - wrap constructors to preventing global pollution, required for the `pure` version
-    options.unsafe      - use the simple assignment of property instead of delete + defineProperty
-    options.sham        - add a flag to not completely full polyfills
-    options.enumerable  - export as enumerable property
-    options.noTargetGet - prevent calling a getter on target
-  */
-  var _export = function (options, source) {
-    var TARGET = options.target;
-    var GLOBAL = options.global;
-    var STATIC = options.stat;
-    var FORCED, target, key, targetProperty, sourceProperty, descriptor;
-    if (GLOBAL) {
-      target = global_1;
-    } else if (STATIC) {
-      target = global_1[TARGET] || setGlobal(TARGET, {});
-    } else {
-      target = (global_1[TARGET] || {}).prototype;
-    }
-    if (target) for (key in source) {
-      sourceProperty = source[key];
-      if (options.noTargetGet) {
-        descriptor = getOwnPropertyDescriptor$1(target, key);
-        targetProperty = descriptor && descriptor.value;
-      } else targetProperty = target[key];
-      FORCED = isForced_1(GLOBAL ? key : TARGET + (STATIC ? '.' : '#') + key, options.forced);
-      // contained in target
-      if (!FORCED && targetProperty !== undefined) {
-        if (typeof sourceProperty === typeof targetProperty) continue;
-        copyConstructorProperties(sourceProperty, targetProperty);
-      }
-      // add a flag to not completely full polyfills
-      if (options.sham || (targetProperty && targetProperty.sham)) {
-        createNonEnumerableProperty(sourceProperty, 'sham', true);
-      }
-      // extend global
-      redefine(target, key, sourceProperty, options);
-    }
-  };
-
-  var aFunction$1 = function (it) {
-    if (typeof it != 'function') {
-      throw TypeError(String(it) + ' is not a function');
-    } return it;
-  };
-
-  // optional / simple context binding
-  var functionBindContext = function (fn, that, length) {
-    aFunction$1(fn);
-    if (that === undefined) return fn;
-    switch (length) {
-      case 0: return function () {
-        return fn.call(that);
-      };
-      case 1: return function (a) {
-        return fn.call(that, a);
-      };
-      case 2: return function (a, b) {
-        return fn.call(that, a, b);
-      };
-      case 3: return function (a, b, c) {
-        return fn.call(that, a, b, c);
-      };
-    }
-    return function (/* ...args */) {
-      return fn.apply(that, arguments);
-    };
-  };
-
-  // `ToObject` abstract operation
-  // https://tc39.github.io/ecma262/#sec-toobject
-  var toObject = function (argument) {
-    return Object(requireObjectCoercible(argument));
-  };
-
-  // `IsArray` abstract operation
-  // https://tc39.github.io/ecma262/#sec-isarray
-  var isArray = Array.isArray || function isArray(arg) {
-    return classofRaw(arg) == 'Array';
-  };
-
-  var nativeSymbol = !!Object.getOwnPropertySymbols && !fails(function () {
-    // Chrome 38 Symbol has incorrect toString conversion
-    // eslint-disable-next-line no-undef
-    return !String(Symbol());
-  });
-
-  var useSymbolAsUid = nativeSymbol
-    // eslint-disable-next-line no-undef
-    && !Symbol.sham
-    // eslint-disable-next-line no-undef
-    && typeof Symbol.iterator == 'symbol';
-
-  var WellKnownSymbolsStore = shared('wks');
-  var Symbol$1 = global_1.Symbol;
-  var createWellKnownSymbol = useSymbolAsUid ? Symbol$1 : Symbol$1 && Symbol$1.withoutSetter || uid;
-
-  var wellKnownSymbol = function (name) {
-    if (!has(WellKnownSymbolsStore, name)) {
-      if (nativeSymbol && has(Symbol$1, name)) WellKnownSymbolsStore[name] = Symbol$1[name];
-      else WellKnownSymbolsStore[name] = createWellKnownSymbol('Symbol.' + name);
-    } return WellKnownSymbolsStore[name];
-  };
-
-  var SPECIES = wellKnownSymbol('species');
-
-  // `ArraySpeciesCreate` abstract operation
-  // https://tc39.github.io/ecma262/#sec-arrayspeciescreate
-  var arraySpeciesCreate = function (originalArray, length) {
-    var C;
-    if (isArray(originalArray)) {
-      C = originalArray.constructor;
-      // cross-realm fallback
-      if (typeof C == 'function' && (C === Array || isArray(C.prototype))) C = undefined;
-      else if (isObject(C)) {
-        C = C[SPECIES];
-        if (C === null) C = undefined;
-      }
-    } return new (C === undefined ? Array : C)(length === 0 ? 0 : length);
-  };
-
-  var push = [].push;
-
-  // `Array.prototype.{ forEach, map, filter, some, every, find, findIndex }` methods implementation
-  var createMethod$1 = function (TYPE) {
-    var IS_MAP = TYPE == 1;
-    var IS_FILTER = TYPE == 2;
-    var IS_SOME = TYPE == 3;
-    var IS_EVERY = TYPE == 4;
-    var IS_FIND_INDEX = TYPE == 6;
-    var NO_HOLES = TYPE == 5 || IS_FIND_INDEX;
-    return function ($this, callbackfn, that, specificCreate) {
-      var O = toObject($this);
-      var self = indexedObject(O);
-      var boundFunction = functionBindContext(callbackfn, that, 3);
-      var length = toLength(self.length);
-      var index = 0;
-      var create = specificCreate || arraySpeciesCreate;
-      var target = IS_MAP ? create($this, length) : IS_FILTER ? create($this, 0) : undefined;
-      var value, result;
-      for (;length > index; index++) if (NO_HOLES || index in self) {
-        value = self[index];
-        result = boundFunction(value, index, O);
-        if (TYPE) {
-          if (IS_MAP) target[index] = result; // map
-          else if (result) switch (TYPE) {
-            case 3: return true;              // some
-            case 5: return value;             // find
-            case 6: return index;             // findIndex
-            case 2: push.call(target, value); // filter
-          } else if (IS_EVERY) return false;  // every
-        }
-      }
-      return IS_FIND_INDEX ? -1 : IS_SOME || IS_EVERY ? IS_EVERY : target;
-    };
-  };
-
-  var arrayIteration = {
-    // `Array.prototype.forEach` method
-    // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
-    forEach: createMethod$1(0),
-    // `Array.prototype.map` method
-    // https://tc39.github.io/ecma262/#sec-array.prototype.map
-    map: createMethod$1(1),
-    // `Array.prototype.filter` method
-    // https://tc39.github.io/ecma262/#sec-array.prototype.filter
-    filter: createMethod$1(2),
-    // `Array.prototype.some` method
-    // https://tc39.github.io/ecma262/#sec-array.prototype.some
-    some: createMethod$1(3),
-    // `Array.prototype.every` method
-    // https://tc39.github.io/ecma262/#sec-array.prototype.every
-    every: createMethod$1(4),
-    // `Array.prototype.find` method
-    // https://tc39.github.io/ecma262/#sec-array.prototype.find
-    find: createMethod$1(5),
-    // `Array.prototype.findIndex` method
-    // https://tc39.github.io/ecma262/#sec-array.prototype.findIndex
-    findIndex: createMethod$1(6)
-  };
-
-  var arrayMethodIsStrict = function (METHOD_NAME, argument) {
-    var method = [][METHOD_NAME];
-    return !!method && fails(function () {
-      // eslint-disable-next-line no-useless-call,no-throw-literal
-      method.call(null, argument || function () { throw 1; }, 1);
-    });
-  };
-
-  var defineProperty$1 = Object.defineProperty;
-  var cache = {};
-
-  var thrower = function (it) { throw it; };
-
-  var arrayMethodUsesToLength = function (METHOD_NAME, options) {
-    if (has(cache, METHOD_NAME)) return cache[METHOD_NAME];
-    if (!options) options = {};
-    var method = [][METHOD_NAME];
-    var ACCESSORS = has(options, 'ACCESSORS') ? options.ACCESSORS : false;
-    var argument0 = has(options, 0) ? options[0] : thrower;
-    var argument1 = has(options, 1) ? options[1] : undefined;
-
-    return cache[METHOD_NAME] = !!method && !fails(function () {
-      if (ACCESSORS && !descriptors) return true;
-      var O = { length: -1 };
-
-      if (ACCESSORS) defineProperty$1(O, 1, { enumerable: true, get: thrower });
-      else O[1] = 1;
-
-      method.call(O, argument0, argument1);
-    });
-  };
-
-  var $forEach = arrayIteration.forEach;
-
-
-
-  var STRICT_METHOD = arrayMethodIsStrict('forEach');
-  var USES_TO_LENGTH = arrayMethodUsesToLength('forEach');
-
-  // `Array.prototype.forEach` method implementation
-  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
-  var arrayForEach = (!STRICT_METHOD || !USES_TO_LENGTH) ? function forEach(callbackfn /* , thisArg */) {
-    return $forEach(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
-  } : [].forEach;
-
-  // `Array.prototype.forEach` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
-  _export({ target: 'Array', proto: true, forced: [].forEach != arrayForEach }, {
-    forEach: arrayForEach
-  });
-
-  var engineUserAgent = getBuiltIn('navigator', 'userAgent') || '';
-
-  var process = global_1.process;
-  var versions = process && process.versions;
-  var v8 = versions && versions.v8;
-  var match, version;
-
-  if (v8) {
-    match = v8.split('.');
-    version = match[0] + match[1];
-  } else if (engineUserAgent) {
-    match = engineUserAgent.match(/Edge\/(\d+)/);
-    if (!match || match[1] >= 74) {
-      match = engineUserAgent.match(/Chrome\/(\d+)/);
-      if (match) version = match[1];
-    }
-  }
-
-  var engineV8Version = version && +version;
-
-  var SPECIES$1 = wellKnownSymbol('species');
-
-  var arrayMethodHasSpeciesSupport = function (METHOD_NAME) {
-    // We can't use this feature detection in V8 since it causes
-    // deoptimization and serious performance degradation
-    // https://github.com/zloirock/core-js/issues/677
-    return engineV8Version >= 51 || !fails(function () {
-      var array = [];
-      var constructor = array.constructor = {};
-      constructor[SPECIES$1] = function () {
-        return { foo: 1 };
-      };
-      return array[METHOD_NAME](Boolean).foo !== 1;
-    });
-  };
-
-  var $map = arrayIteration.map;
-
-
-
-  var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('map');
-  // FF49- issue
-  var USES_TO_LENGTH$1 = arrayMethodUsesToLength('map');
-
-  // `Array.prototype.map` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.map
-  // with adding support of @@species
-  _export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT || !USES_TO_LENGTH$1 }, {
-    map: function map(callbackfn /* , thisArg */) {
-      return $map(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
-    }
-  });
-
   // `Object.keys` method
   // https://tc39.github.io/ecma262/#sec-object.keys
   var objectKeys = Object.keys || function keys(O) {
     return objectKeysInternal(O, enumBugKeys);
-  };
-
-  var nativeAssign = Object.assign;
-  var defineProperty$2 = Object.defineProperty;
-
-  // `Object.assign` method
-  // https://tc39.github.io/ecma262/#sec-object.assign
-  var objectAssign = !nativeAssign || fails(function () {
-    // should have correct order of operations (Edge bug)
-    if (descriptors && nativeAssign({ b: 1 }, nativeAssign(defineProperty$2({}, 'a', {
-      enumerable: true,
-      get: function () {
-        defineProperty$2(this, 'b', {
-          value: 3,
-          enumerable: false
-        });
-      }
-    }), { b: 2 })).b !== 1) return true;
-    // should work with symbols and should have deterministic property order (V8 bug)
-    var A = {};
-    var B = {};
-    // eslint-disable-next-line no-undef
-    var symbol = Symbol();
-    var alphabet = 'abcdefghijklmnopqrst';
-    A[symbol] = 7;
-    alphabet.split('').forEach(function (chr) { B[chr] = chr; });
-    return nativeAssign({}, A)[symbol] != 7 || objectKeys(nativeAssign({}, B)).join('') != alphabet;
-  }) ? function assign(target, source) { // eslint-disable-line no-unused-vars
-    var T = toObject(target);
-    var argumentsLength = arguments.length;
-    var index = 1;
-    var getOwnPropertySymbols = objectGetOwnPropertySymbols.f;
-    var propertyIsEnumerable = objectPropertyIsEnumerable.f;
-    while (argumentsLength > index) {
-      var S = indexedObject(arguments[index++]);
-      var keys = getOwnPropertySymbols ? objectKeys(S).concat(getOwnPropertySymbols(S)) : objectKeys(S);
-      var length = keys.length;
-      var j = 0;
-      var key;
-      while (length > j) {
-        key = keys[j++];
-        if (!descriptors || propertyIsEnumerable.call(S, key)) T[key] = S[key];
-      }
-    } return T;
-  } : nativeAssign;
-
-  // `Object.assign` method
-  // https://tc39.github.io/ecma262/#sec-object.assign
-  _export({ target: 'Object', stat: true, forced: Object.assign !== objectAssign }, {
-    assign: objectAssign
-  });
-
-  // iterable DOM collections
-  // flag - `iterable` interface - 'entries', 'keys', 'values', 'forEach' methods
-  var domIterables = {
-    CSSRuleList: 0,
-    CSSStyleDeclaration: 0,
-    CSSValueList: 0,
-    ClientRectList: 0,
-    DOMRectList: 0,
-    DOMStringList: 0,
-    DOMTokenList: 1,
-    DataTransferItemList: 0,
-    FileList: 0,
-    HTMLAllCollection: 0,
-    HTMLCollection: 0,
-    HTMLFormElement: 0,
-    HTMLSelectElement: 0,
-    MediaList: 0,
-    MimeTypeArray: 0,
-    NamedNodeMap: 0,
-    NodeList: 1,
-    PaintRequestList: 0,
-    Plugin: 0,
-    PluginArray: 0,
-    SVGLengthList: 0,
-    SVGNumberList: 0,
-    SVGPathSegList: 0,
-    SVGPointList: 0,
-    SVGStringList: 0,
-    SVGTransformList: 0,
-    SourceBufferList: 0,
-    StyleSheetList: 0,
-    TextTrackCueList: 0,
-    TextTrackList: 0,
-    TouchList: 0
-  };
-
-  for (var COLLECTION_NAME in domIterables) {
-    var Collection = global_1[COLLECTION_NAME];
-    var CollectionPrototype = Collection && Collection.prototype;
-    // some Chrome versions have non-configurable methods on DOMTokenList
-    if (CollectionPrototype && CollectionPrototype.forEach !== arrayForEach) try {
-      createNonEnumerableProperty(CollectionPrototype, 'forEach', arrayForEach);
-    } catch (error) {
-      CollectionPrototype.forEach = arrayForEach;
-    }
-  }
-
-  function _defineProperty(obj, key, value) {
-    if (key in obj) {
-      Object.defineProperty(obj, key, {
-        value: value,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      });
-    } else {
-      obj[key] = value;
-    }
-
-    return obj;
-  }
-
-  var defineProperty$3 = _defineProperty;
-
-  var aPossiblePrototype = function (it) {
-    if (!isObject(it) && it !== null) {
-      throw TypeError("Can't set " + String(it) + ' as a prototype');
-    } return it;
-  };
-
-  // `Object.setPrototypeOf` method
-  // https://tc39.github.io/ecma262/#sec-object.setprototypeof
-  // Works with __proto__ only. Old v8 can't work with null proto objects.
-  /* eslint-disable no-proto */
-  var objectSetPrototypeOf = Object.setPrototypeOf || ('__proto__' in {} ? function () {
-    var CORRECT_SETTER = false;
-    var test = {};
-    var setter;
-    try {
-      setter = Object.getOwnPropertyDescriptor(Object.prototype, '__proto__').set;
-      setter.call(test, []);
-      CORRECT_SETTER = test instanceof Array;
-    } catch (error) { /* empty */ }
-    return function setPrototypeOf(O, proto) {
-      anObject(O);
-      aPossiblePrototype(proto);
-      if (CORRECT_SETTER) setter.call(O, proto);
-      else O.__proto__ = proto;
-      return O;
-    };
-  }() : undefined);
-
-  // makes subclassing work correct for wrapped built-ins
-  var inheritIfRequired = function ($this, dummy, Wrapper) {
-    var NewTarget, NewTargetPrototype;
-    if (
-      // it can work only with native `setPrototypeOf`
-      objectSetPrototypeOf &&
-      // we haven't completely correct pre-ES6 way for getting `new.target`, so use this
-      typeof (NewTarget = dummy.constructor) == 'function' &&
-      NewTarget !== Wrapper &&
-      isObject(NewTargetPrototype = NewTarget.prototype) &&
-      NewTargetPrototype !== Wrapper.prototype
-    ) objectSetPrototypeOf($this, NewTargetPrototype);
-    return $this;
   };
 
   // `Object.defineProperties` method
@@ -997,6 +517,17 @@
     var key;
     while (length > index) objectDefineProperty.f(O, key = keys[index++], Properties[key]);
     return O;
+  };
+
+  var path = global_1;
+
+  var aFunction = function (variable) {
+    return typeof variable == 'function' ? variable : undefined;
+  };
+
+  var getBuiltIn = function (namespace, method) {
+    return arguments.length < 2 ? aFunction(path[namespace]) || aFunction(global_1[namespace])
+      : path[namespace] && path[namespace][method] || global_1[namespace] && global_1[namespace][method];
   };
 
   var html = getBuiltIn('document', 'documentElement');
@@ -1072,6 +603,52 @@
     return Properties === undefined ? result : objectDefineProperties(result, Properties);
   };
 
+  var hiddenKeys$1 = enumBugKeys.concat('length', 'prototype');
+
+  // `Object.getOwnPropertyNames` method
+  // https://tc39.github.io/ecma262/#sec-object.getownpropertynames
+  var f$1 = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
+    return objectKeysInternal(O, hiddenKeys$1);
+  };
+
+  var objectGetOwnPropertyNames = {
+  	f: f$1
+  };
+
+  var nativePropertyIsEnumerable = {}.propertyIsEnumerable;
+  var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+
+  // Nashorn ~ JDK8 bug
+  var NASHORN_BUG = getOwnPropertyDescriptor && !nativePropertyIsEnumerable.call({ 1: 2 }, 1);
+
+  // `Object.prototype.propertyIsEnumerable` method implementation
+  // https://tc39.github.io/ecma262/#sec-object.prototype.propertyisenumerable
+  var f$2 = NASHORN_BUG ? function propertyIsEnumerable(V) {
+    var descriptor = getOwnPropertyDescriptor(this, V);
+    return !!descriptor && descriptor.enumerable;
+  } : nativePropertyIsEnumerable;
+
+  var objectPropertyIsEnumerable = {
+  	f: f$2
+  };
+
+  var nativeGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+
+  // `Object.getOwnPropertyDescriptor` method
+  // https://tc39.github.io/ecma262/#sec-object.getownpropertydescriptor
+  var f$3 = descriptors ? nativeGetOwnPropertyDescriptor : function getOwnPropertyDescriptor(O, P) {
+    O = toIndexedObject(O);
+    P = toPrimitive(P, true);
+    if (ie8DomDefine) try {
+      return nativeGetOwnPropertyDescriptor(O, P);
+    } catch (error) { /* empty */ }
+    if (has(O, P)) return createPropertyDescriptor(!objectPropertyIsEnumerable.f.call(O, P), O[P]);
+  };
+
+  var objectGetOwnPropertyDescriptor = {
+  	f: f$3
+  };
+
   // a string of all valid unicode whitespaces
   // eslint-disable-next-line max-len
   var whitespaces = '\u0009\u000A\u000B\u000C\u000D\u0020\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF';
@@ -1081,7 +658,7 @@
   var rtrim = RegExp(whitespace + whitespace + '*$');
 
   // `String.prototype.{ trim, trimStart, trimEnd, trimLeft, trimRight }` methods implementation
-  var createMethod$2 = function (TYPE) {
+  var createMethod$1 = function (TYPE) {
     return function ($this) {
       var string = String(requireObjectCoercible($this));
       if (TYPE & 1) string = string.replace(ltrim, '');
@@ -1093,18 +670,18 @@
   var stringTrim = {
     // `String.prototype.{ trimLeft, trimStart }` methods
     // https://tc39.github.io/ecma262/#sec-string.prototype.trimstart
-    start: createMethod$2(1),
+    start: createMethod$1(1),
     // `String.prototype.{ trimRight, trimEnd }` methods
     // https://tc39.github.io/ecma262/#sec-string.prototype.trimend
-    end: createMethod$2(2),
+    end: createMethod$1(2),
     // `String.prototype.trim` method
     // https://tc39.github.io/ecma262/#sec-string.prototype.trim
-    trim: createMethod$2(3)
+    trim: createMethod$1(3)
   };
 
   var getOwnPropertyNames = objectGetOwnPropertyNames.f;
-  var getOwnPropertyDescriptor$2 = objectGetOwnPropertyDescriptor.f;
-  var defineProperty$4 = objectDefineProperty.f;
+  var getOwnPropertyDescriptor$1 = objectGetOwnPropertyDescriptor.f;
+  var defineProperty$2 = objectDefineProperty.f;
   var trim = stringTrim.trim;
 
   var NUMBER = 'Number';
@@ -1162,7 +739,7 @@
       'MIN_SAFE_INTEGER,parseFloat,parseInt,isInteger'
     ).split(','), j = 0, key; keys$1.length > j; j++) {
       if (has(NativeNumber, key = keys$1[j]) && !has(NumberWrapper, key)) {
-        defineProperty$4(NumberWrapper, key, getOwnPropertyDescriptor$2(NativeNumber, key));
+        defineProperty$2(NumberWrapper, key, getOwnPropertyDescriptor$1(NativeNumber, key));
       }
     }
     NumberWrapper.prototype = NumberPrototype;
@@ -1684,10 +1261,175 @@
     componentsForPropsEditor: {}
   };
 
+  var f$4 = Object.getOwnPropertySymbols;
+
+  var objectGetOwnPropertySymbols = {
+  	f: f$4
+  };
+
+  // all object keys, includes non-enumerable and symbols
+  var ownKeys = getBuiltIn('Reflect', 'ownKeys') || function ownKeys(it) {
+    var keys = objectGetOwnPropertyNames.f(anObject(it));
+    var getOwnPropertySymbols = objectGetOwnPropertySymbols.f;
+    return getOwnPropertySymbols ? keys.concat(getOwnPropertySymbols(it)) : keys;
+  };
+
+  var copyConstructorProperties = function (target, source) {
+    var keys = ownKeys(source);
+    var defineProperty = objectDefineProperty.f;
+    var getOwnPropertyDescriptor = objectGetOwnPropertyDescriptor.f;
+    for (var i = 0; i < keys.length; i++) {
+      var key = keys[i];
+      if (!has(target, key)) defineProperty(target, key, getOwnPropertyDescriptor(source, key));
+    }
+  };
+
+  var getOwnPropertyDescriptor$2 = objectGetOwnPropertyDescriptor.f;
+
+
+
+
+
+
+  /*
+    options.target      - name of the target object
+    options.global      - target is the global object
+    options.stat        - export as static methods of target
+    options.proto       - export as prototype methods of target
+    options.real        - real prototype method for the `pure` version
+    options.forced      - export even if the native feature is available
+    options.bind        - bind methods to the target, required for the `pure` version
+    options.wrap        - wrap constructors to preventing global pollution, required for the `pure` version
+    options.unsafe      - use the simple assignment of property instead of delete + defineProperty
+    options.sham        - add a flag to not completely full polyfills
+    options.enumerable  - export as enumerable property
+    options.noTargetGet - prevent calling a getter on target
+  */
+  var _export = function (options, source) {
+    var TARGET = options.target;
+    var GLOBAL = options.global;
+    var STATIC = options.stat;
+    var FORCED, target, key, targetProperty, sourceProperty, descriptor;
+    if (GLOBAL) {
+      target = global_1;
+    } else if (STATIC) {
+      target = global_1[TARGET] || setGlobal(TARGET, {});
+    } else {
+      target = (global_1[TARGET] || {}).prototype;
+    }
+    if (target) for (key in source) {
+      sourceProperty = source[key];
+      if (options.noTargetGet) {
+        descriptor = getOwnPropertyDescriptor$2(target, key);
+        targetProperty = descriptor && descriptor.value;
+      } else targetProperty = target[key];
+      FORCED = isForced_1(GLOBAL ? key : TARGET + (STATIC ? '.' : '#') + key, options.forced);
+      // contained in target
+      if (!FORCED && targetProperty !== undefined) {
+        if (typeof sourceProperty === typeof targetProperty) continue;
+        copyConstructorProperties(sourceProperty, targetProperty);
+      }
+      // add a flag to not completely full polyfills
+      if (options.sham || (targetProperty && targetProperty.sham)) {
+        createNonEnumerableProperty(sourceProperty, 'sham', true);
+      }
+      // extend global
+      redefine(target, key, sourceProperty, options);
+    }
+  };
+
+  // `IsArray` abstract operation
+  // https://tc39.github.io/ecma262/#sec-isarray
+  var isArray = Array.isArray || function isArray(arg) {
+    return classofRaw(arg) == 'Array';
+  };
+
+  // `ToObject` abstract operation
+  // https://tc39.github.io/ecma262/#sec-toobject
+  var toObject = function (argument) {
+    return Object(requireObjectCoercible(argument));
+  };
+
   var createProperty = function (object, key, value) {
     var propertyKey = toPrimitive(key);
     if (propertyKey in object) objectDefineProperty.f(object, propertyKey, createPropertyDescriptor(0, value));
     else object[propertyKey] = value;
+  };
+
+  var nativeSymbol = !!Object.getOwnPropertySymbols && !fails(function () {
+    // Chrome 38 Symbol has incorrect toString conversion
+    // eslint-disable-next-line no-undef
+    return !String(Symbol());
+  });
+
+  var useSymbolAsUid = nativeSymbol
+    // eslint-disable-next-line no-undef
+    && !Symbol.sham
+    // eslint-disable-next-line no-undef
+    && typeof Symbol.iterator == 'symbol';
+
+  var WellKnownSymbolsStore = shared('wks');
+  var Symbol$1 = global_1.Symbol;
+  var createWellKnownSymbol = useSymbolAsUid ? Symbol$1 : Symbol$1 && Symbol$1.withoutSetter || uid;
+
+  var wellKnownSymbol = function (name) {
+    if (!has(WellKnownSymbolsStore, name)) {
+      if (nativeSymbol && has(Symbol$1, name)) WellKnownSymbolsStore[name] = Symbol$1[name];
+      else WellKnownSymbolsStore[name] = createWellKnownSymbol('Symbol.' + name);
+    } return WellKnownSymbolsStore[name];
+  };
+
+  var SPECIES = wellKnownSymbol('species');
+
+  // `ArraySpeciesCreate` abstract operation
+  // https://tc39.github.io/ecma262/#sec-arrayspeciescreate
+  var arraySpeciesCreate = function (originalArray, length) {
+    var C;
+    if (isArray(originalArray)) {
+      C = originalArray.constructor;
+      // cross-realm fallback
+      if (typeof C == 'function' && (C === Array || isArray(C.prototype))) C = undefined;
+      else if (isObject(C)) {
+        C = C[SPECIES];
+        if (C === null) C = undefined;
+      }
+    } return new (C === undefined ? Array : C)(length === 0 ? 0 : length);
+  };
+
+  var engineUserAgent = getBuiltIn('navigator', 'userAgent') || '';
+
+  var process = global_1.process;
+  var versions = process && process.versions;
+  var v8 = versions && versions.v8;
+  var match, version;
+
+  if (v8) {
+    match = v8.split('.');
+    version = match[0] + match[1];
+  } else if (engineUserAgent) {
+    match = engineUserAgent.match(/Edge\/(\d+)/);
+    if (!match || match[1] >= 74) {
+      match = engineUserAgent.match(/Chrome\/(\d+)/);
+      if (match) version = match[1];
+    }
+  }
+
+  var engineV8Version = version && +version;
+
+  var SPECIES$1 = wellKnownSymbol('species');
+
+  var arrayMethodHasSpeciesSupport = function (METHOD_NAME) {
+    // We can't use this feature detection in V8 since it causes
+    // deoptimization and serious performance degradation
+    // https://github.com/zloirock/core-js/issues/677
+    return engineV8Version >= 51 || !fails(function () {
+      var array = [];
+      var constructor = array.constructor = {};
+      constructor[SPECIES$1] = function () {
+        return { foo: 1 };
+      };
+      return array[METHOD_NAME](Boolean).foo !== 1;
+    });
   };
 
   var IS_CONCAT_SPREADABLE = wellKnownSymbol('isConcatSpreadable');
@@ -1966,6 +1708,193 @@
   //   }
   // }
 
+  var aFunction$1 = function (it) {
+    if (typeof it != 'function') {
+      throw TypeError(String(it) + ' is not a function');
+    } return it;
+  };
+
+  // optional / simple context binding
+  var functionBindContext = function (fn, that, length) {
+    aFunction$1(fn);
+    if (that === undefined) return fn;
+    switch (length) {
+      case 0: return function () {
+        return fn.call(that);
+      };
+      case 1: return function (a) {
+        return fn.call(that, a);
+      };
+      case 2: return function (a, b) {
+        return fn.call(that, a, b);
+      };
+      case 3: return function (a, b, c) {
+        return fn.call(that, a, b, c);
+      };
+    }
+    return function (/* ...args */) {
+      return fn.apply(that, arguments);
+    };
+  };
+
+  var push = [].push;
+
+  // `Array.prototype.{ forEach, map, filter, some, every, find, findIndex }` methods implementation
+  var createMethod$2 = function (TYPE) {
+    var IS_MAP = TYPE == 1;
+    var IS_FILTER = TYPE == 2;
+    var IS_SOME = TYPE == 3;
+    var IS_EVERY = TYPE == 4;
+    var IS_FIND_INDEX = TYPE == 6;
+    var NO_HOLES = TYPE == 5 || IS_FIND_INDEX;
+    return function ($this, callbackfn, that, specificCreate) {
+      var O = toObject($this);
+      var self = indexedObject(O);
+      var boundFunction = functionBindContext(callbackfn, that, 3);
+      var length = toLength(self.length);
+      var index = 0;
+      var create = specificCreate || arraySpeciesCreate;
+      var target = IS_MAP ? create($this, length) : IS_FILTER ? create($this, 0) : undefined;
+      var value, result;
+      for (;length > index; index++) if (NO_HOLES || index in self) {
+        value = self[index];
+        result = boundFunction(value, index, O);
+        if (TYPE) {
+          if (IS_MAP) target[index] = result; // map
+          else if (result) switch (TYPE) {
+            case 3: return true;              // some
+            case 5: return value;             // find
+            case 6: return index;             // findIndex
+            case 2: push.call(target, value); // filter
+          } else if (IS_EVERY) return false;  // every
+        }
+      }
+      return IS_FIND_INDEX ? -1 : IS_SOME || IS_EVERY ? IS_EVERY : target;
+    };
+  };
+
+  var arrayIteration = {
+    // `Array.prototype.forEach` method
+    // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
+    forEach: createMethod$2(0),
+    // `Array.prototype.map` method
+    // https://tc39.github.io/ecma262/#sec-array.prototype.map
+    map: createMethod$2(1),
+    // `Array.prototype.filter` method
+    // https://tc39.github.io/ecma262/#sec-array.prototype.filter
+    filter: createMethod$2(2),
+    // `Array.prototype.some` method
+    // https://tc39.github.io/ecma262/#sec-array.prototype.some
+    some: createMethod$2(3),
+    // `Array.prototype.every` method
+    // https://tc39.github.io/ecma262/#sec-array.prototype.every
+    every: createMethod$2(4),
+    // `Array.prototype.find` method
+    // https://tc39.github.io/ecma262/#sec-array.prototype.find
+    find: createMethod$2(5),
+    // `Array.prototype.findIndex` method
+    // https://tc39.github.io/ecma262/#sec-array.prototype.findIndex
+    findIndex: createMethod$2(6)
+  };
+
+  var arrayMethodIsStrict = function (METHOD_NAME, argument) {
+    var method = [][METHOD_NAME];
+    return !!method && fails(function () {
+      // eslint-disable-next-line no-useless-call,no-throw-literal
+      method.call(null, argument || function () { throw 1; }, 1);
+    });
+  };
+
+  var defineProperty$3 = Object.defineProperty;
+  var cache = {};
+
+  var thrower = function (it) { throw it; };
+
+  var arrayMethodUsesToLength = function (METHOD_NAME, options) {
+    if (has(cache, METHOD_NAME)) return cache[METHOD_NAME];
+    if (!options) options = {};
+    var method = [][METHOD_NAME];
+    var ACCESSORS = has(options, 'ACCESSORS') ? options.ACCESSORS : false;
+    var argument0 = has(options, 0) ? options[0] : thrower;
+    var argument1 = has(options, 1) ? options[1] : undefined;
+
+    return cache[METHOD_NAME] = !!method && !fails(function () {
+      if (ACCESSORS && !descriptors) return true;
+      var O = { length: -1 };
+
+      if (ACCESSORS) defineProperty$3(O, 1, { enumerable: true, get: thrower });
+      else O[1] = 1;
+
+      method.call(O, argument0, argument1);
+    });
+  };
+
+  var $forEach = arrayIteration.forEach;
+
+
+
+  var STRICT_METHOD = arrayMethodIsStrict('forEach');
+  var USES_TO_LENGTH = arrayMethodUsesToLength('forEach');
+
+  // `Array.prototype.forEach` method implementation
+  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
+  var arrayForEach = (!STRICT_METHOD || !USES_TO_LENGTH) ? function forEach(callbackfn /* , thisArg */) {
+    return $forEach(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
+  } : [].forEach;
+
+  // `Array.prototype.forEach` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
+  _export({ target: 'Array', proto: true, forced: [].forEach != arrayForEach }, {
+    forEach: arrayForEach
+  });
+
+  // iterable DOM collections
+  // flag - `iterable` interface - 'entries', 'keys', 'values', 'forEach' methods
+  var domIterables = {
+    CSSRuleList: 0,
+    CSSStyleDeclaration: 0,
+    CSSValueList: 0,
+    ClientRectList: 0,
+    DOMRectList: 0,
+    DOMStringList: 0,
+    DOMTokenList: 1,
+    DataTransferItemList: 0,
+    FileList: 0,
+    HTMLAllCollection: 0,
+    HTMLCollection: 0,
+    HTMLFormElement: 0,
+    HTMLSelectElement: 0,
+    MediaList: 0,
+    MimeTypeArray: 0,
+    NamedNodeMap: 0,
+    NodeList: 1,
+    PaintRequestList: 0,
+    Plugin: 0,
+    PluginArray: 0,
+    SVGLengthList: 0,
+    SVGNumberList: 0,
+    SVGPathSegList: 0,
+    SVGPointList: 0,
+    SVGStringList: 0,
+    SVGTransformList: 0,
+    SourceBufferList: 0,
+    StyleSheetList: 0,
+    TextTrackCueList: 0,
+    TextTrackList: 0,
+    TouchList: 0
+  };
+
+  for (var COLLECTION_NAME in domIterables) {
+    var Collection = global_1[COLLECTION_NAME];
+    var CollectionPrototype = Collection && Collection.prototype;
+    // some Chrome versions have non-configurable methods on DOMTokenList
+    if (CollectionPrototype && CollectionPrototype.forEach !== arrayForEach) try {
+      createNonEnumerableProperty(CollectionPrototype, 'forEach', arrayForEach);
+    } catch (error) {
+      CollectionPrototype.forEach = arrayForEach;
+    }
+  }
+
   var LbpFormButton = {
     render: function render() {
       var h = arguments[0];
@@ -2068,11 +1997,11 @@
 
   var NEGATIVE_ZERO = !!nativeIndexOf && 1 / [1].indexOf(1, -0) < 0;
   var STRICT_METHOD$1 = arrayMethodIsStrict('indexOf');
-  var USES_TO_LENGTH$2 = arrayMethodUsesToLength('indexOf', { ACCESSORS: true, 1: 0 });
+  var USES_TO_LENGTH$1 = arrayMethodUsesToLength('indexOf', { ACCESSORS: true, 1: 0 });
 
   // `Array.prototype.indexOf` method
   // https://tc39.github.io/ecma262/#sec-array.prototype.indexof
-  _export({ target: 'Array', proto: true, forced: NEGATIVE_ZERO || !STRICT_METHOD$1 || !USES_TO_LENGTH$2 }, {
+  _export({ target: 'Array', proto: true, forced: NEGATIVE_ZERO || !STRICT_METHOD$1 || !USES_TO_LENGTH$1 }, {
     indexOf: function indexOf(searchElement /* , fromIndex = 0 */) {
       return NEGATIVE_ZERO
         // convert -0 to +0
@@ -2091,6 +2020,23 @@
   _export({ target: 'Array', proto: true, forced: ES3_STRINGS || !STRICT_METHOD$2 }, {
     join: function join(separator) {
       return nativeJoin.call(toIndexedObject(this), separator === undefined ? ',' : separator);
+    }
+  });
+
+  var $map = arrayIteration.map;
+
+
+
+  var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('map');
+  // FF49- issue
+  var USES_TO_LENGTH$2 = arrayMethodUsesToLength('map');
+
+  // `Array.prototype.map` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.map
+  // with adding support of @@species
+  _export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT || !USES_TO_LENGTH$2 }, {
+    map: function map(callbackfn /* , thisArg */) {
+      return $map(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
     }
   });
 
@@ -2614,16 +2560,16 @@
   	f: f$6
   };
 
-  var defineProperty$5 = objectDefineProperty.f;
+  var defineProperty$4 = objectDefineProperty.f;
 
   var defineWellKnownSymbol = function (NAME) {
     var Symbol = path.Symbol || (path.Symbol = {});
-    if (!has(Symbol, NAME)) defineProperty$5(Symbol, NAME, {
+    if (!has(Symbol, NAME)) defineProperty$4(Symbol, NAME, {
       value: wellKnownSymbolWrapped.f(NAME)
     });
   };
 
-  var defineProperty$6 = objectDefineProperty.f;
+  var defineProperty$5 = objectDefineProperty.f;
 
 
 
@@ -2631,7 +2577,7 @@
 
   var setToStringTag = function (it, TAG, STATIC) {
     if (it && !has(it = STATIC ? it : it.prototype, TO_STRING_TAG)) {
-      defineProperty$6(it, TO_STRING_TAG, { configurable: true, value: TAG });
+      defineProperty$5(it, TO_STRING_TAG, { configurable: true, value: TAG });
     }
   };
 
@@ -2972,7 +2918,7 @@
 
   function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { defineProperty$3(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   function _renderWaterMark() {
     var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
@@ -59612,7 +59558,7 @@
 
   var Core$3 = _interopDefault$5(core_1);
 
-  var defineProperty$7 = function (obj, key, value) {
+  var defineProperty$6 = function (obj, key, value) {
     if (key in obj) {
       Object.defineProperty(obj, key, {
         value: value,
@@ -59802,7 +59748,7 @@
     });
     series = Object.keys(seriesTemp).map(function (item, index) {
       var data = dimAxisType === 'value' ? getValueData(seriesTemp[item], dims) : seriesTemp[item];
-      var seriesItem = defineProperty$7({
+      var seriesItem = defineProperty$6({
         name: labelMap[item] != null ? labelMap[item] : item,
         type: ~showLine.indexOf(item) ? 'line' : 'bar',
         data: data
@@ -64558,307 +64504,55 @@
     plugins: _plugins
   });
 
-  var enUSLang = {
-    app: {
-      title: 'Luban H5'
-    },
-    header: {
-      chineseDocument: '中文文档',
-      englishDocument: 'Document(En)',
-      chat: 'Discussion Group',
-      //
-      logout: 'Logout'
-    },
-    sidebar: {
-      myWorks: 'My Works',
-      dataCenter: 'Data Center',
-      basicData: 'Basic Data',
-      templateCenter: 'Templates',
-      freeTemplates: 'Templates List',
-      accountCenter: 'Account'
-    },
-    workCard: {
-      description: 'Desc',
-      createTime: 'Time',
-      useNow: 'Use it Now',
-      preview: 'Preview',
-      edit: 'Edit',
-      createNewWork: 'Create New',
-      view: 'View Work'
-    },
-    basicData: {
-      viewData: 'View Data'
-    },
-    editor: {
-      sidebar: {
-        components: 'Components',
-        pages: 'Pages',
-        templates: 'Templates',
-        tree: 'Tree'
-      },
-      pageManager: {
-        title: 'Page {index}',
-        action: {
-          add: 'Add Page',
-          copy: 'Copy Page',
-          delete: 'Delete Page'
-        }
-      },
-      header: {
-        preview: 'Preview',
-        save: 'Save',
-        publish: 'Publish',
-        setAsTemplate: 'Set As Template'
-      },
-      centerPanel: {
-        mode: {
-          edit: 'Edit',
-          preview: 'Preview'
-        },
-        contextMenu: {
-          copy: 'Copy',
-          delete: 'Delete',
-          moveToTop: 'Move To Top',
-          moveToBottom: 'Move To Bottom',
-          moveUp: 'Move Up',
-          moveDown: 'Move Down',
-          showOnlyButton: 'showOnlyButton',
-          showExcludePicture: 'showExcludePicture'
-        }
-      },
-      fixedTool: {
-        undo: 'Undo{hotkey}',
-        redo: 'Redo{hotkey}',
-        preview: 'Preview',
-        copyCurrentPage: 'CopyCurrentPage',
-        copyCurrentElement: 'copyCurrentElement',
-        importPSD: 'Import PSD',
-        zoomIn: 'Zoom In{hotkey}',
-        zoomOut: 'Zoom Out{hotkey}',
-        issues: 'Issues'
-      },
-      editPanel: {
-        tab: {
-          prop: 'Prop',
-          animation: 'Animation',
-          action: 'Action',
-          script: 'Script',
-          page: 'Page'
-        },
-        animation: {
-          add: 'Add',
-          run: 'Run',
-          type: 'Type',
-          duration: 'Duration',
-          delay: 'Delay',
-          iteration: 'Iteration',
-          inifinite: 'Inifinite',
-          list: 'Select Animation',
-          title: 'Animation {index}'
-        },
-        common: {
-          empty: 'Select an element first please!'
-        }
-      },
-      tip: {
-        componentUsage: 'Tip: just {0} on component',
-        click: 'click/drag'
+  var nativeAssign = Object.assign;
+  var defineProperty$7 = Object.defineProperty;
+
+  // `Object.assign` method
+  // https://tc39.github.io/ecma262/#sec-object.assign
+  var objectAssign = !nativeAssign || fails(function () {
+    // should have correct order of operations (Edge bug)
+    if (descriptors && nativeAssign({ b: 1 }, nativeAssign(defineProperty$7({}, 'a', {
+      enumerable: true,
+      get: function () {
+        defineProperty$7(this, 'b', {
+          value: 3,
+          enumerable: false
+        });
       }
-    }
-  };
-
-  /*
-   * @Author: ly525
-   * @Date: 2019-11-24 18:51:58
-   * @LastEditors: ly525
-   * @LastEditTime: 2020-10-13 01:29:21
-   * @FilePath: /h5/src/locales/lang/zh-CN.js
-   * @Github: https://github.com/ly525/luban-h5
-   * @Description: Do not edit
-   * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
-   */
-  var zhCNLang = {
-    app: {
-      title: '鲁班 H5'
-    },
-    header: {
-      chineseDocument: '中文文档',
-      englishDocument: '英文文档',
-      chat: '交流群',
-      //  Discussion Group
-      logout: '退出登录'
-    },
-    sidebar: {
-      myWorks: '我的作品',
-      dataCenter: '数据中心',
-      basicData: '基础数据',
-      templateCenter: '模板中心',
-      freeTemplates: '模板列表',
-      accountCenter: '账号中心'
-    },
-    workCard: {
-      description: '描述',
-      createTime: '时间',
-      useNow: '立即查看',
-      preview: '预览',
-      createNewWork: '创建新作品',
-      edit: '编辑',
-      view: '查看作品'
-    },
-    basicData: {
-      viewData: '查看数据'
-    },
-    editor: {
-      sidebar: {
-        components: '组件列表',
-        pages: '页面管理',
-        templates: '模板',
-        tree: '组件树'
-      },
-      pageManager: {
-        title: '第{index}页面',
-        action: {
-          add: '新增页面',
-          copy: '复制页面',
-          delete: '删除页面'
-        }
-      },
-      header: {
-        preview: '预览',
-        save: '保存',
-        publish: '发布',
-        setAsTemplate: '设置为模板'
-      },
-      centerPanel: {
-        mode: {
-          edit: 'Edit',
-          preview: 'Preview'
-        },
-        contextMenu: {
-          copy: '复制',
-          delete: '删除',
-          moveToTop: '置顶',
-          moveToBottom: '置底',
-          moveUp: '上移',
-          moveDown: '下移',
-          showOnlyButton: '只有按钮才显示该选项',
-          showExcludePicture: '除了图片都显示该选项'
-        }
-      },
-      fixedTool: {
-        undo: '撤销{hotkey}',
-        redo: '重做{hotkey}',
-        preview: '预览',
-        copyCurrentPage: '复制当前页面',
-        copyCurrentElement: '复制当前元素',
-        importPSD: '导入PSD',
-        zoomIn: '缩小{hotkey}',
-        zoomOut: '放大{hotkey}',
-        issues: '常见问题'
-      },
-      editPanel: {
-        tab: {
-          prop: '属性',
-          animation: '动画',
-          action: '动作',
-          script: '脚本',
-          page: '页面'
-        },
-        animation: {
-          add: '添加动画',
-          run: '运行动画',
-          type: '动画类型',
-          duration: '动画时长',
-          delay: '动画延时',
-          iteration: '运行次数',
-          inifinite: '循环播放',
-          list: '选择动画',
-          title: 'Animation {index}'
-        },
-        common: {
-          empty: 'Select an element first please!'
-        }
-      },
-      tip: {
-        componentUsage: '使用提示: {0} 组件即可',
-        click: '点击或拖拽'
+    }), { b: 2 })).b !== 1) return true;
+    // should work with symbols and should have deterministic property order (V8 bug)
+    var A = {};
+    var B = {};
+    // eslint-disable-next-line no-undef
+    var symbol = Symbol();
+    var alphabet = 'abcdefghijklmnopqrst';
+    A[symbol] = 7;
+    alphabet.split('').forEach(function (chr) { B[chr] = chr; });
+    return nativeAssign({}, A)[symbol] != 7 || objectKeys(nativeAssign({}, B)).join('') != alphabet;
+  }) ? function assign(target, source) { // eslint-disable-line no-unused-vars
+    var T = toObject(target);
+    var argumentsLength = arguments.length;
+    var index = 1;
+    var getOwnPropertySymbols = objectGetOwnPropertySymbols.f;
+    var propertyIsEnumerable = objectPropertyIsEnumerable.f;
+    while (argumentsLength > index) {
+      var S = indexedObject(arguments[index++]);
+      var keys = getOwnPropertySymbols ? objectKeys(S).concat(getOwnPropertySymbols(S)) : objectKeys(S);
+      var length = keys.length;
+      var j = 0;
+      var key;
+      while (length > j) {
+        key = keys[j++];
+        if (!descriptors || propertyIsEnumerable.call(S, key)) T[key] = S[key];
       }
-    }
-  };
+    } return T;
+  } : nativeAssign;
 
-  function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty$3(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  Vue__default['default'].use(VueI18n__default['default']);
-  var messages = {
-    'en-US': _objectSpread$1({}, enUSLang),
-    'zh-CN': _objectSpread$1({}, zhCNLang)
-  };
-  var defaultLang = 'zh-CN';
-  var i18n = new VueI18n__default['default']({
-    locale: defaultLang,
-    fallbackLocale: defaultLang,
-    messages: messages
+  // `Object.assign` method
+  // https://tc39.github.io/ecma262/#sec-object.assign
+  _export({ target: 'Object', stat: true, forced: Object.assign !== objectAssign }, {
+    assign: objectAssign
   });
-
-  function fromJSGreedy(js) {
-    if (_typeof_1(js) !== 'object' || js === null) return js;
-    var jsMap = immutable.Seq(js).map(fromJSGreedy);
-    return Array.isArray(js) ? jsMap.toList() : jsMap.toMap();
-  }
-
-  var UndoRedoHistory = /*#__PURE__*/function () {
-    function UndoRedoHistory() {
-      classCallCheck(this, UndoRedoHistory);
-
-      defineProperty$3(this, "state", void 0);
-
-      defineProperty$3(this, "history", []);
-
-      defineProperty$3(this, "currentIndex", 0);
-    }
-
-    createClass(UndoRedoHistory, [{
-      key: "init",
-      value: function init(state) {
-        this.history = [fromJSGreedy(state)];
-      }
-    }, {
-      key: "addState",
-      value: function addState(state) {
-        var history = this.history,
-            currentIndex = this.currentIndex;
-        var currentState = history[currentIndex] || {};
-        var nextIndex = currentIndex + 1;
-        if (nextIndex < history.length) history.splice(nextIndex);
-        this.currentIndex = nextIndex;
-        history[nextIndex] = currentState.merge(fromJSGreedy(state));
-      }
-    }, {
-      key: "undo",
-      value: function undo() {
-        var currentIndex = this.currentIndex;
-        var prevIndex = Math.max(currentIndex - 1, 0);
-        var prevState = this.history[prevIndex].toJS();
-        this.currentIndex = prevIndex;
-        return prevState;
-      }
-    }, {
-      key: "redo",
-      value: function redo() {
-        var history = this.history,
-            currentIndex = this.currentIndex;
-        var nextIndex = Math.min(history.length - 1, currentIndex + 1);
-        var nextState = this.history[nextIndex].toJS();
-        this.currentIndex = nextIndex;
-        return nextState;
-      }
-    }]);
-
-    return UndoRedoHistory;
-  }();
-
-  var history = new UndoRedoHistory();
 
   function _extends$6(){return _extends$6=Object.assign||function(a){for(var b,c=1;c<arguments.length;c++)for(var d in b=arguments[c],b)Object.prototype.hasOwnProperty.call(b,d)&&(a[d]=b[d]);return a},_extends$6.apply(this,arguments)}var normalMerge=["attrs","props","domProps"],toArrayMerge=["class","style","directives"],functionalMerge=["on","nativeOn"],mergeJsxProps=function(a){return a.reduce(function(c,a){for(var b in a)if(!c[b])c[b]=a[b];else if(-1!==normalMerge.indexOf(b))c[b]=_extends$6({},c[b],a[b]);else if(-1!==toArrayMerge.indexOf(b)){var d=c[b]instanceof Array?c[b]:[c[b]],e=a[b]instanceof Array?a[b]:[a[b]];c[b]=d.concat(e);}else if(-1!==functionalMerge.indexOf(b)){for(var f in a[b])if(c[b][f]){var g=c[b][f]instanceof Array?c[b][f]:[c[b][f]],h=a[b][f]instanceof Array?a[b][f]:[a[b][f]];c[b][f]=g.concat(h);}else c[b][f]=a[b][f];}else if("hook"==b)for(var i in a[b])c[b][i]=c[b][i]?mergeFn(c[b][i],a[b][i]):a[b][i];else c[b]=a[b];return c},{})},mergeFn=function(a,b){return function(){a&&a.apply(this,arguments),b&&b.apply(this,arguments);}};var helper$5=mergeJsxProps;
 
@@ -65552,9 +65246,9 @@
   };
   var vClickOutside = HAS_WINDOWS ? directive : {};
 
-  function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { defineProperty$3(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   /**
    * #!zh: 上下左右 对应的 东南西北
    * #!en: top(north)、bottom(south)、left(west)、right(east)
@@ -65627,9 +65321,9 @@
       },
       rect: {
         handler: function handler() {
-          var newStyle = _objectSpread$2(_objectSpread$2({}, this.elStyle), this.rect);
+          var newStyle = _objectSpread$1(_objectSpread$1({}, this.elStyle), this.rect);
 
-          this.shapeStyle = _objectSpread$2(_objectSpread$2({}, this.shapeStyle), renderStyle(this.rect));
+          this.shapeStyle = _objectSpread$1(_objectSpread$1({}, this.shapeStyle), renderStyle(this.rect));
           this.$emit('change', newStyle);
         },
         deep: true
@@ -65813,9 +65507,9 @@
     }
   };
 
-  function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$3(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { defineProperty$3(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   var id$1 = 0;
 
   var LbpElement = /*#__PURE__*/function () {
@@ -65840,13 +65534,13 @@
         this.pluginName = pluginName;
         var plugin = lbpPluginController.getPlugin(pluginName); // 传入具体的element render 的 参数
 
-        this.props = _objectSpread$3(_objectSpread$3({}, LbpElement.getPluginProps(plugin.component)), props); // 传入具体的element render 的 属性
+        this.props = _objectSpread$2(_objectSpread$2({}, LbpElement.getPluginProps(plugin.component)), props); // 传入具体的element render 的 属性
 
-        this.attrs = _objectSpread$3({}, attrs); // 传入具体的element render 的 样式
+        this.attrs = _objectSpread$2({}, attrs); // 传入具体的element render 的 样式
 
-        this.class = _objectSpread$3({}, options.class); // 传入 shapeLayer 以改变位置以及大小
+        this.class = _objectSpread$2({}, options.class); // 传入 shapeLayer 以改变位置以及大小
 
-        this.style = _objectSpread$3(_objectSpread$3({}, ShapeLayerDefaultProps), style); // 传入 animateLayer 以实现动画效果
+        this.style = _objectSpread$2(_objectSpread$2({}, ShapeLayerDefaultProps), style); // 传入 animateLayer 以实现动画效果
 
         this.animations = toConsumableArray(animations);
       } else {
@@ -65865,7 +65559,7 @@
           zIndex: zIndex,
           name: this.name,
           pluginProps: this.pluginProps,
-          commonStyle: _objectSpread$3(_objectSpread$3({}, this.commonStyle), {}, {
+          commonStyle: _objectSpread$2(_objectSpread$2({}, this.commonStyle), {}, {
             top: this.commonStyle.top + 20,
             left: this.commonStyle.left + 20
           })
@@ -66150,3241 +65844,6 @@
     }
   };
 
-  /*
-   * @author : Mater
-   * @Email : bxh8640@gmail.com
-   * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-18 10:37:34
-   * @Description :
-   */
-  // import undoRedoHistory from '@/store/plugins/undo-redo/History'
-  var fixedTools = [{
-    i18nTooltip: 'editor.fixedTool.undo',
-    icon: 'mail-reply',
-    action: function action() {
-      this.$emit('undo');
-    },
-    hotkey: 'ctrl&z,⌘&z',
-    hotkeyTooltip: '(ctrl+z)'
-  }, {
-    i18nTooltip: 'editor.fixedTool.redo',
-    icon: 'mail-forward',
-    action: function action() {
-      this.$emit('redo');
-    },
-    hotkey: 'ctrl&y,⌘&u',
-    hotkeyTooltip: '(ctrl+y)'
-  }, {
-    i18nTooltip: 'editor.fixedTool.preview',
-    icon: 'eye',
-    action: function action() {
-      this.previewDialogVisible = true;
-    }
-  }, {
-    i18nTooltip: 'editor.fixedTool.copyCurrentPage',
-    icon: 'copy',
-    action: function action() {
-      this.pageManager({
-        type: 'copy'
-      });
-    },
-    hotkey: 'ctrl&c,⌘&c'
-  }, {
-    i18nTooltip: 'editor.fixedTool.copyCurrentElement',
-    icon: 'copy',
-    action: function action() {
-      this.elementManager({
-        type: 'copy'
-      });
-    }
-  }, {
-    i18nTooltip: 'editor.fixedTool.importPSD',
-    text: 'Ps',
-    icon: '',
-    // 优先级: icon > text > i18nTooltip
-    action: '',
-    disabled: true
-  }, {
-    i18nTooltip: 'editor.fixedTool.zoomOut',
-    icon: 'plus',
-    action: function action() {
-      this.updateScaleRate(0.25);
-    },
-    hotkey: 'ctrl&=,⌘&=',
-    hotkeyTooltip: '(ctrl +)'
-  }, {
-    i18nTooltip: 'editor.fixedTool.zoomIn',
-    icon: 'minus',
-    action: function action() {
-      this.updateScaleRate(-0.25);
-    },
-    hotkey: 'ctrl&-,⌘&-',
-    hotkeyTooltip: '(ctrl -)'
-  }, {
-    i18nTooltip: 'editor.fixedTool.issues',
-    icon: 'question',
-    action: function action() {
-      window.open('https://github.com/ly525/luban-h5/issues/110');
-    }
-  }];
-
-  var _components;
-  var FixedTools = {
-    components: (_components = {}, defineProperty$3(_components, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$3(_components, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$3(_components, antDesignVue.Tooltip.name, antDesignVue.Tooltip), defineProperty$3(_components, antDesignVue.Button.name, antDesignVue.Button), _components),
-    data: function data() {
-      return {
-        scaleRate: 1
-      };
-    },
-    render: function render() {
-      var _this = this;
-
-      var h = arguments[0];
-      return h("a-layout-sider", {
-        "attrs": {
-          "width": "40",
-          "theme": "light"
-        },
-        "style": {
-          background: '#fff',
-          border: '1px solid #eee'
-        }
-      }, [h("a-button-group", {
-        "style": {
-          display: 'flex',
-          flexDirection: 'column'
-        }
-      }, [fixedTools.map(function (tool) {
-        return h("a-tooltip", {
-          "attrs": {
-            "effect": "dark",
-            "placement": "left",
-            "title": _this.$t(tool.i18nTooltip, {
-              hotkey: tool.hotkeyTooltip
-            })
-          }
-        }, [h("a-button", {
-          "attrs": {
-            "block": true,
-            "type": "link",
-            "size": "small",
-            "disabled": !!tool.disabled
-          },
-          "class": "transparent-bg",
-          "style": {
-            height: '40px',
-            color: '#000'
-          },
-          "on": {
-            "click": function click() {
-              return tool.action && tool.action.call(_this);
-            }
-          }
-        }, [tool.icon ? h("i", {
-          "class": ['shortcut-icon', 'fa', "fa-".concat(tool.icon)],
-          "attrs": {
-            "aria-hidden": "true"
-          }
-        }) : tool.text || _this.$t(tool.i18nTooltip)]), tool.icon === 'minus' && h("div", {
-          "style": {
-            fontSize: '12px',
-            textAlign: 'center'
-          }
-        }, [_this.scaleRate * 100, "%"])]);
-      })])]);
-    },
-    mounted: function mounted() {
-      var _this2 = this;
-
-      fixedTools.map(function (tool) {
-        tool.hotkey && hotkeys__default['default'](tool.hotkey, {
-          splitKey: '&'
-        }, function (event, handler) {
-          event.preventDefault();
-          event.stopPropagation();
-          tool.action && tool.action.call(_this2);
-        });
-      });
-    }
-  };
-
-  var correctPrototypeGetter = !fails(function () {
-    function F() { /* empty */ }
-    F.prototype.constructor = null;
-    return Object.getPrototypeOf(new F()) !== F.prototype;
-  });
-
-  var IE_PROTO$1 = sharedKey('IE_PROTO');
-  var ObjectPrototype$1 = Object.prototype;
-
-  // `Object.getPrototypeOf` method
-  // https://tc39.github.io/ecma262/#sec-object.getprototypeof
-  var objectGetPrototypeOf = correctPrototypeGetter ? Object.getPrototypeOf : function (O) {
-    O = toObject(O);
-    if (has(O, IE_PROTO$1)) return O[IE_PROTO$1];
-    if (typeof O.constructor == 'function' && O instanceof O.constructor) {
-      return O.constructor.prototype;
-    } return O instanceof Object ? ObjectPrototype$1 : null;
-  };
-
-  var ITERATOR$3 = wellKnownSymbol('iterator');
-  var BUGGY_SAFARI_ITERATORS = false;
-
-  var returnThis = function () { return this; };
-
-  // `%IteratorPrototype%` object
-  // https://tc39.github.io/ecma262/#sec-%iteratorprototype%-object
-  var IteratorPrototype, PrototypeOfArrayIteratorPrototype, arrayIterator;
-
-  if ([].keys) {
-    arrayIterator = [].keys();
-    // Safari 8 has buggy iterators w/o `next`
-    if (!('next' in arrayIterator)) BUGGY_SAFARI_ITERATORS = true;
-    else {
-      PrototypeOfArrayIteratorPrototype = objectGetPrototypeOf(objectGetPrototypeOf(arrayIterator));
-      if (PrototypeOfArrayIteratorPrototype !== Object.prototype) IteratorPrototype = PrototypeOfArrayIteratorPrototype;
-    }
-  }
-
-  if (IteratorPrototype == undefined) IteratorPrototype = {};
-
-  // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-  if ( !has(IteratorPrototype, ITERATOR$3)) {
-    createNonEnumerableProperty(IteratorPrototype, ITERATOR$3, returnThis);
-  }
-
-  var iteratorsCore = {
-    IteratorPrototype: IteratorPrototype,
-    BUGGY_SAFARI_ITERATORS: BUGGY_SAFARI_ITERATORS
-  };
-
-  var IteratorPrototype$1 = iteratorsCore.IteratorPrototype;
-
-
-
-
-
-  var returnThis$1 = function () { return this; };
-
-  var createIteratorConstructor = function (IteratorConstructor, NAME, next) {
-    var TO_STRING_TAG = NAME + ' Iterator';
-    IteratorConstructor.prototype = objectCreate(IteratorPrototype$1, { next: createPropertyDescriptor(1, next) });
-    setToStringTag(IteratorConstructor, TO_STRING_TAG, false);
-    iterators[TO_STRING_TAG] = returnThis$1;
-    return IteratorConstructor;
-  };
-
-  var IteratorPrototype$2 = iteratorsCore.IteratorPrototype;
-  var BUGGY_SAFARI_ITERATORS$1 = iteratorsCore.BUGGY_SAFARI_ITERATORS;
-  var ITERATOR$4 = wellKnownSymbol('iterator');
-  var KEYS = 'keys';
-  var VALUES = 'values';
-  var ENTRIES = 'entries';
-
-  var returnThis$2 = function () { return this; };
-
-  var defineIterator = function (Iterable, NAME, IteratorConstructor, next, DEFAULT, IS_SET, FORCED) {
-    createIteratorConstructor(IteratorConstructor, NAME, next);
-
-    var getIterationMethod = function (KIND) {
-      if (KIND === DEFAULT && defaultIterator) return defaultIterator;
-      if (!BUGGY_SAFARI_ITERATORS$1 && KIND in IterablePrototype) return IterablePrototype[KIND];
-      switch (KIND) {
-        case KEYS: return function keys() { return new IteratorConstructor(this, KIND); };
-        case VALUES: return function values() { return new IteratorConstructor(this, KIND); };
-        case ENTRIES: return function entries() { return new IteratorConstructor(this, KIND); };
-      } return function () { return new IteratorConstructor(this); };
-    };
-
-    var TO_STRING_TAG = NAME + ' Iterator';
-    var INCORRECT_VALUES_NAME = false;
-    var IterablePrototype = Iterable.prototype;
-    var nativeIterator = IterablePrototype[ITERATOR$4]
-      || IterablePrototype['@@iterator']
-      || DEFAULT && IterablePrototype[DEFAULT];
-    var defaultIterator = !BUGGY_SAFARI_ITERATORS$1 && nativeIterator || getIterationMethod(DEFAULT);
-    var anyNativeIterator = NAME == 'Array' ? IterablePrototype.entries || nativeIterator : nativeIterator;
-    var CurrentIteratorPrototype, methods, KEY;
-
-    // fix native
-    if (anyNativeIterator) {
-      CurrentIteratorPrototype = objectGetPrototypeOf(anyNativeIterator.call(new Iterable()));
-      if (IteratorPrototype$2 !== Object.prototype && CurrentIteratorPrototype.next) {
-        if ( objectGetPrototypeOf(CurrentIteratorPrototype) !== IteratorPrototype$2) {
-          if (objectSetPrototypeOf) {
-            objectSetPrototypeOf(CurrentIteratorPrototype, IteratorPrototype$2);
-          } else if (typeof CurrentIteratorPrototype[ITERATOR$4] != 'function') {
-            createNonEnumerableProperty(CurrentIteratorPrototype, ITERATOR$4, returnThis$2);
-          }
-        }
-        // Set @@toStringTag to native iterators
-        setToStringTag(CurrentIteratorPrototype, TO_STRING_TAG, true);
-      }
-    }
-
-    // fix Array#{values, @@iterator}.name in V8 / FF
-    if (DEFAULT == VALUES && nativeIterator && nativeIterator.name !== VALUES) {
-      INCORRECT_VALUES_NAME = true;
-      defaultIterator = function values() { return nativeIterator.call(this); };
-    }
-
-    // define iterator
-    if ( IterablePrototype[ITERATOR$4] !== defaultIterator) {
-      createNonEnumerableProperty(IterablePrototype, ITERATOR$4, defaultIterator);
-    }
-    iterators[NAME] = defaultIterator;
-
-    // export additional methods
-    if (DEFAULT) {
-      methods = {
-        values: getIterationMethod(VALUES),
-        keys: IS_SET ? defaultIterator : getIterationMethod(KEYS),
-        entries: getIterationMethod(ENTRIES)
-      };
-      if (FORCED) for (KEY in methods) {
-        if (BUGGY_SAFARI_ITERATORS$1 || INCORRECT_VALUES_NAME || !(KEY in IterablePrototype)) {
-          redefine(IterablePrototype, KEY, methods[KEY]);
-        }
-      } else _export({ target: NAME, proto: true, forced: BUGGY_SAFARI_ITERATORS$1 || INCORRECT_VALUES_NAME }, methods);
-    }
-
-    return methods;
-  };
-
-  var ARRAY_ITERATOR = 'Array Iterator';
-  var setInternalState$2 = internalState.set;
-  var getInternalState$2 = internalState.getterFor(ARRAY_ITERATOR);
-
-  // `Array.prototype.entries` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.entries
-  // `Array.prototype.keys` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.keys
-  // `Array.prototype.values` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.values
-  // `Array.prototype[@@iterator]` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype-@@iterator
-  // `CreateArrayIterator` internal method
-  // https://tc39.github.io/ecma262/#sec-createarrayiterator
-  var es_array_iterator = defineIterator(Array, 'Array', function (iterated, kind) {
-    setInternalState$2(this, {
-      type: ARRAY_ITERATOR,
-      target: toIndexedObject(iterated), // target
-      index: 0,                          // next index
-      kind: kind                         // kind
-    });
-  // `%ArrayIteratorPrototype%.next` method
-  // https://tc39.github.io/ecma262/#sec-%arrayiteratorprototype%.next
-  }, function () {
-    var state = getInternalState$2(this);
-    var target = state.target;
-    var kind = state.kind;
-    var index = state.index++;
-    if (!target || index >= target.length) {
-      state.target = undefined;
-      return { value: undefined, done: true };
-    }
-    if (kind == 'keys') return { value: index, done: false };
-    if (kind == 'values') return { value: target[index], done: false };
-    return { value: [index, target[index]], done: false };
-  }, 'values');
-
-  // argumentsList[@@iterator] is %ArrayProto_values%
-  // https://tc39.github.io/ecma262/#sec-createunmappedargumentsobject
-  // https://tc39.github.io/ecma262/#sec-createmappedargumentsobject
-  iterators.Arguments = iterators.Array;
-
-  // https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
-  addToUnscopables('keys');
-  addToUnscopables('values');
-  addToUnscopables('entries');
-
-  // `Object.fromEntries` method
-  // https://github.com/tc39/proposal-object-from-entries
-  _export({ target: 'Object', stat: true }, {
-    fromEntries: function fromEntries(iterable) {
-      var obj = {};
-      iterate_1(iterable, function (k, v) {
-        createProperty(obj, k, v);
-      }, undefined, true);
-      return obj;
-    }
-  });
-
-  /*
-   * @author : Mater
-   * @Email : bxh8640@gmail.com
-   * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-17 11:44:55
-   * @Description :
-   */
-  var colorsPanel = {
-    name: 'colors-panel',
-    props: {
-      value: {
-        type: [Array, String]
-      }
-    },
-    render: function render() {
-      var _this = this;
-
-      var h = arguments[0];
-      return h("div", [Array.isArray(this.value) ? this.value.map(function (v, index) {
-        return h("input", {
-          "attrs": {
-            "size": "small",
-            "type": "color",
-            "autocomplete": true
-          },
-          "domProps": {
-            "value": v
-          },
-          "on": {
-            "change": function change(e) {
-              var colors = _this.value.slice(0);
-
-              colors[index] = e.target.value;
-
-              _this.$emit('change', colors);
-            }
-          }
-        });
-      }) : h("input", {
-        "attrs": {
-          "size": "small",
-          "type": "color",
-          "autocomplete": true
-        },
-        "domProps": {
-          "value": this.value
-        },
-        "on": {
-          "change": function change(e) {
-            _this.$emit('change', e.target.value);
-          }
-        }
-      })]);
-    }
-  };
-
-  var _components$1;
-  var lbsTextAlign = {
-    name: 'lbs-text-align',
-    components: (_components$1 = {}, defineProperty$3(_components$1, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$3(_components$1, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$3(_components$1, antDesignVue.Tooltip.name, antDesignVue.Tooltip), _components$1),
-    render: function render(h) {
-      var _this = this;
-
-      return h("div", {
-        "class": "wrap"
-      }, [h("a-radio-group", {
-        "attrs": {
-          "size": "small",
-          "value": this.value
-        },
-        "on": {
-          "change": function change(value) {
-            _this.$emit('change', value);
-
-            _this.$emit('input', value);
-          }
-        }
-      }, [this.textAlignTabs.map(function (item) {
-        return h("a-tooltip", {
-          "attrs": {
-            "effect": "dark",
-            "placement": "top",
-            "title": item.label
-          },
-          "key": item.value
-        }, [h("a-radio-button", {
-          "attrs": {
-            "value": item.value
-          }
-        }, [h("i", {
-          "class": ['fa', 'fa-align-' + item.value],
-          "attrs": {
-            "aria-hidden": "true"
-          }
-        })])]);
-      })])]);
-    },
-    props: {
-      value: {
-        type: [String, Number]
-      }
-    },
-    data: function data() {
-      return {
-        textAlignTabs: [{
-          label: '左对齐',
-          value: 'left'
-        }, {
-          label: '居中对齐',
-          value: 'center'
-        }, {
-          label: '右对齐',
-          value: 'right'
-        }]
-      };
-    }
-  };
-
-  /**
-   *
-   declare module ExcelRows {
-    export interface cell {
-        text: string;
-    }
-    export interface Cells {
-      0: cell;
-      1: cell;
-      2: cell;
-    }
-    export interface ExcelRows {
-      cells: Cells;
-    }
-  }
-   */
-
-  /**
-    *
-    BinaryMatrix = [
-      [any, any, any, ...],
-      [any, any, any, ...],
-      [any, any, any, ...],
-    ]
-
-    ExcelDataType = [
-      {
-        cells: {
-          0: { text: any },
-          1: { text: any },
-          2: { text: any }
-        }
-      },
-      {
-        cells: {
-          0: { text: any },
-          1: { text: any },
-          2: { text: any }
-        }
-      },
-    ]
-    */
-  var Parser$2 = /*#__PURE__*/function () {
-    function Parser() {
-      classCallCheck(this, Parser);
-    }
-
-    createClass(Parser, null, [{
-      key: "dataset2excel",
-
-      /**
-       *
-       * @param {*} dataset ExcelDataType
-       */
-      value: function dataset2excel(dataset) {
-        return dataset.map(function (item) {
-          return {
-            cells: {
-              0: {
-                text: item.x
-              },
-              1: {
-                text: item.y
-              },
-              2: {
-                text: item.s
-              }
-            }
-          };
-        });
-      }
-      /**
-       *
-        [
-          [1,2,3,4],
-          [5,6,7,8],
-          [9,10,11,12]
-        ]
-       * @param {Object} BinaryMatrix
-       * @returns {Object} ExcelDataType
-       */
-
-    }, {
-      key: "binaryMatrix2excel",
-      value: function binaryMatrix2excel() {
-        var binaryMatrix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-        var excelData = binaryMatrix.map(function (row, rowIndex) {
-          // cells: {
-          //   0: { text: item.x },
-          //   1: { text: item.y },
-          //   2: { text: item.s }
-          // }
-          var cells = {};
-          row.forEach(function (cellValue, cellIndex) {
-            cells[cellIndex] = {
-              text: cellValue
-            };
-          });
-          return {
-            cells: cells
-          };
-        });
-        return excelData;
-      }
-    }, {
-      key: "excel2chartDataSet",
-      value: function excel2chartDataSet(excelData) {
-        var rowsArray = Object.values(excelData.rows).filter(function (item) {
-          return _typeof_1(item) === 'object';
-        });
-        var dataset = rowsArray.map(function (row) {
-          var _Object$values$map = Object.values(row.cells).map(function (item) {
-            return item.text;
-          }),
-              _Object$values$map2 = slicedToArray(_Object$values$map, 3),
-              x = _Object$values$map2[0],
-              y = _Object$values$map2[1],
-              s = _Object$values$map2[2];
-
-          return {
-            x: x,
-            y: y,
-            s: s
-          };
-        });
-        return dataset;
-      }
-    }, {
-      key: "excel2BinaryMatrix",
-      value: function excel2BinaryMatrix(excelData) {
-        var rowsArray = Object.values(excelData.rows).filter(function (item) {
-          return _typeof_1(item) === 'object';
-        });
-        var dataset = rowsArray.map(function (row) {
-          // [1,2,3,4]
-          var cells = Object.values(row.cells).map(function (item) {
-            return item.text;
-          });
-          return cells;
-        });
-        console.log('dataset', dataset);
-        return dataset;
-      }
-      /**
-      *
-      * @param {Array} csvArray
-      *    [
-             ['日期', '销售量'],
-             ["1月1日",123],
-             ["1月2日",1223],
-             ["1月3日",2123],
-             ["1月4日",4123],
-             ["1月5日",3123],
-             ["1月6日",7123]
-           ]
-      * @returns {Object}
-         {
-           columns: ['日期', '销售量'],
-           rows:[
-             { '日期': '1月1日', '销售量': 123 },
-             { '日期': '1月2日', '销售量': 1223 },
-             { '日期': '1月3日', '销售量': 2123 },
-             { '日期': '1月4日', '销售量': 4123 },
-             { '日期': '1月5日', '销售量': 3123 },
-             { '日期': '1月6日', '销售量': 7123 }
-           ]
-         }
-      */
-
-    }, {
-      key: "csv2VChartJson",
-      value: function csv2VChartJson(csvArray) {
-        var columns = csvArray[0];
-        var rows = csvArray.slice(1);
-        var json = {
-          columns: columns,
-          rows: rows.map(function (row, index) {
-            var obj = {};
-            columns.forEach(function (col, colIndex) {
-              obj[col.trim()] = row[colIndex];
-            });
-            return obj;
-          })
-        };
-        return json;
-      }
-    }]);
-
-    return Parser;
-  }();
-
-  var validFileMimeTypes = ['text/csv', 'text/x-csv', 'application/vnd.ms-excel', 'text/plain'];
-  var CsvImport = {
-    name: 'lbs-csv-import',
-    methods: {
-      checkMimeType: function checkMimeType(type) {
-        return validFileMimeTypes.indexOf(type) > -1;
-      },
-      validFileMimeType: function validFileMimeType(e) {
-        e.preventDefault();
-        var file = this.$refs.csv.files[0];
-        var isValidFileMimeType = this.checkMimeType(file.type);
-        if (isValidFileMimeType) this.loadFile();
-      },
-      loadFile: function loadFile() {
-        var _this = this;
-
-        /**
-         * output {String}
-            "columnA,columnB,columnC
-            "Susan",41,a
-            "Mike",5,b
-            "Jake",33,c
-            "Jill",30,d
-            "
-          * csv {Object}
-          {
-            "data": [
-              ["columnA", "columnB", "columnC"],
-              ["Susan", "41", "a"],
-              ["Mike", "5", "b"],
-              ["Jake", "33", "c"],
-              ["Jill", "30", "d"],
-            ],
-            "errors": [],
-            "meta": {
-              "delimiter": ",",
-              "linebreak": "\n",
-              "aborted": false,
-              "truncated": false,
-              "cursor": 72
-            }
-          }
-         */
-        this.readFile(function (output) {
-          // const sample = Papa.parse(output, { preview: 2, skipEmptyLines: true })
-          var csv = Papa__default['default'].parse(output, {
-            skipEmptyLines: true
-          });
-
-          _this.$emit('parse', csv);
-
-          _this.$refs.input.value = '';
-        });
-      },
-      readFile: function readFile(callback) {
-        var file = this.$refs.csv.files[0];
-
-        if (file) {
-          var reader = new FileReader();
-          reader.readAsText(file, 'UTF-8');
-
-          reader.onload = function (evt) {
-            callback(evt.target.result);
-          };
-
-          reader.onerror = function () {};
-        }
-      }
-    },
-    render: function render() {
-      var h = arguments[0];
-      var randomId = +new Date();
-      return h("div", {
-        "style": "height: 24px;"
-      }, [h("label", {
-        "attrs": {
-          "for": randomId
-        },
-        "class": "ant-btn ant-btn-primary ant-btn-sm"
-      }, ["\u9009\u62E9\u5BFC\u5165 csv \u6587\u4EF6"]), h("input", {
-        "ref": "csv",
-        "attrs": {
-          "id": randomId,
-          "type": "file",
-          "name": "csv"
-        },
-        "on": {
-          "change": this.validFileMimeType
-        },
-        "style": "visibility:hidden;"
-      }, ["xxxx"])]);
-    }
-  };
-
-  /*
-   * @author : Mater
-   * @Email : bxh8640@gmail.com
-   * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-17 16:45:47
-   * @Description :
-   */
-  var lbsExcelEditor = {
-    name: 'lbs-excel-editor',
-    props: {
-      value: {
-        type: Array
-      },
-      formatter: {
-        type: Function
-      }
-    },
-    computed: {
-      innerItems: {
-        get: function get() {
-          return Parser$2.binaryMatrix2excel(this.value);
-        },
-        set: function set(val) {
-          this.$emit('input', val);
-        }
-      }
-    },
-    watch: {
-      value: function value() {
-        this.refreshSheet({
-          rows: this.innerItems
-        });
-      }
-    },
-    methods: {
-      parseCSV: function parseCSV(csv) {
-        var sheetData = Parser$2.binaryMatrix2excel(csv.data);
-        this.$emit('change', csv.data);
-        this.refreshSheet({
-          rows: sheetData
-        });
-      },
-
-      /**
-       *
-       * @param {Object} data { rows }
-       */
-      refreshSheet: function refreshSheet(data) {
-        this.sheet.loadData(data);
-        this.sheet.reRender();
-      },
-      initSheet: function initSheet() {
-        var _this = this;
-
-        var ele = this.$refs.excel;
-        return this.sheet || new Spreadsheet__default['default'](ele, {
-          showToolbar: false,
-          showGrid: true,
-          showContextmenu: true // view: {
-          //   height: () => 400,
-          //   width: () => ele.getBoundingClientRect().width
-          // }
-
-        }).change(function (excelData) {
-          // console.log('----------')
-          // console.log(excelData)
-          // console.log(this.formatter(excelData))
-          // console.log('----------')
-          _this.$emit('change', _this.formatter(excelData)
-          /** BinaryMatrix */
-          ); // save data to db
-
-        });
-      }
-    },
-    // 注意(看源码)： 如果不调用 data 或 props 的某个值，则 render 不会执行。watcher 的更新时机是什么？？
-    render: function render() {
-      var h = arguments[0];
-      return h("div", {
-        "style": "max-height: 320px;overflow:scroll;"
-      }, [h("div", {
-        "style": "line-height:2;"
-      }, [h("span", ["\u65B9\u68481: ", h(CsvImport, {
-        "on": {
-          "parse": this.parseCSV
-        }
-      })]), h("span", ["\u65B9\u68482: \u76F4\u63A5\u7F16\u8F91 Excel"]), h("div", {
-        "ref": "excel",
-        "style": "margin-right: 12px;width: 100%;overflow: scroll"
-      })])]);
-    },
-    mounted: function mounted() {
-      this.sheet = this.initSheet();
-      this.refreshSheet({
-        rows: this.innerItems
-      });
-    }
-  };
-
-  var _components$2;
-  var lbpSlideCustomEditor = {
-    components: (_components$2 = {}, defineProperty$3(_components$2, antDesignVue.Pagination.name, antDesignVue.Pagination), defineProperty$3(_components$2, antDesignVue.Button.name, antDesignVue.Pagination), _components$2),
-    props: {
-      elementProps: {
-        type: Object,
-        default: function _default() {
-          return {
-            items: [],
-            activeIndex: 0
-          };
-        }
-      }
-    },
-    computed: {
-      innerItems: function innerItems() {
-        return this.elementProps.items;
-      }
-    },
-    data: function data() {
-      return {
-        current: 1
-      };
-    },
-    methods: {
-      itemRender: function itemRender(current, type, originalElement) {
-        var _this = this;
-
-        var h = this.$createElement;
-
-        if (type === 'prev') {
-          return h("a-button", {
-            "style": {
-              marginRight: '8px'
-            },
-            "attrs": {
-              "size": "small",
-              "icon": "minus",
-              "disabled": this.innerItems.length === 1
-            },
-            "on": {
-              "click": function click() {
-                return _this.minus(current);
-              }
-            }
-          });
-        } else if (type === 'next') {
-          return h("a-button", {
-            "style": {
-              marginLeft: '8px'
-            },
-            "attrs": {
-              "size": "small",
-              "icon": "plus"
-            },
-            "on": {
-              "click": this.add
-            }
-          });
-        }
-
-        return originalElement;
-      },
-      add: function add() {
-        this.elementProps.items.push({
-          image: '',
-          value: "\u9009\u9879".concat(this.innerItems.length + 1, "-value"),
-          label: "\u9009\u9879".concat(this.innerItems.length + 1, "-label")
-        });
-      },
-      minus: function minus(index) {
-        if (this.innerItems.length === 1) return;
-        this.elementProps.items.splice(index, 1); // this.elementProps.activeIndex = index > 0 ? index - 1 : 0
-
-        this.elementProps.activeIndex = Math.max(index - 1, 0);
-      }
-    },
-    render: function render() {
-      var _this2 = this;
-
-      var h = arguments[0];
-      var currentItem = this.innerItems[this.current - 1] || {};
-      return h("div", [h("a-pagination", {
-        "attrs": {
-          "current": this.current,
-          "size": "small",
-          "total": this.innerItems.length,
-          "defaultPageSize": 1,
-          "itemRender": this.itemRender
-        },
-        "on": {
-          "change": function change(page) {
-            _this2.current = page;
-            _this2.elementProps.activeIndex = page - 1;
-          }
-        }
-      }), h("lbs-image-gallery", {
-        "style": {
-          margin: '16px 0'
-        },
-        "attrs": {
-          "value": currentItem.image
-        },
-        "on": {
-          "change": function change(url) {
-            currentItem.image = url;
-          }
-        }
-      })]);
-    }
-  };
-
-  var _components$3;
-
-  function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { defineProperty$3(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var RenderPropsEditor = {
-    components: (_components$3 = {}, defineProperty$3(_components$3, antDesignVue.Form.name, antDesignVue.Form), defineProperty$3(_components$3, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$3(_components$3, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$3(_components$3, antDesignVue.Button.name, antDesignVue.Button), defineProperty$3(_components$3, antDesignVue.Radio.name, antDesignVue.Radio), defineProperty$3(_components$3, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$3(_components$3, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), defineProperty$3(_components$3, antDesignVue.Input.name, antDesignVue.Input), defineProperty$3(_components$3, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$3(_components$3, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$3(_components$3, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$3(_components$3, antDesignVue.Select.name, antDesignVue.Select), defineProperty$3(_components$3, "colorsPanel", colorsPanel), defineProperty$3(_components$3, "lbsTextAlign", lbsTextAlign), defineProperty$3(_components$3, "lbsExcelEditor", lbsExcelEditor), defineProperty$3(_components$3, "lbpSlideCustomEditor", lbpSlideCustomEditor), _components$3),
-    data: function data() {
-      return {
-        loadCustomEditorFlag: false
-      };
-    },
-    props: {
-      layout: {
-        type: String,
-        default: 'horizontal'
-      },
-      config: {
-        type: Object,
-        default: function _default() {
-          return {};
-        }
-      },
-      value: {
-        type: Object,
-        default: function _default() {
-          return {};
-        }
-      }
-    },
-    watch: {
-      config: function config() {
-        var _this = this;
-
-        // config 需要重新render
-        setTimeout(function () {
-          _this.form.setFieldsValue(_this.value);
-        });
-      }
-    },
-    created: function created() {
-      var _this2 = this;
-
-      this.form = this.$form.createForm(this, {
-        onFieldsChange: function onFieldsChange() {
-          _this2.$emit('change', _this2.form.getFieldsValue());
-        }
-      });
-    },
-    computed: {
-      formItemLayout: function formItemLayout() {
-        return this.layout === 'horizontal' ? {
-          labelCol: {
-            span: 6
-          },
-          wrapperCol: {
-            span: 16,
-            offset: 2
-          }
-        } : {};
-      }
-    },
-    methods: {
-      renderPropFormItem: function renderPropFormItem(propName, propConfig) {
-        var h = this.$createElement;
-        var editor = propConfig.editor;
-        if (!editor) return;
-        var formItemData = {
-          props: _objectSpread$4(_objectSpread$4(_objectSpread$4({}, this.formItemLayout), editor.layout), {}, {
-            label: editor.label
-          })
-        };
-        return h("a-form-item", helper$5([{}, formItemData]), [h(editor.type, helper$5([{
-          "directives": [{
-            name: "decorator",
-            value: [propName]
-          }]
-        }, {
-          "props": editor.props
-        }]))]);
-      }
-    },
-    render: function render() {
-      var _this3 = this;
-
-      var h = arguments[0];
-      var configEntries = Object.entries(this.config);
-      return h("a-form", {
-        "attrs": {
-          "form": this.form,
-          "size": "mini",
-          "layout": this.layout,
-          "initialValue": this.value
-        },
-        "class": "props-config-form"
-      }, [configEntries.map(function (_ref) {
-        var _ref2 = slicedToArray(_ref, 2),
-            propName = _ref2[0],
-            propConfig = _ref2[1];
-
-        return _this3.renderPropFormItem(propName, propConfig);
-      })]);
-    }
-  };
-
-  var _components$4;
-  var RenderScriptEditor = {
-    components: (_components$4 = {}, defineProperty$3(_components$4, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$3(_components$4, antDesignVue.Button.name, antDesignVue.Button), _components$4),
-    data: function data() {
-      return {
-        editorContent: "return {\n      editorMethods: {              // \u6B64\u9879\u914D\u7F6E\u81EA\u5B9A\u4E49\u65B9\u6CD5\u7684\u5728\u7EC4\u4EF6\u914D\u7F6E\u9762\u677F\u5982\u4F55\u5C55\u793A\n        projectJump1: {             // \u65B9\u6CD5\u540D\uFF0C\u5BF9\u5E94\u4E8E methods \u5185\u7684\u67D0\u65B9\u6CD5\n          label: '\u5916\u90E8\u8DF3\u8F6C1',        // \u81EA\u5B9A\u4E49\u65B9\u6CD5\u663E\u793A\u540D\n          params: [                 // \u53C2\u6570\u5217\u8868\uFF0C\u5BF9\u8C61\u6570\u7EC4\n            {\n              label: '\u8DF3\u8F6C\u5730\u5740',     // \u53C2\u65701\u7684\u540D\u79F0\n              desc: '\u9879\u76EE\u76F8\u5BF9\u5730\u5740',   // \u53C2\u65701\u7684\u63CF\u8FF0\n              type: 'string',       // \u53C2\u65701\u7684\u7C7B\u578B\uFF0C\u652F\u6301string|number|boolean|array|object\n              default: ''           // \u53C2\u65701\u9ED8\u8BA4\u503C\n            },\n            {\n              label: '\u53C2\u6570',\n              desc: 'query\u5F62\u5F0F\u53C2\u6570',\n              type: 'object',\n              default: {}\n            }\n          ]\n        }\n      },\n      methods:{\n        projectJump1:function(url, query){\n          console.log(url, query)\n          let win = window.open(url, '_blank')\n          win.focus()\n        }\n      }\n    }"
-      };
-    },
-    render: function render(h) {
-      return h("span", [this.$t('editor.editPanel.common.empty')]);
-    }
-  };
-
-  // @@match logic
-  fixRegexpWellKnownSymbolLogic('match', 1, function (MATCH, nativeMatch, maybeCallNative) {
-    return [
-      // `String.prototype.match` method
-      // https://tc39.github.io/ecma262/#sec-string.prototype.match
-      function match(regexp) {
-        var O = requireObjectCoercible(this);
-        var matcher = regexp == undefined ? undefined : regexp[MATCH];
-        return matcher !== undefined ? matcher.call(regexp, O) : new RegExp(regexp)[MATCH](String(O));
-      },
-      // `RegExp.prototype[@@match]` method
-      // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@match
-      function (regexp) {
-        var res = maybeCallNative(nativeMatch, regexp, this);
-        if (res.done) return res.value;
-
-        var rx = anObject(regexp);
-        var S = String(this);
-
-        if (!rx.global) return regexpExecAbstract(rx, S);
-
-        var fullUnicode = rx.unicode;
-        rx.lastIndex = 0;
-        var A = [];
-        var n = 0;
-        var result;
-        while ((result = regexpExecAbstract(rx, S)) !== null) {
-          var matchStr = String(result[0]);
-          A[n] = matchStr;
-          if (matchStr === '') rx.lastIndex = advanceStringIndex(S, toLength(rx.lastIndex), fullUnicode);
-          n++;
-        }
-        return n === 0 ? null : A;
-      }
-    ];
-  });
-
-  // #!zh: 可选的动画列表的第一个层级
-  var firstLevelAnimationOptions = [{
-    label: '进入',
-    value: /进/
-  }, {
-    label: '退出',
-    value: /退/
-  }, {
-    label: '强调',
-    value: /强调|特殊/
-  }];
-  var animationOptions = [{
-    label: '',
-    value: '空',
-    children: [{
-      label: '无',
-      value: ''
-    }]
-  }, {
-    label: '强调',
-    value: 'Attention Seekers',
-    children: [{
-      label: '旋转',
-      value: 'justRotate'
-    }, {
-      label: '弹跳',
-      value: 'bounce'
-    }, {
-      label: '闪烁',
-      value: 'flash'
-    }, {
-      label: '跳动',
-      value: 'pulse'
-    }, {
-      label: '抖动',
-      value: 'shake'
-    }, {
-      label: '摇摆',
-      value: 'swing'
-    }, {
-      label: '橡皮圈',
-      value: 'rubberBand'
-    }, {
-      label: '果冻',
-      value: 'jello'
-    }, {
-      label: '',
-      value: 'tada'
-    }, {
-      label: '',
-      value: 'wobble'
-    }]
-  }, {
-    label: '弹跳进入',
-    value: 'Bouncing Entrances',
-    children: [{
-      label: '弹跳进入',
-      value: 'bounceIn'
-    }, {
-      label: '向下弹跳进入',
-      value: 'bounceInDown'
-    }, {
-      label: '向右弹跳进入',
-      value: 'bounceInLeft'
-    }, {
-      label: '向左弹跳进入',
-      value: 'bounceInRight'
-    }, {
-      label: '向上弹跳进入',
-      value: 'bounceInUp'
-    }]
-  }, {
-    label: '弹跳退出',
-    value: 'Bouncing Exits',
-    children: [{
-      label: '弹跳退出',
-      value: 'bounceOut'
-    }, {
-      label: '向下弹跳退出',
-      value: 'bounceOutDown'
-    }, {
-      label: '向左弹跳退出',
-      value: 'bounceOutLeft'
-    }, {
-      label: '向右弹跳退出',
-      value: 'bounceOutRight'
-    }, {
-      label: '向上弹跳退出',
-      value: 'bounceOutUp'
-    }]
-  }, {
-    label: '渐显进入',
-    value: 'Fading Entrances',
-    children: [{
-      label: '渐显进入',
-      value: 'fadeIn'
-    }, {
-      label: '向下渐显进入',
-      value: 'fadeInDown'
-    }, {
-      label: '由屏幕外向下渐显进入',
-      value: 'fadeInDownBig'
-    }, {
-      label: '向右显进入',
-      value: 'fadeInLeft'
-    }, {
-      label: '由屏幕外向右渐显进入',
-      value: 'fadeInLeftBig'
-    }, {
-      label: '向左渐显进入',
-      value: 'fadeInRight'
-    }, {
-      label: '由屏幕外向左渐显进入',
-      value: 'fadeInRightBig'
-    }, {
-      label: '向上渐显进入',
-      value: 'fadeInUp'
-    }, {
-      label: '由屏幕外向上渐显进入',
-      value: 'fadeInUpBig'
-    }]
-  }, {
-    label: '渐隐退出',
-    value: 'Fading Exits',
-    children: [{
-      label: '渐隐退出',
-      value: 'fadeOut'
-    }, {
-      label: '向下渐隐退出',
-      value: 'fadeOutDown'
-    }, {
-      label: '向下渐隐退出屏幕外',
-      value: 'fadeOutDownBig'
-    }, {
-      label: '向左渐隐退出',
-      value: 'fadeOutLeft'
-    }, {
-      label: '向左渐隐退出屏幕外',
-      value: 'fadeOutLeftBig'
-    }, {
-      label: '向右渐隐退出',
-      value: 'fadeOutRight'
-    }, {
-      label: '向右渐隐退出屏幕外',
-      value: 'fadeOutRightBig'
-    }, {
-      label: '向上渐隐退出',
-      value: 'fadeOutUp'
-    }, {
-      label: '向上渐隐退出屏幕外',
-      value: 'fadeOutUpBig'
-    }]
-  }, {
-    label: '翻动',
-    value: 'Flippers',
-    children: [{
-      label: '翻动',
-      value: 'flip'
-    }, {
-      label: '纵向翻动',
-      value: 'flipInX'
-    }, {
-      label: '横向翻动',
-      value: 'flipInY'
-    }, {
-      label: '立体纵向翻动',
-      value: 'flipOutX'
-    }, {
-      label: '立体横向翻动',
-      value: 'flipOutY'
-    }]
-  }, {
-    label: '加速进出',
-    value: 'Lightspeed',
-    children: [{
-      label: '加速进入',
-      value: 'lightSpeedIn'
-    }, {
-      label: '加速退出',
-      value: 'lightSpeedOut'
-    }]
-  }, {
-    label: '旋转渐显',
-    value: 'Rotating Entrances',
-    children: [{
-      label: '旋转渐显',
-      value: 'rotateIn'
-    }, {
-      label: '左下角旋转渐显',
-      value: 'rotateInDownLeft'
-    }, {
-      label: '旋转渐显',
-      value: '右下角rotateInDownRight'
-    }, {
-      label: '左上角旋转渐显',
-      value: 'rotateInUpLeft'
-    }, {
-      label: '右上角旋转渐显',
-      value: 'rotateInUpRight'
-    }]
-  }, {
-    label: '旋转渐隐',
-    value: 'Rotating Exits',
-    children: [{
-      label: '旋转渐隐',
-      value: 'rotateOut'
-    }, {
-      label: '左下角旋转渐隐',
-      value: 'rotateOutDownLeft'
-    }, {
-      label: '左下角旋转渐隐',
-      value: 'rotateOutDownRight'
-    }, {
-      label: '左上角旋转渐隐',
-      value: 'rotateOutUpLeft'
-    }, {
-      label: '右上角旋转渐隐',
-      value: 'rotateOutUpRight'
-    }]
-  }, {
-    label: '平移进入',
-    value: 'Sliding Entrances',
-    children: [{
-      label: '向上平移进入',
-      value: 'slideInUp'
-    }, {
-      label: '向下平移进入',
-      value: 'slideInDown'
-    }, {
-      label: '向右平移进入',
-      value: 'slideInLeft'
-    }, {
-      label: '向左平移进入',
-      value: 'slideInRight'
-    }]
-  }, {
-    label: '平移退出',
-    value: 'Sliding Exits',
-    children: [{
-      label: '向上平移退出',
-      value: 'slideOutUp'
-    }, {
-      label: '向下平移退出',
-      value: 'slideOutDown'
-    }, {
-      label: '向左平移退出',
-      value: 'slideOutLeft'
-    }, {
-      label: '向右平移退出',
-      value: 'slideOutRight'
-    }]
-  }, {
-    label: '放大进入',
-    value: 'Zoom Entrances',
-    children: [{
-      label: '放大进入',
-      value: 'zoomIn'
-    }, {
-      label: '向下放大进入',
-      value: 'zoomInDown'
-    }, {
-      label: '向右放大进入',
-      value: 'zoomInLeft'
-    }, {
-      label: '向左放大进入',
-      value: 'zoomInRight'
-    }, {
-      label: '向上放大进入',
-      value: 'zoomInUp'
-    }]
-  }, {
-    label: '缩小退出',
-    value: 'Zoom Exits',
-    children: [{
-      label: '缩小退出',
-      value: 'zoomOut'
-    }, {
-      label: '向下缩小退出',
-      value: 'zoomOutDown'
-    }, {
-      label: '向左缩小退出',
-      value: 'zoomOutLeft'
-    }, {
-      label: '向右缩小退出',
-      value: 'zoomOutRight'
-    }, {
-      label: '向上缩小退出',
-      value: 'zoomOutUp'
-    }]
-  }, {
-    label: '特殊效果',
-    value: 'Specials',
-    children: [{
-      label: '悬挂',
-      value: 'hinge'
-    }, {
-      label: '滚动进入',
-      value: 'rollIn'
-    }, {
-      label: '滚动退出',
-      value: 'rollOut'
-    }]
-  }];
-  /**
-   * @return {Object} { animationValue: animatonLabel }
-   */
-
-  var animationValue2Name = animationOptions.reduce(function (obj, curr) {
-    var items = curr.children;
-    items.forEach(function (item) {
-      obj[item.value] = item.label;
-    });
-    return obj;
-  }, {});
-
-  var _components$5;
-  var RenderAnimationEditor = {
-    components: (_components$5 = {}, defineProperty$3(_components$5, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$3(_components$5, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$3(_components$5, antDesignVue.List.name, antDesignVue.List), defineProperty$3(_components$5, antDesignVue.List.Item.name, antDesignVue.List.Item), defineProperty$3(_components$5, antDesignVue.Form.name, antDesignVue.Form), defineProperty$3(_components$5, antDesignVue.Button.name, antDesignVue.Button), defineProperty$3(_components$5, antDesignVue.Popover.name, antDesignVue.Popover), defineProperty$3(_components$5, antDesignVue.Slider.name, antDesignVue.Slider), defineProperty$3(_components$5, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$3(_components$5, antDesignVue.Collapse.name, antDesignVue.Collapse), defineProperty$3(_components$5, antDesignVue.Collapse.Panel.name, antDesignVue.Collapse.Panel), defineProperty$3(_components$5, antDesignVue.Icon.name, antDesignVue.Icon), defineProperty$3(_components$5, antDesignVue.Drawer.name, antDesignVue.Drawer), defineProperty$3(_components$5, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), defineProperty$3(_components$5, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$3(_components$5, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$3(_components$5, antDesignVue.Tag.name, antDesignVue.Tag), _components$5),
-    props: {
-      value: {
-        type: Array,
-        default: function _default() {
-          return [];
-        }
-      }
-    },
-    computed: {
-      animationQueue: function animationQueue() {
-        return this.value || [];
-      }
-    },
-    data: function data() {
-      return {
-        activeCollapsePanel: 0,
-        activePreviewAnimation: '',
-        drawerVisible: false
-      };
-    },
-    methods: {
-      addAnimation: function addAnimation() {
-        this.animationQueue.push({
-          type: '',
-          duration: 1,
-          delay: 0,
-          interationCount: 1,
-          infinite: false
-        });
-        this.activeCollapsePanel = this.animationQueue.length - 1;
-        this.$emit('change', this.animationQueue);
-      },
-      deleteAnimate: function deleteAnimate(index) {
-        this.animationQueue.splice(index, 1);
-        this.$emit('change', this.animationQueue);
-      },
-      updateAnimation: function updateAnimation(type) {
-        var activeAnimationQueue = this.animationQueue[this.activeCollapsePanel];
-
-        if (activeAnimationQueue) {
-          activeAnimationQueue.type = type;
-        }
-
-        this.drawerVisible = false;
-        this.$emit('change', this.animationQueue);
-      },
-      runAnimate: function runAnimate() {
-        EventBus.$emit('RUN_ANIMATIONS');
-      },
-      renderSecondAnimationTabs: function renderSecondAnimationTabs(animations) {
-        var _this = this;
-
-        var h = this.$createElement;
-        return h("a-tabs", {
-          "attrs": {
-            "defaultActiveKey": animations[0].value,
-            "tabBarStyle": {
-              marginLeft: '-16px'
-            },
-            "size": "small",
-            "tabBarGutter": 0,
-            "tabPosition": "left"
-          },
-          "on": {
-            "change": function change(tab) {}
-          },
-          "style": "width:100%;"
-        }, [animations.map(function (group) {
-          return h("a-tab-pane", {
-            "attrs": {
-              "tab": group.label || group.value
-            },
-            "key": group.value
-          }, [h("a-list", {
-            "attrs": {
-              "grid": {
-                gutter: 12,
-                column: 2
-              },
-              "dataSource": group.children,
-              "renderItem": function renderItem(item, index) {
-                return h("a-list-item", {
-                  "class": "shortcut-button-wrapper"
-                }, [h("div", {
-                  "on": {
-                    "click": function click() {
-                      return _this.updateAnimation(item.value);
-                    },
-                    "mouseenter": function mouseenter(e) {
-                      _this.activePreviewAnimation = item.value;
-                    },
-                    "mouseleave": function mouseleave() {}
-                  },
-                  "class": ['shortcut-button', _this.activePreviewAnimation === item.value && "".concat(item.value, " animated")]
-                }, [item.label])]);
-              }
-            }
-          })]);
-        })]);
-      },
-      renderAvaiableAnimations: function renderAvaiableAnimations() {
-        var _this2 = this;
-
-        var h = this.$createElement;
-        return h("a-tabs", {
-          "class": "avaiable-animations-tabs",
-          "attrs": {
-            "defaultActiveKey": firstLevelAnimationOptions[0].label,
-            "size": "small",
-            "tabBarGutter": 0
-          },
-          "on": {
-            "change": function change(tab) {}
-          },
-          "style": "width:100%;"
-        }, [firstLevelAnimationOptions.map(function (firstGroup) {
-          return h("a-tab-pane", {
-            "attrs": {
-              "tab": firstGroup.label
-            },
-            "key": firstGroup.label
-          }, [_this2.renderSecondAnimationTabs(animationOptions.filter(function (group) {
-            return !!group.label.match(firstGroup.value);
-          }))]);
-        })]);
-      },
-      renderAnimationOptions: function renderAnimationOptions(animationOption) {
-        var _this3 = this;
-
-        var h = this.$createElement;
-        return h("a-form", {
-          "attrs": {
-            "layout": "horizontal"
-          }
-        }, [h("a-form-item", {
-          "attrs": {
-            "label": this.$t('editor.editPanel.animation.type'),
-            "labelCol": {
-              span: 5
-            },
-            "wrapperCol": {
-              span: 16,
-              offset: 2
-            }
-          }
-        }, [h("a-button", {
-          "attrs": {
-            "type": "link",
-            "size": "small",
-            "icon": "ordered-list"
-          },
-          "on": {
-            "click": function click() {
-              _this3.drawerVisible = true;
-            }
-          }
-        }, [this.$t('editor.editPanel.animation.list')])]), h("a-form-item", {
-          "attrs": {
-            "label": this.$t('editor.editPanel.animation.duration'),
-            "labelCol": {
-              span: 5
-            },
-            "wrapperCol": {
-              span: 16,
-              offset: 2
-            }
-          },
-          "style": "margin-bottom:0;"
-        }, [h("a-form-item", {
-          "style": {
-            display: 'inline-block',
-            width: 'calc(50% - 12px)'
-          }
-        }, [h("a-slider", {
-          "attrs": {
-            "defaultValue": 2,
-            "min": 0,
-            "max": 20,
-            "value": animationOption.duration
-          },
-          "on": {
-            "change": function change(value) {
-              animationOption.duration = value;
-            }
-          }
-        })]), h("a-form-item", {
-          "style": {
-            display: 'inline-block',
-            width: 'calc(50% - 12px)',
-            marginLeft: '4px'
-          }
-        }, [h("a-input-number", {
-          "attrs": {
-            "min": 0,
-            "max": 20,
-            "size": "small",
-            "formatter": function formatter(value) {
-              return "".concat(value, "\u79D2(s)");
-            },
-            "value": animationOption.duration
-          },
-          "on": {
-            "change": function change(value) {
-              animationOption.duration = value;
-            }
-          }
-        })])]), h("a-form-item", {
-          "attrs": {
-            "label": this.$t('editor.editPanel.animation.delay'),
-            "labelCol": {
-              span: 5
-            },
-            "wrapperCol": {
-              span: 16,
-              offset: 2
-            }
-          },
-          "style": "margin-bottom:0;"
-        }, [h("a-form-item", {
-          "style": {
-            display: 'inline-block',
-            width: 'calc(50% - 12px)'
-          }
-        }, [h("a-slider", {
-          "attrs": {
-            "defaultValue": 2,
-            "min": 0,
-            "max": 20,
-            "value": animationOption.delay
-          },
-          "on": {
-            "change": function change(value) {
-              animationOption.delay = value;
-            }
-          }
-        })]), h("a-form-item", {
-          "style": {
-            display: 'inline-block',
-            width: 'calc(50% - 12px)',
-            marginLeft: '4px'
-          }
-        }, [h("a-input-number", {
-          "attrs": {
-            "min": 0,
-            "max": 20,
-            "size": "small",
-            "formatter": function formatter(value) {
-              return "".concat(value, "\u79D2(s)");
-            },
-            "value": animationOption.delay
-          },
-          "on": {
-            "change": function change(value) {
-              animationOption.delay = value;
-            }
-          }
-        })])]), h("a-form-item", {
-          "attrs": {
-            "label": this.$t('editor.editPanel.animation.iteration'),
-            "labelCol": {
-              span: 5
-            },
-            "wrapperCol": {
-              span: 16,
-              offset: 2
-            }
-          },
-          "style": "margin-bottom:0;"
-        }, [h("a-form-item", {
-          "style": {
-            display: 'inline-block',
-            width: 'calc(50% - 12px)'
-          }
-        }, [h("a-slider", {
-          "attrs": {
-            "defaultValue": 2,
-            "min": 0,
-            "max": 20,
-            "value": animationOption.interationCount
-          },
-          "on": {
-            "change": function change(value) {
-              animationOption.interationCount = value;
-            }
-          }
-        })]), h("a-form-item", {
-          "style": {
-            display: 'inline-block',
-            width: 'calc(50% - 12px)',
-            marginLeft: '4px'
-          }
-        }, [h("a-input-number", {
-          "attrs": {
-            "min": 0,
-            "max": 20,
-            "size": "small",
-            "formatter": function formatter(value) {
-              return "".concat(value, "\u6B21(times)");
-            },
-            "value": animationOption.interationCount
-          },
-          "on": {
-            "change": function change(value) {
-              animationOption.interationCount = value;
-            }
-          }
-        })])]), h("a-form-item", {
-          "attrs": {
-            "label": this.$t('editor.editPanel.animation.inifinite'),
-            "labelCol": {
-              span: 5
-            },
-            "wrapperCol": {
-              span: 16,
-              offset: 2
-            }
-          },
-          "style": "margin-bottom:0;"
-        }, [h("a-switch", {
-          "attrs": {
-            "value": animationOption.infinite
-          },
-          "on": {
-            "change": function change(value) {
-              animationOption.infinite = value;
-            }
-          }
-        })])]);
-      }
-    },
-    render: function render(h) {
-      var _this4 = this;
-
-      return h("div", {
-        "class": "main-animate widget",
-        "attrs": {
-          "id": "animation-right-panel"
-        }
-      }, [h("a-button-group", [h("a-button", {
-        "attrs": {
-          "type": "primary"
-        },
-        "on": {
-          "click": this.addAnimation
-        }
-      }, [h("a-icon", {
-        "attrs": {
-          "type": "plus"
-        }
-      }), this.$t('editor.editPanel.animation.add')]), h("a-button", {
-        "attrs": {
-          "type": "primary"
-        },
-        "on": {
-          "click": this.runAnimate
-        }
-      }, [this.$t('editor.editPanel.animation.run'), h("a-icon", {
-        "attrs": {
-          "type": "right-circle"
-        }
-      })])]), h("a-collapse", {
-        "attrs": {
-          "accordion": true,
-          "activeKey": '' + this.activeCollapsePanel
-        },
-        "class": "collapse-wrapper",
-        "on": {
-          "change": function change(key) {
-            // 当全部收起来时候，key 为 undefined
-            _this4.activeCollapsePanel = typeof key !== 'undefined' ? +key : -1;
-          }
-        }
-      }, [this.animationQueue.map(function (addedAnimation, index) {
-        return h("a-collapse-panel", {
-          "key": "".concat(index)
-        }, [h("template", {
-          "slot": "header"
-        }, [h("span", [_this4.$t('editor.editPanel.animation.title', {
-          index: index + 1
-        })]), h("a-tag", {
-          "attrs": {
-            "color": "orange"
-          }
-        }, [animationValue2Name[addedAnimation.type] || addedAnimation.type]), h("a-icon", {
-          "attrs": {
-            "type": "delete",
-            "title": "删除动画"
-          },
-          "on": {
-            "click": function click() {
-              return _this4.deleteAnimate(index);
-            }
-          }
-        })]), _this4.renderAnimationOptions(addedAnimation)]);
-      })]), h("a-drawer", {
-        "attrs": {
-          "title": "请选择动画",
-          "placement": "left",
-          "closable": true,
-          "width": "100%",
-          "visible": this.drawerVisible,
-          "wrapStyle": {
-            position: 'absolute'
-          },
-          "getContainer": false
-        },
-        "on": {
-          "close": function close() {
-            _this4.drawerVisible = false;
-          }
-        }
-      }, [h("div", [this.renderAvaiableAnimations()])])]);
-    }
-  };
-
-  /*
-   * @author : Mater
-   * @Email : bxh8640@gmail.com
-   * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-12 16:35:48
-   * @Description :
-   */
-  var RenderActionEditor = {
-    data: function data() {
-      return {};
-    },
-    render: function render() {
-      var h = arguments[0];
-      var ele = this.editingElement;
-      if (!ele) return h("span", [this.$t('editor.editPanel.common.empty')]);
-      return h("div", ["TODO"]);
-    }
-  };
-
-  var freezing = !fails(function () {
-    return Object.isExtensible(Object.preventExtensions({}));
-  });
-
-  var internalMetadata = createCommonjsModule(function (module) {
-  var defineProperty = objectDefineProperty.f;
-
-
-
-  var METADATA = uid('meta');
-  var id = 0;
-
-  var isExtensible = Object.isExtensible || function () {
-    return true;
-  };
-
-  var setMetadata = function (it) {
-    defineProperty(it, METADATA, { value: {
-      objectID: 'O' + ++id, // object ID
-      weakData: {}          // weak collections IDs
-    } });
-  };
-
-  var fastKey = function (it, create) {
-    // return a primitive with prefix
-    if (!isObject(it)) return typeof it == 'symbol' ? it : (typeof it == 'string' ? 'S' : 'P') + it;
-    if (!has(it, METADATA)) {
-      // can't set metadata to uncaught frozen object
-      if (!isExtensible(it)) return 'F';
-      // not necessary to add metadata
-      if (!create) return 'E';
-      // add missing metadata
-      setMetadata(it);
-    // return object ID
-    } return it[METADATA].objectID;
-  };
-
-  var getWeakData = function (it, create) {
-    if (!has(it, METADATA)) {
-      // can't set metadata to uncaught frozen object
-      if (!isExtensible(it)) return true;
-      // not necessary to add metadata
-      if (!create) return false;
-      // add missing metadata
-      setMetadata(it);
-    // return the store of weak collections IDs
-    } return it[METADATA].weakData;
-  };
-
-  // add metadata on freeze-family methods calling
-  var onFreeze = function (it) {
-    if (freezing && meta.REQUIRED && isExtensible(it) && !has(it, METADATA)) setMetadata(it);
-    return it;
-  };
-
-  var meta = module.exports = {
-    REQUIRED: false,
-    fastKey: fastKey,
-    getWeakData: getWeakData,
-    onFreeze: onFreeze
-  };
-
-  hiddenKeys[METADATA] = true;
-  });
-
-  var onFreeze = internalMetadata.onFreeze;
-
-  var nativeFreeze = Object.freeze;
-  var FAILS_ON_PRIMITIVES$2 = fails(function () { nativeFreeze(1); });
-
-  // `Object.freeze` method
-  // https://tc39.github.io/ecma262/#sec-object.freeze
-  _export({ target: 'Object', stat: true, forced: FAILS_ON_PRIMITIVES$2, sham: !freezing }, {
-    freeze: function freeze(it) {
-      return nativeFreeze && isObject(it) ? nativeFreeze(onFreeze(it)) : it;
-    }
-  });
-
-  /*
-   * @author : Mater
-   * @Email : bxh8640@gmail.com
-   * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-06 14:56:14
-   * @Description :
-   */
-
-  /**
-    * 页面模式，枚举值
-    * h5_swipper 翻页H5
-    * h5_long_page 长页面H5
-   */
-  var PAGE_MODE = {
-    SWIPPER_PAGE: 'h5_swipper',
-    LONG_PAGE: 'h5_long_page',
-    WIDTH: 375,
-    HEIGHT: 667
-  };
-  var PAGE_MODE_LABEL = {
-    SWIPPER_PAGE: '翻页H5',
-    LONG_PAGE: '长页面'
-  };
-
-  var _components$6;
-  var RenderBackgroundEditor = {
-    components: (_components$6 = {}, defineProperty$3(_components$6, antDesignVue.Form.name, antDesignVue.Form), defineProperty$3(_components$6, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$3(_components$6, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$3(_components$6, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), _components$6),
-    data: function data() {
-      return {
-        formLayout: 'vertical',
-        PAGE_MODE: Object.freeze(PAGE_MODE),
-        PAGE_MODE_LABEL: Object.freeze(PAGE_MODE_LABEL)
-      };
-    },
-    computed: {
-      pageMode: {
-        get: function get() {
-          return this.work.page_mode || PAGE_MODE.SWIPPER_PAGE;
-        },
-        set: function set(pageMode) {
-          this.updateWork({
-            page_mode: pageMode
-          });
-        }
-      }
-    },
-    render: function render() {
-      var _this = this;
-
-      var h = arguments[0];
-      return h("div", [h("a-form", {
-        "attrs": {
-          "layout": this.formLayout
-        }
-      }, [h("a-form-item", {
-        "attrs": {
-          "label": "H5类型"
-        }
-      }, [h("a-radio-group", {
-        "attrs": {
-          "size": "small"
-        },
-        "model": {
-          value: _this.pageMode,
-          callback: function callback($$v) {
-            _this.pageMode = $$v;
-          }
-        }
-      }, [PAGE_MODE.map(function (v, k) {
-        return h("a-radio-button", {
-          "key": k,
-          "attrs": {
-            "value": v
-          }
-        }, [PAGE_MODE_LABEL[k]]);
-      })])])])]);
-    }
-  };
-
-  var _components$7;
-  var EditorRightPanel = {
-    name: 'ElementPropsEditor',
-    components: (_components$7 = {}, defineProperty$3(_components$7, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$3(_components$7, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$3(_components$7, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), _components$7),
-    props: {
-      width: {
-        type: Number,
-        default: 375
-      },
-      element: {
-        type: Object,
-        default: function _default() {
-          return {};
-        }
-      }
-    },
-    computed: {
-      editPropsConfig: function editPropsConfig() {
-        var element = this.element;
-
-        if (element && element.pluginName) {
-          var _pluginsControl$getPl = lbpPluginController.getPlugin(element.pluginName),
-              component = _pluginsControl$getPl.component;
-
-          return this.getPropsWithEditor(component.props);
-        } else {
-          return {};
-        }
-      },
-      editPropsValue: function editPropsValue() {
-        var element = this.element,
-            editPropsConfig = this.editPropsConfig;
-        var editPropsConfigKeys = Object.keys(editPropsConfig);
-        var props = element ? element.props : {};
-        return lodash.pick(props, editPropsConfigKeys);
-      },
-      editAnimationValue: function editAnimationValue() {
-        var element = this.element;
-        var animations = element ? element.animations : [];
-        return animations;
-      }
-    },
-    data: function data() {
-      return {
-        activeTabKey: '属性'
-      };
-    },
-    methods: {
-      setActiveTab: function setActiveTab(activeTabKey) {
-        this.activeTabKey = activeTabKey;
-      },
-      getPropsWithEditor: function getPropsWithEditor(props) {
-        return Object.fromEntries(Object.entries(props).filter(function (_ref) {
-          var _ref2 = slicedToArray(_ref, 2),
-              value = _ref2[1];
-
-          return value.editor;
-        }));
-      }
-    },
-    render: function render() {
-      var h = arguments[0];
-      return h("a-layout-sider", {
-        "attrs": {
-          "width": this.width,
-          "theme": "light"
-        },
-        "style": {
-          padding: '0 12px'
-        }
-      }, [h("a-tabs", {
-        "style": "height: 100%;",
-        "attrs": {
-          "tabBarGutter": 10,
-          "defaultActiveKey": this.activeTabKey,
-          "activeKey": this.activeTabKey
-        },
-        "on": {
-          "change": this.setActiveTab
-        }
-      }, [h("a-tab-pane", {
-        "key": "属性"
-      }, [h("span", {
-        "slot": "tab"
-      }, [this.$t('editor.editPanel.tab.prop')]), h(RenderPropsEditor, {
-        "attrs": {
-          "config": this.editPropsConfig,
-          "value": this.editPropsValue
-        },
-        "on": {
-          "change": this.$listeners.propsChange
-        }
-      })]), h("a-tab-pane", {
-        "attrs": {
-          "label": "动画",
-          "tab": this.$t('editor.editPanel.tab.animation')
-        },
-        "key": "动画"
-      }, [h(RenderAnimationEditor, {
-        "attrs": {
-          "value": this.editAnimationValue
-        },
-        "on": {
-          "change": this.$listeners.animationsChange
-        }
-      })]), h("a-tab-pane", {
-        "attrs": {
-          "label": "动作",
-          "tab": this.$t('editor.editPanel.tab.action')
-        },
-        "key": "动作"
-      }, [this.activeTabKey === '动作' && h(RenderActionEditor)]), h("a-tab-pane", {
-        "attrs": {
-          "label": "脚本",
-          "tab": this.$t('editor.editPanel.tab.script')
-        },
-        "key": "脚本"
-      }, [h(RenderScriptEditor)]), h("a-tab-pane", {
-        "attrs": {
-          "label": "页面",
-          "tab": this.$t('editor.editPanel.tab.page')
-        },
-        "key": "页面"
-      }, [this.activeTabKey === '页面' && h(RenderBackgroundEditor)])])]);
-    }
-  };
-
-  var ShortcutButton = {
-    functional: true,
-    props: {
-      faIcon: {
-        required: true,
-        type: String
-      },
-      name: {
-        required: true,
-        type: String
-      },
-      clickFn: {
-        required: false,
-        type: Function,
-        default: function _default() {}
-      },
-      mousedownFn: {
-        required: false,
-        type: Function,
-        default: function _default() {}
-      },
-      disabled: {
-        type: Boolean,
-        default: false
-      }
-    },
-    render: function render(h, _ref) {
-      var props = _ref.props,
-          listeners = _ref.listeners,
-          slots = _ref.slots;
-      return h("button", {
-        "class": "shortcut-button",
-        "on": {
-          "click": props.clickFn,
-          "mousedown": props.mousedownFn
-        },
-        "attrs": {
-          "disabled": props.disabled
-        }
-      }, [h("i", {
-        "class": ['shortcut-icon', 'fa', "fa-".concat(props.faIcon)],
-        "attrs": {
-          "aria-hidden": 'true'
-        }
-      }), h("span", [props.name])]);
-    }
-  };
-
-  var UsageTip = {
-    components: defineProperty$3({}, antDesignVue.Icon.name, antDesignVue.Icon),
-    render: function render() {
-      var h = arguments[0];
-      return h("div", {
-        "class": "plugin-usage-tip "
-      }, [h("a-icon", {
-        "attrs": {
-          "type": "info-circle"
-        }
-      }), h("i18n", {
-        "attrs": {
-          "path": "editor.tip.componentUsage",
-          "tag": "span"
-        },
-        "class": "ml-1"
-      }, [h("strong", [this.$t('editor.tip.click')]), this.$t('editor.tip.click')])]);
-    }
-  };
-
-  var _components$8;
-
-  function ownKeys$6(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$5(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { defineProperty$3(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  var script$1 = {
-    components: (_components$8 = {}, defineProperty$3(_components$8, antDesignVue.Modal.name, antDesignVue.Modal), defineProperty$3(_components$8, antDesignVue.Input.TextArea.name, antDesignVue.Input.TextArea), defineProperty$3(_components$8, antDesignVue.Button.name, antDesignVue.Button), _components$8),
-    data: function data() {
-      return {
-        visible: false,
-        confirmLoading: false,
-        text: JSON.stringify([{
-          package: '@luban-h5/lbp-slide',
-          version: '0.0.7',
-          name: 'lbp-slide',
-          icon: 'photo',
-          title: '轮播图',
-          visible: true
-        }], null, 2)
-      };
-    },
-    methods: {
-      showModal: function showModal() {
-        this.visible = true;
-      },
-      handleOk: function handleOk(e) {
-        var createjs = window.createjs; // eslint-disable-next-line no-new-func
-
-        var npmPackages = new Function("return ".concat(this.text).replace('\n', ''))();
-        npmPackages = npmPackages.map(function (pluginInfo) {
-          return _objectSpread$5(_objectSpread$5({}, pluginInfo), {}, {
-            // src: `https://cdn.jsdelivr.net/npm/${pluginInfo}/dist/${pluginInfo.name}.umd.js`
-            // src: `https://unpkg.com/${pluginInfo}/dist/${pluginName}.umd.js`
-            src: "https://cdn.jsdelivr.net/npm/".concat(pluginInfo.package, "@").concat(pluginInfo.version, "/dist/").concat(pluginInfo.name, ".umd.js")
-          });
-        });
-        var queue = new createjs.LoadQueue();
-        queue.on('fileload', handleFileLoad, this);
-        queue.on('complete', handleComplete, this);
-        queue.loadManifest(npmPackages);
-
-        function handleComplete(e) {
-          // 可以直接使用 this 的原因： query。on 最后一个参数用来做做 bind this 操作
-          this.visible = false;
-          this.confirmLoading = false;
-          this.$emit('loadComplete', npmPackages);
-        }
-
-        function handleFileLoad(event) {
-          var name = event.item.name;
-          Vue__default['default'].component(name, window[name]);
-        }
-      },
-      handleCancel: function handleCancel(e) {
-        this.visible = false;
-      }
-    }
-  };
-
-  /* script */
-  const __vue_script__$1 = script$1;
-
-  /* template */
-  var __vue_render__$1 = function() {
-    var _vm = this;
-    var _h = _vm.$createElement;
-    var _c = _vm._self._c || _h;
-    return _c(
-      "div",
-      { staticStyle: { "text-align": "center" } },
-      [
-        _c(
-          "a-button",
-          {
-            staticStyle: { "margin-top": "16px" },
-            attrs: { type: "primary" },
-            on: { click: _vm.showModal }
-          },
-          [_vm._v("配置 NPM 组件列表")]
-        ),
-        _vm._v(" "),
-        _c(
-          "a-modal",
-          {
-            attrs: {
-              title: "NPM 组件列表配置信息",
-              visible: _vm.visible,
-              confirmLoading: _vm.confirmLoading
-            },
-            on: { ok: _vm.handleOk, cancel: _vm.handleCancel }
-          },
-          [
-            _c(
-              "div",
-              [
-                _c("a-textarea", {
-                  attrs: { placeholder: "Basic usage", rows: 20 },
-                  model: {
-                    value: _vm.text,
-                    callback: function($$v) {
-                      _vm.text = $$v;
-                    },
-                    expression: "text"
-                  }
-                })
-              ],
-              1
-            )
-          ]
-        )
-      ],
-      1
-    )
-  };
-  var __vue_staticRenderFns__$1 = [];
-  __vue_render__$1._withStripped = true;
-
-    /* style */
-    const __vue_inject_styles__$1 = undefined;
-    /* scoped */
-    const __vue_scope_id__$1 = undefined;
-    /* module identifier */
-    const __vue_module_identifier__$1 = undefined;
-    /* functional template */
-    const __vue_is_functional_template__$1 = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-    /* style inject shadow dom */
-    
-
-    
-    const __vue_component__$1 = /*#__PURE__*/normalizeComponent(
-      { render: __vue_render__$1, staticRenderFns: __vue_staticRenderFns__$1 },
-      __vue_inject_styles__$1,
-      __vue_script__$1,
-      __vue_scope_id__$1,
-      __vue_is_functional_template__$1,
-      __vue_module_identifier__$1,
-      false,
-      undefined,
-      undefined,
-      undefined
-    );
-
-  function ownKeys$7(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$7(Object(source), true).forEach(function (key) { defineProperty$3(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-  /*
-   * @Author: ly525
-   * @Date: 2020-05-17 17:21:04
-   * @LastEditors : Please set LastEditors
-   * @LastEditTime : 2020-11-11 17:03:29
-   * @FilePath: /luban-h5/front-end/h5/src/components/@/mixins/drag.js
-   * @Github: https://github.com/ly525/luban-h5
-   * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
-   * @Description:
-   *  组件拖拽至画布功能
-   *  其中部分代码参考自：https://github.com/hakubox/haku-form-design，已经征得作者同意，目的是后续考虑做 tab 之类的嵌套容器
-   */
-  var dragDom = null;
-  var dragConfig = {
-    isPreDrag: false,
-    // 准备拖拽
-    isDrag: false,
-    // 正式拖拽
-    origin: {
-      clientY: 0,
-      // 鼠标按下时候时候值
-      clientX: 0,
-      layerX: 0,
-      // 鼠标.x 相对于元素左上角.left 的偏移
-      layerY: 0 // 鼠标.y 相对于元素左上角.top  的偏移
-
-    }
-  };
-
-  var Drag = /*#__PURE__*/function () {
-    function Drag(options) {
-      classCallCheck(this, Drag);
-
-      this.mousedown = options.mousedown;
-      this.mousemove = options.mousemove;
-      this.mouseup = options.mouseup;
-      this._mousedown = this._mousedown.bind(this);
-      this._mousemove = this._mousemove.bind(this);
-      this._mouseup = this._mouseup.bind(this);
-    }
-
-    createClass(Drag, [{
-      key: "start",
-      value: function start(e) {
-        this._mousedown(e);
-      }
-    }, {
-      key: "_mousedown",
-      value: function _mousedown(e) {
-        this.mousedown(e);
-        this.toggleListener('add');
-      }
-    }, {
-      key: "_mousemove",
-      value: function _mousemove(e) {
-        this.mousemove(e);
-      }
-    }, {
-      key: "_mouseup",
-      value: function _mouseup(e) {
-        this.mouseup(e);
-        this.toggleListener('remove');
-      }
-    }, {
-      key: "toggleListener",
-      value: function toggleListener(action) {
-        document["".concat(action, "EventListener")]('mousemove', this._mousemove);
-        document["".concat(action, "EventListener")]('mouseup', this._mouseup);
-      }
-    }]);
-
-    return Drag;
-  }();
-
-  var dragMixin = {
-    data: function data() {
-      return {};
-    },
-    methods: {
-      /**
-       *
-       * @param {*} element shortcutItem
-       * @param {*} e
-       */
-      handleDragStartFromMixin: function handleDragStartFromMixin(element, e) {
-        // https://developer.mozilla.org/zh-CN/docs/Web/API/event.button
-        // 0 为 左键点击.
-        if (e.button !== 0) return;
-
-        if (dragDom) {
-          document.body.removeChild(dragDom);
-          dragDom = null;
-        }
-
-        this.dragElement = element;
-        dragDom = e.target.cloneNode(true);
-        document.body.appendChild(dragDom);
-        new Drag({
-          mousedown: this.mousedown,
-          mousemove: this.mousemove,
-          mouseup: this.mouseup
-        }).start(e);
-      },
-
-      /**
-       *
-       * @param {*} e
-       */
-      mousedown: function mousedown(e) {
-        // 鼠标.x 相对于元素左上角 的偏移
-        var layerX = e.layerX,
-            layerY = e.layerY;
-        dragConfig.origin.layerX = layerX;
-        dragConfig.origin.layerY = layerY;
-        dragConfig.origin.clientX = e.clientX;
-        dragConfig.origin.clientY = e.clientY;
-        dragDom.style.position = 'absolute';
-        dragDom.style.left = e.clientX - layerX + 'px';
-        dragDom.style.top = e.clientY - layerY + 'px';
-        dragDom.classList.add('dragging-dom-ele', 'hidden');
-        dragConfig.isPreDrag = true;
-      },
-
-      /** 组件拖拽中 */
-      mousemove: function mousemove(e) {
-        dragDom.classList.remove('hidden');
-        var _dragConfig$origin = dragConfig.origin,
-            layerX = _dragConfig$origin.layerX,
-            layerY = _dragConfig$origin.layerY;
-        dragDom.style.left = e.clientX - layerX + 'px';
-        dragDom.style.top = e.clientY - layerY + 'px';
-      },
-      mouseup: function mouseup(e) {
-        var _dragConfig$origin2 = dragConfig.origin,
-            layerX = _dragConfig$origin2.layerX,
-            layerY = _dragConfig$origin2.layerY;
-        document.body.removeChild(dragDom);
-        dragDom = null;
-        var canMousedown = this.checkCanMousedown(e, {
-          minOffset: 10
-        });
-        if (!canMousedown) return;
-        var canvasWrapper = document.querySelector('.lb-canvas');
-        var position = canvasWrapper.getBoundingClientRect();
-        this.dragElement && this.clone(_objectSpread$6(_objectSpread$6({}, this.dragElement), {}, {
-          dragStyle: {
-            left: e.clientX - layerX - position.left,
-            top: e.clientY - layerY - position.top
-          }
-        }));
-      },
-      checkCanMousedown: function checkCanMousedown(e, _ref) {
-        var minOffsetX = _ref.minOffsetX,
-            minOffsetY = _ref.minOffsetY,
-            minOffset = _ref.minOffset;
-        var offsetX = e.clientX - dragConfig.origin.clientX;
-        var offsetY = e.clientY - dragConfig.origin.clientY;
-        return offsetX >= (minOffsetX || minOffset) || offsetY >= (minOffsetY || minOffset);
-      }
-    },
-    updated: function updated() {
-      console.log('updated');
-    }
-  };
-
-  var _components$9;
-  var RenderShortcutsPanel = {
-    name: 'shotcuts-panel',
-    components: (_components$9 = {}, defineProperty$3(_components$9, antDesignVue.Row.name, antDesignVue.Row), defineProperty$3(_components$9, antDesignVue.Col.name, antDesignVue.Col), _components$9),
-    mixins: [dragMixin],
-    data: function data() {
-      return {
-        npmPackages: []
-      };
-    },
-    methods: {
-      clone: function clone(shortcutItem) {
-        this.$emit('add', shortcutItem);
-      }
-    },
-    render: function render(h) {
-      var _this = this;
-
-      return h("a-row", {
-        "style": "padding-bottom: 24px"
-      }, [h(UsageTip), [].concat(lbpPluginController.getPlugins(), this.npmPackages).filter(function (plugin) {
-        return plugin.visible;
-      }).map(function (plugin) {
-        return h("a-col", {
-          "attrs": {
-            "span": 12
-          },
-          "style": {
-            marginTop: '10px'
-          }
-        }, [h(ShortcutButton, {
-          "attrs": {
-            "clickFn": _this.clone.bind(_this, plugin),
-            "mousedownFn": _this.handleDragStartFromMixin.bind(_this, plugin),
-            "name": plugin.title || plugin.name,
-            "faIcon": plugin.icon,
-            "disabled": plugin.disabled
-          }
-        })]);
-      }), h(__vue_component__$1, {
-        "on": {
-          "loadComplete": function loadComplete(npmPackages) {
-            _this.npmPackages = npmPackages;
-          }
-        }
-      })]);
-    }
-  };
-
-  var _components$a;
-  var PageTitleEditor = {
-    components: (_components$a = {}, defineProperty$3(_components$a, antDesignVue.Popconfirm.name, antDesignVue.Popconfirm), defineProperty$3(_components$a, antDesignVue.Input.name, antDesignVue.Input), defineProperty$3(_components$a, antDesignVue.Icon.name, antDesignVue.Icon), _components$a),
-    props: ['page', 'pageIndex'],
-    data: function data() {
-      return {
-        editingTitle: '' // 临时缓存当前编辑的 title，点击 Yes 再真正用其更新 page title
-
-      };
-    },
-    methods: {
-      getTitle: function getTitle() {
-        return this.page.title || this.$t('editor.pageManager.title', {
-          index: this.pageIndex
-        });
-      }
-    },
-    render: function render() {
-      var _this = this;
-
-      var h = arguments[0];
-      return h("a-popconfirm", {
-        "attrs": {
-          "placement": "bottom",
-          "okText": "Yes",
-          "cancelText": "No"
-        },
-        "on": {
-          "confirm": function confirm() {
-            _this.$emit('editTitle', {
-              newTitle: _this.editingTitle,
-              pageIndex: _this.pageIndex
-            });
-          },
-          "cancel": function cancel() {}
-        }
-      }, [h("a-input", {
-        "slot": "title",
-        "attrs": {
-          "value": this.editingTitle,
-          "size": "small"
-        },
-        "on": {
-          "change": function change(e) {
-            _this.editingTitle = e.target.value;
-          }
-        }
-      }), h("a-icon", {
-        "attrs": {
-          "type": "edit"
-        },
-        "on": {
-          "click": function click(e) {
-            e.stopPropagation(); // 将 click icon 与 click page item 隔离开。编辑标题的同时不要切换页面
-
-            _this.editingTitle = _this.getTitle();
-          }
-        }
-      })]);
-    }
-  };
-
-  var _components$b;
-  var PageTitleMenu = {
-    components: (_components$b = {}, defineProperty$3(_components$b, antDesignVue.Dropdown.name, antDesignVue.Dropdown), defineProperty$3(_components$b, antDesignVue.Menu.name, antDesignVue.Menu), defineProperty$3(_components$b, antDesignVue.Menu.Item.name, antDesignVue.Menu.Item), defineProperty$3(_components$b, antDesignVue.Icon.name, antDesignVue.Icon), _components$b),
-    render: function render() {
-      var _this = this;
-
-      var h = arguments[0];
-      var addPageText = this.$t('editor.pageManager.action.add');
-      var copyPageText = this.$t('editor.pageManager.action.copy');
-      var deletePageText = this.$t('editor.pageManager.action.delete');
-      return h("a-dropdown", {
-        "attrs": {
-          "trigger": ['hover'],
-          "placement": "bottomCenter"
-        }
-      }, [h("a", {
-        "class": "ml-2",
-        "attrs": {
-          "href": "#"
-        }
-      }, [h("a-icon", {
-        "attrs": {
-          "type": "down"
-        }
-      })]), h("a-menu", {
-        "slot": "overlay",
-        "on": {
-          "click": function click(_ref) {
-            var key = _ref.key;
-            return _this.$emit('selectMenuItem', key);
-          }
-        }
-      }, [h("a-menu-item", {
-        "key": "add"
-      }, [h("a-icon", {
-        "attrs": {
-          "type": "plus"
-        }
-      }), addPageText]), h("a-menu-item", {
-        "key": "copy"
-      }, [h("a-icon", {
-        "attrs": {
-          "type": "copy"
-        }
-      }), copyPageText]), h("a-menu-item", {
-        "key": "delete"
-      }, [h("a-icon", {
-        "attrs": {
-          "type": "delete"
-        }
-      }), deletePageText])])]);
-    }
-  };
-
-  var PageTitleText = {
-    components: defineProperty$3({}, antDesignVue.Badge.name, antDesignVue.Badge),
-    props: ['page', 'pageIndex'],
-    methods: {
-      getTitle: function getTitle() {
-        return this.page.title || this.$t('editor.pageManager.title', {
-          index: this.pageIndex
-        });
-      }
-    },
-    render: function render(h) {
-      // #!en: Page<Index>
-      // #!zh: 第<Index>页面
-      return h("span", [h("a-badge", {
-        "attrs": {
-          "count": this.pageIndex + 1,
-          "numberStyle": {
-            backgroundColor: '#fff',
-            color: '#999',
-            boxShadow: '0 0 0 1px #d9d9d9 inset'
-          }
-        }
-      }), h("span", {
-        "class": "ml-3"
-      }, [this.getTitle()])]);
-    }
-  };
-
-  var RenderPageManager = {
-    name: 'page-manager',
-    props: {
-      pages: {
-        type: Array,
-        default: []
-      }
-    },
-    components: defineProperty$3({}, antDesignVue.Button.name, antDesignVue.Button),
-    data: function data() {
-      return {
-        pageIndex: 0 // 显示编辑按钮
-
-      };
-    },
-    methods: {
-      onSelectMenuItem: function onSelectMenuItem(menuKey) {
-        this.$emit('add');
-      },
-      onEditTitle: function onEditTitle(_ref) {
-        var pageIndex = _ref.pageIndex,
-            newTitle = _ref.newTitle;
-        this.pageManager({
-          type: 'editTitle',
-          value: {
-            pageIndex: pageIndex,
-            newTitle: newTitle
-          }
-        });
-      },
-      onSelectPage: function onSelectPage(pageIndex) {
-        this.pageIndex = pageIndex;
-        this.$emit('pageChange', pageIndex);
-      },
-      onLeave: function onLeave() {
-        this.hoverIndex = -1;
-      }
-    },
-    render: function render(h) {
-      var _this = this;
-
-      return h("div", {
-        "class": "page-manager-panel"
-      }, [this.pages.map(function (page, index) {
-        return h("span", {
-          "class": ['cursor-pointer', 'page-manager-panel__item', index === _this.pageIndex && 'active'],
-          "on": {
-            "click": function click() {
-              return _this.onSelectPage(index);
-            },
-            "mouseenter": function mouseenter() {
-              _this.hoverIndex = index;
-            }
-          }
-        }, [h(PageTitleText, {
-          "attrs": {
-            "page": page,
-            "pageIndex": index
-          }
-        }), h("span", [_this.hoverIndex === index && h(PageTitleEditor, {
-          "attrs": {
-            "page": page,
-            "pageIndex": index
-          },
-          "on": {
-            "editTitle": _this.onEditTitle
-          }
-        }), h(PageTitleMenu, {
-          "on": {
-            "selectMenuItem": _this.onSelectMenuItem
-          }
-        })])]);
-      }), h("a-button", {
-        "attrs": {
-          "icon": "plus",
-          "type": "dashed"
-        },
-        "class": "footer-actions",
-        "on": {
-          "click": function click() {
-            return _this.onSelectMenuItem('add');
-          }
-        }
-      }, [this.$t('editor.pageManager.action.add')])]);
-    }
-  };
-
-  function getTreeNode(ele) {
-    return {
-      title: ele.name,
-      key: ele.id,
-      children: (ele.children || []).map(getTreeNode)
-    };
-  }
-
-  var script$2 = {
-    name: 'page-tree',
-    components: defineProperty$3({}, antDesignVue.Tree.name, antDesignVue.Tree),
-    computed: {
-      treeData: function treeData() {
-        return this.elements.map(getTreeNode);
-      }
-    },
-    data: function data() {
-      return {
-        gData: [],
-        expandedKeys: []
-      };
-    }
-  };
-
-  /* script */
-  const __vue_script__$2 = script$2;
-
-  /* template */
-  var __vue_render__$2 = function() {
-    var _vm = this;
-    var _h = _vm.$createElement;
-    var _c = _vm._self._c || _h;
-    return _c("a-tree", {
-      staticClass: "draggable-tree",
-      attrs: {
-        "default-expanded-keys": _vm.expandedKeys,
-        draggable: "",
-        "tree-data": _vm.treeData
-      }
-    })
-  };
-  var __vue_staticRenderFns__$2 = [];
-  __vue_render__$2._withStripped = true;
-
-    /* style */
-    const __vue_inject_styles__$2 = undefined;
-    /* scoped */
-    const __vue_scope_id__$2 = undefined;
-    /* module identifier */
-    const __vue_module_identifier__$2 = undefined;
-    /* functional template */
-    const __vue_is_functional_template__$2 = false;
-    /* style inject */
-    
-    /* style inject SSR */
-    
-    /* style inject shadow dom */
-    
-
-    
-    const __vue_component__$2 = /*#__PURE__*/normalizeComponent(
-      { render: __vue_render__$2, staticRenderFns: __vue_staticRenderFns__$2 },
-      __vue_inject_styles__$2,
-      __vue_script__$2,
-      __vue_scope_id__$2,
-      __vue_is_functional_template__$2,
-      __vue_module_identifier__$2,
-      false,
-      undefined,
-      undefined,
-      undefined
-    );
-
-  var _components$c;
-  var EditorLeftPanel = {
-    props: {
-      pages: {
-        type: Array,
-        default: function _default() {
-          return [];
-        }
-      }
-    },
-    components: (_components$c = {}, defineProperty$3(_components$c, antDesignVue.Layout.Sider.name, antDesignVue.Layout.Sider), defineProperty$3(_components$c, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$3(_components$c, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), _components$c),
-    name: 'EditorLeftPanel',
-    render: function render(h) {
-      return h("a-layout-sider", {
-        "attrs": {
-          "width": "240",
-          "theme": "light"
-        },
-        "style": {
-          padding: '0 12px',
-          height: '100%',
-          overflow: 'auto'
-        }
-      }, [h("a-tabs", {
-        "attrs": {
-          "tabBarGutter": 10
-        }
-      }, [h("a-tab-pane", {
-        "key": "plugin-list",
-        "attrs": {
-          "tab": this.$t('editor.sidebar.components')
-        }
-      }, [h(RenderShortcutsPanel, {
-        "on": {
-          "add": this.$listeners.addElement
-        }
-      })]), h("a-tab-pane", {
-        "key": "page-manager",
-        "attrs": {
-          "tab": this.$t('editor.sidebar.pages')
-        }
-      }, [h(RenderPageManager, {
-        "attrs": {
-          "pages": this.pages
-        },
-        "on": {
-          "add": this.$listeners.addPage,
-          "pageChange": this.$listeners.pageChange
-        }
-      })]), h("a-tab-pane", {
-        "key": "page-tree",
-        "attrs": {
-          "tab": this.$t('editor.sidebar.tree')
-        }
-      }, [h(__vue_component__$2)])])]);
-    }
-  };
-
-  /*
-   * @author : Mater
-   * @Email : bxh8640@gmail.com
-   * @Date : 2020-11-06 10:50:05
-   * @LastEditTime : 2020-11-16 18:07:04
-   * @Description :
-   */
-  var AuxiliayLine = {
-    props: {
-      width: {
-        type: Number,
-        default: 0
-      },
-      height: {
-        type: Number,
-        default: 0
-      },
-      data: {
-        type: Array,
-        default: function _default() {
-          return [];
-        }
-      }
-    },
-    data: function data() {
-      return {
-        vLines: [],
-        hLines: []
-      };
-    },
-    watch: {
-      data: {
-        handler: 'calcVHLine',
-        deep: true
-      }
-    },
-    methods: {
-      drawVLine: function drawVLine(newLeft) {
-        this.vLines = [{
-          left: newLeft
-        }];
-      },
-      clearVLine: function clearVLine() {
-        this.vLines = [];
-      },
-      drawHLine: function drawHLine(newTop) {
-        this.hLines = [{
-          top: newTop
-        }];
-      },
-      clearHLine: function clearHLine() {
-        this.hLines = [];
-      },
-      genBorder: function genBorder(_ref) {
-        var left = _ref.left,
-            top = _ref.top,
-            width = _ref.width,
-            height = _ref.height;
-        return [[left + width, left + width / 2, left], [top + height, top + height / 2, top]];
-      },
-      calcVHLine: function calcVHLine() {
-        var _this = this;
-
-        var referElementsXCoords = [];
-        var referElementsYCoords = [];
-        var hasVLine = false;
-        var hasHLine = false;
-        this.data.forEach(function (e) {
-          var _this$genBorder = _this.genBorder(e),
-              _this$genBorder2 = slicedToArray(_this$genBorder, 2),
-              xCoords = _this$genBorder2[0],
-              yCoords = _this$genBorder2[1];
-
-          referElementsXCoords.push.apply(referElementsXCoords, toConsumableArray(xCoords));
-          referElementsYCoords.push.apply(referElementsYCoords, toConsumableArray(yCoords));
-        });
-
-        var _this$genBorder3 = this.genBorder({
-          left: 0,
-          top: 0,
-          width: this.width,
-          height: this.height
-        }),
-            _this$genBorder4 = slicedToArray(_this$genBorder3, 2),
-            exCoords = _this$genBorder4[0],
-            eyCoords = _this$genBorder4[1];
-
-        exCoords.forEach(function (eX) {
-          referElementsXCoords.forEach(function (referX) {
-            var offset = referX - eX;
-
-            if (Math.abs(offset) <= 5) {
-              _this.drawVLine(referX);
-
-              hasVLine = true;
-            }
-          });
-        });
-        eyCoords.forEach(function (eY) {
-          referElementsYCoords.forEach(function (referY) {
-            var offset = referY - eY;
-
-            if (Math.abs(offset) <= 5) {
-              _this.drawHLine(referY);
-
-              hasHLine = true;
-            }
-          });
-        });
-
-        if (!hasVLine) {
-          this.clearVLine();
-        }
-
-        if (!hasHLine) {
-          this.clearHLine();
-        }
-      }
-    },
-    render: function render() {
-      var _this2 = this;
-
-      var h = arguments[0];
-      return h("div", {
-        "class": "luban-auxiliary-line"
-      }, [this.vLines.map(function (line) {
-        return h("div", {
-          "class": "v-line",
-          "style": {
-            left: "".concat(line.left, "px"),
-            height: "".concat(_this2.height, "px")
-          }
-        });
-      }), this.hLines.map(function (line) {
-        return h("div", {
-          "class": "h-line",
-          "style": {
-            top: "".concat(line.top, "px"),
-            width: "".concat(_this2.width, "px")
-          }
-        });
-      })]);
-    }
-  };
-
-  var AdjustHeight = {
-    props: {
-      height: {
-        type: Number,
-        default: 0
-      }
-    },
-    components: defineProperty$3({}, antDesignVue.InputNumber.name, antDesignVue.InputNumber),
-    methods: {
-      /**
-       * 更新作品高度
-       * @param {Number} height
-       */
-      updateWorkHeight: function updateWorkHeight(height) {
-        this.$emit('change', height);
-      },
-
-      /**
-       * TODO 封装 adjust editor scale 组件
-       * scale: height/width
-       * @param {MouseEvent} e
-       */
-      mousedownForAdjustLine: function mousedownForAdjustLine(e) {
-        var _this = this;
-
-        var startY = e.clientY;
-        var startHeight = this.height;
-        var canvasOuterWrapper = document.querySelector('#editor-wrapper .ant-layout');
-
-        var move = function move(moveEvent) {
-          // !#zh 移动的时候，不需要向后代元素传递事件，只需要单纯的移动就OK
-          moveEvent.stopPropagation();
-          moveEvent.preventDefault();
-          var currY = moveEvent.clientY;
-          var moveHeight = currY - startY;
-          var currentHeight = moveHeight + startHeight;
-
-          _this.updateWorkHeight(currentHeight);
-
-          if (canvasOuterWrapper) {
-            canvasOuterWrapper.scrollTop = canvasOuterWrapper.scrollHeight;
-          }
-        };
-
-        var up = function up() {
-          document.removeEventListener('mousemove', move, true);
-          document.removeEventListener('mouseup', up, true);
-        };
-
-        document.addEventListener('mousemove', move, true);
-        document.addEventListener('mouseup', up, true);
-      }
-    },
-    render: function render() {
-      var h = arguments[0];
-      return h("div", {
-        "style": {
-          position: 'absolute',
-          bottom: '0px',
-          width: '100%',
-          transform: 'translateY(100%)'
-        }
-      }, [h("div", {
-        "class": "adjust-line-wrapper adjust-line-wrapper-h"
-      }, [h("div", {
-        "class": "adjust-line adjust-line-h"
-      }), h("div", {
-        "class": "adjust-button",
-        "on": {
-          "mousedown": this.mousedownForAdjustLine
-        }
-      }, [h("div", {
-        "class": "indicator"
-      })]), h("div", {
-        "class": "adjust-tip"
-      }, [h("span", ["375 x"]), h("a-input-number", {
-        "attrs": {
-          "size": "small",
-          "value": this.height
-        },
-        "style": "margin: 0 4px; width:60px;",
-        "on": {
-          "change": this.updateWorkHeight
-        }
-      }), h("span", ["px"])])])]);
-    }
-  };
-
-  var AdjustLineV = {
-    methods: {
-      onMousedown: function onMousedown(e) {
-        var _this = this;
-
-        var startX = e.clientX;
-
-        var move = function move(moveEvent) {
-          moveEvent.preventDefault();
-          moveEvent.stopPropagation();
-          var offset = startX - moveEvent.clientX;
-
-          _this.$emit('lineMove', offset);
-
-          startX -= offset;
-        };
-
-        var up = function up(moveEvent) {
-          document.removeEventListener('mousemove', move, true);
-          document.removeEventListener('mouseup', up, true);
-        };
-
-        document.addEventListener('mousemove', move, true);
-        document.addEventListener('mouseup', up, true);
-      }
-    },
-    render: function render() {
-      var h = arguments[0];
-      return h("div", {
-        "class": "adjust-line-wrapper adjust-line-wrapper-v",
-        "on": {
-          "mousedown": this.onMousedown
-        }
-      }, [h("div", {
-        "class": "adjust-line adjust-line-v"
-      }), h("div", {
-        "class": "adjust-button"
-      }, [h("div", {
-        "class": "indicator"
-      })])]);
-    }
-  };
-
   var defineProperty$8 = objectDefineProperty.f;
 
 
@@ -69427,6 +65886,26 @@
       Symbol: SymbolWrapper
     });
   }
+
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-02 16:12:09
+   * @LastEditTime : 2020-11-06 14:56:14
+   * @Description :
+   */
+
+  /**
+    * 页面模式，枚举值
+    * h5_swipper 翻页H5
+    * h5_long_page 长页面H5
+   */
+  var PAGE_MODE = {
+    SWIPPER_PAGE: 'h5_swipper',
+    LONG_PAGE: 'h5_long_page',
+    WIDTH: 375,
+    HEIGHT: 667
+  };
 
   var LbpPage = /*#__PURE__*/function () {
     function LbpPage() {
@@ -69512,257 +65991,10 @@
     return LbpWork;
   }();
 
-  /*
-   * @author : Mater
-   * @Email : bxh8640@gmail.com
-   * @Date : 2020-11-12 14:49:13
-   * @LastEditTime : 2020-11-12 14:49:29
-   * @Description :
-   */
-  var config$1 = {
-    rightPanelWidth: 375
-  };
-
-  var _components$d;
-  var LpbH5Editor = {
-    name: 'lbp-h5-editor',
-    i18n: i18n,
-    components: (_components$d = {}, defineProperty$3(_components$d, antDesignVue.Layout.name, antDesignVue.Layout), defineProperty$3(_components$d, antDesignVue.Layout.Content.name, antDesignVue.Layout), _components$d),
-    props: {
-      data: {
-        type: Object,
-        default: function _default() {
-          return {};
-        }
-      }
-    },
-    data: function data() {
-      return {
-        work: {},
-        pageIndex: 0,
-        activeElement: null,
-        auxiliayVisible: false,
-        rightPanelWidth: config$1.rightPanelWidth
-      };
-    },
-    computed: {
-      currentPage: function currentPage() {
-        var _this$work$pages = this.work.pages,
-            pages = _this$work$pages === void 0 ? [] : _this$work$pages;
-        var currentPage = pages[this.pageIndex] || {};
-        return currentPage;
-      },
-      elementsRect: function elementsRect() {
-        var _this$currentPage = this.currentPage,
-            currentPage = _this$currentPage === void 0 ? {} : _this$currentPage;
-        var _currentPage$elements = currentPage.elements,
-            elements = _currentPage$elements === void 0 ? [] : _currentPage$elements;
-        return elements.map(function (_ref) {
-          var style = _ref.style;
-          return style;
-        });
-      }
-    },
-    watch: {
-      data: {
-        handler: function handler() {
-          var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-          this.work = new LbpWork(data);
-          console.log(this.work);
-          history.init(this.work);
-        },
-        immediate: true
-      }
-    },
-    methods: {
-      record: lodash.debounce(function () {
-        history.addState(this.work);
-      }, 80),
-      getData: function getData() {
-        return this.work;
-      },
-      changePageIndex: function changePageIndex(index) {
-        this.pageIndex = index;
-      },
-      addPage: function addPage(title) {
-        this.work.pages.push(new LbpPage({
-          title: title
-        }));
-        this.record();
-      },
-      updatePage: function updatePage(data) {
-        Object.assign(this.currentPage, data);
-        this.record();
-      },
-      addElement: function addElement() {
-        var _this = this;
-
-        for (var _len = arguments.length, elements = new Array(_len), _key = 0; _key < _len; _key++) {
-          elements[_key] = arguments[_key];
-        }
-
-        elements.forEach(function (element) {
-          if (element instanceof LbpElement) {
-            _this.currentPage.elements.push(element);
-          } else {
-            var lbpElement = new LbpElement(element);
-
-            _this.currentPage.elements.push(lbpElement);
-          }
-        });
-        this.record();
-      },
-      updateElement: function updateElement(data) {
-        this.activeElement && this.activeElement.update(data);
-        this.record();
-      },
-      clear: function clear() {
-        this.currentPage.elements = [];
-        this.record();
-      },
-      undo: function undo() {
-        this.work = new LbpWork(history.undo());
-      },
-      redo: function redo() {
-        this.work = new LbpWork(history.redo());
-      },
-      _hideAuxiliay: function _hideAuxiliay() {
-        this.auxiliayVisible = false;
-      },
-      _showAuxiliay: function _showAuxiliay() {
-        this.auxiliayVisible = true;
-      },
-      _handleElementActive: function _handleElementActive(element) {
-        this.activeElement = element;
-      },
-      _handleElementDeactive: function _handleElementDeactive(deactiveElement) {
-        if (deactiveElement === this.activeElement) {
-          this.activeElement = null;
-        }
-      },
-      _handleAdjustLieMove: function _handleAdjustLieMove(offset) {
-        this.rightPanelWidth += offset;
-      },
-      _handlePropsChange: function _handlePropsChange(value) {
-        this.updateElement({
-          props: value
-        });
-      },
-      _handleAnimationsChange: function _handleAnimationsChange(value) {
-        this.updateElement({
-          animations: value
-        });
-      },
-      _handleElementRectChange: function _handleElementRectChange(value) {
-        this.updateElement({
-          style: value
-        });
-      },
-      _handleAddElement: function _handleAddElement(data) {
-        this.addElement({
-          pluginName: data.name,
-          style: data.dragStyle
-        });
-      },
-      _handleAddPage: function _handleAddPage(data) {
-        this.addPage(data);
-      },
-      _handlePageHeightChange: function _handlePageHeightChange(height) {
-        this.updatePage({
-          height: height
-        });
-      },
-      _handlePageIndexChange: function _handlePageIndexChange(index) {
-        this.changePageIndex(index);
-      },
-      _handleRedo: function _handleRedo() {
-        this.redo();
-      },
-      _handleUndo: function _handleUndo() {
-        this.undo();
-      }
-    },
-    render: function render() {
-      var h = arguments[0];
-      return h("a-layout", {
-        "style": {
-          height: '100%'
-        }
-      }, [h(EditorLeftPanel, {
-        "attrs": {
-          "pages": this.work.pages
-        },
-        "on": {
-          "pageChange": this._handlePageIndexChange,
-          "addElement": this._handleAddElement,
-          "addPage": this._handleAddPage
-        }
-      }), h("a-layout", {
-        "attrs": {
-          "id": "editor-wrapper"
-        }
-      }, [h("a-layout-content", {
-        "class": "scroll-view remove-scrollbar"
-      }, [h("div", {
-        "class": "editor-content",
-        "on": {
-          "mousedown": this._showAuxiliay,
-          "mouseup": this._hideAuxiliay
-        }
-      }, [h(AuxiliayLine, {
-        "attrs": {
-          "data": this.elementsRect,
-          "width": this.currentPage.width,
-          "height": this.currentPage.height
-        },
-        "directives": [{
-          name: "show",
-          value: this.auxiliayVisible
-        }]
-      }), h(LbpCanvas, {
-        "attrs": {
-          "width": this.currentPage.width,
-          "height": this.currentPage.height,
-          "elements": this.currentPage.elements
-        },
-        "on": {
-          "active": this._handleElementActive,
-          "deactive": this._handleElementDeactive,
-          "elementRectChange": this._handleElementRectChange
-        }
-      }), h(AdjustHeight, {
-        "attrs": {
-          "height": this.currentPage.height
-        },
-        "on": {
-          "change": this._handlePageHeightChange
-        }
-      })])])]), h(AdjustLineV, {
-        "on": {
-          "lineMove": this._handleAdjustLieMove
-        }
-      }), h(FixedTools, {
-        "on": {
-          "redo": this._handleRedo,
-          "undo": this._handleUndo
-        }
-      }), h(EditorRightPanel, {
-        "attrs": {
-          "width": this.rightPanelWidth,
-          "element": this.activeElement
-        },
-        "on": {
-          "propsChange": this._handlePropsChange,
-          "animationsChange": this._handleAnimationsChange
-        }
-      })]);
-    }
-  };
-
-  var _components$e;
+  var _components;
   var LbpH5Preview = {
     name: 'lbp-h5-preview',
-    components: (_components$e = {}, defineProperty$3(_components$e, antDesignVue.Layout.name, antDesignVue.Layout), defineProperty$3(_components$e, antDesignVue.Layout.Content.name, antDesignVue.Layout), _components$e),
+    components: (_components = {}, defineProperty$1(_components, antDesignVue.Layout.name, antDesignVue.Layout), defineProperty$1(_components, antDesignVue.Layout.Content.name, antDesignVue.Layout), _components),
     props: {
       data: {
         type: Object,
@@ -69808,18 +66040,15 @@
     }
   };
 
-  LpbH5Editor.install = function (Vue) {
-    Vue.component(LpbH5Editor.name, LpbH5Editor);
+  LbpH5Preview.install = function (Vue) {
+    Vue.component(LbpH5Preview.name, LbpH5Preview);
   };
 
   if (typeof window !== 'undefined' && window.Vue) {
-    LpbH5Editor.install(window.Vue);
+    LbpH5Preview.install(window.Vue);
   }
 
-  exports.LbpH5Preview = LbpH5Preview;
-  exports.default = LpbH5Editor;
-
-  Object.defineProperty(exports, '__esModule', { value: true });
+  return LbpH5Preview;
 
 })));
-//# sourceMappingURL=luban-h5-editor.js.map
+//# sourceMappingURL=luban-h5-preview.js.map

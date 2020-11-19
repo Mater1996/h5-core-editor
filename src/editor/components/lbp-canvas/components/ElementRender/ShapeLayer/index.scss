@@ -1,3 +1,5 @@
+$pointSize: 8;
+
 .shape-layer {
   position: absolute;
   user-select: none;
@@ -24,44 +26,74 @@
   position: absolute;
   background: #fff;
   border: 1px solid rgb(89, 199, 249);
-  width: 8px;
-  height: 8px;
+  width: #{$pointSize}px;
+  height: #{$pointSize}px;
   z-index: 1;
   border-radius: 50%;
   user-select: none;
   box-sizing: border-box;
-  margin-top: -4px;
-  margin-left: -4px;
 }
 
 .shape-scale__point[data-point='lt'] {
+  margin-left: -#{$pointSize/2}px;
+  margin-top: -#{$pointSize/2}px;
+  left: 0;
+  top: 0;
   cursor: nw-resize;
 }
 
 .shape-scale__point[data-point='rt'] {
+  margin-right: -#{$pointSize/2}px;
+  margin-top: -#{$pointSize/2}px;
+  right: 0;
+  top: 0;
   cursor: ne-resize;
 }
 
 .shape-scale__point[data-point='lb'] {
+  margin-left: -#{$pointSize/2}px;
+  margin-bottom: -#{$pointSize/2}px;
+  left: 0;
+  bottom: 0;
   cursor: sw-resize;
 }
 
 .shape-scale__point[data-point='rb'] {
+  margin-right: -#{$pointSize/2}px;
+  margin-bottom: -#{$pointSize/2}px;
+  right: 0;
+  bottom: 0;
   cursor: se-resize;
 }
 
 .shape-scale__point[data-point='lm'] {
+  margin-left: -#{$pointSize/2}px;
+  margin-top: -#{$pointSize/2}px;
+  left: 0;
+  top: 50%;
   cursor: w-resize;
 }
 
 .shape-scale__point[data-point='tm'] {
+  margin-left: -#{$pointSize/2}px;
+  margin-top: -#{$pointSize/2}px;
+  left: 50%;
+  top: 0;
   cursor: n-resize;
 }
 
 .shape-scale__point[data-point='rm'] {
+  margin-right: -#{$pointSize/2}px;
+  margin-top: -#{$pointSize/2}px;
+  right: 0;
+  top: 50%;
   cursor: e-resize;
 }
 
 .shape-scale__point[data-point='bm'] {
+  margin-left: -#{$pointSize/2}px;
+  margin-bottom: -#{$pointSize/2}px;
+  left: 50%;
+  bottom: 0;
   cursor: s-resize;
 }

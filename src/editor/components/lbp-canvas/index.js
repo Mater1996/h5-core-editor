@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-17 17:27:16
+ * @LastEditTime : 2020-11-19 14:55:52
  * @Description :
  */
 import './index.scss'
@@ -21,18 +21,28 @@ export default {
     elements: {
       type: Array,
       default: () => []
+    },
+    readonly: {
+      type: Boolean,
+      default: false
+    },
+    unit: {
+      type: String,
+      default: 'px'
     }
   },
   provide () {
     return {
-      canvas: this.canvas
+      lbpCanvasContext: this.lbpCanvasContext
     }
   },
   data () {
     return {
-      canvas: {
+      lbpCanvasContext: {
         width: this.width,
-        height: this.height
+        height: this.height,
+        readonly: this.readonly,
+        unit: this.unit
       }
     }
   },
@@ -58,6 +68,7 @@ export default {
     }
   },
   render () {
+    const { active, deactive, ...restListeners } = this.$listeners
     return (
       <div class="lb-canvas" style={this.canvasStyle}>
         <div class="lb-canvas-wrapper">
@@ -66,9 +77,10 @@ export default {
               <ElementRender
                 key={element.id}
                 element={element}
-                onActive={() => this.$listeners.active(element)}
-                onDeactive={() => this.$listeners.deactive(element)}
-                onChange={this.$listeners.elementRectChange}
+                disabled={this.disabled}
+                onActive={() => active(element)}
+                onDeactive={() => deactive(element)}
+                {...restListeners}
               ></ElementRender>
             ))}
           </div>

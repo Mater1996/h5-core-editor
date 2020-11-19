@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 14:39:39
- * @LastEditTime : 2020-11-18 19:27:03
+ * @LastEditTime : 2020-11-19 13:15:03
  * @Description :
  */
 const path = require('path')
@@ -95,84 +95,93 @@ module.exports = args => {
       ? path.join('./example/src/lib/luban-h5-editor', dir)
       : path.join(__dirname, dir)
   }
-  return {
-    input: 'src/index.js',
-    treeshake: isProd,
-    output: [
-      {
-        exports: 'auto',
-        name: packageJson.name,
-        format: 'umd',
-        file: !isProd ? resolveUrl(`${packageJson.main}`) : packageJson.main,
-        sourcemap: !isProd,
-        indent: isProd,
-        globals
-      }
-    ],
-    external,
-    plugins: [
-      isProd && del({ targets: `${resolveUrl('dist/*')}` }),
-      peerDepsExternal(),
-      alias({
-        resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
-        entries: {
-          '@': path.join(__dirname, '/src')
+
+  function genConfigByName (name) {
+    return {
+      output: [
+        {
+          exports: 'auto',
+          name: name,
+          format: 'umd',
+          file: !isProd ? resolveUrl(`dist/${name}.js`) : `dist/${name}.js`,
+          sourcemap: !isProd,
+          indent: isProd,
+          globals
         }
-      }),
-      image({
-        output: resolveUrl('dist/images'),
-        extensions: /\.(png|jpg|jpeg|gif|svg)$/,
-        limit: 8192,
-        exclude: 'node_modules/**'
-      }),
-      postcss({
-        to: resolveUrl(`dist/${packageJson.name}.css`),
-        extract: true,
-        minimize: isProd,
-        sourceMap: !isProd,
-        modules: false,
-        plugins: [
-          require('autoprefixer'),
-          require('postcss-url')({
-            filter: /\.(png|jpg|jpeg|gif|svg)$/,
-            url: 'inline',
-            maxSize: 10,
-            fallback: 'copy',
-            assetsPath: './images'
-          }),
-          require('postcss-url')({
-            filter: /\.(woff(2)?|ttf|eot|svg)$/,
-            url: 'copy',
-            assetsPath: './fonts'
-          })
-        ]
-      }),
-      babel(babelConfig),
-      vue({
-        compileTemplate: true,
-        needMap: true
-      }),
-      commonjs(),
-      nodeResolve({
-        browser: true,
-        preferBuiltins: true,
-        mainFields: ['browser', 'module', 'main']
-      }),
-      isProd &&
-        terser({
-          safari10: isProd,
-          compress: {
-            drop_console: isProd
+      ],
+      treeshake: isProd,
+      external,
+      plugins: [
+        isProd &&
+          name === packageJson.name &&
+          del({ targets: `${resolveUrl('dist/*')}` }),
+        peerDepsExternal(),
+        alias({
+          resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
+          entries: {
+            '@': path.join(__dirname, '/src')
           }
         }),
-      json(),
-      progress(),
-      filesize(),
-      needAnalyze &&
-        analyze({
-          summaryOnly: true,
-          limit: 100
-        })
-    ]
+        image({
+          output: resolveUrl('dist/images'),
+          extensions: /\.(png|jpg|jpeg|gif|svg)$/,
+          limit: 8192,
+          exclude: 'node_modules/**'
+        }),
+        postcss({
+          to: resolveUrl(`dist/${name}.css`),
+          extract: true,
+          minimize: isProd,
+          sourceMap: !isProd,
+          modules: false,
+          plugins: [
+            require('autoprefixer'),
+            require('postcss-url')({
+              filter: /\.(png|jpg|jpeg|gif|svg)$/,
+              url: 'inline',
+              maxSize: 10,
+              fallback: 'copy',
+              assetsPath: './images'
+            }),
+            require('postcss-url')({
+              filter: /\.(woff(2)?|ttf|eot|svg)$/,
+              url: 'copy',
+              assetsPath: './fonts'
+            })
+          ]
+        }),
+        babel(babelConfig),
+        vue({
+          compileTemplate: true,
+          needMap: true
+        }),
+        commonjs(),
+        nodeResolve({
+          browser: true,
+          preferBuiltins: true,
+          mainFields: ['browser', 'module', 'main']
+        }),
+        isProd &&
+          terser({
+            safari10: isProd,
+            compress: {
+              drop_console: isProd
+            }
+          }),
+        json(),
+        progress(),
+        filesize(),
+        needAnalyze &&
+          analyze({
+            summaryOnly: true,
+            limit: 100
+          })
+      ]
+    }
   }
+
+  return [
+    { input: 'src/index.js', ...genConfigByName(packageJson.name) },
+    { input: 'src/preview.js', ...genConfigByName('luban-h5-preview') }
+  ]
 }

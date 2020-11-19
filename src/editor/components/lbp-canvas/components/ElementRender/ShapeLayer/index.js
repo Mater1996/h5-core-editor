@@ -1,5 +1,5 @@
 import './index.scss'
-import { hyphenateStyleName } from '@/utils'
+import { renderStyle } from '@/utils'
 import vClickOutside from '@/directive/v-click-outside'
 /**
  * #!zh: 上下左右 对应的 东南西北
@@ -23,7 +23,7 @@ const points = ['lt', 'rt', 'lb', 'rb', 'lm', 'rm', 'tm', 'bm']
 
 export default {
   directives: {
-    clickOutside: vClickOutside
+    vClickOutside: vClickOutside
   },
   props: {
     elStyle: {
@@ -35,11 +35,11 @@ export default {
       default: ShapeLayerDefaultProps.disable
     }
   },
-  inject: ['canvas'],
+  inject: ['lbpCanvasContext'],
   data () {
     return {
       rect: this.getReact(this.elStyle),
-      shapeStyle: this.getStyle(this.elStyle),
+      shapeStyle: renderStyle(this.elStyle),
       startY: 0,
       startX: 0,
       point: '',
@@ -48,67 +48,13 @@ export default {
     }
   },
   computed: {
-    ltPointStyle () {
-      return {
-        left: `${0}px`,
-        top: `${0}px`
-      }
-    },
-    rtPointStyle () {
-      const { width } = this.rect
-      return {
-        left: `${width}px`,
-        top: `${0}px`
-      }
-    },
-    lbPointStyle () {
-      const { height } = this.rect
-      return {
-        left: `${0}px`,
-        top: `${height}px`
-      }
-    },
-    rbPointStyle () {
-      const { width, height } = this.rect
-      return {
-        left: `${width}px`,
-        top: `${height}px`
-      }
-    },
-    lmPointStyle () {
-      const { height } = this.rect
-      return {
-        left: `${0}px`,
-        top: `${height / 2}px`
-      }
-    },
-    rmPointStyle () {
-      const { width, height } = this.rect
-      return {
-        left: `${width}px`,
-        top: `${height / 2}px`
-      }
-    },
-    tmPointStyle () {
-      const { width } = this.rect
-      return {
-        left: `${width / 2}px`,
-        top: `${0}px`
-      }
-    },
-    bmPointStyle () {
-      const { width, height } = this.rect
-      return {
-        left: `${width / 2}px`,
-        top: `${height}px`
-      }
-    },
     bound () {
+      const { lbpCanvasContext } = this
       return {
         left: 0,
         top: 0,
-        right: this.canvas.width,
-        bottom: this.canvas.height
+        right: lbpCanvasContext.width,
+        bottom: lbpCanvasContext.height
       }
     }
   },
@@ -123,7 +69,7 @@ export default {
     elStyle () {
       const { elStyle } = this
       this.rect = this.getReact(elStyle)
-      this.shapeStyle = this.getStyle(elStyle)
+      this.shapeStyle = renderStyle(elStyle)
     },
     rect: {
       handler () {
@@ -133,7 +79,7 @@ export default {
         }
         this.shapeStyle = {
           ...this.shapeStyle,
-          ...this.getStyle(this.rect)
+          ...renderStyle(this.rect)
         }
         this.$emit('change', newStyle)
       },
@@ -148,15 +94,6 @@ export default {
         width: elStyle.width,
         height: elStyle.height
       }
-    },
-    getStyle (style) {
-      const newStyle = {}
-      Object.entries(style).forEach(([key, value]) => {
-        const v = typeof value === 'number' ? `${value}px` : value
-        const n = hyphenateStyleName(key)
-        newStyle[n] = v
-      })
-      return newStyle
     },
     setActive (active) {
       if (this.active === active) return
@@ -255,27 +192,32 @@ export default {
     }
   },
   render () {
+    const { readonly } = this.lbpCanvasContext
+    const options = {
+      directives: [{ name: 'v-click-outside', value: this.vcoConfig }],
+      on: {
+        mousedown: this.handleShapeDown
+      },
+      class: ['shape-layer', { active: this.active }],
+      attrs: {
+        tabindex: 0
+      }
+    }
     return (
-      <div
-        tabindex="0"
-        v-click-outside={this.vcoConfig}
-        style={this.getStyle(this.shapeStyle)}
-        class={['shape-layer', { active: this.active }]}
-        onMousedown={this.handleShapeDown}
-        ref="shape"
-      >
+      <div style={renderStyle(this.shapeStyle)} {...(!readonly ? options : {})}>
         <div class="shape-content">{this.$slots.default}</div>
-        <div class="control">
-          {points.map(v => (
-            <div
-              v-show={this.active}
-              style={this[`${v}PointStyle`]}
-              class="shape-scale__point"
-              data-point={v}
-              onMousedown={this.handlePointDown.bind(this, v)}
-            ></div>
-          ))}
-        </div>
+        {!readonly && (
+          <div class="control">
+            {points.map(v => (
+              <div
+                v-show={this.active}
+                class="shape-scale__point"
+                data-point={v}
+                onMousedown={this.handlePointDown.bind(this, v)}
+              ></div>
+            ))}
+          </div>
+        )}
       </div>
     )
   }

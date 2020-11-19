@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-19 10:37:04
+ * @LastEditTime : 2020-11-19 11:48:50
  * @Description :
  */
 import 'font-awesome/css/font-awesome.min.css'
@@ -27,8 +27,8 @@ import LbpPage from './models/LbpPage'
 import LbpElement from './models/LbpElement'
 import config from './config'
 
-const Editor = {
-  name: 'lbp-editor',
+const LpbH5Editor = {
+  name: 'lbp-h5-editor',
   i18n,
   components: {
     [Layout.name]: Layout,
@@ -212,4 +212,4 @@ const Editor = {
   }
 }
 
-export default Editor
+export default LpbH5Editor
