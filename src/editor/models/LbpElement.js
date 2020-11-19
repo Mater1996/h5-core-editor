@@ -2,13 +2,13 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-19 10:21:46
+ * @LastEditTime : 2020-11-19 20:10:47
  * @Description :
  */
 
 import pluginsControl from '@/plugins'
 import { isFunction } from 'lodash'
-import { ShapeLayerDefaultProps } from '../components/lbp-canvas/components/ElementRender/ShapeLayer'
+import { ShapeLayerDefaultProps } from '../components/lbp-canvas/components/LbpElementRender/ShapeLayer'
 
 let id = 0
 class LbpElement {

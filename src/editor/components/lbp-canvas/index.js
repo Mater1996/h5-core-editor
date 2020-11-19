@@ -2,12 +2,12 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-19 17:23:37
+ * @LastEditTime : 2020-11-19 20:10:27
  * @Description :
  */
 import './index.scss'
 import { renderStyle } from '@/utils'
-import ElementRender from './components/ElementRender'
+import LbpElementRender from './components/LbpElementRender'
 
 export default {
   props: {
@@ -73,16 +73,16 @@ export default {
   },
   render () {
     return (
-      <div class="lb-canvas" style={this.canvasStyle}>
-        <div class="lb-canvas-wrapper">
-          <div class="elements">
+      <div class="lbp-canvas" style={this.canvasStyle}>
+        <div class="lbp-canvas-wrapper">
+          <div class="lbp-elements">
             {this.elements.map(element => (
-              <ElementRender
+              <LbpElementRender
                 key={element.id}
                 element={element}
                 disabled={this.disabled}
                 on={this.$listeners}
-              ></ElementRender>
+              ></LbpElementRender>
             ))}
           </div>
         </div>
