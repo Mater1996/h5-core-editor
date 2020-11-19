@@ -1,6 +1,6 @@
 {
   "name": "luban-h5-editor",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c --prod",
