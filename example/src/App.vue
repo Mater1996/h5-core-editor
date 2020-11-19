@@ -2,7 +2,7 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-11-02 09:25:51
- * @LastEditTime: 2020-11-18 12:02:46
+ * @LastEditTime: 2020-11-19 10:18:06
  * @Description:
 -->
 <template>
@@ -84,7 +84,7 @@ export default {
               //   },
               // },
               {
-                name: 'lbp-picture',
+                pluginName: 'lbp-picture',
                 props: {
                   imgSrc:
                     'https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg!0x0.webp',

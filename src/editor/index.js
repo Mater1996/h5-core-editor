@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-18 14:30:46
+ * @LastEditTime : 2020-11-19 10:37:04
  * @Description :
  */
 import 'font-awesome/css/font-awesome.min.css'
@@ -141,7 +141,10 @@ const Editor = {
       this.updateElement({ style: value })
     },
     _handleAddElement (data) {
-      this.addElement(data)
+      this.addElement({
+        pluginName: data.name,
+        style: data.dragStyle
+      })
     },
     _handleAddPage (data) {
       this.addPage(data)

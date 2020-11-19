@@ -64330,240 +64330,135 @@
   };
 
   var _plugins = [{
-    i18nTitle: {
-      'en-US': 'RadarChart',
-      'zh-CN': '雷达图'
-    },
     title: '雷达图',
+    name: LbpLineChart.name,
     icon: 'line-chart',
     visible: true,
-    name: LbpLineChart.name,
     component: LbpLineChart
   }, {
-    i18nTitle: {
-      'en-US': 'LineChart',
-      'zh-CN': '折线图'
-    },
     title: '折线图',
-    icon: 'line-chart',
-    visible: true,
     name: LbpLineChart.name,
+    icon: 'line-chart',
     component: LbpLineChart
   }, {
-    i18nTitle: {
-      'en-US': 'LineChart',
-      'zh-CN': '柱状图'
-    },
     title: '柱状图',
+    name: LbpLineChart.name,
     icon: 'bar-chart',
     visible: true,
-    name: LbpLineChart.name,
     component: LbpLineChart
   }, {
-    i18nTitle: {
-      'en-US': 'LineChart',
-      'zh-CN': '饼状图'
-    },
     title: '饼状图',
+    name: LbpLineChart.name,
     icon: 'pie-chart',
     visible: true,
-    name: LbpLineChart.name,
     component: LbpLineChart
   }, {
-    i18nTitle: {
-      'en-US': 'LineChart',
-      'zh-CN': '漏斗图'
-    },
     title: '漏斗图',
+    name: LbpLineChart.name,
     icon: 'filter',
     visible: true,
-    name: LbpLineChart.name,
-    component: LbpLineChart,
-    shortcutProps: {
-      type: 'funnel'
-    }
+    component: LbpLineChart
   }, {
     title: '公告',
-    i18nTitle: {
-      'en-US': 'Notice-Bar',
-      'zh-CN': '公告'
-    },
+    name: LbpNoticeBar.name,
     icon: 'volume-up',
     visible: true,
-    name: LbpNoticeBar.name,
     component: LbpNoticeBar
   }, {
     title: '评分',
-    i18nTitle: {
-      'en-US': 'Rate',
-      'zh-CN': '评分'
-    },
+    name: LbpRate.name,
     icon: 'star-o',
     visible: true,
-    name: LbpRate.name,
     component: LbpRate
   }, {
     title: '图片',
-    i18nTitle: {
-      'en-US': 'Picture',
-      'zh-CN': '图片'
-    },
+    name: LbpPicture.name,
     icon: 'photo',
     visible: true,
-    name: LbpPicture.name,
     component: LbpPicture
   }, {
-    i18nTitle: {
-      'en-US': 'Text',
-      'zh-CN': '文字'
-    },
     title: '文字',
+    name: LbpText.name,
     icon: 'text-width',
     visible: true,
-    name: LbpText.name,
     component: LbpText
   }, {
-    i18nTitle: {
-      'en-US': 'Button',
-      'zh-CN': '普通按钮'
-    },
     title: '普通按钮',
+    name: LbpButton.name,
     icon: 'hand-pointer-o',
     visible: true,
-    name: LbpButton.name,
     component: LbpButton
   }, {
-    i18nTitle: {
-      'en-US': 'Carousel',
-      'zh-CN': '轮播图'
-    },
     title: '轮播图',
+    name: LbpSlide.name,
     icon: 'photo',
     visible: true,
-    name: LbpSlide.name,
     component: LbpSlide
   }, {
-    i18nTitle: {
-      'en-US': 'Map',
-      'zh-CN': '地图'
-    },
     title: '地图',
+    name: __vue_component__.name,
     icon: 'map-o',
     visible: true,
-    name: __vue_component__.name,
     component: __vue_component__
   }, {
-    i18nTitle: {
-      'en-US': 'Video',
-      'zh-CN': '视频'
-    },
     title: '视频',
+    name: LbpVideo.name,
     icon: 'file-video-o',
     visible: true,
-    name: LbpVideo.name,
     component: LbpVideo
   }, {
-    i18nTitle: {
-      'en-US': 'Form Input',
-      'zh-CN': '表单输入'
-    },
     title: '表单输入',
+    name: LbpFormInput.name,
     icon: 'pencil-square-o',
     visible: true,
-    name: LbpFormInput.name,
     component: LbpFormInput
   }, {
-    i18nTitle: {
-      'en-US': 'Form Submit',
-      'zh-CN': '表单提交'
-    },
     title: '表单提交',
+    name: LbpFormButton.name,
     icon: 'hand-pointer-o',
     visible: true,
-    name: LbpFormButton.name,
     component: LbpFormButton
   }, {
-    i18nTitle: {
-      'en-US': 'Form Checkbox',
-      'zh-CN': '表单多选'
-    },
     title: '表单多选',
+    name: LbpFormCheckboxGroup.name,
     icon: 'check-square-o',
     visible: true,
-    name: LbpFormCheckboxGroup.name,
     component: LbpFormCheckboxGroup
   }, {
-    i18nTitle: {
-      'en-US': 'Form Radio',
-      'zh-CN': '表单单选'
-    },
     title: '表单单选',
+    name: LbpFormRadioGroup.name,
     icon: 'dot-circle-o',
     visible: true,
-    name: LbpFormRadioGroup.name,
     component: LbpFormRadioGroup
   }, {
-    i18nTitle: {
-      'en-US': 'Background',
-      'zh-CN': '背景'
-    },
     title: '背景',
+    name: LbpBackground.name,
     icon: 'dot-circle-o',
     visible: false,
-    name: LbpBackground.name,
     component: LbpBackground
   }, {
-    i18nTitle: {
-      'en-US': 'BgMusic',
-      'zh-CN': '背景音乐'
-    },
     title: '背景音乐',
+    name: LbpBgMusic.name,
     icon: 'music',
     visible: true,
-    name: LbpBgMusic.name,
     component: LbpBgMusic
   }, {
-    i18nTitle: {
-      'en-US': 'Table(Default)',
-      'zh-CN': '默认表格'
-    },
+    title: '默认表格',
+    name: LbpTable.name,
     icon: 'table',
     visible: true,
-    name: LbpTable.name,
     component: LbpTable
   }, {
-    i18nTitle: {
-      'en-US': 'Table(Stripe)',
-      'zh-CN': '(斑马线)表格'
-    },
     icon: 'table',
-    visible: true,
     name: LbpTable.name,
-    component: LbpTable,
-    shortcutProps: {
-      theme: 'lbp-table-theme-stripe'
-    }
-  }, {
-    i18nTitle: {
-      'en-US': 'Table(LightBlue)',
-      'zh-CN': '(淡蓝色)表格'
-    },
-    icon: 'table',
     visible: true,
-    name: LbpTable.name,
-    component: LbpTable,
-    shortcutProps: {
-      theme: 'lbp-table-theme-light-blue'
-    }
+    title: '表格',
+    component: LbpTable
   }, {
-    i18nTitle: {
-      'en-US': 'NewsList',
-      'zh-CN': '新闻列表'
-    },
     title: '新闻列表',
+    name: LbpNewsList.name,
     icon: 'list',
     visible: true,
-    name: LbpNewsList.name,
     component: LbpNewsList
   }];
 
@@ -64571,28 +64466,37 @@
    * @author : Mater
    * @Email : bxh8640@gmail.com
    * @Date : 2020-11-16 15:12:42
-   * @LastEditTime : 2020-11-16 15:12:49
+   * @LastEditTime : 2020-11-19 11:03:09
    * @Description :
    */
-  var LbpPlugin = function LbpPlugin() {
-    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-        name = _ref.name,
-        _ref$i18nTitle = _ref.i18nTitle,
-        i18nTitle = _ref$i18nTitle === void 0 ? {} : _ref$i18nTitle,
-        title = _ref.title,
-        icon = _ref.icon,
-        visible = _ref.visible,
-        component = _ref.component;
+  var LbpPlugin = /*#__PURE__*/function () {
+    function LbpPlugin() {
+      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+          name = _ref.name,
+          title = _ref.title,
+          icon = _ref.icon,
+          visible = _ref.visible,
+          component = _ref.component;
 
-    classCallCheck(this, LbpPlugin);
+      classCallCheck(this, LbpPlugin);
 
-    this.name = name;
-    this.i18nTitle = i18nTitle;
-    this.title = title;
-    this.icon = icon;
-    this.visible = visible;
-    this.component = component;
-  };
+      if (!name) return;
+      this.name = name || component.name;
+      this.title = title;
+      this.icon = icon;
+      this.visible = visible;
+      this.component = component;
+    }
+
+    createClass(LbpPlugin, [{
+      key: "getName",
+      value: function getName() {
+        return this.name;
+      }
+    }]);
+
+    return LbpPlugin;
+  }();
 
   var LbpPluginController = /*#__PURE__*/function () {
     function LbpPluginController() {
@@ -64615,12 +64519,13 @@
       key: "registerPlugin",
       value: function registerPlugin() {
         var option = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        if (!option.name) return;
         var plugin = new LbpPlugin(option);
 
-        this._plugins.push(plugin);
+        if (plugin) {
+          this._plugins.push(plugin);
 
-        this._pluginsMap[plugin.name] = plugin;
+          this._pluginsMap[plugin.getName()] = plugin;
+        }
       }
     }, {
       key: "getPlugins",
@@ -64897,7 +64802,9 @@
   });
 
   function fromJSGreedy(js) {
-    return _typeof_1(js) !== 'object' || js === null ? js : Array.isArray(js) ? immutable.Seq(js).map(fromJSGreedy).toList() : immutable.Seq(js).map(fromJSGreedy).toMap();
+    if (_typeof_1(js) !== 'object' || js === null) return js;
+    var jsMap = immutable.Seq(js).map(fromJSGreedy);
+    return Array.isArray(js) ? jsMap.toList() : jsMap.toMap();
   }
 
   var UndoRedoHistory = /*#__PURE__*/function () {
@@ -64914,36 +64821,37 @@
     createClass(UndoRedoHistory, [{
       key: "init",
       value: function init(state) {
-        this.state = fromJSGreedy(state);
-        this.history = [this.state];
+        this.history = [fromJSGreedy(state)];
       }
     }, {
       key: "addState",
       value: function addState(state) {
-        if (this.currentIndex + 1 < this.history.length) {
-          this.history.splice(this.currentIndex + 1);
-        }
-
-        this.currentIndex++;
-        var newState = this.state.merge(fromJSGreedy(state));
-        this.history.push(newState);
+        var history = this.history,
+            currentIndex = this.currentIndex;
+        var currentState = history[currentIndex] || {};
+        var nextIndex = currentIndex + 1;
+        if (nextIndex < history.length) history.splice(nextIndex);
+        this.currentIndex = nextIndex;
+        history[nextIndex] = currentState.merge(fromJSGreedy(state));
       }
     }, {
       key: "undo",
       value: function undo() {
-        var prevIndex = Math.max(this.currentIndex - 1, 0);
-        console.log(prevIndex);
-        var prevState = this.history[prevIndex];
+        var currentIndex = this.currentIndex;
+        var prevIndex = Math.max(currentIndex - 1, 0);
+        var prevState = this.history[prevIndex].toJS();
         this.currentIndex = prevIndex;
-        return prevState.toJS();
+        return prevState;
       }
     }, {
       key: "redo",
       value: function redo() {
-        var nextIndex = Math.min(this.history.length - 1, this.currentIndex + 1);
-        var nextState = this.history[nextIndex];
+        var history = this.history,
+            currentIndex = this.currentIndex;
+        var nextIndex = Math.min(history.length - 1, currentIndex + 1);
+        var nextState = this.history[nextIndex].toJS();
         this.currentIndex = nextIndex;
-        return nextState.toJS();
+        return nextState;
       }
     }]);
 
@@ -65936,8 +65844,8 @@
 
       classCallCheck(this, LbpElement);
 
-      var _options$name = options.name,
-          name = _options$name === void 0 ? '' : _options$name,
+      var _options$pluginName = options.pluginName,
+          pluginName = _options$pluginName === void 0 ? '' : _options$pluginName,
           _options$props = options.props,
           props = _options$props === void 0 ? {} : _options$props,
           _options$style = options.style,
@@ -65947,12 +65855,12 @@
           _options$animations = options.animations,
           animations = _options$animations === void 0 ? [] : _options$animations;
 
-      if (name) {
-        this.name = name;
+      if (pluginName) {
         this.id = id$1++;
-        this.plugin = lbpPluginController.getPlugin(name); // 传入具体的element render 的 参数
+        this.pluginName = pluginName;
+        var plugin = lbpPluginController.getPlugin(pluginName); // 传入具体的element render 的 参数
 
-        this.props = _objectSpread$3(_objectSpread$3({}, LbpElement.getPluginProps(this.plugin.component)), props); // 传入具体的element render 的 属性
+        this.props = _objectSpread$3(_objectSpread$3({}, LbpElement.getPluginProps(plugin.component)), props); // 传入具体的element render 的 属性
 
         this.attrs = _objectSpread$3({}, attrs); // 传入具体的element render 的 样式
 
@@ -65962,7 +65870,7 @@
 
         this.animations = toConsumableArray(animations);
       } else {
-        console.error('lbpElement need a name of plugin');
+        console.error('lbpElement need a name of plugin ：pluginName');
       }
     }
 
@@ -66028,21 +65936,18 @@
 
   var Render = {
     props: {
-      elName: {
-        type: String,
-        require: true
-      },
-      elProps: {
-        type: Object,
+      element: {
+        type: LbpElement,
         require: true
       }
     },
     render: function render() {
       var h = arguments[0];
-      var component = lbpPluginController.getPlugin(this.elName).component;
-      return h(component, helper$5([{}, {
-        "props": this.elProps
-      }]));
+      var element = this.element;
+      var component = lbpPluginController.getPlugin(element.pluginName).component;
+      return component ? h(component, helper$5([{}, {
+        "props": element.props
+      }])) : null;
     }
   };
 
@@ -66139,9 +66044,7 @@
     props: {
       element: {
         type: LbpElement,
-        default: function _default() {
-          return new LbpElement({});
-        }
+        require: true
       }
     },
     render: function render() {
@@ -66159,8 +66062,7 @@
         }
       }, [h(Render, {
         "attrs": {
-          "elProps": element.props,
-          "elName": element.name
+          "element": element
         }
       })])]);
     }
@@ -66409,6 +66311,208 @@
       });
     }
   };
+
+  var correctPrototypeGetter = !fails(function () {
+    function F() { /* empty */ }
+    F.prototype.constructor = null;
+    return Object.getPrototypeOf(new F()) !== F.prototype;
+  });
+
+  var IE_PROTO$1 = sharedKey('IE_PROTO');
+  var ObjectPrototype$1 = Object.prototype;
+
+  // `Object.getPrototypeOf` method
+  // https://tc39.github.io/ecma262/#sec-object.getprototypeof
+  var objectGetPrototypeOf = correctPrototypeGetter ? Object.getPrototypeOf : function (O) {
+    O = toObject(O);
+    if (has(O, IE_PROTO$1)) return O[IE_PROTO$1];
+    if (typeof O.constructor == 'function' && O instanceof O.constructor) {
+      return O.constructor.prototype;
+    } return O instanceof Object ? ObjectPrototype$1 : null;
+  };
+
+  var ITERATOR$3 = wellKnownSymbol('iterator');
+  var BUGGY_SAFARI_ITERATORS = false;
+
+  var returnThis = function () { return this; };
+
+  // `%IteratorPrototype%` object
+  // https://tc39.github.io/ecma262/#sec-%iteratorprototype%-object
+  var IteratorPrototype, PrototypeOfArrayIteratorPrototype, arrayIterator;
+
+  if ([].keys) {
+    arrayIterator = [].keys();
+    // Safari 8 has buggy iterators w/o `next`
+    if (!('next' in arrayIterator)) BUGGY_SAFARI_ITERATORS = true;
+    else {
+      PrototypeOfArrayIteratorPrototype = objectGetPrototypeOf(objectGetPrototypeOf(arrayIterator));
+      if (PrototypeOfArrayIteratorPrototype !== Object.prototype) IteratorPrototype = PrototypeOfArrayIteratorPrototype;
+    }
+  }
+
+  if (IteratorPrototype == undefined) IteratorPrototype = {};
+
+  // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
+  if ( !has(IteratorPrototype, ITERATOR$3)) {
+    createNonEnumerableProperty(IteratorPrototype, ITERATOR$3, returnThis);
+  }
+
+  var iteratorsCore = {
+    IteratorPrototype: IteratorPrototype,
+    BUGGY_SAFARI_ITERATORS: BUGGY_SAFARI_ITERATORS
+  };
+
+  var IteratorPrototype$1 = iteratorsCore.IteratorPrototype;
+
+
+
+
+
+  var returnThis$1 = function () { return this; };
+
+  var createIteratorConstructor = function (IteratorConstructor, NAME, next) {
+    var TO_STRING_TAG = NAME + ' Iterator';
+    IteratorConstructor.prototype = objectCreate(IteratorPrototype$1, { next: createPropertyDescriptor(1, next) });
+    setToStringTag(IteratorConstructor, TO_STRING_TAG, false);
+    iterators[TO_STRING_TAG] = returnThis$1;
+    return IteratorConstructor;
+  };
+
+  var IteratorPrototype$2 = iteratorsCore.IteratorPrototype;
+  var BUGGY_SAFARI_ITERATORS$1 = iteratorsCore.BUGGY_SAFARI_ITERATORS;
+  var ITERATOR$4 = wellKnownSymbol('iterator');
+  var KEYS = 'keys';
+  var VALUES = 'values';
+  var ENTRIES = 'entries';
+
+  var returnThis$2 = function () { return this; };
+
+  var defineIterator = function (Iterable, NAME, IteratorConstructor, next, DEFAULT, IS_SET, FORCED) {
+    createIteratorConstructor(IteratorConstructor, NAME, next);
+
+    var getIterationMethod = function (KIND) {
+      if (KIND === DEFAULT && defaultIterator) return defaultIterator;
+      if (!BUGGY_SAFARI_ITERATORS$1 && KIND in IterablePrototype) return IterablePrototype[KIND];
+      switch (KIND) {
+        case KEYS: return function keys() { return new IteratorConstructor(this, KIND); };
+        case VALUES: return function values() { return new IteratorConstructor(this, KIND); };
+        case ENTRIES: return function entries() { return new IteratorConstructor(this, KIND); };
+      } return function () { return new IteratorConstructor(this); };
+    };
+
+    var TO_STRING_TAG = NAME + ' Iterator';
+    var INCORRECT_VALUES_NAME = false;
+    var IterablePrototype = Iterable.prototype;
+    var nativeIterator = IterablePrototype[ITERATOR$4]
+      || IterablePrototype['@@iterator']
+      || DEFAULT && IterablePrototype[DEFAULT];
+    var defaultIterator = !BUGGY_SAFARI_ITERATORS$1 && nativeIterator || getIterationMethod(DEFAULT);
+    var anyNativeIterator = NAME == 'Array' ? IterablePrototype.entries || nativeIterator : nativeIterator;
+    var CurrentIteratorPrototype, methods, KEY;
+
+    // fix native
+    if (anyNativeIterator) {
+      CurrentIteratorPrototype = objectGetPrototypeOf(anyNativeIterator.call(new Iterable()));
+      if (IteratorPrototype$2 !== Object.prototype && CurrentIteratorPrototype.next) {
+        if ( objectGetPrototypeOf(CurrentIteratorPrototype) !== IteratorPrototype$2) {
+          if (objectSetPrototypeOf) {
+            objectSetPrototypeOf(CurrentIteratorPrototype, IteratorPrototype$2);
+          } else if (typeof CurrentIteratorPrototype[ITERATOR$4] != 'function') {
+            createNonEnumerableProperty(CurrentIteratorPrototype, ITERATOR$4, returnThis$2);
+          }
+        }
+        // Set @@toStringTag to native iterators
+        setToStringTag(CurrentIteratorPrototype, TO_STRING_TAG, true);
+      }
+    }
+
+    // fix Array#{values, @@iterator}.name in V8 / FF
+    if (DEFAULT == VALUES && nativeIterator && nativeIterator.name !== VALUES) {
+      INCORRECT_VALUES_NAME = true;
+      defaultIterator = function values() { return nativeIterator.call(this); };
+    }
+
+    // define iterator
+    if ( IterablePrototype[ITERATOR$4] !== defaultIterator) {
+      createNonEnumerableProperty(IterablePrototype, ITERATOR$4, defaultIterator);
+    }
+    iterators[NAME] = defaultIterator;
+
+    // export additional methods
+    if (DEFAULT) {
+      methods = {
+        values: getIterationMethod(VALUES),
+        keys: IS_SET ? defaultIterator : getIterationMethod(KEYS),
+        entries: getIterationMethod(ENTRIES)
+      };
+      if (FORCED) for (KEY in methods) {
+        if (BUGGY_SAFARI_ITERATORS$1 || INCORRECT_VALUES_NAME || !(KEY in IterablePrototype)) {
+          redefine(IterablePrototype, KEY, methods[KEY]);
+        }
+      } else _export({ target: NAME, proto: true, forced: BUGGY_SAFARI_ITERATORS$1 || INCORRECT_VALUES_NAME }, methods);
+    }
+
+    return methods;
+  };
+
+  var ARRAY_ITERATOR = 'Array Iterator';
+  var setInternalState$2 = internalState.set;
+  var getInternalState$2 = internalState.getterFor(ARRAY_ITERATOR);
+
+  // `Array.prototype.entries` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.entries
+  // `Array.prototype.keys` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.keys
+  // `Array.prototype.values` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.values
+  // `Array.prototype[@@iterator]` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype-@@iterator
+  // `CreateArrayIterator` internal method
+  // https://tc39.github.io/ecma262/#sec-createarrayiterator
+  var es_array_iterator = defineIterator(Array, 'Array', function (iterated, kind) {
+    setInternalState$2(this, {
+      type: ARRAY_ITERATOR,
+      target: toIndexedObject(iterated), // target
+      index: 0,                          // next index
+      kind: kind                         // kind
+    });
+  // `%ArrayIteratorPrototype%.next` method
+  // https://tc39.github.io/ecma262/#sec-%arrayiteratorprototype%.next
+  }, function () {
+    var state = getInternalState$2(this);
+    var target = state.target;
+    var kind = state.kind;
+    var index = state.index++;
+    if (!target || index >= target.length) {
+      state.target = undefined;
+      return { value: undefined, done: true };
+    }
+    if (kind == 'keys') return { value: index, done: false };
+    if (kind == 'values') return { value: target[index], done: false };
+    return { value: [index, target[index]], done: false };
+  }, 'values');
+
+  // argumentsList[@@iterator] is %ArrayProto_values%
+  // https://tc39.github.io/ecma262/#sec-createunmappedargumentsobject
+  // https://tc39.github.io/ecma262/#sec-createmappedargumentsobject
+  iterators.Arguments = iterators.Array;
+
+  // https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
+  addToUnscopables('keys');
+  addToUnscopables('values');
+  addToUnscopables('entries');
+
+  // `Object.fromEntries` method
+  // https://github.com/tc39/proposal-object-from-entries
+  _export({ target: 'Object', stat: true }, {
+    fromEntries: function fromEntries(iterable) {
+      var obj = {};
+      iterate_1(iterable, function (k, v) {
+        createProperty(obj, k, v);
+      }, undefined, true);
+      return obj;
+    }
+  });
 
   /*
    * @author : Mater
@@ -68108,8 +68212,8 @@
       editPropsConfig: function editPropsConfig() {
         var element = this.element;
 
-        if (element && element.name) {
-          var _pluginsControl$getPl = lbpPluginController.getPlugin(element.name),
+        if (element && element.pluginName) {
+          var _pluginsControl$getPl = lbpPluginController.getPlugin(element.pluginName),
               component = _pluginsControl$getPl.component;
 
           return this.getPropsWithEditor(component.props);
@@ -68122,11 +68226,7 @@
             editPropsConfig = this.editPropsConfig;
         var editPropsConfigKeys = Object.keys(editPropsConfig);
         var props = element ? element.props : {};
-        var propsValue = {};
-        editPropsConfigKeys.forEach(function (key) {
-          propsValue[key] = props[key];
-        });
-        return propsValue;
+        return lodash.pick(props, editPropsConfigKeys);
       },
       editAnimationValue: function editAnimationValue() {
         var element = this.element;
@@ -68144,17 +68244,12 @@
         this.activeTabKey = activeTabKey;
       },
       getPropsWithEditor: function getPropsWithEditor(props) {
-        var propsWithEditor = {};
-        Object.entries(props).forEach(function (_ref) {
+        return Object.fromEntries(Object.entries(props).filter(function (_ref) {
           var _ref2 = slicedToArray(_ref, 2),
-              key = _ref2[0],
               value = _ref2[1];
 
-          if (value.editor) {
-            propsWithEditor[key] = value;
-          }
-        });
-        return propsWithEditor;
+          return value.editor;
+        }));
       }
     },
     render: function render() {
@@ -68231,7 +68326,7 @@
         required: true,
         type: String
       },
-      title: {
+      name: {
         required: true,
         type: String
       },
@@ -68268,7 +68363,7 @@
         "attrs": {
           "aria-hidden": 'true'
         }
-      }), h("span", [props.title])]);
+      }), h("span", [props.name])]);
     }
   };
 
@@ -68308,10 +68403,6 @@
           version: '0.0.7',
           name: 'lbp-slide',
           icon: 'photo',
-          i18nTitle: {
-            'en-US': 'Carousel',
-            'zh-CN': '轮播图'
-          },
           title: '轮播图',
           visible: true
         }], null, 2)
@@ -68645,7 +68736,7 @@
           "attrs": {
             "clickFn": _this.clone.bind(_this, plugin),
             "mousedownFn": _this.handleDragStartFromMixin.bind(_this, plugin),
-            "title": plugin.i18nTitle[_this.$i18n.locale] || plugin.title,
+            "name": plugin.title || plugin.name,
             "faIcon": plugin.icon,
             "disabled": plugin.disabled
           }
@@ -69341,8 +69432,8 @@
     });
   }
 
-  var Page = /*#__PURE__*/function () {
-    function Page() {
+  var LbpPage = /*#__PURE__*/function () {
+    function LbpPage() {
       var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
           _ref$title = _ref.title,
           title = _ref$title === void 0 ? '' : _ref$title,
@@ -69355,7 +69446,7 @@
           _ref$pageMode = _ref.pageMode,
           pageMode = _ref$pageMode === void 0 ? PAGE_MODE.SWIPPER_PAGE : _ref$pageMode;
 
-      classCallCheck(this, Page);
+      classCallCheck(this, LbpPage);
 
       this.id = +new Date();
       this.title = title;
@@ -69365,13 +69456,13 @@
       this.elements = this.genElements(elements);
     }
 
-    createClass(Page, [{
+    createClass(LbpPage, [{
       key: "clone",
       value: function clone() {
         var elements = this.elements.map(function (element) {
           return new LbpElement(element);
         });
-        return new Page({
+        return new LbpPage({
           title: this.title,
           elements: elements
         });
@@ -69382,17 +69473,15 @@
         var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
         return Array.isArray(elements) && elements.length > 0 ? elements.map(function (v) {
           return new LbpElement(v);
-        }) : [new LbpElement({
-          name: LbpBackground.name
-        })];
+        }) : [];
       }
     }]);
 
-    return Page;
+    return LbpPage;
   }();
 
-  var Work = /*#__PURE__*/function () {
-    function Work() {
+  var LbpWork = /*#__PURE__*/function () {
+    function LbpWork() {
       var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
           id = _ref.id,
           _ref$title = _ref.title,
@@ -69404,7 +69493,7 @@
           isPublish = _ref.isPublish,
           isTemplate = _ref.isTemplate;
 
-      classCallCheck(this, Work);
+      classCallCheck(this, LbpWork);
 
       this.id = id;
       this.title = title;
@@ -69415,16 +69504,16 @@
       this.is_template = !!isTemplate;
     }
 
-    createClass(Work, [{
+    createClass(LbpWork, [{
       key: "genPages",
       value: function genPages(pages) {
         return Array.isArray(pages) && pages.length > 0 ? pages.map(function (v) {
-          return new Page(v);
-        }) : [new Page()];
+          return new LbpPage(v);
+        }) : [new LbpPage()];
       }
     }]);
 
-    return Work;
+    return LbpWork;
   }();
 
   /*
@@ -69482,7 +69571,7 @@
       data: {
         handler: function handler() {
           var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-          this.work = new Work(data);
+          this.work = new LbpWork(data);
           console.log(this.work);
           history.init(this.work);
         },
@@ -69500,7 +69589,7 @@
         this.pageIndex = index;
       },
       addPage: function addPage(title) {
-        this.work.pages.push(new Page({
+        this.work.pages.push(new LbpPage({
           title: title
         }));
         this.record();
@@ -69536,10 +69625,10 @@
         this.record();
       },
       undo: function undo() {
-        this.work = new Work(history.undo());
+        this.work = new LbpWork(history.undo());
       },
       redo: function redo() {
-        this.work = new Work(history.redo());
+        this.work = new LbpWork(history.redo());
       },
       _hideAuxiliay: function _hideAuxiliay() {
         this.auxiliayVisible = false;
@@ -69574,7 +69663,10 @@
         });
       },
       _handleAddElement: function _handleAddElement(data) {
-        this.addElement(data);
+        this.addElement({
+          pluginName: data.name,
+          style: data.dragStyle
+        });
       },
       _handleAddPage: function _handleAddPage(data) {
         this.addPage(data);

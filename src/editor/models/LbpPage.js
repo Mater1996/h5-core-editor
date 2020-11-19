@@ -2,14 +2,12 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-17 17:02:27
+ * @LastEditTime : 2020-11-19 10:49:59
  * @Description :
  */
 import LbpElement from './LbpElement'
 import { PAGE_MODE } from '@/constants/work'
-import LbpBackground from '@/plugins/components/lbp-background'
-
-class Page {
+class LbpPage {
   constructor ({
     title = '',
     elements = [],
@@ -27,14 +25,14 @@ class Page {
 
   clone () {
     const elements = this.elements.map(element => new LbpElement(element))
-    return new Page({ title: this.title, elements })
+    return new LbpPage({ title: this.title, elements })
   }
 
   genElements (elements = []) {
     return Array.isArray(elements) && elements.length > 0
       ? elements.map(v => new LbpElement(v))
-      : [new LbpElement({ name: LbpBackground.name })]
+      : []
   }
 }
 
-export default Page
+export default LbpPage

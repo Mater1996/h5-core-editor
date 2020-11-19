@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-18 19:16:30
+ * @LastEditTime : 2020-11-19 10:21:46
  * @Description :
  */
 
@@ -14,19 +14,19 @@ let id = 0
 class LbpElement {
   constructor (options = {}) {
     const {
-      name = '',
+      pluginName = '',
       props = {},
       style = {},
       attrs = {},
       animations = []
     } = options
-    if (name) {
-      this.name = name
+    if (pluginName) {
       this.id = id++
-      this.plugin = pluginsControl.getPlugin(name)
+      this.pluginName = pluginName
+      const plugin = pluginsControl.getPlugin(pluginName)
       // 传入具体的element render 的 参数
       this.props = {
-        ...LbpElement.getPluginProps(this.plugin.component),
+        ...LbpElement.getPluginProps(plugin.component),
         ...props
       }
       // 传入具体的element render 的 属性
@@ -45,7 +45,7 @@ class LbpElement {
       // 传入 animateLayer 以实现动画效果
       this.animations = [...animations]
     } else {
-      console.error('lbpElement need a name of plugin')
+      console.error('lbpElement need a name of plugin ：pluginName')
     }
   }
 

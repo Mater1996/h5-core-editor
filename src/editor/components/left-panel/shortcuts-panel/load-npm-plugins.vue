@@ -2,7 +2,7 @@
  * @Author: ly525
  * @Date: 2019-11-23 12:35:43
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2020-11-17 16:13:37
+ * @LastEditTime: 2020-11-19 10:05:17
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
@@ -44,10 +44,6 @@ export default {
             version: '0.0.7',
             name: 'lbp-slide',
             icon: 'photo',
-            i18nTitle: {
-              'en-US': 'Carousel',
-              'zh-CN': '轮播图'
-            },
             title: '轮播图',
             visible: true
           }

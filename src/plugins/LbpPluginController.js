@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-16 15:11:01
- * @LastEditTime : 2020-11-16 15:18:21
+ * @LastEditTime : 2020-11-19 11:03:20
  * @Description :
  */
 
@@ -16,10 +16,11 @@ class LbpPluginController {
   }
 
   registerPlugin (option = {}) {
-    if (!option.name) return
     const plugin = new LbpPlugin(option)
-    this._plugins.push(plugin)
-    this._pluginsMap[plugin.name] = plugin
+    if (plugin) {
+      this._plugins.push(plugin)
+      this._pluginsMap[plugin.getName()] = plugin
+    }
   }
 
   getPlugins () {

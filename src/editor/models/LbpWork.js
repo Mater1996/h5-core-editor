@@ -10,7 +10,7 @@
  */
 import LbpPage from './LbpPage'
 
-class Work {
+class LbpWork {
   constructor ({
     id,
     title = '标题',
@@ -35,4 +35,4 @@ class Work {
   }
 }
 
-export default Work
+export default LbpWork

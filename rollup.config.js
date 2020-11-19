@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 14:39:39
- * @LastEditTime : 2020-11-18 11:22:11
+ * @LastEditTime : 2020-11-18 19:27:03
  * @Description :
  */
 const path = require('path')
@@ -19,6 +19,7 @@ const del = require('rollup-plugin-delete')
 const progress = require('rollup-plugin-progress')
 const { terser } = require('rollup-plugin-terser')
 const filesize = require('rollup-plugin-filesize')
+const analyze = require('rollup-plugin-analyzer')
 const packageJson = require('./package.json')
 
 const babelConfig = {
@@ -88,6 +89,7 @@ const external = [
 
 module.exports = args => {
   const isProd = args.prod
+  const needAnalyze = args.analyze
   function resolveUrl (dir) {
     return !isProd
       ? path.join('./example/src/lib/luban-h5-editor', dir)
@@ -165,7 +167,12 @@ module.exports = args => {
         }),
       json(),
       progress(),
-      filesize()
+      filesize(),
+      needAnalyze &&
+        analyze({
+          summaryOnly: true,
+          limit: 100
+        })
     ]
   }
 }

@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-13 10:09:46
- * @LastEditTime : 2020-11-18 10:33:36
+ * @LastEditTime : 2020-11-19 10:24:14
  * @Description :
  */
 import LbpElement from '@/editor/models/LbpElement'
@@ -14,7 +14,7 @@ export default {
   props: {
     element: {
       type: LbpElement,
-      default: () => new LbpElement({})
+      require: true
     }
   },
   render () {
@@ -22,7 +22,7 @@ export default {
     return (
       <ShapeLayer elStyle={element.style} on={this.$listeners}>
         <AnimateLayer animations={element.animations}>
-          <Render elProps={element.props} elName={element.name}></Render>
+          <Render element={element}></Render>
         </AnimateLayer>
       </ShapeLayer>
     )

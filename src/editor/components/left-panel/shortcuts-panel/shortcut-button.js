@@ -5,7 +5,7 @@ export default {
       required: true,
       type: String
     },
-    title: {
+    name: {
       required: true,
       type: String
     },
@@ -36,7 +36,7 @@ export default {
           class={['shortcut-icon', 'fa', `fa-${props.faIcon}`]}
           aria-hidden='true'
         />
-        <span>{ props.title }</span>
+        <span>{ props.name }</span>
       </button>
     )
   }

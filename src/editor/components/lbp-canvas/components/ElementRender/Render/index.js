@@ -2,24 +2,22 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-05 10:04:35
- * @LastEditTime : 2020-11-17 13:40:39
+ * @LastEditTime : 2020-11-19 10:29:35
  * @Description :
  */
 import pluginsControl from '@/plugins'
+import LbpElement from '@/editor/models/LbpElement'
 
 export default {
   props: {
-    elName: {
-      type: String,
-      require: true
-    },
-    elProps: {
-      type: Object,
+    element: {
+      type: LbpElement,
       require: true
     }
   },
   render () {
-    const component = pluginsControl.getPlugin(this.elName).component
-    return <component props={this.elProps}></component>
+    const element = this.element
+    const component = pluginsControl.getPlugin(element.pluginName).component
+    return component ? <component props={element.props}></component> : null
   }
 }

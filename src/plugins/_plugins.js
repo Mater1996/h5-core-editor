@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-11 18:18:26
- * @LastEditTime : 2020-11-18 18:04:44
+ * @LastEditTime : 2020-11-19 10:34:59
  * @Description :
  */
 
@@ -26,262 +26,156 @@ import LbpNewsList from './components/lbp-news-list'
 
 export default [
   {
-    i18nTitle: {
-      'en-US': 'RadarChart',
-      'zh-CN': '雷达图'
-    },
     title: '雷达图',
+    name: LbpLineChart.name,
     icon: 'line-chart',
     visible: true,
-    name: LbpLineChart.name,
     component: LbpLineChart
   },
   {
-    i18nTitle: {
-      'en-US': 'LineChart',
-      'zh-CN': '折线图'
-    },
     title: '折线图',
-    icon: 'line-chart',
-    visible: true,
     name: LbpLineChart.name,
+    icon: 'line-chart',
     component: LbpLineChart
   },
   {
-    i18nTitle: {
-      'en-US': 'LineChart',
-      'zh-CN': '柱状图'
-    },
     title: '柱状图',
+    name: LbpLineChart.name,
     icon: 'bar-chart',
     visible: true,
-    name: LbpLineChart.name,
     component: LbpLineChart
   },
   {
-    i18nTitle: {
-      'en-US': 'LineChart',
-      'zh-CN': '饼状图'
-    },
     title: '饼状图',
+    name: LbpLineChart.name,
     icon: 'pie-chart',
     visible: true,
-    name: LbpLineChart.name,
     component: LbpLineChart
   },
   {
-    i18nTitle: {
-      'en-US': 'LineChart',
-      'zh-CN': '漏斗图'
-    },
     title: '漏斗图',
+    name: LbpLineChart.name,
     icon: 'filter',
     visible: true,
-    name: LbpLineChart.name,
-    component: LbpLineChart,
-    shortcutProps: {
-      type: 'funnel'
-    }
+    component: LbpLineChart
   },
   {
     title: '公告',
-    i18nTitle: {
-      'en-US': 'Notice-Bar',
-      'zh-CN': '公告'
-    },
+    name: LbpNoticeBar.name,
     icon: 'volume-up',
     visible: true,
-    name: LbpNoticeBar.name,
     component: LbpNoticeBar
   },
   {
     title: '评分',
-    i18nTitle: {
-      'en-US': 'Rate',
-      'zh-CN': '评分'
-    },
+    name: LbpRate.name,
     icon: 'star-o',
     visible: true,
-    name: LbpRate.name,
     component: LbpRate
   },
   {
     title: '图片',
-    i18nTitle: {
-      'en-US': 'Picture',
-      'zh-CN': '图片'
-    },
+    name: LbpPicture.name,
     icon: 'photo',
     visible: true,
-    name: LbpPicture.name,
     component: LbpPicture
   },
   {
-    i18nTitle: {
-      'en-US': 'Text',
-      'zh-CN': '文字'
-    },
     title: '文字',
+    name: LbpText.name,
     icon: 'text-width',
     visible: true,
-    name: LbpText.name,
     component: LbpText
   },
   {
-    i18nTitle: {
-      'en-US': 'Button',
-      'zh-CN': '普通按钮'
-    },
     title: '普通按钮',
+    name: LbpButton.name,
     icon: 'hand-pointer-o',
     visible: true,
-    name: LbpButton.name,
     component: LbpButton
   },
   {
-    i18nTitle: {
-      'en-US': 'Carousel',
-      'zh-CN': '轮播图'
-    },
     title: '轮播图',
+    name: LbpSlide.name,
     icon: 'photo',
     visible: true,
-    name: LbpSlide.name,
     component: LbpSlide
   },
   {
-    i18nTitle: {
-      'en-US': 'Map',
-      'zh-CN': '地图'
-    },
     title: '地图',
+    name: LbpQQMap.name,
     icon: 'map-o',
     visible: true,
-    name: LbpQQMap.name,
     component: LbpQQMap
   },
   {
-    i18nTitle: {
-      'en-US': 'Video',
-      'zh-CN': '视频'
-    },
     title: '视频',
+    name: LbpVideo.name,
     icon: 'file-video-o',
     visible: true,
-    name: LbpVideo.name,
     component: LbpVideo
   },
   {
-    i18nTitle: {
-      'en-US': 'Form Input',
-      'zh-CN': '表单输入'
-    },
     title: '表单输入',
+    name: LbpFormInput.name,
     icon: 'pencil-square-o',
     visible: true,
-    name: LbpFormInput.name,
     component: LbpFormInput
   },
   {
-    i18nTitle: {
-      'en-US': 'Form Submit',
-      'zh-CN': '表单提交'
-    },
     title: '表单提交',
+    name: LbpFormButton.name,
     icon: 'hand-pointer-o',
     visible: true,
-    name: LbpFormButton.name,
     component: LbpFormButton
   },
   {
-    i18nTitle: {
-      'en-US': 'Form Checkbox',
-      'zh-CN': '表单多选'
-    },
     title: '表单多选',
+    name: LbpFormCheckboxGroup.name,
     icon: 'check-square-o',
     visible: true,
-    name: LbpFormCheckboxGroup.name,
     component: LbpFormCheckboxGroup
   },
   {
-    i18nTitle: {
-      'en-US': 'Form Radio',
-      'zh-CN': '表单单选'
-    },
     title: '表单单选',
+    name: LbpFormRadioGroup.name,
     icon: 'dot-circle-o',
     visible: true,
-    name: LbpFormRadioGroup.name,
     component: LbpFormRadioGroup
   },
   {
-    i18nTitle: {
-      'en-US': 'Background',
-      'zh-CN': '背景'
-    },
     title: '背景',
+    name: LbpBackground.name,
     icon: 'dot-circle-o',
     visible: false,
-    name: LbpBackground.name,
     component: LbpBackground
   },
   {
-    i18nTitle: {
-      'en-US': 'BgMusic',
-      'zh-CN': '背景音乐'
-    },
     title: '背景音乐',
+    name: LbpBgMusic.name,
     icon: 'music',
     visible: true,
-    name: LbpBgMusic.name,
     component: LbpBgMusic
   },
   {
-    i18nTitle: {
-      'en-US': 'Table(Default)',
-      'zh-CN': '默认表格'
-    },
+    title: '默认表格',
+    name: LbpTable.name,
     icon: 'table',
     visible: true,
-    name: LbpTable.name,
     component: LbpTable
   },
   {
-    i18nTitle: {
-      'en-US': 'Table(Stripe)',
-      'zh-CN': '(斑马线)表格'
-    },
     icon: 'table',
-    visible: true,
     name: LbpTable.name,
-    component: LbpTable,
-    shortcutProps: {
-      theme: 'lbp-table-theme-stripe'
-    }
+    visible: true,
+    title: '表格',
+    component: LbpTable
   },
   {
-    i18nTitle: {
-      'en-US': 'Table(LightBlue)',
-      'zh-CN': '(淡蓝色)表格'
-    },
-    icon: 'table',
-    visible: true,
-    name: LbpTable.name,
-    component: LbpTable,
-    shortcutProps: {
-      theme: 'lbp-table-theme-light-blue'
-    }
-  },
-  {
-    i18nTitle: {
-      'en-US': 'NewsList',
-      'zh-CN': '新闻列表'
-    },
     title: '新闻列表',
+    name: LbpNewsList.name,
     icon: 'list',
     visible: true,
-    name: LbpNewsList.name,
     component: LbpNewsList
   }
 ]

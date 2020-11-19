@@ -2,16 +2,17 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-12 15:10:55
+ * @LastEditTime : 2020-11-19 10:56:51
  * @Description : 右侧panel为修改 props， events, animations 等属性
  */
+import { Layout, Tabs } from 'ant-design-vue'
+import pluginsControl from '@/plugins'
+import { pick } from 'lodash'
 import RenderPropsEditor from './props'
 import RenderScriptEditor from './script'
 import RenderAnimationEditor from './animation'
 import RenderActionEditor from './action'
 import RenderBackgroundEditor from './background'
-import pluginsControl from '@/plugins'
-import { Layout, Tabs } from 'ant-design-vue'
 
 export default {
   name: 'ElementPropsEditor',
@@ -33,8 +34,8 @@ export default {
   computed: {
     editPropsConfig () {
       const { element } = this
-      if (element && element.name) {
-        const { component } = pluginsControl.getPlugin(element.name)
+      if (element && element.pluginName) {
+        const { component } = pluginsControl.getPlugin(element.pluginName)
         return this.getPropsWithEditor(component.props)
       } else {
         return {}
@@ -44,11 +45,7 @@ export default {
       const { element, editPropsConfig } = this
       const editPropsConfigKeys = Object.keys(editPropsConfig)
       const props = element ? element.props : {}
-      const propsValue = {}
-      editPropsConfigKeys.forEach(key => {
-        propsValue[key] = props[key]
-      })
-      return propsValue
+      return pick(props, editPropsConfigKeys)
     },
     editAnimationValue () {
       const { element } = this
@@ -64,13 +61,9 @@ export default {
       this.activeTabKey = activeTabKey
     },
     getPropsWithEditor (props) {
-      const propsWithEditor = {}
-      Object.entries(props).forEach(([key, value]) => {
-        if (value.editor) {
-          propsWithEditor[key] = value
-        }
-      })
-      return propsWithEditor
+      return Object.fromEntries(
+        Object.entries(props).filter(([, value]) => value.editor)
+      )
     }
   },
   render () {

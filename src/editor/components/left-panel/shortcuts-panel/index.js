@@ -1,8 +1,8 @@
 /*
  * @author : Mater
  * @Email : bxh8640@gmail.com
- * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-17 17:06:22
+ * @Date : 2020-11-18 09:35:11
+ * @LastEditTime : 2020-11-19 10:35:25
  * @Description :
  */
 import ShortcutButton from './shortcut-button'
@@ -39,7 +39,7 @@ export default {
               <ShortcutButton
                 clickFn={this.clone.bind(this, plugin)}
                 mousedownFn={this.handleDragStartFromMixin.bind(this, plugin)}
-                title={plugin.i18nTitle[this.$i18n.locale] || plugin.title}
+                name={plugin.title || plugin.name}
                 faIcon={plugin.icon}
                 disabled={plugin.disabled}
               />

@@ -2,21 +2,15 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-17 14:57:05
- * @LastEditTime : 2020-11-18 14:28:05
+ * @LastEditTime : 2020-11-19 09:54:48
  * @Description :
  */
 import { Seq } from 'immutable'
 
 function fromJSGreedy (js) {
-  return typeof js !== 'object' || js === null
-    ? js
-    : Array.isArray(js)
-      ? Seq(js)
-        .map(fromJSGreedy)
-        .toList()
-      : Seq(js)
-        .map(fromJSGreedy)
-        .toMap()
+  if (typeof js !== 'object' || js === null) return js
+  const jsMap = Seq(js).map(fromJSGreedy)
+  return Array.isArray(js) ? jsMap.toList() : jsMap.toMap()
 }
 class UndoRedoHistory {
   state
@@ -24,32 +18,32 @@ class UndoRedoHistory {
   currentIndex = 0
 
   init (state) {
-    this.state = fromJSGreedy(state)
-    this.history = [this.state]
+    this.history = [fromJSGreedy(state)]
   }
 
   addState (state) {
-    if (this.currentIndex + 1 < this.history.length) {
-      this.history.splice(this.currentIndex + 1)
-    }
-    this.currentIndex++
-    const newState = this.state.merge(fromJSGreedy(state))
-    this.history.push(newState)
+    const { history, currentIndex } = this
+    const currentState = history[currentIndex] || {}
+    const nextIndex = currentIndex + 1
+    if (nextIndex < history.length) history.splice(nextIndex)
+    this.currentIndex = nextIndex
+    history[nextIndex] = currentState.merge(fromJSGreedy(state))
   }
 
   undo () {
-    const prevIndex = Math.max(this.currentIndex - 1, 0)
-    console.log(prevIndex)
-    const prevState = this.history[prevIndex]
+    const { currentIndex } = this
+    const prevIndex = Math.max(currentIndex - 1, 0)
+    const prevState = this.history[prevIndex].toJS()
     this.currentIndex = prevIndex
-    return prevState.toJS()
+    return prevState
   }
 
   redo () {
-    const nextIndex = Math.min(this.history.length - 1, this.currentIndex + 1)
-    const nextState = this.history[nextIndex]
+    const { history, currentIndex } = this
+    const nextIndex = Math.min(history.length - 1, currentIndex + 1)
+    const nextState = this.history[nextIndex].toJS()
     this.currentIndex = nextIndex
-    return nextState.toJS()
+    return nextState
   }
 }
 
