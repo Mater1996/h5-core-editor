@@ -27068,7 +27068,7 @@ html{-webkit-tap-highlight-color:transparent}body{margin:0;font-family:-apple-sy
 
 .lb-canvas {
   position: relative;
-  display: inline-block;
+  overflow: hidden;
   outline: 1px solid #e7e7e7;
   background: #fff;
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZAgMAAAC5h23wAAAAAXNSR0IB2cksfwAAAAlQTFRF9fX18PDwAAAABQ8/pgAAAAN0Uk5T/yIA41y2EwAAABhJREFUeJxjYIAC0VAQcGCQWgUCDUONBgDH8Fwzu33LswAAAABJRU5ErkJggg=="); }
