@@ -64556,44 +64556,6 @@
 
   function _extends$6(){return _extends$6=Object.assign||function(a){for(var b,c=1;c<arguments.length;c++)for(var d in b=arguments[c],b)Object.prototype.hasOwnProperty.call(b,d)&&(a[d]=b[d]);return a},_extends$6.apply(this,arguments)}var normalMerge=["attrs","props","domProps"],toArrayMerge=["class","style","directives"],functionalMerge=["on","nativeOn"],mergeJsxProps=function(a){return a.reduce(function(c,a){for(var b in a)if(!c[b])c[b]=a[b];else if(-1!==normalMerge.indexOf(b))c[b]=_extends$6({},c[b],a[b]);else if(-1!==toArrayMerge.indexOf(b)){var d=c[b]instanceof Array?c[b]:[c[b]],e=a[b]instanceof Array?a[b]:[a[b]];c[b]=d.concat(e);}else if(-1!==functionalMerge.indexOf(b)){for(var f in a[b])if(c[b][f]){var g=c[b][f]instanceof Array?c[b][f]:[c[b][f]],h=a[b][f]instanceof Array?a[b][f]:[a[b][f]];c[b][f]=g.concat(h);}else c[b][f]=a[b][f];}else if("hook"==b)for(var i in a[b])c[b][i]=c[b][i]?mergeFn(c[b][i],a[b][i]):a[b][i];else c[b]=a[b];return c},{})},mergeFn=function(a,b){return function(){a&&a.apply(this,arguments),b&&b.apply(this,arguments);}};var helper$5=mergeJsxProps;
 
-  function _objectWithoutPropertiesLoose(source, excluded) {
-    if (source == null) return {};
-    var target = {};
-    var sourceKeys = Object.keys(source);
-    var key, i;
-
-    for (i = 0; i < sourceKeys.length; i++) {
-      key = sourceKeys[i];
-      if (excluded.indexOf(key) >= 0) continue;
-      target[key] = source[key];
-    }
-
-    return target;
-  }
-
-  var objectWithoutPropertiesLoose = _objectWithoutPropertiesLoose;
-
-  function _objectWithoutProperties(source, excluded) {
-    if (source == null) return {};
-    var target = objectWithoutPropertiesLoose(source, excluded);
-    var key, i;
-
-    if (Object.getOwnPropertySymbols) {
-      var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
-
-      for (i = 0; i < sourceSymbolKeys.length; i++) {
-        key = sourceSymbolKeys[i];
-        if (excluded.indexOf(key) >= 0) continue;
-        if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
-        target[key] = source[key];
-      }
-    }
-
-    return target;
-  }
-
-  var objectWithoutProperties = _objectWithoutProperties;
-
   var $entries = objectToArray.entries;
 
   // `Object.entries` method
@@ -65034,27 +64996,42 @@
     }
   });
 
-  /*
-   * @author : Mater
-   * @Email : bxh8640@gmail.com
-   * @Date : 2020-11-17 16:59:14
-   * @LastEditTime : 2020-11-19 15:02:32
-   * @Description :
-   */
   var hyphenateStyleName = function hyphenateStyleName(name) {
     var uppercasePattern = /([A-Z])/g;
     var msPattern = /^ms-/;
     return name.replace(uppercasePattern, '-$1').toLowerCase().replace(msPattern, '-ms-');
   };
+  /**
+   * styleObj 转为 元素style
+   * @param {*} styleObj style-in-js Object
+   * @param {*} unit 单位
+   * @param {*} config 配置
+   * rootValue
+   *
+   */
+
   var renderStyle = function renderStyle(styleObj) {
     var unit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'px';
-    var newStyle = {};
-    Object.entries(styleObj).forEach(function (_ref) {
-      var _ref2 = slicedToArray(_ref, 2),
-          key = _ref2[0],
-          value = _ref2[1];
 
-      var v = typeof value === 'number' ? "".concat(value).concat(unit) : value;
+    var _ref = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
+        _ref$rootValue = _ref.rootValue,
+        rootValue = _ref$rootValue === void 0 ? 100 : _ref$rootValue;
+
+    var newStyle = {};
+    Object.entries(styleObj).forEach(function (_ref2) {
+      var _ref3 = slicedToArray(_ref2, 2),
+          key = _ref3[0],
+          value = _ref3[1];
+
+      if (lodash.isNumber(value)) {
+        switch (unit) {
+          case 'rem':
+            value = value / rootValue;
+            break;
+        }
+      }
+
+      var v = "".concat(value).concat(unit);
       var n = hyphenateStyleName(key);
       newStyle[n] = v;
     });
@@ -65287,7 +65264,7 @@
     data: function data() {
       return {
         rect: this.getReact(this.elStyle),
-        shapeStyle: renderStyle(this.elStyle),
+        shapeStyle: renderStyle(this.elStyle, this.lbpCanvasContext.unit),
         startY: 0,
         startX: 0,
         point: '',
@@ -65317,13 +65294,13 @@
       elStyle: function elStyle() {
         var elStyle = this.elStyle;
         this.rect = this.getReact(elStyle);
-        this.shapeStyle = renderStyle(elStyle);
+        this.shapeStyle = renderStyle(elStyle, this.lbpCanvasContext.unit);
       },
       rect: {
         handler: function handler() {
           var newStyle = _objectSpread$1(_objectSpread$1({}, this.elStyle), this.rect);
 
-          this.shapeStyle = _objectSpread$1(_objectSpread$1({}, this.shapeStyle), renderStyle(this.rect));
+          this.shapeStyle = _objectSpread$1(_objectSpread$1({}, this.shapeStyle), renderStyle(this.rect, this.lbpCanvasContext.unit));
           this.$emit('change', newStyle);
         },
         deep: true
@@ -65340,7 +65317,7 @@
       },
       setActive: function setActive(active) {
         if (this.active === active) return;
-        active ? this.$emit('active', active) : this.$emit('deactive', active);
+        active ? this.$emit('active') : this.$emit('deactive');
         this.active = active;
       },
       onClickOutside: function onClickOutside() {
@@ -65484,7 +65461,7 @@
         }
       };
       return h("div", helper$5([{
-        "style": renderStyle(this.shapeStyle)
+        "style": this.shapeStyle
       }, !readonly ? options : {}]), [h("div", {
         "class": "shape-content"
       }, [this.$slots.default]), !readonly && h("div", {
@@ -65714,6 +65691,13 @@
     }
   };
 
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-13 10:09:46
+   * @LastEditTime : 2020-11-19 17:19:27
+   * @Description :
+   */
   var ElementRender = {
     props: {
       element: {
@@ -65721,16 +65705,30 @@
         require: true
       }
     },
+    methods: {
+      _handleChange: function _handleChange(value) {
+        this.$emit('elementChange', value);
+      },
+      _handleActive: function _handleActive() {
+        this.$emit('elementActive', this.element);
+      },
+      _handleDeactive: function _handleDeactive() {
+        this.$emit('elementDeactive', this.element);
+      }
+    },
     render: function render() {
       var h = arguments[0];
       var element = this.element;
-      return h(ShapeLayer, helper$5([{
+      return h(ShapeLayer, {
         "attrs": {
           "elStyle": element.style
+        },
+        "on": {
+          "change": this._handleChange,
+          "active": this._handleActive,
+          "deactive": this._handleDeactive
         }
-      }, {
-        "on": this.$listeners
-      }]), [h(AnimateLayer, {
+      }, [h(AnimateLayer, {
         "attrs": {
           "animations": element.animations
         }
@@ -65796,27 +65794,21 @@
     },
     computed: {
       canvasStyle: function canvasStyle() {
-        return {
-          width: "".concat(this.width, "px"),
-          height: "".concat(this.height, "px")
-        };
+        return renderStyle({
+          width: this.width,
+          height: this.height
+        }, this.unit);
       }
     },
     methods: {
       updateCanvas: function updateCanvas(data) {
-        Object.assign(this.canvas, data);
+        Object.assign(this.lbpCanvasContext, data);
       }
     },
     render: function render() {
       var _this = this;
 
       var h = arguments[0];
-
-      var _this$$listeners = this.$listeners,
-          _active = _this$$listeners.active,
-          _deactive = _this$$listeners.deactive,
-          restListeners = objectWithoutProperties(_this$$listeners, ["active", "deactive"]);
-
       return h("div", {
         "class": "lb-canvas",
         "style": this.canvasStyle
@@ -65830,16 +65822,10 @@
           "attrs": {
             "element": element,
             "disabled": _this.disabled
-          },
-          "on": {
-            "active": function active() {
-              return _active(element);
-            },
-            "deactive": function deactive() {
-              return _deactive(element);
-            }
           }
-        }, restListeners]));
+        }, {
+          "on": _this.$listeners
+        }]));
       })])])]);
     }
   };

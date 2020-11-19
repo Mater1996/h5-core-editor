@@ -2,10 +2,11 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-19 14:55:52
+ * @LastEditTime : 2020-11-19 17:23:37
  * @Description :
  */
 import './index.scss'
+import { renderStyle } from '@/utils'
 import ElementRender from './components/ElementRender'
 
 export default {
@@ -56,19 +57,21 @@ export default {
   },
   computed: {
     canvasStyle () {
-      return {
-        width: `${this.width}px`,
-        height: `${this.height}px`
-      }
+      return renderStyle(
+        {
+          width: this.width,
+          height: this.height
+        },
+        this.unit
+      )
     }
   },
   methods: {
     updateCanvas (data) {
-      Object.assign(this.canvas, data)
+      Object.assign(this.lbpCanvasContext, data)
     }
   },
   render () {
-    const { active, deactive, ...restListeners } = this.$listeners
     return (
       <div class="lb-canvas" style={this.canvasStyle}>
         <div class="lb-canvas-wrapper">
@@ -78,9 +81,7 @@ export default {
                 key={element.id}
                 element={element}
                 disabled={this.disabled}
-                onActive={() => active(element)}
-                onDeactive={() => deactive(element)}
-                {...restListeners}
+                on={this.$listeners}
               ></ElementRender>
             ))}
           </div>

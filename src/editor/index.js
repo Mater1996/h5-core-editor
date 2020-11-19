@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-19 11:48:50
+ * @LastEditTime : 2020-11-19 17:21:23
  * @Description :
  */
 import 'font-awesome/css/font-awesome.min.css'
@@ -188,9 +188,9 @@ const LpbH5Editor = {
                 width={this.currentPage.width}
                 height={this.currentPage.height}
                 elements={this.currentPage.elements}
-                onActive={this._handleElementActive}
-                onDeactive={this._handleElementDeactive}
-                onElementRectChange={this._handleElementRectChange}
+                onElementActive={this._handleElementActive}
+                onElementDeactive={this._handleElementDeactive}
+                onElementChange={this._handleElementRectChange}
               />
               <AdjustHeight
                 height={this.currentPage.height}

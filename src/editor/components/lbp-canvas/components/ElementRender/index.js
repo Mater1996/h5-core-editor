@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-13 10:09:46
- * @LastEditTime : 2020-11-19 14:12:47
+ * @LastEditTime : 2020-11-19 17:19:27
  * @Description :
  */
 import LbpElement from '@/editor/models/LbpElement'
@@ -17,10 +17,26 @@ export default {
       require: true
     }
   },
+  methods: {
+    _handleChange (value) {
+      this.$emit('elementChange', value)
+    },
+    _handleActive () {
+      this.$emit('elementActive', this.element)
+    },
+    _handleDeactive () {
+      this.$emit('elementDeactive', this.element)
+    }
+  },
   render () {
     const { element } = this
     return (
-      <ShapeLayer elStyle={element.style} on={this.$listeners}>
+      <ShapeLayer
+        elStyle={element.style}
+        onChange={this._handleChange}
+        onActive={this._handleActive}
+        onDeactive={this._handleDeactive}
+      >
         <AnimateLayer animations={element.animations}>
           <Render element={element}></Render>
         </AnimateLayer>

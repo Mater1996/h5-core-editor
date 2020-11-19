@@ -39,7 +39,7 @@ export default {
   data () {
     return {
       rect: this.getReact(this.elStyle),
-      shapeStyle: renderStyle(this.elStyle),
+      shapeStyle: renderStyle(this.elStyle, this.lbpCanvasContext.unit),
       startY: 0,
       startX: 0,
       point: '',
@@ -69,7 +69,7 @@ export default {
     elStyle () {
       const { elStyle } = this
       this.rect = this.getReact(elStyle)
-      this.shapeStyle = renderStyle(elStyle)
+      this.shapeStyle = renderStyle(elStyle, this.lbpCanvasContext.unit)
     },
     rect: {
       handler () {
@@ -79,7 +79,7 @@ export default {
         }
         this.shapeStyle = {
           ...this.shapeStyle,
-          ...renderStyle(this.rect)
+          ...renderStyle(this.rect, this.lbpCanvasContext.unit)
         }
         this.$emit('change', newStyle)
       },
@@ -97,7 +97,7 @@ export default {
     },
     setActive (active) {
       if (this.active === active) return
-      active ? this.$emit('active', active) : this.$emit('deactive', active)
+      active ? this.$emit('active') : this.$emit('deactive')
       this.active = active
     },
     onClickOutside () {
@@ -204,7 +204,7 @@ export default {
       }
     }
     return (
-      <div style={renderStyle(this.shapeStyle)} {...(!readonly ? options : {})}>
+      <div style={this.shapeStyle} {...(!readonly ? options : {})}>
         <div class="shape-content">{this.$slots.default}</div>
         {!readonly && (
           <div class="control">
