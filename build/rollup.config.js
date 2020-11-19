@@ -1,8 +1,8 @@
 /*
  * @author : Mater
  * @Email : bxh8640@gmail.com
- * @Date : 2020-10-28 14:39:39
- * @LastEditTime : 2020-11-19 13:15:03
+ * @Date : 2020-11-19 20:57:15
+ * @LastEditTime : 2020-11-19 21:07:08
  * @Description :
  */
 const path = require('path')
@@ -20,7 +20,8 @@ const progress = require('rollup-plugin-progress')
 const { terser } = require('rollup-plugin-terser')
 const filesize = require('rollup-plugin-filesize')
 const analyze = require('rollup-plugin-analyzer')
-const packageJson = require('./package.json')
+const replace = require('@rollup/plugin-replace')
+const packageJson = require('../package.json')
 
 const babelConfig = {
   presets: [
@@ -54,7 +55,6 @@ const globals = {
   vant: 'vant',
   'resize-detector': 'resizeDetector',
   'hotkeys-js': 'hotkeys',
-  lodash: 'lodash',
   'ant-design-vue': 'ant-design-vue',
   'vue-quill-editor': 'VueQuillEditor',
   'v-charts': 'VeIndex',
@@ -74,7 +74,6 @@ const external = [
   'vant',
   'resize-detector',
   'hotkeys-js',
-  'lodash',
   'ant-design-vue',
   'vue-quill-editor',
   'v-charts',
@@ -90,11 +89,14 @@ const external = [
 module.exports = args => {
   const isProd = args.prod
   const needAnalyze = args.analyze
+
   function resolveUrl (dir) {
     return !isProd
-      ? path.join('./example/src/lib/luban-h5-editor', dir)
-      : path.join(__dirname, dir)
+      ? path.join(__dirname, '../', 'example/src/lib/luban-h5-editor', dir)
+      : path.join(__dirname, '../', dir)
   }
+
+  console.log(resolveUrl('src/index.js'))
 
   function genConfigByName (name) {
     return {
@@ -119,7 +121,7 @@ module.exports = args => {
         alias({
           resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
           entries: {
-            '@': path.join(__dirname, '/src')
+            '@': resolveUrl('src')
           }
         }),
         image({
@@ -127,6 +129,11 @@ module.exports = args => {
           extensions: /\.(png|jpg|jpeg|gif|svg)$/,
           limit: 8192,
           exclude: 'node_modules/**'
+        }),
+        replace({
+          'process.env.NODE_ENV': JSON.stringify(
+            !isProd ? 'development' : 'production'
+          )
         }),
         postcss({
           to: resolveUrl(`dist/${name}.css`),
@@ -181,7 +188,12 @@ module.exports = args => {
   }
 
   return [
-    { input: 'src/index.js', ...genConfigByName(packageJson.name) },
-    { input: 'src/preview.js', ...genConfigByName('luban-h5-preview') }
+    { input: resolveUrl('src/index.js'), ...genConfigByName(packageJson.name) },
+    {
+      input: resolveUrl('src/preview.js'),
+      ...genConfigByName('luban-h5-preview'),
+      external: [],
+      global: []
+    }
   ]
 }

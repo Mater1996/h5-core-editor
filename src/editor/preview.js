@@ -2,12 +2,9 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-19 14:35:14
+ * @LastEditTime : 2020-11-19 21:15:11
  * @Description :
  */
-import 'ant-design-vue/dist/antd.css'
-import { Layout } from 'ant-design-vue'
-
 import '@/styles/index.scss'
 import '@/plugins'
 
@@ -16,10 +13,6 @@ import LbpWork from './models/LbpWork'
 
 const LbpH5Preview = {
   name: 'lbp-h5-preview',
-  components: {
-    [Layout.name]: Layout,
-    [Layout.Content.name]: Layout
-  },
   props: {
     data: {
       type: Object,
@@ -29,7 +22,7 @@ const LbpH5Preview = {
     }
   },
   data: () => ({
-    work: {},
+    work: new LbpWork(window.__work),
     pageIndex: 0
   }),
   computed: {
@@ -37,15 +30,6 @@ const LbpH5Preview = {
       const { pages = [] } = this.work
       const currentPage = pages[this.pageIndex] || {}
       return currentPage
-    }
-  },
-  watch: {
-    data: {
-      handler (data = {}) {
-        this.work = new LbpWork(data)
-        console.log(this.work)
-      },
-      immediate: true
     }
   },
   render () {

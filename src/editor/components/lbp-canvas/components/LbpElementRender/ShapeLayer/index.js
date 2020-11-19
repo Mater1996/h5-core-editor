@@ -198,13 +198,13 @@ export default {
       on: {
         mousedown: this.handleShapeDown
       },
-      class: ['shape-layer', { active: this.active }],
+      class: [{ active: this.active }],
       attrs: {
         tabindex: 0
       }
     }
     return (
-      <div style={this.shapeStyle} {...(!readonly ? options : {})}>
+      <div style={this.shapeStyle} class="shape-layer" {...(!readonly ? options : {})}>
         <div class="shape-content">{this.$slots.default}</div>
         {!readonly && (
           <div class="control">
