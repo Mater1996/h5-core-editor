@@ -6,7 +6,7 @@ import {
 import EventBus from '@/bus'
 import {
   Tabs,
-  List,
+  // List,
   Form,
   Button,
   Popover,
@@ -23,8 +23,8 @@ export default {
   components: {
     [InputNumber.name]: InputNumber,
     [Tabs.name]: Tabs,
-    [List.name]: List,
-    [List.Item.name]: List.Item,
+    // [List.name]: List,
+    // [List.Item.name]: List.Item,
     [Form.name]: Form,
     [Button.name]: Button,
     [Popover.name]: Popover,
@@ -95,7 +95,7 @@ export default {
         >
           {animations.map(group => (
             <a-tab-pane tab={group.label || group.value} key={group.value}>
-              <a-list
+              {/* <a-list
                 grid={{ gutter: 12, column: 2 }}
                 dataSource={group.children}
                 renderItem={(item, index) => (
@@ -116,7 +116,7 @@ export default {
                     </div>
                   </a-list-item>
                 )}
-              ></a-list>
+              ></a-list> */}
             </a-tab-pane>
           ))}
         </a-tabs>

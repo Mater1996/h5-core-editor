@@ -2,14 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-20 09:21:48
- * @LastEditTime : 2020-11-20 11:41:08
- * @Description :
- */
-/*
- * @author : Mater
- * @Email : bxh8640@gmail.com
- * @Date : 2020-11-19 20:57:15
- * @LastEditTime : 2020-11-20 09:17:49
+ * @LastEditTime : 2020-11-20 14:48:05
  * @Description :
  */
 const path = require('path')
@@ -50,7 +43,7 @@ const babelConfig = {
     ['@babel/plugin-transform-runtime'],
     ['@babel/plugin-syntax-jsx'],
     ['@babel/plugin-proposal-class-properties'],
-    ['import', { libraryName: 'antd', style: true }, 'antd'],
+    ['import', { libraryName: 'ant-design-vue', libraryDirectory: 'es', style: 'css' }, 'ant-design-vue'],
     ['import', { libraryName: 'lodash', libraryDirectory: '', camel2DashComponentName: false }, 'lodash']
   ],
   externalHelpers: false,
@@ -78,7 +71,7 @@ module.exports = args => {
   }
 
   return {
-    input: '../src/preview.js',
+    input: path.join(__dirname, '../src/preview.js'),
     output: [
       {
         exports: 'auto',

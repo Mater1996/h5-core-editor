@@ -2,10 +2,11 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-20 11:35:21
+ * @LastEditTime : 2020-11-20 14:58:20
  * @Description :
  */
 import 'font-awesome/css/font-awesome.min.css'
+import 'ant-design-vue/dist/antd.css'
 import { Layout } from 'ant-design-vue'
 import { debounce } from 'lodash'
 
