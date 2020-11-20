@@ -1,8 +1,15 @@
 /*
  * @author : Mater
  * @Email : bxh8640@gmail.com
+ * @Date : 2020-11-20 09:21:48
+ * @LastEditTime : 2020-11-20 09:23:04
+ * @Description :
+ */
+/*
+ * @author : Mater
+ * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime : 2020-11-20 09:32:03
+ * @LastEditTime : 2020-11-20 09:17:49
  * @Description :
  */
 const path = require('path')
@@ -52,44 +59,17 @@ const babelConfig = {
 }
 
 const globals = {
-  vue: 'Vue',
-  'vue-i18n': 'VueI18n',
-  vant: 'vant',
-  'resize-detector': 'resizeDetector',
-  'hotkeys-js': 'hotkeys',
-  'ant-design-vue': 'ant-design-vue',
-  'vue-quill-editor': 'VueQuillEditor',
-  'v-charts': 'VeIndex',
-  stream: 'stream',
-  'x-data-spreadsheet': 'x_spreadsheet',
-  papaparse: 'papaparse',
-  echarts: 'echarts',
-  qrcode: 'qrcode',
-  immutable: 'immutable'
+  vue: 'Vue'
 }
 
 const external = [
-  'vue',
-  'quill',
-  'vant',
-  'resize-detector',
-  'hotkeys-js',
-  'ant-design-vue',
-  'vue-quill-editor',
-  'v-charts',
-  'stream',
-  'x-data-spreadsheet',
-  'papaparse',
-  'echarts',
-  'font-awesome',
-  'qrcode',
-  'immutable'
+  'vue'
 ]
 
 module.exports = args => {
   const isProd = args.prod
   const needAnalyze = args.analyze
-  const name = packageJson.name
+  const name = 'luban-h5-preview'
 
   function resolveUrl (dir) {
     return !isProd
@@ -98,7 +78,7 @@ module.exports = args => {
   }
 
   return {
-    input: resolveUrl('src/index.js'),
+    input: resolveUrl('src/preview.js'),
     output: [
       {
         exports: 'auto',
