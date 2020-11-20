@@ -68135,7 +68135,7 @@
 
     var _ref = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
         _ref$rootValue = _ref.rootValue,
-        rootValue = _ref$rootValue === void 0 ? 100 : _ref$rootValue;
+        rootValue = _ref$rootValue === void 0 ? 50 : _ref$rootValue;
 
     var newStyle = {};
     Object.entries(styleObj).forEach(function (_ref2) {
@@ -72072,7 +72072,7 @@
 
   var _components$5;
   var RenderAnimationEditor = {
-    components: (_components$5 = {}, defineProperty$3(_components$5, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$3(_components$5, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$3(_components$5, antDesignVue.Form.name, antDesignVue.Form), defineProperty$3(_components$5, antDesignVue.Button.name, antDesignVue.Button), defineProperty$3(_components$5, antDesignVue.Popover.name, antDesignVue.Popover), defineProperty$3(_components$5, antDesignVue.Slider.name, antDesignVue.Slider), defineProperty$3(_components$5, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$3(_components$5, antDesignVue.Collapse.name, antDesignVue.Collapse), defineProperty$3(_components$5, antDesignVue.Collapse.Panel.name, antDesignVue.Collapse.Panel), defineProperty$3(_components$5, antDesignVue.Icon.name, antDesignVue.Icon), defineProperty$3(_components$5, antDesignVue.Drawer.name, antDesignVue.Drawer), defineProperty$3(_components$5, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), defineProperty$3(_components$5, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$3(_components$5, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$3(_components$5, antDesignVue.Tag.name, antDesignVue.Tag), _components$5),
+    components: (_components$5 = {}, defineProperty$3(_components$5, antDesignVue.InputNumber.name, antDesignVue.InputNumber), defineProperty$3(_components$5, antDesignVue.Tabs.name, antDesignVue.Tabs), defineProperty$3(_components$5, antDesignVue.List.name, antDesignVue.List), defineProperty$3(_components$5, antDesignVue.List.Item.name, antDesignVue.List.Item), defineProperty$3(_components$5, antDesignVue.Form.name, antDesignVue.Form), defineProperty$3(_components$5, antDesignVue.Button.name, antDesignVue.Button), defineProperty$3(_components$5, antDesignVue.Popover.name, antDesignVue.Popover), defineProperty$3(_components$5, antDesignVue.Slider.name, antDesignVue.Slider), defineProperty$3(_components$5, antDesignVue.Switch.name, antDesignVue.Switch), defineProperty$3(_components$5, antDesignVue.Collapse.name, antDesignVue.Collapse), defineProperty$3(_components$5, antDesignVue.Collapse.Panel.name, antDesignVue.Collapse.Panel), defineProperty$3(_components$5, antDesignVue.Icon.name, antDesignVue.Icon), defineProperty$3(_components$5, antDesignVue.Drawer.name, antDesignVue.Drawer), defineProperty$3(_components$5, antDesignVue.Tabs.TabPane.name, antDesignVue.Tabs.TabPane), defineProperty$3(_components$5, antDesignVue.Button.Group.name, antDesignVue.Button.Group), defineProperty$3(_components$5, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$3(_components$5, antDesignVue.Tag.name, antDesignVue.Tag), _components$5),
     props: {
       value: {
         type: Array,
@@ -72123,6 +72123,8 @@
         EventBus.$emit('RUN_ANIMATIONS');
       },
       renderSecondAnimationTabs: function renderSecondAnimationTabs(animations) {
+        var _this = this;
+
         var h = this.$createElement;
         return h("a-tabs", {
           "attrs": {
@@ -72144,11 +72146,35 @@
               "tab": group.label || group.value
             },
             "key": group.value
-          });
+          }, [h("a-list", {
+            "attrs": {
+              "grid": {
+                gutter: 12,
+                column: 2
+              },
+              "dataSource": group.children,
+              "renderItem": function renderItem(item, index) {
+                return h("a-list-item", {
+                  "class": "shortcut-button-wrapper"
+                }, [h("div", {
+                  "on": {
+                    "click": function click() {
+                      return _this.updateAnimation(item.value);
+                    },
+                    "mouseenter": function mouseenter(e) {
+                      _this.activePreviewAnimation = item.value;
+                    },
+                    "mouseleave": function mouseleave() {}
+                  },
+                  "class": ['shortcut-button', _this.activePreviewAnimation === item.value && "".concat(item.value, " animated")]
+                }, [item.label])]);
+              }
+            }
+          })]);
         })]);
       },
       renderAvaiableAnimations: function renderAvaiableAnimations() {
-        var _this = this;
+        var _this2 = this;
 
         var h = this.$createElement;
         return h("a-tabs", {
@@ -72168,13 +72194,13 @@
               "tab": firstGroup.label
             },
             "key": firstGroup.label
-          }, [_this.renderSecondAnimationTabs(animationOptions.filter(function (group) {
+          }, [_this2.renderSecondAnimationTabs(animationOptions.filter(function (group) {
             return !!group.label.match(firstGroup.value);
           }))]);
         })]);
       },
       renderAnimationOptions: function renderAnimationOptions(animationOption) {
-        var _this2 = this;
+        var _this3 = this;
 
         var h = this.$createElement;
         return h("a-form", {
@@ -72200,7 +72226,7 @@
           },
           "on": {
             "click": function click() {
-              _this2.drawerVisible = true;
+              _this3.drawerVisible = true;
             }
           }
         }, [this.$t('editor.editPanel.animation.list')])]), h("a-form-item", {
@@ -72378,7 +72404,7 @@
       }
     },
     render: function render(h) {
-      var _this3 = this;
+      var _this4 = this;
 
       return h("div", {
         "class": "main-animate widget",
@@ -72416,7 +72442,7 @@
         "on": {
           "change": function change(key) {
             // 当全部收起来时候，key 为 undefined
-            _this3.activeCollapsePanel = typeof key !== 'undefined' ? +key : -1;
+            _this4.activeCollapsePanel = typeof key !== 'undefined' ? +key : -1;
           }
         }
       }, [this.animationQueue.map(function (addedAnimation, index) {
@@ -72424,7 +72450,7 @@
           "key": "".concat(index)
         }, [h("template", {
           "slot": "header"
-        }, [h("span", [_this3.$t('editor.editPanel.animation.title', {
+        }, [h("span", [_this4.$t('editor.editPanel.animation.title', {
           index: index + 1
         })]), h("a-tag", {
           "attrs": {
@@ -72437,10 +72463,10 @@
           },
           "on": {
             "click": function click() {
-              return _this3.deleteAnimate(index);
+              return _this4.deleteAnimate(index);
             }
           }
-        })]), _this3.renderAnimationOptions(addedAnimation)]);
+        })]), _this4.renderAnimationOptions(addedAnimation)]);
       })]), h("a-drawer", {
         "attrs": {
           "title": "请选择动画",
@@ -72455,7 +72481,7 @@
         },
         "on": {
           "close": function close() {
-            _this3.drawerVisible = false;
+            _this4.drawerVisible = false;
           }
         }
       }, [h("div", [this.renderAvaiableAnimations()])])]);
