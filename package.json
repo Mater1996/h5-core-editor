@@ -1,6 +1,6 @@
 {
   "name": "luban-h5-editor",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "scripts": {
     "dev": "npm run dev:editor",
     "build": "npm run build:editor & npm run build:preview",
