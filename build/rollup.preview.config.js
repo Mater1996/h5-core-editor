@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-20 09:21:48
- * @LastEditTime : 2020-11-20 11:31:46
+ * @LastEditTime : 2020-11-20 11:41:08
  * @Description :
  */
 /*
@@ -78,7 +78,7 @@ module.exports = args => {
   }
 
   return {
-    input: resolveUrl('src/preview.js'),
+    input: '../src/preview.js',
     output: [
       {
         exports: 'auto',
@@ -100,7 +100,7 @@ module.exports = args => {
       alias({
         resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
         entries: {
-          '@': resolveUrl('src')
+          '@': path.join(__dirname, '../src')
         }
       }),
       image({

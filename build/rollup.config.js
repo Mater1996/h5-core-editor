@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime : 2020-11-20 11:32:06
+ * @LastEditTime : 2020-11-20 11:40:58
  * @Description :
  */
 const path = require('path')
@@ -98,7 +98,7 @@ module.exports = args => {
   }
 
   return {
-    input: resolveUrl('src/index.js'),
+    input: path.join(__dirname, '../src/index.js'),
     output: [
       {
         exports: 'auto',
@@ -120,7 +120,7 @@ module.exports = args => {
       alias({
         resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
         entries: {
-          '@': resolveUrl('src')
+          '@': path.join(__dirname, '../src')
         }
       }),
       image({

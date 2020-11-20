@@ -1,13 +1,12 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('ant-design-vue'), require('lodash'), require('vue-quill-editor'), require('vant'), require('resize-detector'), require('vue'), require('vue-i18n'), require('immutable'), require('hotkeys-js'), require('x-data-spreadsheet'), require('papaparse')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'ant-design-vue', 'lodash', 'vue-quill-editor', 'vant', 'resize-detector', 'vue', 'vue-i18n', 'immutable', 'hotkeys-js', 'x-data-spreadsheet', 'papaparse'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global['luban-h5-editor'] = {}, global['ant-design-vue'], global.lodash, global.VueQuillEditor, global.vant, global.resizeDetector, global.Vue, global.VueI18n, global.immutable, global.hotkeys, global.x_spreadsheet, global.papaparse));
-}(this, (function (exports, antDesignVue, lodash, vueQuillEditor, vant, resizeDetector, Vue, VueI18n, immutable, hotkeys, Spreadsheet, Papa) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('ant-design-vue'), require('vue-quill-editor'), require('vant'), require('resize-detector'), require('vue'), require('immutable'), require('hotkeys-js'), require('x-data-spreadsheet'), require('papaparse')) :
+  typeof define === 'function' && define.amd ? define(['ant-design-vue', 'vue-quill-editor', 'vant', 'resize-detector', 'vue', 'immutable', 'hotkeys-js', 'x-data-spreadsheet', 'papaparse'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['luban-h5-editor'] = factory(global['ant-design-vue'], global.VueQuillEditor, global.vant, global.resizeDetector, global.Vue, global.immutable, global.hotkeys, global.x_spreadsheet, global.papaparse));
+}(this, (function (antDesignVue, vueQuillEditor, vant, resizeDetector, Vue$1, immutable, hotkeys, Spreadsheet, Papa) { 'use strict';
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-  var Vue__default = /*#__PURE__*/_interopDefaultLegacy(Vue);
-  var VueI18n__default = /*#__PURE__*/_interopDefaultLegacy(VueI18n);
+  var Vue__default = /*#__PURE__*/_interopDefaultLegacy(Vue$1);
   var hotkeys__default = /*#__PURE__*/_interopDefaultLegacy(hotkeys);
   var Spreadsheet__default = /*#__PURE__*/_interopDefaultLegacy(Spreadsheet);
   var Papa__default = /*#__PURE__*/_interopDefaultLegacy(Papa);
@@ -927,6 +926,480 @@
     }
   }
 
+  /**
+   * Checks if `value` is the
+   * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+   * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+   *
+   * @static
+   * @memberOf _
+   * @since 0.1.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+   * @example
+   *
+   * _.isObject({});
+   * // => true
+   *
+   * _.isObject([1, 2, 3]);
+   * // => true
+   *
+   * _.isObject(_.noop);
+   * // => true
+   *
+   * _.isObject(null);
+   * // => false
+   */
+  function isObject$1(value) {
+    var type = typeof value;
+    return value != null && (type == 'object' || type == 'function');
+  }
+
+  var isObject_1 = isObject$1;
+
+  /** Detect free variable `global` from Node.js. */
+  var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
+
+  var _freeGlobal = freeGlobal;
+
+  /** Detect free variable `self`. */
+  var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+  /** Used as a reference to the global object. */
+  var root = _freeGlobal || freeSelf || Function('return this')();
+
+  var _root = root;
+
+  /**
+   * Gets the timestamp of the number of milliseconds that have elapsed since
+   * the Unix epoch (1 January 1970 00:00:00 UTC).
+   *
+   * @static
+   * @memberOf _
+   * @since 2.4.0
+   * @category Date
+   * @returns {number} Returns the timestamp.
+   * @example
+   *
+   * _.defer(function(stamp) {
+   *   console.log(_.now() - stamp);
+   * }, _.now());
+   * // => Logs the number of milliseconds it took for the deferred invocation.
+   */
+  var now = function() {
+    return _root.Date.now();
+  };
+
+  var now_1 = now;
+
+  /** Built-in value references. */
+  var Symbol$2 = _root.Symbol;
+
+  var _Symbol = Symbol$2;
+
+  /** Used for built-in method references. */
+  var objectProto = Object.prototype;
+
+  /** Used to check objects for own properties. */
+  var hasOwnProperty$1 = objectProto.hasOwnProperty;
+
+  /**
+   * Used to resolve the
+   * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+   * of values.
+   */
+  var nativeObjectToString = objectProto.toString;
+
+  /** Built-in value references. */
+  var symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
+
+  /**
+   * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+   *
+   * @private
+   * @param {*} value The value to query.
+   * @returns {string} Returns the raw `toStringTag`.
+   */
+  function getRawTag(value) {
+    var isOwn = hasOwnProperty$1.call(value, symToStringTag),
+        tag = value[symToStringTag];
+
+    try {
+      value[symToStringTag] = undefined;
+      var unmasked = true;
+    } catch (e) {}
+
+    var result = nativeObjectToString.call(value);
+    if (unmasked) {
+      if (isOwn) {
+        value[symToStringTag] = tag;
+      } else {
+        delete value[symToStringTag];
+      }
+    }
+    return result;
+  }
+
+  var _getRawTag = getRawTag;
+
+  /** Used for built-in method references. */
+  var objectProto$1 = Object.prototype;
+
+  /**
+   * Used to resolve the
+   * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+   * of values.
+   */
+  var nativeObjectToString$1 = objectProto$1.toString;
+
+  /**
+   * Converts `value` to a string using `Object.prototype.toString`.
+   *
+   * @private
+   * @param {*} value The value to convert.
+   * @returns {string} Returns the converted string.
+   */
+  function objectToString(value) {
+    return nativeObjectToString$1.call(value);
+  }
+
+  var _objectToString = objectToString;
+
+  /** `Object#toString` result references. */
+  var nullTag = '[object Null]',
+      undefinedTag = '[object Undefined]';
+
+  /** Built-in value references. */
+  var symToStringTag$1 = _Symbol ? _Symbol.toStringTag : undefined;
+
+  /**
+   * The base implementation of `getTag` without fallbacks for buggy environments.
+   *
+   * @private
+   * @param {*} value The value to query.
+   * @returns {string} Returns the `toStringTag`.
+   */
+  function baseGetTag(value) {
+    if (value == null) {
+      return value === undefined ? undefinedTag : nullTag;
+    }
+    return (symToStringTag$1 && symToStringTag$1 in Object(value))
+      ? _getRawTag(value)
+      : _objectToString(value);
+  }
+
+  var _baseGetTag = baseGetTag;
+
+  /**
+   * Checks if `value` is object-like. A value is object-like if it's not `null`
+   * and has a `typeof` result of "object".
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+   * @example
+   *
+   * _.isObjectLike({});
+   * // => true
+   *
+   * _.isObjectLike([1, 2, 3]);
+   * // => true
+   *
+   * _.isObjectLike(_.noop);
+   * // => false
+   *
+   * _.isObjectLike(null);
+   * // => false
+   */
+  function isObjectLike(value) {
+    return value != null && typeof value == 'object';
+  }
+
+  var isObjectLike_1 = isObjectLike;
+
+  /** `Object#toString` result references. */
+  var symbolTag = '[object Symbol]';
+
+  /**
+   * Checks if `value` is classified as a `Symbol` primitive or object.
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
+   * @example
+   *
+   * _.isSymbol(Symbol.iterator);
+   * // => true
+   *
+   * _.isSymbol('abc');
+   * // => false
+   */
+  function isSymbol(value) {
+    return typeof value == 'symbol' ||
+      (isObjectLike_1(value) && _baseGetTag(value) == symbolTag);
+  }
+
+  var isSymbol_1 = isSymbol;
+
+  /** Used as references for various `Number` constants. */
+  var NAN = 0 / 0;
+
+  /** Used to match leading and trailing whitespace. */
+  var reTrim = /^\s+|\s+$/g;
+
+  /** Used to detect bad signed hexadecimal string values. */
+  var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+
+  /** Used to detect binary string values. */
+  var reIsBinary = /^0b[01]+$/i;
+
+  /** Used to detect octal string values. */
+  var reIsOctal = /^0o[0-7]+$/i;
+
+  /** Built-in method references without a dependency on `root`. */
+  var freeParseInt = parseInt;
+
+  /**
+   * Converts `value` to a number.
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to process.
+   * @returns {number} Returns the number.
+   * @example
+   *
+   * _.toNumber(3.2);
+   * // => 3.2
+   *
+   * _.toNumber(Number.MIN_VALUE);
+   * // => 5e-324
+   *
+   * _.toNumber(Infinity);
+   * // => Infinity
+   *
+   * _.toNumber('3.2');
+   * // => 3.2
+   */
+  function toNumber(value) {
+    if (typeof value == 'number') {
+      return value;
+    }
+    if (isSymbol_1(value)) {
+      return NAN;
+    }
+    if (isObject_1(value)) {
+      var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
+      value = isObject_1(other) ? (other + '') : other;
+    }
+    if (typeof value != 'string') {
+      return value === 0 ? value : +value;
+    }
+    value = value.replace(reTrim, '');
+    var isBinary = reIsBinary.test(value);
+    return (isBinary || reIsOctal.test(value))
+      ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
+      : (reIsBadHex.test(value) ? NAN : +value);
+  }
+
+  var toNumber_1 = toNumber;
+
+  /** Error message constants. */
+  var FUNC_ERROR_TEXT = 'Expected a function';
+
+  /* Built-in method references for those with the same name as other `lodash` methods. */
+  var nativeMax = Math.max,
+      nativeMin = Math.min;
+
+  /**
+   * Creates a debounced function that delays invoking `func` until after `wait`
+   * milliseconds have elapsed since the last time the debounced function was
+   * invoked. The debounced function comes with a `cancel` method to cancel
+   * delayed `func` invocations and a `flush` method to immediately invoke them.
+   * Provide `options` to indicate whether `func` should be invoked on the
+   * leading and/or trailing edge of the `wait` timeout. The `func` is invoked
+   * with the last arguments provided to the debounced function. Subsequent
+   * calls to the debounced function return the result of the last `func`
+   * invocation.
+   *
+   * **Note:** If `leading` and `trailing` options are `true`, `func` is
+   * invoked on the trailing edge of the timeout only if the debounced function
+   * is invoked more than once during the `wait` timeout.
+   *
+   * If `wait` is `0` and `leading` is `false`, `func` invocation is deferred
+   * until to the next tick, similar to `setTimeout` with a timeout of `0`.
+   *
+   * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
+   * for details over the differences between `_.debounce` and `_.throttle`.
+   *
+   * @static
+   * @memberOf _
+   * @since 0.1.0
+   * @category Function
+   * @param {Function} func The function to debounce.
+   * @param {number} [wait=0] The number of milliseconds to delay.
+   * @param {Object} [options={}] The options object.
+   * @param {boolean} [options.leading=false]
+   *  Specify invoking on the leading edge of the timeout.
+   * @param {number} [options.maxWait]
+   *  The maximum time `func` is allowed to be delayed before it's invoked.
+   * @param {boolean} [options.trailing=true]
+   *  Specify invoking on the trailing edge of the timeout.
+   * @returns {Function} Returns the new debounced function.
+   * @example
+   *
+   * // Avoid costly calculations while the window size is in flux.
+   * jQuery(window).on('resize', _.debounce(calculateLayout, 150));
+   *
+   * // Invoke `sendMail` when clicked, debouncing subsequent calls.
+   * jQuery(element).on('click', _.debounce(sendMail, 300, {
+   *   'leading': true,
+   *   'trailing': false
+   * }));
+   *
+   * // Ensure `batchLog` is invoked once after 1 second of debounced calls.
+   * var debounced = _.debounce(batchLog, 250, { 'maxWait': 1000 });
+   * var source = new EventSource('/stream');
+   * jQuery(source).on('message', debounced);
+   *
+   * // Cancel the trailing debounced invocation.
+   * jQuery(window).on('popstate', debounced.cancel);
+   */
+  function debounce(func, wait, options) {
+    var lastArgs,
+        lastThis,
+        maxWait,
+        result,
+        timerId,
+        lastCallTime,
+        lastInvokeTime = 0,
+        leading = false,
+        maxing = false,
+        trailing = true;
+
+    if (typeof func != 'function') {
+      throw new TypeError(FUNC_ERROR_TEXT);
+    }
+    wait = toNumber_1(wait) || 0;
+    if (isObject_1(options)) {
+      leading = !!options.leading;
+      maxing = 'maxWait' in options;
+      maxWait = maxing ? nativeMax(toNumber_1(options.maxWait) || 0, wait) : maxWait;
+      trailing = 'trailing' in options ? !!options.trailing : trailing;
+    }
+
+    function invokeFunc(time) {
+      var args = lastArgs,
+          thisArg = lastThis;
+
+      lastArgs = lastThis = undefined;
+      lastInvokeTime = time;
+      result = func.apply(thisArg, args);
+      return result;
+    }
+
+    function leadingEdge(time) {
+      // Reset any `maxWait` timer.
+      lastInvokeTime = time;
+      // Start the timer for the trailing edge.
+      timerId = setTimeout(timerExpired, wait);
+      // Invoke the leading edge.
+      return leading ? invokeFunc(time) : result;
+    }
+
+    function remainingWait(time) {
+      var timeSinceLastCall = time - lastCallTime,
+          timeSinceLastInvoke = time - lastInvokeTime,
+          timeWaiting = wait - timeSinceLastCall;
+
+      return maxing
+        ? nativeMin(timeWaiting, maxWait - timeSinceLastInvoke)
+        : timeWaiting;
+    }
+
+    function shouldInvoke(time) {
+      var timeSinceLastCall = time - lastCallTime,
+          timeSinceLastInvoke = time - lastInvokeTime;
+
+      // Either this is the first call, activity has stopped and we're at the
+      // trailing edge, the system time has gone backwards and we're treating
+      // it as the trailing edge, or we've hit the `maxWait` limit.
+      return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
+        (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait));
+    }
+
+    function timerExpired() {
+      var time = now_1();
+      if (shouldInvoke(time)) {
+        return trailingEdge(time);
+      }
+      // Restart the timer.
+      timerId = setTimeout(timerExpired, remainingWait(time));
+    }
+
+    function trailingEdge(time) {
+      timerId = undefined;
+
+      // Only invoke if we have `lastArgs` which means `func` has been
+      // debounced at least once.
+      if (trailing && lastArgs) {
+        return invokeFunc(time);
+      }
+      lastArgs = lastThis = undefined;
+      return result;
+    }
+
+    function cancel() {
+      if (timerId !== undefined) {
+        clearTimeout(timerId);
+      }
+      lastInvokeTime = 0;
+      lastArgs = lastCallTime = lastThis = timerId = undefined;
+    }
+
+    function flush() {
+      return timerId === undefined ? result : trailingEdge(now_1());
+    }
+
+    function debounced() {
+      var time = now_1(),
+          isInvoking = shouldInvoke(time);
+
+      lastArgs = arguments;
+      lastThis = this;
+      lastCallTime = time;
+
+      if (isInvoking) {
+        if (timerId === undefined) {
+          return leadingEdge(lastCallTime);
+        }
+        if (maxing) {
+          // Handle invocations in a tight loop.
+          clearTimeout(timerId);
+          timerId = setTimeout(timerExpired, wait);
+          return invokeFunc(lastCallTime);
+        }
+      }
+      if (timerId === undefined) {
+        timerId = setTimeout(timerExpired, wait);
+      }
+      return result;
+    }
+    debounced.cancel = cancel;
+    debounced.flush = flush;
+    return debounced;
+  }
+
+  var debounce_1 = debounce;
+
   function _defineProperty(obj, key, value) {
     if (key in obj) {
       Object.defineProperty(obj, key, {
@@ -1116,7 +1589,7 @@
 
   // `ToNumber` abstract operation
   // https://tc39.github.io/ecma262/#sec-tonumber
-  var toNumber = function (argument) {
+  var toNumber$1 = function (argument) {
     var it = toPrimitive(argument, false);
     var first, third, radix, maxCode, digits, length, index, code;
     if (typeof it == 'string' && it.length > 2) {
@@ -1152,7 +1625,7 @@
       return dummy instanceof NumberWrapper
         // check on 1..constructor(foo) case
         && (BROKEN_CLASSOF ? fails(function () { NumberPrototype.valueOf.call(dummy); }) : classofRaw(dummy) != NUMBER)
-          ? inheritIfRequired(new NativeNumber(toNumber(it)), dummy, NumberWrapper) : toNumber(it);
+          ? inheritIfRequired(new NativeNumber(toNumber$1(it)), dummy, NumberWrapper) : toNumber$1(it);
     };
     for (var keys$1 = descriptors ? getOwnPropertyNames(NativeNumber) : (
       // ES3:
@@ -2684,7 +3157,7 @@
     return symbol;
   };
 
-  var isSymbol = useSymbolAsUid ? function (it) {
+  var isSymbol$1 = useSymbolAsUid ? function (it) {
     return typeof it == 'symbol';
   } : function (it) {
     return Object(it) instanceof $Symbol;
@@ -2829,7 +3302,7 @@
     // `Symbol.keyFor` method
     // https://tc39.github.io/ecma262/#sec-symbol.keyfor
     keyFor: function keyFor(sym) {
-      if (!isSymbol(sym)) throw TypeError(sym + ' is not a symbol');
+      if (!isSymbol$1(sym)) throw TypeError(sym + ' is not a symbol');
       if (has(SymbolToStringRegistry, sym)) return SymbolToStringRegistry[sym];
     },
     useSetter: function () { USE_SETTER = true; },
@@ -2889,10 +3362,10 @@
         var $replacer;
         while (arguments.length > index) args.push(arguments[index++]);
         $replacer = replacer;
-        if (!isObject(replacer) && it === undefined || isSymbol(it)) return; // IE8 returns string on undefined
+        if (!isObject(replacer) && it === undefined || isSymbol$1(it)) return; // IE8 returns string on undefined
         if (!isArray(replacer)) replacer = function (key, value) {
           if (typeof $replacer == 'function') value = $replacer.call(this, key, value);
-          if (!isSymbol(value)) return value;
+          if (!isSymbol$1(value)) return value;
         };
         args[1] = replacer;
         return $stringify.apply(null, args);
@@ -3436,14 +3909,14 @@
 
   // `Object.prototype.toString` method implementation
   // https://tc39.github.io/ecma262/#sec-object.prototype.tostring
-  var objectToString = toStringTagSupport ? {}.toString : function toString() {
+  var objectToString$1 = toStringTagSupport ? {}.toString : function toString() {
     return '[object ' + classof(this) + ']';
   };
 
   // `Object.prototype.toString` method
   // https://tc39.github.io/ecma262/#sec-object.prototype.tostring
   if (!toStringTagSupport) {
-    redefine(Object.prototype, 'toString', objectToString, { unsafe: true });
+    redefine(Object.prototype, 'toString', objectToString$1, { unsafe: true });
   }
 
   var nativePromiseConstructor = global_1.Promise;
@@ -4744,7 +5217,7 @@
     'default': numerify
   });
 
-  function debounce(fn, delay) {
+  function debounce$1(fn, delay) {
     var timer = null;
     return function () {
       var self = this;
@@ -4828,7 +5301,7 @@
     return typeof v === 'undefined' ? 'undefined' : _typeof(v);
   }
 
-  function isObject$1(v) {
+  function isObject$2(v) {
     return getType(v) === '[object Object]';
   }
 
@@ -4849,7 +5322,7 @@
   }
 
   function isEmptyObj(v) {
-    return isObject$1(v) && !Object.keys(v).length;
+    return isObject$2(v) && !Object.keys(v).length;
   }
 
   function isNumber(v) {
@@ -4857,7 +5330,7 @@
   }
 
   function clone(v) {
-    if (isObject$1(v)) return Object.assign({}, v);
+    if (isObject$2(v)) return Object.assign({}, v);
     if (isArray$1(v)) return v.slice();
   }
 
@@ -4894,7 +5367,7 @@
   }
 
   function getFnAndObjValue(target, key) {
-    return isFunction(target) ? target(key) : !isObject$1(target) ? key : target[key] != null ? target[key] : key;
+    return isFunction(target) ? target(key) : !isObject$2(target) ? key : target[key] != null ? target[key] : key;
   }
 
   function arrDelItem(arr, diffItem) {
@@ -4967,7 +5440,7 @@
 
   var index_es$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    debounce: debounce,
+    debounce: debounce$1,
     throttle: throttle,
     set: set$2,
     get: get$1,
@@ -4977,7 +5450,7 @@
     cloneDeep: cloneDeep,
     getType: getType,
     getTypeof: getTypeof,
-    isObject: isObject$1,
+    isObject: isObject$2,
     isArray: isArray$1,
     isFunction: isFunction,
     isString: isString,
@@ -5426,7 +5899,7 @@
   function merge(target, source, overwrite) {
     // We should escapse that source is string
     // and enter for ... in ...
-    if (!isObject$2(source) || !isObject$2(target)) {
+    if (!isObject$3(source) || !isObject$3(target)) {
       return overwrite ? clone$1(source) : target;
     }
 
@@ -5435,7 +5908,7 @@
         var targetProp = target[key];
         var sourceProp = source[key];
 
-        if (isObject$2(sourceProp) && isObject$2(targetProp) && !isArray$2(sourceProp) && !isArray$2(targetProp) && !isDom(sourceProp) && !isDom(targetProp) && !isBuiltInObject(sourceProp) && !isBuiltInObject(targetProp) && !isPrimitive(sourceProp) && !isPrimitive(targetProp)) {
+        if (isObject$3(sourceProp) && isObject$3(targetProp) && !isArray$2(sourceProp) && !isArray$2(targetProp) && !isDom(sourceProp) && !isDom(targetProp) && !isBuiltInObject(sourceProp) && !isBuiltInObject(targetProp) && !isPrimitive(sourceProp) && !isPrimitive(targetProp)) {
           // 如果需要递归覆盖，就递归调用merge
           merge(targetProp, sourceProp, overwrite);
         } else if (overwrite || !(key in target)) {
@@ -5789,7 +6262,7 @@
    */
 
 
-  function isObject$2(value) {
+  function isObject$3(value) {
     // Avoid a V8 JIT bug in Chrome 19-20.
     // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
     var type = typeof value;
@@ -6034,7 +6507,7 @@
   var isArray_1 = isArray$2;
   var isFunction_1 = isFunction$1;
   var isString_1 = isString$1;
-  var isObject_1 = isObject$2;
+  var isObject_1$1 = isObject$3;
   var isBuiltInObject_1 = isBuiltInObject;
   var isTypedArray_1 = isTypedArray;
   var isDom_1 = isDom;
@@ -6075,7 +6548,7 @@
   	isArray: isArray_1,
   	isFunction: isFunction_1,
   	isString: isString_1,
-  	isObject: isObject_1,
+  	isObject: isObject_1$1,
   	isBuiltInObject: isBuiltInObject_1,
   	isTypedArray: isTypedArray_1,
   	isDom: isDom_1,
@@ -10454,7 +10927,7 @@
 
   var isString$2 = util.isString;
   var isFunction$2 = util.isFunction;
-  var isObject$3 = util.isObject;
+  var isObject$4 = util.isObject;
   var isArrayLike$2 = util.isArrayLike;
   var indexOf$2 = util.indexOf;
 
@@ -10683,7 +11156,7 @@
       }
 
       if (source[name] != null) {
-        if (isObject$3(target[name]) && !isArrayLike$2(target[name])) {
+        if (isObject$4(target[name]) && !isArrayLike$2(target[name])) {
           animateToShallow(animatable, path ? path + '.' + name : name, source[name], target[name], time, delay, reverse);
         } else {
           if (reverse) {
@@ -14043,7 +14516,7 @@
   var each$1 = util.each;
   var normalizeCssArray$1 = util.normalizeCssArray;
   var isString$3 = util.isString;
-  var isObject$4 = util.isObject;
+  var isObject$5 = util.isObject;
 
 
 
@@ -14458,7 +14931,7 @@
       } else {
         ctx.fill();
       }
-    } else if (isObject$4(textBackgroundColor)) {
+    } else if (isObject$5(textBackgroundColor)) {
       var image$1 = textBackgroundColor.image;
       image$1 = image.createOrUpdateImage(image$1, null, hostEl, onBgImageLoaded, textBackgroundColor);
 
@@ -17272,7 +17745,7 @@
   * under the License.
   */
   var each$2 = util.each;
-  var isObject$5 = util.isObject;
+  var isObject$6 = util.isObject;
   var isArray$3 = util.isArray;
   /**
    * Make the name displayable. But we should
@@ -17340,7 +17813,7 @@
    */
 
   function getDataItemValue(dataItem) {
-    return isObject$5(dataItem) && !isArray$3(dataItem) && !(dataItem instanceof Date) ? dataItem.value : dataItem;
+    return isObject$6(dataItem) && !isArray$3(dataItem) && !(dataItem instanceof Date) ? dataItem.value : dataItem;
   }
   /**
    * data could be [12, 2323, {value: 223}, [1221, 23], {value: [2, 23]}]
@@ -17350,7 +17823,7 @@
 
 
   function isDataItemOption(dataItem) {
-    return isObject$5(dataItem) && !(dataItem instanceof Array); // // markLine data can be array
+    return isObject$6(dataItem) && !(dataItem instanceof Array); // // markLine data can be array
     // && !(dataItem[0] && isObject(dataItem[0]) && !(dataItem[0] instanceof Array));
   }
   /**
@@ -17379,7 +17852,7 @@
     }); // Mapping by id or name if specified.
 
     each$2(newCptOptions, function (cptOption, index) {
-      if (!isObject$5(cptOption)) {
+      if (!isObject$6(cptOption)) {
         return;
       } // id has highest priority.
 
@@ -17407,7 +17880,7 @@
     }); // Otherwise mapping by index.
 
     each$2(newCptOptions, function (cptOption, index) {
-      if (!isObject$5(cptOption)) {
+      if (!isObject$6(cptOption)) {
         return;
       }
 
@@ -17477,7 +17950,7 @@
       var opt = item.option;
       var keyInfo = item.keyInfo;
 
-      if (!isObject$5(opt)) {
+      if (!isObject$6(opt)) {
         return;
       } // name can be overwitten. Consider case: axis.name = '20km'.
       // But id generated by name will not be changed, which affect
@@ -17523,7 +17996,7 @@
 
 
   function isIdInner(cptOption) {
-    return isObject$5(cptOption) && cptOption.id && (cptOption.id + '').indexOf('\0_ec_\0') === 0;
+    return isObject$6(cptOption) && cptOption.id && (cptOption.id + '').indexOf('\0_ec_\0') === 0;
   }
   /**
    * A helper for removing duplicate items between batchA and batchB,
@@ -26795,7 +27268,7 @@
   var map$1 = util.map;
   var isArray$4 = util.isArray;
   var isString$4 = util.isString;
-  var isObject$6 = util.isObject;
+  var isObject$7 = util.isObject;
   var isTypedArray$2 = util.isTypedArray;
   var isArrayLike$3 = util.isArrayLike;
   var extend$4 = util.extend;
@@ -26866,12 +27339,12 @@
         } else if (isArray$4(item)) {
           sourceFormat = SOURCE_FORMAT_ARRAY_ROWS$1;
           break;
-        } else if (isObject$6(item)) {
+        } else if (isObject$7(item)) {
           sourceFormat = SOURCE_FORMAT_OBJECT_ROWS$1;
           break;
         }
       }
-    } else if (isObject$6(data)) {
+    } else if (isObject$7(data)) {
       for (var key in data) {
         if (data.hasOwnProperty(key) && isArrayLike$3(data[key])) {
           sourceFormat = SOURCE_FORMAT_KEYED_COLUMNS$2;
@@ -27049,7 +27522,7 @@
 
     var nameMap = createHashMap$2();
     return map$1(dimensionsDefine, function (item, index) {
-      item = extend$4({}, isObject$6(item) ? item : {
+      item = extend$4({}, isObject$7(item) ? item : {
         name: item
       }); // User can set null in dimensions.
       // We dont auto specify name, othewise a given name may
@@ -27152,7 +27625,7 @@
     var categoryWayValueDimStart;
     coordDimensions = coordDimensions.slice();
     each$4(coordDimensions, function (coordDimInfo, coordDimIdx) {
-      !isObject$6(coordDimInfo) && (coordDimensions[coordDimIdx] = {
+      !isObject$7(coordDimInfo) && (coordDimensions[coordDimIdx] = {
         name: coordDimInfo
       });
 
@@ -27234,7 +27707,7 @@
 
     if (sourceFormat === SOURCE_FORMAT_OBJECT_ROWS$1 || sourceFormat === SOURCE_FORMAT_KEYED_COLUMNS$2) {
       each$4(dimensionsDefine, function (dim, idx) {
-        if ((isObject$6(dim) ? dim.name : dim) === 'name') {
+        if ((isObject$7(dim) ? dim.name : dim) === 'name') {
           potentialNameDimIndex = idx;
         }
       });
@@ -27353,7 +27826,7 @@
     if (dimensionsDefine) {
       var dimDefItem = dimensionsDefine[dimIndex];
 
-      if (isObject$6(dimDefItem)) {
+      if (isObject$7(dimDefItem)) {
         dimName = dimDefItem.name;
         dimType = dimDefItem.type;
       } else if (isString$4(dimDefItem)) {
@@ -27465,7 +27938,7 @@
   var map$2 = util.map;
   var isArray$5 = util.isArray;
   var indexOf$3 = util.indexOf;
-  var isObject$7 = util.isObject;
+  var isObject$8 = util.isObject;
   var isString$5 = util.isString;
   var createHashMap$3 = util.createHashMap;
   var assert$1 = util.assert;
@@ -27637,7 +28110,7 @@
         each$5(mapResult, function (item, index) {
           var opt = item.option;
 
-          if (isObject$7(opt)) {
+          if (isObject$8(opt)) {
             item.keyInfo.mainType = mainType;
             item.keyInfo.subType = determineSubType(mainType, opt, item.exist);
           }
@@ -27648,7 +28121,7 @@
         each$5(mapResult, function (resultItem, index) {
           var componentModel = resultItem.exist;
           var newCptOption = resultItem.option;
-          assert$1(isObject$7(newCptOption) || componentModel, 'Empty component definition'); // Consider where is no new option and should be merged using {},
+          assert$1(isObject$8(newCptOption) || componentModel, 'Empty component definition'); // Consider where is no new option and should be merged using {},
           // see removeEdgeAndAdd in topologicalTravel and
           // ComponentModel.getAllClassMainTypes.
 
@@ -27883,7 +28356,7 @@
         });
       } else if (isString$5(mainType)) {
         each$5(componentsMap.get(mainType), cb, context);
-      } else if (isObject$7(mainType)) {
+      } else if (isObject$8(mainType)) {
         var queryResult = this.findComponents(mainType);
         each$5(queryResult, cb, context);
       }
@@ -28771,7 +29244,7 @@
   * under the License.
   */
   var each$7 = util.each;
-  var isObject$8 = util.isObject;
+  var isObject$9 = util.isObject;
   var POSSIBLE_STYLES = ['areaStyle', 'lineStyle', 'nodeStyle', 'linkStyle', 'chordStyle', 'label', 'labelLine'];
 
   function compatEC2ItemStyle(opt) {
@@ -28848,8 +29321,8 @@
 
   function compatTextStyle(opt, propName) {
     // Check whether is not object (string\null\undefined ...)
-    var labelOptSingle = isObject$8(opt) && opt[propName];
-    var textStyle = isObject$8(labelOptSingle) && labelOptSingle.textStyle;
+    var labelOptSingle = isObject$9(opt) && opt[propName];
+    var textStyle = isObject$9(labelOptSingle) && labelOptSingle.textStyle;
 
     if (textStyle) {
       for (var i = 0, len = model.TEXT_STYLE_OPTIONS.length; i < len; i++) {
@@ -28871,7 +29344,7 @@
   }
 
   function processSeries(seriesOpt) {
-    if (!isObject$8(seriesOpt)) {
+    if (!isObject$9(seriesOpt)) {
       return;
     }
 
@@ -28988,7 +29461,7 @@
 
   function _default$10(option, isTheme) {
     each$7(toArr(option.series), function (seriesOpt) {
-      isObject$8(seriesOpt) && processSeries(seriesOpt);
+      isObject$9(seriesOpt) && processSeries(seriesOpt);
     });
     var axes = ['xAxis', 'yAxis', 'radiusAxis', 'angleAxis', 'singleAxis', 'parallelAxis', 'radar'];
     isTheme && axes.push('valueAxis', 'categoryAxis', 'logAxis', 'timeAxis');
@@ -29016,7 +29489,7 @@
       compatTextStyle(radarOpt, 'name');
     });
     each$7(toArr(option.geo), function (geoOpt) {
-      if (isObject$8(geoOpt)) {
+      if (isObject$9(geoOpt)) {
         compatEC3CommonStyles(geoOpt);
         each$7(toArr(geoOpt.regions), function (regionObj) {
           compatEC3CommonStyles(regionObj);
@@ -29071,7 +29544,7 @@
 
   var each$8 = util.each;
   var isArray$6 = util.isArray;
-  var isObject$9 = util.isObject;
+  var isObject$a = util.isObject;
 
 
 
@@ -29149,7 +29622,7 @@
 
     option.series = normalizeToArray$2(option.series);
     each$8(option.series, function (seriesOpt) {
-      if (!isObject$9(seriesOpt)) {
+      if (!isObject$a(seriesOpt)) {
         return;
       }
 
@@ -29332,7 +29805,7 @@
 
   var extend$6 = util.extend;
   var each$a = util.each;
-  var isObject$a = util.isObject;
+  var isObject$b = util.isObject;
 
 
 
@@ -29667,7 +30140,7 @@
 
     var dataItem = data.getRawDataItem(dataIndex);
 
-    if (sourceFormat === SOURCE_FORMAT_ORIGINAL$3 && !isObject$a(dataItem)) {
+    if (sourceFormat === SOURCE_FORMAT_ORIGINAL$3 && !isObject$b(dataItem)) {
       dataItem = null;
     }
 
@@ -34133,7 +34606,7 @@
    * List for data storage
    * @module echarts/data/List
    */
-  var isObject$b = util.isObject;
+  var isObject$c = util.isObject;
   var UNDEFINED = 'undefined';
   var INDEX_NOT_FOUND = -1; // Use prefix to avoid index to be the same as otherIdList[idx],
   // which will cause weird udpate animation.
@@ -35087,7 +35560,7 @@
 
 
   listProto.setCalculationInfo = function (key, value) {
-    isObject$b(key) ? util.extend(this._calculationInfo, key) : this._calculationInfo[key] = value;
+    isObject$c(key) ? util.extend(this._calculationInfo, key) : this._calculationInfo[key] = value;
   };
   /**
    * Get sum of data in one dimension
@@ -35892,7 +36365,7 @@
 
 
   listProto.setVisual = function (key, val) {
-    if (isObject$b(key)) {
+    if (isObject$c(key)) {
       for (var name in key) {
         if (key.hasOwnProperty(name)) {
           this.setVisual(name, key[name]);
@@ -35913,7 +36386,7 @@
 
 
   listProto.setLayout = function (key, val) {
-    if (isObject$b(key)) {
+    if (isObject$c(key)) {
       for (var name in key) {
         if (key.hasOwnProperty(name)) {
           this.setLayout(name, key[name]);
@@ -36002,7 +36475,7 @@
     var hasItemVisual = this.hasItemVisual;
     this._itemVisuals[idx] = itemVisual;
 
-    if (isObject$b(key)) {
+    if (isObject$c(key)) {
       for (var name in key) {
         if (key.hasOwnProperty(name)) {
           itemVisual[name] = key[name];
@@ -36162,7 +36635,7 @@
   var isString$8 = util.isString;
   var defaults$2 = util.defaults;
   var extend$8 = util.extend;
-  var isObject$c = util.isObject;
+  var isObject$d = util.isObject;
   var clone$6 = util.clone;
 
 
@@ -36260,7 +36733,7 @@
     var dimCount = getDimCount(source, sysDims, dimsDef, opt.dimCount); // Apply user defined dims (`name` and `type`) and init result.
 
     for (var i = 0; i < dimCount; i++) {
-      var dimDefItem = dimsDef[i] = extend$8({}, isObject$c(dimsDef[i]) ? dimsDef[i] : {
+      var dimDefItem = dimsDef[i] = extend$8({}, isObject$d(dimsDef[i]) ? dimsDef[i] : {
         name: dimsDef[i]
       });
       var userDimName = dimDefItem.name;
@@ -36355,7 +36828,7 @@
 
         if (resultItem.name == null && sysDimItemDimsDef) {
           var sysDimItemDimsDefItem = sysDimItemDimsDef[coordDimIndex];
-          !isObject$c(sysDimItemDimsDefItem) && (sysDimItemDimsDefItem = {
+          !isObject$d(sysDimItemDimsDefItem) && (sysDimItemDimsDefItem = {
             name: sysDimItemDimsDefItem
           });
           resultItem.name = resultItem.displayName = sysDimItemDimsDefItem.name;
@@ -37276,7 +37749,7 @@
 
 
   var createHashMap$a = util.createHashMap;
-  var isObject$d = util.isObject;
+  var isObject$e = util.isObject;
   var map$5 = util.map;
 
   /*
@@ -37411,7 +37884,7 @@
   }
 
   function getName(obj) {
-    if (isObject$d(obj) && obj.value != null) {
+    if (isObject$e(obj) && obj.value != null) {
       return obj.value;
     } else {
       return obj + '';
@@ -44176,7 +44649,7 @@
 
   util.inherits(SymbolClz$1, graphic.Group);
   var _default$1x = SymbolClz$1;
-  var _Symbol = _default$1x;
+  var _Symbol$1 = _default$1x;
 
   /*
   * Licensed to the Apache Software Foundation (ASF) under one
@@ -44203,7 +44676,7 @@
 
 
 
-  var isObject$e = util.isObject;
+  var isObject$f = util.isObject;
 
   /*
   * Licensed to the Apache Software Foundation (ASF) under one
@@ -44235,7 +44708,7 @@
    */
   function SymbolDraw(symbolCtor) {
     this.group = new graphic.Group();
-    this._symbolCtor = symbolCtor || _Symbol;
+    this._symbolCtor = symbolCtor || _Symbol$1;
   }
 
   var symbolDrawProto = SymbolDraw.prototype;
@@ -44361,7 +44834,7 @@
   };
 
   function normalizeUpdateOpt(opt) {
-    if (opt != null && !isObject$e(opt)) {
+    if (opt != null && !isObject$f(opt)) {
       opt = {
         isIgnore: opt
       };
@@ -45527,7 +46000,7 @@
     var step = Math.max(1, Math.round(dataLen / 5));
 
     for (var dataIndex = 0; dataIndex < dataLen; dataIndex += step) {
-      if (_Symbol.getSymbolSize(data, dataIndex // Only for cartesian, where `isHorizontal` exists.
+      if (_Symbol$1.getSymbolSize(data, dataIndex // Only for cartesian, where `isHorizontal` exists.
       )[categoryAxis.isHorizontal() ? 1 : 0] // Empirical number
       * 1.5 > availSize) {
         return false;
@@ -45757,7 +46230,7 @@
             return;
           }
 
-          symbol = new _Symbol(data, dataIndex);
+          symbol = new _Symbol$1(data, dataIndex);
           symbol.position = pt;
           symbol.setZ(seriesModel.get('zlevel'), seriesModel.get('z'));
           symbol.ignore = isNaN(pt[0]) || isNaN(pt[1]);
@@ -47278,7 +47751,7 @@
     }
   });
 
-  var isObject$f = util.isObject;
+  var isObject$g = util.isObject;
   var each$k = util.each;
   var map$9 = util.map;
   var indexOf$4 = util.indexOf;
@@ -47545,7 +48018,7 @@
       return this._coordsMap[key];
     }
 
-    if (isObject$f(xAxisIndex)) {
+    if (isObject$g(xAxisIndex)) {
       yAxisIndex = xAxisIndex.yAxisIndex;
       xAxisIndex = xAxisIndex.xAxisIndex;
     } // When only xAxisIndex or yAxisIndex given, find its first cartesian.
@@ -64551,12 +65024,2197 @@
    * @author : Mater
    * @Email : bxh8640@gmail.com
    * @Date : 2020-11-11 19:49:25
-   * @LastEditTime : 2020-11-16 15:18:02
+   * @LastEditTime : 2020-11-20 09:21:04
    * @Description :
    */
   var lbpPluginController = new LbpPluginController({
     plugins: _plugins
   });
+
+  /*!
+   * vue-i18n v8.22.1 
+   * (c) 2020 kazuya kawaguchi
+   * Released under the MIT License.
+   */
+  /*  */
+
+  /**
+   * constants
+   */
+
+  var numberFormatKeys = [
+    'style',
+    'currency',
+    'currencyDisplay',
+    'useGrouping',
+    'minimumIntegerDigits',
+    'minimumFractionDigits',
+    'maximumFractionDigits',
+    'minimumSignificantDigits',
+    'maximumSignificantDigits',
+    'localeMatcher',
+    'formatMatcher',
+    'unit'
+  ];
+
+  /**
+   * utilities
+   */
+
+  function warn (msg, err) {
+    if (typeof console !== 'undefined') {
+      console.warn('[vue-i18n] ' + msg);
+      /* istanbul ignore if */
+      if (err) {
+        console.warn(err.stack);
+      }
+    }
+  }
+
+  function error (msg, err) {
+    if (typeof console !== 'undefined') {
+      console.error('[vue-i18n] ' + msg);
+      /* istanbul ignore if */
+      if (err) {
+        console.error(err.stack);
+      }
+    }
+  }
+
+  var isArray$a = Array.isArray;
+
+  function isObject$h (obj) {
+    return obj !== null && typeof obj === 'object'
+  }
+
+  function isBoolean$1 (val) {
+    return typeof val === 'boolean'
+  }
+
+  function isString$a (val) {
+    return typeof val === 'string'
+  }
+
+  var toString$2 = Object.prototype.toString;
+  var OBJECT_STRING = '[object Object]';
+  function isPlainObject (obj) {
+    return toString$2.call(obj) === OBJECT_STRING
+  }
+
+  function isNull (val) {
+    return val === null || val === undefined
+  }
+
+  function isFunction$6 (val) {
+    return typeof val === 'function'
+  }
+
+  function parseArgs () {
+    var args = [], len = arguments.length;
+    while ( len-- ) args[ len ] = arguments[ len ];
+
+    var locale = null;
+    var params = null;
+    if (args.length === 1) {
+      if (isObject$h(args[0]) || isArray$a(args[0])) {
+        params = args[0];
+      } else if (typeof args[0] === 'string') {
+        locale = args[0];
+      }
+    } else if (args.length === 2) {
+      if (typeof args[0] === 'string') {
+        locale = args[0];
+      }
+      /* istanbul ignore if */
+      if (isObject$h(args[1]) || isArray$a(args[1])) {
+        params = args[1];
+      }
+    }
+
+    return { locale: locale, params: params }
+  }
+
+  function looseClone (obj) {
+    return JSON.parse(JSON.stringify(obj))
+  }
+
+  function remove (arr, item) {
+    if (arr.length) {
+      var index = arr.indexOf(item);
+      if (index > -1) {
+        return arr.splice(index, 1)
+      }
+    }
+  }
+
+  function includes (arr, item) {
+    return !!~arr.indexOf(item)
+  }
+
+  var hasOwnProperty$2 = Object.prototype.hasOwnProperty;
+  function hasOwn$1 (obj, key) {
+    return hasOwnProperty$2.call(obj, key)
+  }
+
+  function merge$3 (target) {
+    var arguments$1 = arguments;
+
+    var output = Object(target);
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments$1[i];
+      if (source !== undefined && source !== null) {
+        var key = (void 0);
+        for (key in source) {
+          if (hasOwn$1(source, key)) {
+            if (isObject$h(source[key])) {
+              output[key] = merge$3(output[key], source[key]);
+            } else {
+              output[key] = source[key];
+            }
+          }
+        }
+      }
+    }
+    return output
+  }
+
+  function looseEqual (a, b) {
+    if (a === b) { return true }
+    var isObjectA = isObject$h(a);
+    var isObjectB = isObject$h(b);
+    if (isObjectA && isObjectB) {
+      try {
+        var isArrayA = isArray$a(a);
+        var isArrayB = isArray$a(b);
+        if (isArrayA && isArrayB) {
+          return a.length === b.length && a.every(function (e, i) {
+            return looseEqual(e, b[i])
+          })
+        } else if (!isArrayA && !isArrayB) {
+          var keysA = Object.keys(a);
+          var keysB = Object.keys(b);
+          return keysA.length === keysB.length && keysA.every(function (key) {
+            return looseEqual(a[key], b[key])
+          })
+        } else {
+          /* istanbul ignore next */
+          return false
+        }
+      } catch (e) {
+        /* istanbul ignore next */
+        return false
+      }
+    } else if (!isObjectA && !isObjectB) {
+      return String(a) === String(b)
+    } else {
+      return false
+    }
+  }
+
+  /**
+   * Sanitizes html special characters from input strings. For mitigating risk of XSS attacks.
+   * @param rawText The raw input from the user that should be escaped.
+   */
+  function escapeHtml(rawText) {
+    return rawText
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&apos;')
+  }
+
+  /**
+   * Escapes html tags and special symbols from all provided params which were returned from parseArgs().params.
+   * This method performs an in-place operation on the params object.
+   *
+   * @param {any} params Parameters as provided from `parseArgs().params`.
+   *                     May be either an array of strings or a string->any map.
+   *
+   * @returns The manipulated `params` object.
+   */
+  function escapeParams(params) {
+    if(params != null) {
+      Object.keys(params).forEach(function (key) {
+        if(typeof(params[key]) == 'string') {
+          params[key] = escapeHtml(params[key]);
+        }
+      });
+    }
+    return params
+  }
+
+  /*  */
+
+  function extend$b (Vue) {
+    if (!Vue.prototype.hasOwnProperty('$i18n')) {
+      // $FlowFixMe
+      Object.defineProperty(Vue.prototype, '$i18n', {
+        get: function get () { return this._i18n }
+      });
+    }
+
+    Vue.prototype.$t = function (key) {
+      var values = [], len = arguments.length - 1;
+      while ( len-- > 0 ) values[ len ] = arguments[ len + 1 ];
+
+      var i18n = this.$i18n;
+      return i18n._t.apply(i18n, [ key, i18n.locale, i18n._getMessages(), this ].concat( values ))
+    };
+
+    Vue.prototype.$tc = function (key, choice) {
+      var values = [], len = arguments.length - 2;
+      while ( len-- > 0 ) values[ len ] = arguments[ len + 2 ];
+
+      var i18n = this.$i18n;
+      return i18n._tc.apply(i18n, [ key, i18n.locale, i18n._getMessages(), this, choice ].concat( values ))
+    };
+
+    Vue.prototype.$te = function (key, locale) {
+      var i18n = this.$i18n;
+      return i18n._te(key, i18n.locale, i18n._getMessages(), locale)
+    };
+
+    Vue.prototype.$d = function (value) {
+      var ref;
+
+      var args = [], len = arguments.length - 1;
+      while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+      return (ref = this.$i18n).d.apply(ref, [ value ].concat( args ))
+    };
+
+    Vue.prototype.$n = function (value) {
+      var ref;
+
+      var args = [], len = arguments.length - 1;
+      while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+      return (ref = this.$i18n).n.apply(ref, [ value ].concat( args ))
+    };
+  }
+
+  /*  */
+
+  var mixin$3 = {
+    beforeCreate: function beforeCreate () {
+      var options = this.$options;
+      options.i18n = options.i18n || (options.__i18n ? {} : null);
+
+      if (options.i18n) {
+        if (options.i18n instanceof VueI18n) {
+          // init locale messages via custom blocks
+          if (options.__i18n) {
+            try {
+              var localeMessages = options.i18n && options.i18n.messages ? options.i18n.messages : {};
+              options.__i18n.forEach(function (resource) {
+                localeMessages = merge$3(localeMessages, JSON.parse(resource));
+              });
+              Object.keys(localeMessages).forEach(function (locale) {
+                options.i18n.mergeLocaleMessage(locale, localeMessages[locale]);
+              });
+            } catch (e) {
+              {
+                error("Cannot parse locale messages via custom blocks.", e);
+              }
+            }
+          }
+          this._i18n = options.i18n;
+          this._i18nWatcher = this._i18n.watchI18nData();
+        } else if (isPlainObject(options.i18n)) {
+          var rootI18n = this.$root && this.$root.$i18n && this.$root.$i18n instanceof VueI18n
+            ? this.$root.$i18n
+            : null;
+          // component local i18n
+          if (rootI18n) {
+            options.i18n.root = this.$root;
+            options.i18n.formatter = rootI18n.formatter;
+            options.i18n.fallbackLocale = rootI18n.fallbackLocale;
+            options.i18n.formatFallbackMessages = rootI18n.formatFallbackMessages;
+            options.i18n.silentTranslationWarn = rootI18n.silentTranslationWarn;
+            options.i18n.silentFallbackWarn = rootI18n.silentFallbackWarn;
+            options.i18n.pluralizationRules = rootI18n.pluralizationRules;
+            options.i18n.preserveDirectiveContent = rootI18n.preserveDirectiveContent;
+          }
+
+          // init locale messages via custom blocks
+          if (options.__i18n) {
+            try {
+              var localeMessages$1 = options.i18n && options.i18n.messages ? options.i18n.messages : {};
+              options.__i18n.forEach(function (resource) {
+                localeMessages$1 = merge$3(localeMessages$1, JSON.parse(resource));
+              });
+              options.i18n.messages = localeMessages$1;
+            } catch (e) {
+              {
+                warn("Cannot parse locale messages via custom blocks.", e);
+              }
+            }
+          }
+
+          var ref = options.i18n;
+          var sharedMessages = ref.sharedMessages;
+          if (sharedMessages && isPlainObject(sharedMessages)) {
+            options.i18n.messages = merge$3(options.i18n.messages, sharedMessages);
+          }
+
+          this._i18n = new VueI18n(options.i18n);
+          this._i18nWatcher = this._i18n.watchI18nData();
+
+          if (options.i18n.sync === undefined || !!options.i18n.sync) {
+            this._localeWatcher = this.$i18n.watchLocale();
+          }
+
+          if (rootI18n) {
+            rootI18n.onComponentInstanceCreated(this._i18n);
+          }
+        } else {
+          {
+            warn("Cannot be interpreted 'i18n' option.");
+          }
+        }
+      } else if (this.$root && this.$root.$i18n && this.$root.$i18n instanceof VueI18n) {
+        // root i18n
+        this._i18n = this.$root.$i18n;
+      } else if (options.parent && options.parent.$i18n && options.parent.$i18n instanceof VueI18n) {
+        // parent i18n
+        this._i18n = options.parent.$i18n;
+      }
+    },
+
+    beforeMount: function beforeMount () {
+      var options = this.$options;
+      options.i18n = options.i18n || (options.__i18n ? {} : null);
+
+      if (options.i18n) {
+        if (options.i18n instanceof VueI18n) {
+          // init locale messages via custom blocks
+          this._i18n.subscribeDataChanging(this);
+          this._subscribing = true;
+        } else if (isPlainObject(options.i18n)) {
+          this._i18n.subscribeDataChanging(this);
+          this._subscribing = true;
+        } else {
+          {
+            warn("Cannot be interpreted 'i18n' option.");
+          }
+        }
+      } else if (this.$root && this.$root.$i18n && this.$root.$i18n instanceof VueI18n) {
+        this._i18n.subscribeDataChanging(this);
+        this._subscribing = true;
+      } else if (options.parent && options.parent.$i18n && options.parent.$i18n instanceof VueI18n) {
+        this._i18n.subscribeDataChanging(this);
+        this._subscribing = true;
+      }
+    },
+
+    beforeDestroy: function beforeDestroy () {
+      if (!this._i18n) { return }
+
+      var self = this;
+      this.$nextTick(function () {
+        if (self._subscribing) {
+          self._i18n.unsubscribeDataChanging(self);
+          delete self._subscribing;
+        }
+
+        if (self._i18nWatcher) {
+          self._i18nWatcher();
+          self._i18n.destroyVM();
+          delete self._i18nWatcher;
+        }
+
+        if (self._localeWatcher) {
+          self._localeWatcher();
+          delete self._localeWatcher;
+        }
+      });
+    }
+  };
+
+  /*  */
+
+  var interpolationComponent = {
+    name: 'i18n',
+    functional: true,
+    props: {
+      tag: {
+        type: [String, Boolean, Object],
+        default: 'span'
+      },
+      path: {
+        type: String,
+        required: true
+      },
+      locale: {
+        type: String
+      },
+      places: {
+        type: [Array, Object]
+      }
+    },
+    render: function render (h, ref) {
+      var data = ref.data;
+      var parent = ref.parent;
+      var props = ref.props;
+      var slots = ref.slots;
+
+      var $i18n = parent.$i18n;
+      if (!$i18n) {
+        {
+          warn('Cannot find VueI18n instance!');
+        }
+        return
+      }
+
+      var path = props.path;
+      var locale = props.locale;
+      var places = props.places;
+      var params = slots();
+      var children = $i18n.i(
+        path,
+        locale,
+        onlyHasDefaultPlace(params) || places
+          ? useLegacyPlaces(params.default, places)
+          : params
+      );
+
+      var tag = (!!props.tag && props.tag !== true) || props.tag === false ? props.tag : 'span';
+      return tag ? h(tag, data, children) : children
+    }
+  };
+
+  function onlyHasDefaultPlace (params) {
+    var prop;
+    for (prop in params) {
+      if (prop !== 'default') { return false }
+    }
+    return Boolean(prop)
+  }
+
+  function useLegacyPlaces (children, places) {
+    var params = places ? createParamsFromPlaces(places) : {};
+
+    if (!children) { return params }
+
+    // Filter empty text nodes
+    children = children.filter(function (child) {
+      return child.tag || child.text.trim() !== ''
+    });
+
+    var everyPlace = children.every(vnodeHasPlaceAttribute);
+    if ( everyPlace) {
+      warn('`place` attribute is deprecated in next major version. Please switch to Vue slots.');
+    }
+
+    return children.reduce(
+      everyPlace ? assignChildPlace : assignChildIndex,
+      params
+    )
+  }
+
+  function createParamsFromPlaces (places) {
+    {
+      warn('`places` prop is deprecated in next major version. Please switch to Vue slots.');
+    }
+
+    return Array.isArray(places)
+      ? places.reduce(assignChildIndex, {})
+      : Object.assign({}, places)
+  }
+
+  function assignChildPlace (params, child) {
+    if (child.data && child.data.attrs && child.data.attrs.place) {
+      params[child.data.attrs.place] = child;
+    }
+    return params
+  }
+
+  function assignChildIndex (params, child, index) {
+    params[index] = child;
+    return params
+  }
+
+  function vnodeHasPlaceAttribute (vnode) {
+    return Boolean(vnode.data && vnode.data.attrs && vnode.data.attrs.place)
+  }
+
+  /*  */
+
+  var numberComponent = {
+    name: 'i18n-n',
+    functional: true,
+    props: {
+      tag: {
+        type: [String, Boolean, Object],
+        default: 'span'
+      },
+      value: {
+        type: Number,
+        required: true
+      },
+      format: {
+        type: [String, Object]
+      },
+      locale: {
+        type: String
+      }
+    },
+    render: function render (h, ref) {
+      var props = ref.props;
+      var parent = ref.parent;
+      var data = ref.data;
+
+      var i18n = parent.$i18n;
+
+      if (!i18n) {
+        {
+          warn('Cannot find VueI18n instance!');
+        }
+        return null
+      }
+
+      var key = null;
+      var options = null;
+
+      if (isString$a(props.format)) {
+        key = props.format;
+      } else if (isObject$h(props.format)) {
+        if (props.format.key) {
+          key = props.format.key;
+        }
+
+        // Filter out number format options only
+        options = Object.keys(props.format).reduce(function (acc, prop) {
+          var obj;
+
+          if (includes(numberFormatKeys, prop)) {
+            return Object.assign({}, acc, ( obj = {}, obj[prop] = props.format[prop], obj ))
+          }
+          return acc
+        }, null);
+      }
+
+      var locale = props.locale || i18n.locale;
+      var parts = i18n._ntp(props.value, locale, key, options);
+
+      var values = parts.map(function (part, index) {
+        var obj;
+
+        var slot = data.scopedSlots && data.scopedSlots[part.type];
+        return slot ? slot(( obj = {}, obj[part.type] = part.value, obj.index = index, obj.parts = parts, obj )) : part.value
+      });
+
+      var tag = (!!props.tag && props.tag !== true) || props.tag === false ? props.tag : 'span';
+      return tag
+        ? h(tag, {
+          attrs: data.attrs,
+          'class': data['class'],
+          staticClass: data.staticClass
+        }, values)
+        : values
+    }
+  };
+
+  /*  */
+
+  function bind$4 (el, binding, vnode) {
+    if (!assert$2(el, vnode)) { return }
+
+    t(el, binding, vnode);
+  }
+
+  function update (el, binding, vnode, oldVNode) {
+    if (!assert$2(el, vnode)) { return }
+
+    var i18n = vnode.context.$i18n;
+    if (localeEqual(el, vnode) &&
+      (looseEqual(binding.value, binding.oldValue) &&
+       looseEqual(el._localeMessage, i18n.getLocaleMessage(i18n.locale)))) { return }
+
+    t(el, binding, vnode);
+  }
+
+  function unbind (el, binding, vnode, oldVNode) {
+    var vm = vnode.context;
+    if (!vm) {
+      warn('Vue instance does not exists in VNode context');
+      return
+    }
+
+    var i18n = vnode.context.$i18n || {};
+    if (!binding.modifiers.preserve && !i18n.preserveDirectiveContent) {
+      el.textContent = '';
+    }
+    el._vt = undefined;
+    delete el['_vt'];
+    el._locale = undefined;
+    delete el['_locale'];
+    el._localeMessage = undefined;
+    delete el['_localeMessage'];
+  }
+
+  function assert$2 (el, vnode) {
+    var vm = vnode.context;
+    if (!vm) {
+      warn('Vue instance does not exists in VNode context');
+      return false
+    }
+
+    if (!vm.$i18n) {
+      warn('VueI18n instance does not exists in Vue instance');
+      return false
+    }
+
+    return true
+  }
+
+  function localeEqual (el, vnode) {
+    var vm = vnode.context;
+    return el._locale === vm.$i18n.locale
+  }
+
+  function t (el, binding, vnode) {
+    var ref$1, ref$2;
+
+    var value = binding.value;
+
+    var ref = parseValue(value);
+    var path = ref.path;
+    var locale = ref.locale;
+    var args = ref.args;
+    var choice = ref.choice;
+    if (!path && !locale && !args) {
+      warn('value type not supported');
+      return
+    }
+
+    if (!path) {
+      warn('`path` is required in v-t directive');
+      return
+    }
+
+    var vm = vnode.context;
+    if (choice != null) {
+      el._vt = el.textContent = (ref$1 = vm.$i18n).tc.apply(ref$1, [ path, choice ].concat( makeParams(locale, args) ));
+    } else {
+      el._vt = el.textContent = (ref$2 = vm.$i18n).t.apply(ref$2, [ path ].concat( makeParams(locale, args) ));
+    }
+    el._locale = vm.$i18n.locale;
+    el._localeMessage = vm.$i18n.getLocaleMessage(vm.$i18n.locale);
+  }
+
+  function parseValue (value) {
+    var path;
+    var locale;
+    var args;
+    var choice;
+
+    if (isString$a(value)) {
+      path = value;
+    } else if (isPlainObject(value)) {
+      path = value.path;
+      locale = value.locale;
+      args = value.args;
+      choice = value.choice;
+    }
+
+    return { path: path, locale: locale, args: args, choice: choice }
+  }
+
+  function makeParams (locale, args) {
+    var params = [];
+
+    locale && params.push(locale);
+    if (args && (Array.isArray(args) || isPlainObject(args))) {
+      params.push(args);
+    }
+
+    return params
+  }
+
+  var Vue;
+
+  function install (_Vue) {
+    /* istanbul ignore if */
+    if ( install.installed && _Vue === Vue) {
+      warn('already installed.');
+      return
+    }
+    install.installed = true;
+
+    Vue = _Vue;
+
+    var version = (Vue.version && Number(Vue.version.split('.')[0])) || -1;
+    /* istanbul ignore if */
+    if ( version < 2) {
+      warn(("vue-i18n (" + (install.version) + ") need to use Vue 2.0 or later (Vue: " + (Vue.version) + ")."));
+      return
+    }
+
+    extend$b(Vue);
+    Vue.mixin(mixin$3);
+    Vue.directive('t', { bind: bind$4, update: update, unbind: unbind });
+    Vue.component(interpolationComponent.name, interpolationComponent);
+    Vue.component(numberComponent.name, numberComponent);
+
+    // use simple mergeStrategies to prevent i18n instance lose '__proto__'
+    var strats = Vue.config.optionMergeStrategies;
+    strats.i18n = function (parentVal, childVal) {
+      return childVal === undefined
+        ? parentVal
+        : childVal
+    };
+  }
+
+  /*  */
+
+  var BaseFormatter = function BaseFormatter () {
+    this._caches = Object.create(null);
+  };
+
+  BaseFormatter.prototype.interpolate = function interpolate (message, values) {
+    if (!values) {
+      return [message]
+    }
+    var tokens = this._caches[message];
+    if (!tokens) {
+      tokens = parse$1(message);
+      this._caches[message] = tokens;
+    }
+    return compile(tokens, values)
+  };
+
+
+
+  var RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
+  var RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
+
+  function parse$1 (format) {
+    var tokens = [];
+    var position = 0;
+
+    var text = '';
+    while (position < format.length) {
+      var char = format[position++];
+      if (char === '{') {
+        if (text) {
+          tokens.push({ type: 'text', value: text });
+        }
+
+        text = '';
+        var sub = '';
+        char = format[position++];
+        while (char !== undefined && char !== '}') {
+          sub += char;
+          char = format[position++];
+        }
+        var isClosed = char === '}';
+
+        var type = RE_TOKEN_LIST_VALUE.test(sub)
+          ? 'list'
+          : isClosed && RE_TOKEN_NAMED_VALUE.test(sub)
+            ? 'named'
+            : 'unknown';
+        tokens.push({ value: sub, type: type });
+      } else if (char === '%') {
+        // when found rails i18n syntax, skip text capture
+        if (format[(position)] !== '{') {
+          text += char;
+        }
+      } else {
+        text += char;
+      }
+    }
+
+    text && tokens.push({ type: 'text', value: text });
+
+    return tokens
+  }
+
+  function compile (tokens, values) {
+    var compiled = [];
+    var index = 0;
+
+    var mode = Array.isArray(values)
+      ? 'list'
+      : isObject$h(values)
+        ? 'named'
+        : 'unknown';
+    if (mode === 'unknown') { return compiled }
+
+    while (index < tokens.length) {
+      var token = tokens[index];
+      switch (token.type) {
+        case 'text':
+          compiled.push(token.value);
+          break
+        case 'list':
+          compiled.push(values[parseInt(token.value, 10)]);
+          break
+        case 'named':
+          if (mode === 'named') {
+            compiled.push((values)[token.value]);
+          } else {
+            {
+              warn(("Type of token '" + (token.type) + "' and format of value '" + mode + "' don't match!"));
+            }
+          }
+          break
+        case 'unknown':
+          {
+            warn("Detect 'unknown' type of token!");
+          }
+          break
+      }
+      index++;
+    }
+
+    return compiled
+  }
+
+  /*  */
+
+  /**
+   *  Path parser
+   *  - Inspired:
+   *    Vue.js Path parser
+   */
+
+  // actions
+  var APPEND = 0;
+  var PUSH = 1;
+  var INC_SUB_PATH_DEPTH = 2;
+  var PUSH_SUB_PATH = 3;
+
+  // states
+  var BEFORE_PATH = 0;
+  var IN_PATH = 1;
+  var BEFORE_IDENT = 2;
+  var IN_IDENT = 3;
+  var IN_SUB_PATH = 4;
+  var IN_SINGLE_QUOTE = 5;
+  var IN_DOUBLE_QUOTE = 6;
+  var AFTER_PATH = 7;
+  var ERROR = 8;
+
+  var pathStateMachine = [];
+
+  pathStateMachine[BEFORE_PATH] = {
+    'ws': [BEFORE_PATH],
+    'ident': [IN_IDENT, APPEND],
+    '[': [IN_SUB_PATH],
+    'eof': [AFTER_PATH]
+  };
+
+  pathStateMachine[IN_PATH] = {
+    'ws': [IN_PATH],
+    '.': [BEFORE_IDENT],
+    '[': [IN_SUB_PATH],
+    'eof': [AFTER_PATH]
+  };
+
+  pathStateMachine[BEFORE_IDENT] = {
+    'ws': [BEFORE_IDENT],
+    'ident': [IN_IDENT, APPEND],
+    '0': [IN_IDENT, APPEND],
+    'number': [IN_IDENT, APPEND]
+  };
+
+  pathStateMachine[IN_IDENT] = {
+    'ident': [IN_IDENT, APPEND],
+    '0': [IN_IDENT, APPEND],
+    'number': [IN_IDENT, APPEND],
+    'ws': [IN_PATH, PUSH],
+    '.': [BEFORE_IDENT, PUSH],
+    '[': [IN_SUB_PATH, PUSH],
+    'eof': [AFTER_PATH, PUSH]
+  };
+
+  pathStateMachine[IN_SUB_PATH] = {
+    "'": [IN_SINGLE_QUOTE, APPEND],
+    '"': [IN_DOUBLE_QUOTE, APPEND],
+    '[': [IN_SUB_PATH, INC_SUB_PATH_DEPTH],
+    ']': [IN_PATH, PUSH_SUB_PATH],
+    'eof': ERROR,
+    'else': [IN_SUB_PATH, APPEND]
+  };
+
+  pathStateMachine[IN_SINGLE_QUOTE] = {
+    "'": [IN_SUB_PATH, APPEND],
+    'eof': ERROR,
+    'else': [IN_SINGLE_QUOTE, APPEND]
+  };
+
+  pathStateMachine[IN_DOUBLE_QUOTE] = {
+    '"': [IN_SUB_PATH, APPEND],
+    'eof': ERROR,
+    'else': [IN_DOUBLE_QUOTE, APPEND]
+  };
+
+  /**
+   * Check if an expression is a literal value.
+   */
+
+  var literalValueRE = /^\s?(?:true|false|-?[\d.]+|'[^']*'|"[^"]*")\s?$/;
+  function isLiteral (exp) {
+    return literalValueRE.test(exp)
+  }
+
+  /**
+   * Strip quotes from a string
+   */
+
+  function stripQuotes (str) {
+    var a = str.charCodeAt(0);
+    var b = str.charCodeAt(str.length - 1);
+    return a === b && (a === 0x22 || a === 0x27)
+      ? str.slice(1, -1)
+      : str
+  }
+
+  /**
+   * Determine the type of a character in a keypath.
+   */
+
+  function getPathCharType (ch) {
+    if (ch === undefined || ch === null) { return 'eof' }
+
+    var code = ch.charCodeAt(0);
+
+    switch (code) {
+      case 0x5B: // [
+      case 0x5D: // ]
+      case 0x2E: // .
+      case 0x22: // "
+      case 0x27: // '
+        return ch
+
+      case 0x5F: // _
+      case 0x24: // $
+      case 0x2D: // -
+        return 'ident'
+
+      case 0x09: // Tab
+      case 0x0A: // Newline
+      case 0x0D: // Return
+      case 0xA0:  // No-break space
+      case 0xFEFF:  // Byte Order Mark
+      case 0x2028:  // Line Separator
+      case 0x2029:  // Paragraph Separator
+        return 'ws'
+    }
+
+    return 'ident'
+  }
+
+  /**
+   * Format a subPath, return its plain form if it is
+   * a literal string or number. Otherwise prepend the
+   * dynamic indicator (*).
+   */
+
+  function formatSubPath (path) {
+    var trimmed = path.trim();
+    // invalid leading 0
+    if (path.charAt(0) === '0' && isNaN(path)) { return false }
+
+    return isLiteral(trimmed) ? stripQuotes(trimmed) : '*' + trimmed
+  }
+
+  /**
+   * Parse a string path into an array of segments
+   */
+
+  function parse$1$1 (path) {
+    var keys = [];
+    var index = -1;
+    var mode = BEFORE_PATH;
+    var subPathDepth = 0;
+    var c;
+    var key;
+    var newChar;
+    var type;
+    var transition;
+    var action;
+    var typeMap;
+    var actions = [];
+
+    actions[PUSH] = function () {
+      if (key !== undefined) {
+        keys.push(key);
+        key = undefined;
+      }
+    };
+
+    actions[APPEND] = function () {
+      if (key === undefined) {
+        key = newChar;
+      } else {
+        key += newChar;
+      }
+    };
+
+    actions[INC_SUB_PATH_DEPTH] = function () {
+      actions[APPEND]();
+      subPathDepth++;
+    };
+
+    actions[PUSH_SUB_PATH] = function () {
+      if (subPathDepth > 0) {
+        subPathDepth--;
+        mode = IN_SUB_PATH;
+        actions[APPEND]();
+      } else {
+        subPathDepth = 0;
+        if (key === undefined) { return false }
+        key = formatSubPath(key);
+        if (key === false) {
+          return false
+        } else {
+          actions[PUSH]();
+        }
+      }
+    };
+
+    function maybeUnescapeQuote () {
+      var nextChar = path[index + 1];
+      if ((mode === IN_SINGLE_QUOTE && nextChar === "'") ||
+        (mode === IN_DOUBLE_QUOTE && nextChar === '"')) {
+        index++;
+        newChar = '\\' + nextChar;
+        actions[APPEND]();
+        return true
+      }
+    }
+
+    while (mode !== null) {
+      index++;
+      c = path[index];
+
+      if (c === '\\' && maybeUnescapeQuote()) {
+        continue
+      }
+
+      type = getPathCharType(c);
+      typeMap = pathStateMachine[mode];
+      transition = typeMap[type] || typeMap['else'] || ERROR;
+
+      if (transition === ERROR) {
+        return // parse error
+      }
+
+      mode = transition[0];
+      action = actions[transition[1]];
+      if (action) {
+        newChar = transition[2];
+        newChar = newChar === undefined
+          ? c
+          : newChar;
+        if (action() === false) {
+          return
+        }
+      }
+
+      if (mode === AFTER_PATH) {
+        return keys
+      }
+    }
+  }
+
+
+
+
+
+  var I18nPath = function I18nPath () {
+    this._cache = Object.create(null);
+  };
+
+  /**
+   * External parse that check for a cache hit first
+   */
+  I18nPath.prototype.parsePath = function parsePath (path) {
+    var hit = this._cache[path];
+    if (!hit) {
+      hit = parse$1$1(path);
+      if (hit) {
+        this._cache[path] = hit;
+      }
+    }
+    return hit || []
+  };
+
+  /**
+   * Get path value from path string
+   */
+  I18nPath.prototype.getPathValue = function getPathValue (obj, path) {
+    if (!isObject$h(obj)) { return null }
+
+    var paths = this.parsePath(path);
+    if (paths.length === 0) {
+      return null
+    } else {
+      var length = paths.length;
+      var last = obj;
+      var i = 0;
+      while (i < length) {
+        var value = last[paths[i]];
+        if (value === undefined) {
+          return null
+        }
+        last = value;
+        i++;
+      }
+
+      return last
+    }
+  };
+
+  /*  */
+
+
+
+  var htmlTagMatcher = /<\/?[\w\s="/.':;#-\/]+>/;
+  var linkKeyMatcher = /(?:@(?:\.[a-z]+)?:(?:[\w\-_|.]+|\([\w\-_|.]+\)))/g;
+  var linkKeyPrefixMatcher = /^@(?:\.([a-z]+))?:/;
+  var bracketsMatcher = /[()]/g;
+  var defaultModifiers = {
+    'upper': function (str) { return str.toLocaleUpperCase(); },
+    'lower': function (str) { return str.toLocaleLowerCase(); },
+    'capitalize': function (str) { return ("" + (str.charAt(0).toLocaleUpperCase()) + (str.substr(1))); }
+  };
+
+  var defaultFormatter = new BaseFormatter();
+
+  var VueI18n = function VueI18n (options) {
+    var this$1 = this;
+    if ( options === void 0 ) options = {};
+
+    // Auto install if it is not done yet and `window` has `Vue`.
+    // To allow users to avoid auto-installation in some cases,
+    // this code should be placed here. See #290
+    /* istanbul ignore if */
+    if (!Vue && typeof window !== 'undefined' && window.Vue) {
+      install(window.Vue);
+    }
+
+    var locale = options.locale || 'en-US';
+    var fallbackLocale = options.fallbackLocale === false
+      ? false
+      : options.fallbackLocale || 'en-US';
+    var messages = options.messages || {};
+    var dateTimeFormats = options.dateTimeFormats || {};
+    var numberFormats = options.numberFormats || {};
+
+    this._vm = null;
+    this._formatter = options.formatter || defaultFormatter;
+    this._modifiers = options.modifiers || {};
+    this._missing = options.missing || null;
+    this._root = options.root || null;
+    this._sync = options.sync === undefined ? true : !!options.sync;
+    this._fallbackRoot = options.fallbackRoot === undefined
+      ? true
+      : !!options.fallbackRoot;
+    this._formatFallbackMessages = options.formatFallbackMessages === undefined
+      ? false
+      : !!options.formatFallbackMessages;
+    this._silentTranslationWarn = options.silentTranslationWarn === undefined
+      ? false
+      : options.silentTranslationWarn;
+    this._silentFallbackWarn = options.silentFallbackWarn === undefined
+      ? false
+      : !!options.silentFallbackWarn;
+    this._dateTimeFormatters = {};
+    this._numberFormatters = {};
+    this._path = new I18nPath();
+    this._dataListeners = [];
+    this._componentInstanceCreatedListener = options.componentInstanceCreatedListener || null;
+    this._preserveDirectiveContent = options.preserveDirectiveContent === undefined
+      ? false
+      : !!options.preserveDirectiveContent;
+    this.pluralizationRules = options.pluralizationRules || {};
+    this._warnHtmlInMessage = options.warnHtmlInMessage || 'off';
+    this._postTranslation = options.postTranslation || null;
+    this._escapeParameterHtml = options.escapeParameterHtml || false;
+
+    /**
+     * @param choice {number} a choice index given by the input to $tc: `$tc('path.to.rule', choiceIndex)`
+     * @param choicesLength {number} an overall amount of available choices
+     * @returns a final choice index
+    */
+    this.getChoiceIndex = function (choice, choicesLength) {
+      var thisPrototype = Object.getPrototypeOf(this$1);
+      if (thisPrototype && thisPrototype.getChoiceIndex) {
+        var prototypeGetChoiceIndex = (thisPrototype.getChoiceIndex);
+        return (prototypeGetChoiceIndex).call(this$1, choice, choicesLength)
+      }
+
+      // Default (old) getChoiceIndex implementation - english-compatible
+      var defaultImpl = function (_choice, _choicesLength) {
+        _choice = Math.abs(_choice);
+
+        if (_choicesLength === 2) {
+          return _choice
+            ? _choice > 1
+              ? 1
+              : 0
+            : 1
+        }
+
+        return _choice ? Math.min(_choice, 2) : 0
+      };
+
+      if (this$1.locale in this$1.pluralizationRules) {
+        return this$1.pluralizationRules[this$1.locale].apply(this$1, [choice, choicesLength])
+      } else {
+        return defaultImpl(choice, choicesLength)
+      }
+    };
+
+
+    this._exist = function (message, key) {
+      if (!message || !key) { return false }
+      if (!isNull(this$1._path.getPathValue(message, key))) { return true }
+      // fallback for flat key
+      if (message[key]) { return true }
+      return false
+    };
+
+    if (this._warnHtmlInMessage === 'warn' || this._warnHtmlInMessage === 'error') {
+      Object.keys(messages).forEach(function (locale) {
+        this$1._checkLocaleMessage(locale, this$1._warnHtmlInMessage, messages[locale]);
+      });
+    }
+
+    this._initVM({
+      locale: locale,
+      fallbackLocale: fallbackLocale,
+      messages: messages,
+      dateTimeFormats: dateTimeFormats,
+      numberFormats: numberFormats
+    });
+  };
+
+  var prototypeAccessors = { vm: { configurable: true },messages: { configurable: true },dateTimeFormats: { configurable: true },numberFormats: { configurable: true },availableLocales: { configurable: true },locale: { configurable: true },fallbackLocale: { configurable: true },formatFallbackMessages: { configurable: true },missing: { configurable: true },formatter: { configurable: true },silentTranslationWarn: { configurable: true },silentFallbackWarn: { configurable: true },preserveDirectiveContent: { configurable: true },warnHtmlInMessage: { configurable: true },postTranslation: { configurable: true } };
+
+  VueI18n.prototype._checkLocaleMessage = function _checkLocaleMessage (locale, level, message) {
+    var paths = [];
+
+    var fn = function (level, locale, message, paths) {
+      if (isPlainObject(message)) {
+        Object.keys(message).forEach(function (key) {
+          var val = message[key];
+          if (isPlainObject(val)) {
+            paths.push(key);
+            paths.push('.');
+            fn(level, locale, val, paths);
+            paths.pop();
+            paths.pop();
+          } else {
+            paths.push(key);
+            fn(level, locale, val, paths);
+            paths.pop();
+          }
+        });
+      } else if (isArray$a(message)) {
+        message.forEach(function (item, index) {
+          if (isPlainObject(item)) {
+            paths.push(("[" + index + "]"));
+            paths.push('.');
+            fn(level, locale, item, paths);
+            paths.pop();
+            paths.pop();
+          } else {
+            paths.push(("[" + index + "]"));
+            fn(level, locale, item, paths);
+            paths.pop();
+          }
+        });
+      } else if (isString$a(message)) {
+        var ret = htmlTagMatcher.test(message);
+        if (ret) {
+          var msg = "Detected HTML in message '" + message + "' of keypath '" + (paths.join('')) + "' at '" + locale + "'. Consider component interpolation with '<i18n>' to avoid XSS. See https://bit.ly/2ZqJzkp";
+          if (level === 'warn') {
+            warn(msg);
+          } else if (level === 'error') {
+            error(msg);
+          }
+        }
+      }
+    };
+
+    fn(level, locale, message, paths);
+  };
+
+  VueI18n.prototype._initVM = function _initVM (data) {
+    var silent = Vue.config.silent;
+    Vue.config.silent = true;
+    this._vm = new Vue({ data: data });
+    Vue.config.silent = silent;
+  };
+
+  VueI18n.prototype.destroyVM = function destroyVM () {
+    this._vm.$destroy();
+  };
+
+  VueI18n.prototype.subscribeDataChanging = function subscribeDataChanging (vm) {
+    this._dataListeners.push(vm);
+  };
+
+  VueI18n.prototype.unsubscribeDataChanging = function unsubscribeDataChanging (vm) {
+    remove(this._dataListeners, vm);
+  };
+
+  VueI18n.prototype.watchI18nData = function watchI18nData () {
+    var self = this;
+    return this._vm.$watch('$data', function () {
+      var i = self._dataListeners.length;
+      while (i--) {
+        Vue.nextTick(function () {
+          self._dataListeners[i] && self._dataListeners[i].$forceUpdate();
+        });
+      }
+    }, { deep: true })
+  };
+
+  VueI18n.prototype.watchLocale = function watchLocale () {
+    /* istanbul ignore if */
+    if (!this._sync || !this._root) { return null }
+    var target = this._vm;
+    return this._root.$i18n.vm.$watch('locale', function (val) {
+      target.$set(target, 'locale', val);
+      target.$forceUpdate();
+    }, { immediate: true })
+  };
+
+  VueI18n.prototype.onComponentInstanceCreated = function onComponentInstanceCreated (newI18n) {
+    if (this._componentInstanceCreatedListener) {
+      this._componentInstanceCreatedListener(newI18n, this);
+    }
+  };
+
+  prototypeAccessors.vm.get = function () { return this._vm };
+
+  prototypeAccessors.messages.get = function () { return looseClone(this._getMessages()) };
+  prototypeAccessors.dateTimeFormats.get = function () { return looseClone(this._getDateTimeFormats()) };
+  prototypeAccessors.numberFormats.get = function () { return looseClone(this._getNumberFormats()) };
+  prototypeAccessors.availableLocales.get = function () { return Object.keys(this.messages).sort() };
+
+  prototypeAccessors.locale.get = function () { return this._vm.locale };
+  prototypeAccessors.locale.set = function (locale) {
+    this._vm.$set(this._vm, 'locale', locale);
+  };
+
+  prototypeAccessors.fallbackLocale.get = function () { return this._vm.fallbackLocale };
+  prototypeAccessors.fallbackLocale.set = function (locale) {
+    this._localeChainCache = {};
+    this._vm.$set(this._vm, 'fallbackLocale', locale);
+  };
+
+  prototypeAccessors.formatFallbackMessages.get = function () { return this._formatFallbackMessages };
+  prototypeAccessors.formatFallbackMessages.set = function (fallback) { this._formatFallbackMessages = fallback; };
+
+  prototypeAccessors.missing.get = function () { return this._missing };
+  prototypeAccessors.missing.set = function (handler) { this._missing = handler; };
+
+  prototypeAccessors.formatter.get = function () { return this._formatter };
+  prototypeAccessors.formatter.set = function (formatter) { this._formatter = formatter; };
+
+  prototypeAccessors.silentTranslationWarn.get = function () { return this._silentTranslationWarn };
+  prototypeAccessors.silentTranslationWarn.set = function (silent) { this._silentTranslationWarn = silent; };
+
+  prototypeAccessors.silentFallbackWarn.get = function () { return this._silentFallbackWarn };
+  prototypeAccessors.silentFallbackWarn.set = function (silent) { this._silentFallbackWarn = silent; };
+
+  prototypeAccessors.preserveDirectiveContent.get = function () { return this._preserveDirectiveContent };
+  prototypeAccessors.preserveDirectiveContent.set = function (preserve) { this._preserveDirectiveContent = preserve; };
+
+  prototypeAccessors.warnHtmlInMessage.get = function () { return this._warnHtmlInMessage };
+  prototypeAccessors.warnHtmlInMessage.set = function (level) {
+      var this$1 = this;
+
+    var orgLevel = this._warnHtmlInMessage;
+    this._warnHtmlInMessage = level;
+    if (orgLevel !== level && (level === 'warn' || level === 'error')) {
+      var messages = this._getMessages();
+      Object.keys(messages).forEach(function (locale) {
+        this$1._checkLocaleMessage(locale, this$1._warnHtmlInMessage, messages[locale]);
+      });
+    }
+  };
+
+  prototypeAccessors.postTranslation.get = function () { return this._postTranslation };
+  prototypeAccessors.postTranslation.set = function (handler) { this._postTranslation = handler; };
+
+  VueI18n.prototype._getMessages = function _getMessages () { return this._vm.messages };
+  VueI18n.prototype._getDateTimeFormats = function _getDateTimeFormats () { return this._vm.dateTimeFormats };
+  VueI18n.prototype._getNumberFormats = function _getNumberFormats () { return this._vm.numberFormats };
+
+  VueI18n.prototype._warnDefault = function _warnDefault (locale, key, result, vm, values, interpolateMode) {
+    if (!isNull(result)) { return result }
+    if (this._missing) {
+      var missingRet = this._missing.apply(null, [locale, key, vm, values]);
+      if (isString$a(missingRet)) {
+        return missingRet
+      }
+    } else {
+      if ( !this._isSilentTranslationWarn(key)) {
+        warn(
+          "Cannot translate the value of keypath '" + key + "'. " +
+          'Use the value of keypath as default.'
+        );
+      }
+    }
+
+    if (this._formatFallbackMessages) {
+      var parsedArgs = parseArgs.apply(void 0, values);
+      return this._render(key, interpolateMode, parsedArgs.params, key)
+    } else {
+      return key
+    }
+  };
+
+  VueI18n.prototype._isFallbackRoot = function _isFallbackRoot (val) {
+    return !val && !isNull(this._root) && this._fallbackRoot
+  };
+
+  VueI18n.prototype._isSilentFallbackWarn = function _isSilentFallbackWarn (key) {
+    return this._silentFallbackWarn instanceof RegExp
+      ? this._silentFallbackWarn.test(key)
+      : this._silentFallbackWarn
+  };
+
+  VueI18n.prototype._isSilentFallback = function _isSilentFallback (locale, key) {
+    return this._isSilentFallbackWarn(key) && (this._isFallbackRoot() || locale !== this.fallbackLocale)
+  };
+
+  VueI18n.prototype._isSilentTranslationWarn = function _isSilentTranslationWarn (key) {
+    return this._silentTranslationWarn instanceof RegExp
+      ? this._silentTranslationWarn.test(key)
+      : this._silentTranslationWarn
+  };
+
+  VueI18n.prototype._interpolate = function _interpolate (
+    locale,
+    message,
+    key,
+    host,
+    interpolateMode,
+    values,
+    visitedLinkStack
+  ) {
+    if (!message) { return null }
+
+    var pathRet = this._path.getPathValue(message, key);
+    if (isArray$a(pathRet) || isPlainObject(pathRet)) { return pathRet }
+
+    var ret;
+    if (isNull(pathRet)) {
+      /* istanbul ignore else */
+      if (isPlainObject(message)) {
+        ret = message[key];
+        if (!(isString$a(ret) || isFunction$6(ret))) {
+          if ( !this._isSilentTranslationWarn(key) && !this._isSilentFallback(locale, key)) {
+            warn(("Value of key '" + key + "' is not a string or function !"));
+          }
+          return null
+        }
+      } else {
+        return null
+      }
+    } else {
+      /* istanbul ignore else */
+      if (isString$a(pathRet) || isFunction$6(pathRet)) {
+        ret = pathRet;
+      } else {
+        if ( !this._isSilentTranslationWarn(key) && !this._isSilentFallback(locale, key)) {
+          warn(("Value of key '" + key + "' is not a string or function!"));
+        }
+        return null
+      }
+    }
+
+    // Check for the existence of links within the translated string
+    if (isString$a(ret) && (ret.indexOf('@:') >= 0 || ret.indexOf('@.') >= 0)) {
+      ret = this._link(locale, message, ret, host, 'raw', values, visitedLinkStack);
+    }
+
+    return this._render(ret, interpolateMode, values, key)
+  };
+
+  VueI18n.prototype._link = function _link (
+    locale,
+    message,
+    str,
+    host,
+    interpolateMode,
+    values,
+    visitedLinkStack
+  ) {
+    var ret = str;
+
+    // Match all the links within the local
+    // We are going to replace each of
+    // them with its translation
+    var matches = ret.match(linkKeyMatcher);
+    for (var idx in matches) {
+      // ie compatible: filter custom array
+      // prototype method
+      if (!matches.hasOwnProperty(idx)) {
+        continue
+      }
+      var link = matches[idx];
+      var linkKeyPrefixMatches = link.match(linkKeyPrefixMatcher);
+      var linkPrefix = linkKeyPrefixMatches[0];
+        var formatterName = linkKeyPrefixMatches[1];
+
+      // Remove the leading @:, @.case: and the brackets
+      var linkPlaceholder = link.replace(linkPrefix, '').replace(bracketsMatcher, '');
+
+      if (includes(visitedLinkStack, linkPlaceholder)) {
+        {
+          warn(("Circular reference found. \"" + link + "\" is already visited in the chain of " + (visitedLinkStack.reverse().join(' <- '))));
+        }
+        return ret
+      }
+      visitedLinkStack.push(linkPlaceholder);
+
+      // Translate the link
+      var translated = this._interpolate(
+        locale, message, linkPlaceholder, host,
+        interpolateMode === 'raw' ? 'string' : interpolateMode,
+        interpolateMode === 'raw' ? undefined : values,
+        visitedLinkStack
+      );
+
+      if (this._isFallbackRoot(translated)) {
+        if ( !this._isSilentTranslationWarn(linkPlaceholder)) {
+          warn(("Fall back to translate the link placeholder '" + linkPlaceholder + "' with root locale."));
+        }
+        /* istanbul ignore if */
+        if (!this._root) { throw Error('unexpected error') }
+        var root = this._root.$i18n;
+        translated = root._translate(
+          root._getMessages(), root.locale, root.fallbackLocale,
+          linkPlaceholder, host, interpolateMode, values
+        );
+      }
+      translated = this._warnDefault(
+        locale, linkPlaceholder, translated, host,
+        isArray$a(values) ? values : [values],
+        interpolateMode
+      );
+
+      if (this._modifiers.hasOwnProperty(formatterName)) {
+        translated = this._modifiers[formatterName](translated);
+      } else if (defaultModifiers.hasOwnProperty(formatterName)) {
+        translated = defaultModifiers[formatterName](translated);
+      }
+
+      visitedLinkStack.pop();
+
+      // Replace the link with the translated
+      ret = !translated ? ret : ret.replace(link, translated);
+    }
+
+    return ret
+  };
+
+  VueI18n.prototype._createMessageContext = function _createMessageContext (values) {
+    var _list = isArray$a(values) ? values : [];
+    var _named = isObject$h(values) ? values : {};
+    var list = function (index) { return _list[index]; };
+    var named = function (key) { return _named[key]; };
+    return {
+      list: list,
+      named: named
+    }
+  };
+
+  VueI18n.prototype._render = function _render (message, interpolateMode, values, path) {
+    if (isFunction$6(message)) {
+      return message(this._createMessageContext(values))
+    }
+
+    var ret = this._formatter.interpolate(message, values, path);
+
+    // If the custom formatter refuses to work - apply the default one
+    if (!ret) {
+      ret = defaultFormatter.interpolate(message, values, path);
+    }
+
+    // if interpolateMode is **not** 'string' ('row'),
+    // return the compiled data (e.g. ['foo', VNode, 'bar']) with formatter
+    return interpolateMode === 'string' && !isString$a(ret) ? ret.join('') : ret
+  };
+
+  VueI18n.prototype._appendItemToChain = function _appendItemToChain (chain, item, blocks) {
+    var follow = false;
+    if (!includes(chain, item)) {
+      follow = true;
+      if (item) {
+        follow = item[item.length - 1] !== '!';
+        item = item.replace(/!/g, '');
+        chain.push(item);
+        if (blocks && blocks[item]) {
+          follow = blocks[item];
+        }
+      }
+    }
+    return follow
+  };
+
+  VueI18n.prototype._appendLocaleToChain = function _appendLocaleToChain (chain, locale, blocks) {
+    var follow;
+    var tokens = locale.split('-');
+    do {
+      var item = tokens.join('-');
+      follow = this._appendItemToChain(chain, item, blocks);
+      tokens.splice(-1, 1);
+    } while (tokens.length && (follow === true))
+    return follow
+  };
+
+  VueI18n.prototype._appendBlockToChain = function _appendBlockToChain (chain, block, blocks) {
+    var follow = true;
+    for (var i = 0; (i < block.length) && (isBoolean$1(follow)); i++) {
+      var locale = block[i];
+      if (isString$a(locale)) {
+        follow = this._appendLocaleToChain(chain, locale, blocks);
+      }
+    }
+    return follow
+  };
+
+  VueI18n.prototype._getLocaleChain = function _getLocaleChain (start, fallbackLocale) {
+    if (start === '') { return [] }
+
+    if (!this._localeChainCache) {
+      this._localeChainCache = {};
+    }
+
+    var chain = this._localeChainCache[start];
+    if (!chain) {
+      if (!fallbackLocale) {
+        fallbackLocale = this.fallbackLocale;
+      }
+      chain = [];
+
+      // first block defined by start
+      var block = [start];
+
+      // while any intervening block found
+      while (isArray$a(block)) {
+        block = this._appendBlockToChain(
+          chain,
+          block,
+          fallbackLocale
+        );
+      }
+
+      // last block defined by default
+      var defaults;
+      if (isArray$a(fallbackLocale)) {
+        defaults = fallbackLocale;
+      } else if (isObject$h(fallbackLocale)) {
+        /* $FlowFixMe */
+        if (fallbackLocale['default']) {
+          defaults = fallbackLocale['default'];
+        } else {
+          defaults = null;
+        }
+      } else {
+        defaults = fallbackLocale;
+      }
+
+      // convert defaults to array
+      if (isString$a(defaults)) {
+        block = [defaults];
+      } else {
+        block = defaults;
+      }
+      if (block) {
+        this._appendBlockToChain(
+          chain,
+          block,
+          null
+        );
+      }
+      this._localeChainCache[start] = chain;
+    }
+    return chain
+  };
+
+  VueI18n.prototype._translate = function _translate (
+    messages,
+    locale,
+    fallback,
+    key,
+    host,
+    interpolateMode,
+    args
+  ) {
+    var chain = this._getLocaleChain(locale, fallback);
+    var res;
+    for (var i = 0; i < chain.length; i++) {
+      var step = chain[i];
+      res =
+        this._interpolate(step, messages[step], key, host, interpolateMode, args, [key]);
+      if (!isNull(res)) {
+        if (step !== locale && "development" !== 'production' && !this._isSilentTranslationWarn(key) && !this._isSilentFallbackWarn(key)) {
+          warn(("Fall back to translate the keypath '" + key + "' with '" + step + "' locale."));
+        }
+        return res
+      }
+    }
+    return null
+  };
+
+  VueI18n.prototype._t = function _t (key, _locale, messages, host) {
+      var ref;
+
+      var values = [], len = arguments.length - 4;
+      while ( len-- > 0 ) values[ len ] = arguments[ len + 4 ];
+    if (!key) { return '' }
+
+    var parsedArgs = parseArgs.apply(void 0, values);
+    if(this._escapeParameterHtml) {
+      parsedArgs.params = escapeParams(parsedArgs.params);
+    }
+
+    var locale = parsedArgs.locale || _locale;
+
+    var ret = this._translate(
+      messages, locale, this.fallbackLocale, key,
+      host, 'string', parsedArgs.params
+    );
+    if (this._isFallbackRoot(ret)) {
+      if ( !this._isSilentTranslationWarn(key) && !this._isSilentFallbackWarn(key)) {
+        warn(("Fall back to translate the keypath '" + key + "' with root locale."));
+      }
+      /* istanbul ignore if */
+      if (!this._root) { throw Error('unexpected error') }
+      return (ref = this._root).$t.apply(ref, [ key ].concat( values ))
+    } else {
+      ret = this._warnDefault(locale, key, ret, host, values, 'string');
+      if (this._postTranslation && ret !== null && ret !== undefined) {
+        ret = this._postTranslation(ret, key);
+      }
+      return ret
+    }
+  };
+
+  VueI18n.prototype.t = function t (key) {
+      var ref;
+
+      var values = [], len = arguments.length - 1;
+      while ( len-- > 0 ) values[ len ] = arguments[ len + 1 ];
+    return (ref = this)._t.apply(ref, [ key, this.locale, this._getMessages(), null ].concat( values ))
+  };
+
+  VueI18n.prototype._i = function _i (key, locale, messages, host, values) {
+    var ret =
+      this._translate(messages, locale, this.fallbackLocale, key, host, 'raw', values);
+    if (this._isFallbackRoot(ret)) {
+      if ( !this._isSilentTranslationWarn(key)) {
+        warn(("Fall back to interpolate the keypath '" + key + "' with root locale."));
+      }
+      if (!this._root) { throw Error('unexpected error') }
+      return this._root.$i18n.i(key, locale, values)
+    } else {
+      return this._warnDefault(locale, key, ret, host, [values], 'raw')
+    }
+  };
+
+  VueI18n.prototype.i = function i (key, locale, values) {
+    /* istanbul ignore if */
+    if (!key) { return '' }
+
+    if (!isString$a(locale)) {
+      locale = this.locale;
+    }
+
+    return this._i(key, locale, this._getMessages(), null, values)
+  };
+
+  VueI18n.prototype._tc = function _tc (
+    key,
+    _locale,
+    messages,
+    host,
+    choice
+  ) {
+      var ref;
+
+      var values = [], len = arguments.length - 5;
+      while ( len-- > 0 ) values[ len ] = arguments[ len + 5 ];
+    if (!key) { return '' }
+    if (choice === undefined) {
+      choice = 1;
+    }
+
+    var predefined = { 'count': choice, 'n': choice };
+    var parsedArgs = parseArgs.apply(void 0, values);
+    parsedArgs.params = Object.assign(predefined, parsedArgs.params);
+    values = parsedArgs.locale === null ? [parsedArgs.params] : [parsedArgs.locale, parsedArgs.params];
+    return this.fetchChoice((ref = this)._t.apply(ref, [ key, _locale, messages, host ].concat( values )), choice)
+  };
+
+  VueI18n.prototype.fetchChoice = function fetchChoice (message, choice) {
+    /* istanbul ignore if */
+    if (!message || !isString$a(message)) { return null }
+    var choices = message.split('|');
+
+    choice = this.getChoiceIndex(choice, choices.length);
+    if (!choices[choice]) { return message }
+    return choices[choice].trim()
+  };
+
+  VueI18n.prototype.tc = function tc (key, choice) {
+      var ref;
+
+      var values = [], len = arguments.length - 2;
+      while ( len-- > 0 ) values[ len ] = arguments[ len + 2 ];
+    return (ref = this)._tc.apply(ref, [ key, this.locale, this._getMessages(), null, choice ].concat( values ))
+  };
+
+  VueI18n.prototype._te = function _te (key, locale, messages) {
+      var args = [], len = arguments.length - 3;
+      while ( len-- > 0 ) args[ len ] = arguments[ len + 3 ];
+
+    var _locale = parseArgs.apply(void 0, args).locale || locale;
+    return this._exist(messages[_locale], key)
+  };
+
+  VueI18n.prototype.te = function te (key, locale) {
+    return this._te(key, this.locale, this._getMessages(), locale)
+  };
+
+  VueI18n.prototype.getLocaleMessage = function getLocaleMessage (locale) {
+    return looseClone(this._vm.messages[locale] || {})
+  };
+
+  VueI18n.prototype.setLocaleMessage = function setLocaleMessage (locale, message) {
+    if (this._warnHtmlInMessage === 'warn' || this._warnHtmlInMessage === 'error') {
+      this._checkLocaleMessage(locale, this._warnHtmlInMessage, message);
+    }
+    this._vm.$set(this._vm.messages, locale, message);
+  };
+
+  VueI18n.prototype.mergeLocaleMessage = function mergeLocaleMessage (locale, message) {
+    if (this._warnHtmlInMessage === 'warn' || this._warnHtmlInMessage === 'error') {
+      this._checkLocaleMessage(locale, this._warnHtmlInMessage, message);
+    }
+    this._vm.$set(this._vm.messages, locale, merge$3({}, this._vm.messages[locale] || {}, message));
+  };
+
+  VueI18n.prototype.getDateTimeFormat = function getDateTimeFormat (locale) {
+    return looseClone(this._vm.dateTimeFormats[locale] || {})
+  };
+
+  VueI18n.prototype.setDateTimeFormat = function setDateTimeFormat (locale, format) {
+    this._vm.$set(this._vm.dateTimeFormats, locale, format);
+    this._clearDateTimeFormat(locale, format);
+  };
+
+  VueI18n.prototype.mergeDateTimeFormat = function mergeDateTimeFormat (locale, format) {
+    this._vm.$set(this._vm.dateTimeFormats, locale, merge$3(this._vm.dateTimeFormats[locale] || {}, format));
+    this._clearDateTimeFormat(locale, format);
+  };
+
+  VueI18n.prototype._clearDateTimeFormat = function _clearDateTimeFormat (locale, format) {
+    for (var key in format) {
+      var id = locale + "__" + key;
+
+      if (!this._dateTimeFormatters.hasOwnProperty(id)) {
+        continue
+      }
+
+      delete this._dateTimeFormatters[id];
+    }
+  };
+
+  VueI18n.prototype._localizeDateTime = function _localizeDateTime (
+    value,
+    locale,
+    fallback,
+    dateTimeFormats,
+    key
+  ) {
+    var _locale = locale;
+    var formats = dateTimeFormats[_locale];
+
+    var chain = this._getLocaleChain(locale, fallback);
+    for (var i = 0; i < chain.length; i++) {
+      var current = _locale;
+      var step = chain[i];
+      formats = dateTimeFormats[step];
+      _locale = step;
+      // fallback locale
+      if (isNull(formats) || isNull(formats[key])) {
+        if (step !== locale && "development" !== 'production' && !this._isSilentTranslationWarn(key) && !this._isSilentFallbackWarn(key)) {
+          warn(("Fall back to '" + step + "' datetime formats from '" + current + "' datetime formats."));
+        }
+      } else {
+        break
+      }
+    }
+
+    if (isNull(formats) || isNull(formats[key])) {
+      return null
+    } else {
+      var format = formats[key];
+      var id = _locale + "__" + key;
+      var formatter = this._dateTimeFormatters[id];
+      if (!formatter) {
+        formatter = this._dateTimeFormatters[id] = new Intl.DateTimeFormat(_locale, format);
+      }
+      return formatter.format(value)
+    }
+  };
+
+  VueI18n.prototype._d = function _d (value, locale, key) {
+    /* istanbul ignore if */
+    if ( !VueI18n.availabilities.dateTimeFormat) {
+      warn('Cannot format a Date value due to not supported Intl.DateTimeFormat.');
+      return ''
+    }
+
+    if (!key) {
+      return new Intl.DateTimeFormat(locale).format(value)
+    }
+
+    var ret =
+      this._localizeDateTime(value, locale, this.fallbackLocale, this._getDateTimeFormats(), key);
+    if (this._isFallbackRoot(ret)) {
+      if ( !this._isSilentTranslationWarn(key) && !this._isSilentFallbackWarn(key)) {
+        warn(("Fall back to datetime localization of root: key '" + key + "'."));
+      }
+      /* istanbul ignore if */
+      if (!this._root) { throw Error('unexpected error') }
+      return this._root.$i18n.d(value, key, locale)
+    } else {
+      return ret || ''
+    }
+  };
+
+  VueI18n.prototype.d = function d (value) {
+      var args = [], len = arguments.length - 1;
+      while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+    var locale = this.locale;
+    var key = null;
+
+    if (args.length === 1) {
+      if (isString$a(args[0])) {
+        key = args[0];
+      } else if (isObject$h(args[0])) {
+        if (args[0].locale) {
+          locale = args[0].locale;
+        }
+        if (args[0].key) {
+          key = args[0].key;
+        }
+      }
+    } else if (args.length === 2) {
+      if (isString$a(args[0])) {
+        key = args[0];
+      }
+      if (isString$a(args[1])) {
+        locale = args[1];
+      }
+    }
+
+    return this._d(value, locale, key)
+  };
+
+  VueI18n.prototype.getNumberFormat = function getNumberFormat (locale) {
+    return looseClone(this._vm.numberFormats[locale] || {})
+  };
+
+  VueI18n.prototype.setNumberFormat = function setNumberFormat (locale, format) {
+    this._vm.$set(this._vm.numberFormats, locale, format);
+    this._clearNumberFormat(locale, format);
+  };
+
+  VueI18n.prototype.mergeNumberFormat = function mergeNumberFormat (locale, format) {
+    this._vm.$set(this._vm.numberFormats, locale, merge$3(this._vm.numberFormats[locale] || {}, format));
+    this._clearNumberFormat(locale, format);
+  };
+
+  VueI18n.prototype._clearNumberFormat = function _clearNumberFormat (locale, format) {
+    for (var key in format) {
+      var id = locale + "__" + key;
+
+      if (!this._numberFormatters.hasOwnProperty(id)) {
+        continue
+      }
+
+      delete this._numberFormatters[id];
+    }
+  };
+
+  VueI18n.prototype._getNumberFormatter = function _getNumberFormatter (
+    value,
+    locale,
+    fallback,
+    numberFormats,
+    key,
+    options
+  ) {
+    var _locale = locale;
+    var formats = numberFormats[_locale];
+
+    var chain = this._getLocaleChain(locale, fallback);
+    for (var i = 0; i < chain.length; i++) {
+      var current = _locale;
+      var step = chain[i];
+      formats = numberFormats[step];
+      _locale = step;
+      // fallback locale
+      if (isNull(formats) || isNull(formats[key])) {
+        if (step !== locale && "development" !== 'production' && !this._isSilentTranslationWarn(key) && !this._isSilentFallbackWarn(key)) {
+          warn(("Fall back to '" + step + "' number formats from '" + current + "' number formats."));
+        }
+      } else {
+        break
+      }
+    }
+
+    if (isNull(formats) || isNull(formats[key])) {
+      return null
+    } else {
+      var format = formats[key];
+
+      var formatter;
+      if (options) {
+        // If options specified - create one time number formatter
+        formatter = new Intl.NumberFormat(_locale, Object.assign({}, format, options));
+      } else {
+        var id = _locale + "__" + key;
+        formatter = this._numberFormatters[id];
+        if (!formatter) {
+          formatter = this._numberFormatters[id] = new Intl.NumberFormat(_locale, format);
+        }
+      }
+      return formatter
+    }
+  };
+
+  VueI18n.prototype._n = function _n (value, locale, key, options) {
+    /* istanbul ignore if */
+    if (!VueI18n.availabilities.numberFormat) {
+      {
+        warn('Cannot format a Number value due to not supported Intl.NumberFormat.');
+      }
+      return ''
+    }
+
+    if (!key) {
+      var nf = !options ? new Intl.NumberFormat(locale) : new Intl.NumberFormat(locale, options);
+      return nf.format(value)
+    }
+
+    var formatter = this._getNumberFormatter(value, locale, this.fallbackLocale, this._getNumberFormats(), key, options);
+    var ret = formatter && formatter.format(value);
+    if (this._isFallbackRoot(ret)) {
+      if ( !this._isSilentTranslationWarn(key) && !this._isSilentFallbackWarn(key)) {
+        warn(("Fall back to number localization of root: key '" + key + "'."));
+      }
+      /* istanbul ignore if */
+      if (!this._root) { throw Error('unexpected error') }
+      return this._root.$i18n.n(value, Object.assign({}, { key: key, locale: locale }, options))
+    } else {
+      return ret || ''
+    }
+  };
+
+  VueI18n.prototype.n = function n (value) {
+      var args = [], len = arguments.length - 1;
+      while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+    var locale = this.locale;
+    var key = null;
+    var options = null;
+
+    if (args.length === 1) {
+      if (isString$a(args[0])) {
+        key = args[0];
+      } else if (isObject$h(args[0])) {
+        if (args[0].locale) {
+          locale = args[0].locale;
+        }
+        if (args[0].key) {
+          key = args[0].key;
+        }
+
+        // Filter out number format options only
+        options = Object.keys(args[0]).reduce(function (acc, key) {
+            var obj;
+
+          if (includes(numberFormatKeys, key)) {
+            return Object.assign({}, acc, ( obj = {}, obj[key] = args[0][key], obj ))
+          }
+          return acc
+        }, null);
+      }
+    } else if (args.length === 2) {
+      if (isString$a(args[0])) {
+        key = args[0];
+      }
+      if (isString$a(args[1])) {
+        locale = args[1];
+      }
+    }
+
+    return this._n(value, locale, key, options)
+  };
+
+  VueI18n.prototype._ntp = function _ntp (value, locale, key, options) {
+    /* istanbul ignore if */
+    if (!VueI18n.availabilities.numberFormat) {
+      {
+        warn('Cannot format to parts a Number value due to not supported Intl.NumberFormat.');
+      }
+      return []
+    }
+
+    if (!key) {
+      var nf = !options ? new Intl.NumberFormat(locale) : new Intl.NumberFormat(locale, options);
+      return nf.formatToParts(value)
+    }
+
+    var formatter = this._getNumberFormatter(value, locale, this.fallbackLocale, this._getNumberFormats(), key, options);
+    var ret = formatter && formatter.formatToParts(value);
+    if (this._isFallbackRoot(ret)) {
+      if ( !this._isSilentTranslationWarn(key)) {
+        warn(("Fall back to format number to parts of root: key '" + key + "' ."));
+      }
+      /* istanbul ignore if */
+      if (!this._root) { throw Error('unexpected error') }
+      return this._root.$i18n._ntp(value, locale, key, options)
+    } else {
+      return ret || []
+    }
+  };
+
+  Object.defineProperties( VueI18n.prototype, prototypeAccessors );
+
+  var availabilities;
+  // $FlowFixMe
+  Object.defineProperty(VueI18n, 'availabilities', {
+    get: function get () {
+      if (!availabilities) {
+        var intlDefined = typeof Intl !== 'undefined';
+        availabilities = {
+          dateTimeFormat: intlDefined && typeof Intl.DateTimeFormat !== 'undefined',
+          numberFormat: intlDefined && typeof Intl.NumberFormat !== 'undefined'
+        };
+      }
+
+      return availabilities
+    }
+  });
+
+  VueI18n.install = install;
+  VueI18n.version = '8.22.1';
 
   var enUSLang = {
     app: {
@@ -64789,13 +67447,13 @@
   function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
   function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty$3(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  Vue__default['default'].use(VueI18n__default['default']);
+  Vue__default['default'].use(VueI18n);
   var messages = {
     'en-US': _objectSpread$1({}, enUSLang),
     'zh-CN': _objectSpread$1({}, zhCNLang)
   };
   var defaultLang = 'zh-CN';
-  var i18n = new VueI18n__default['default']({
+  var i18n = new VueI18n({
     locale: defaultLang,
     fallbackLocale: defaultLang,
     messages: messages
@@ -64860,7 +67518,59 @@
 
   var history = new UndoRedoHistory();
 
-  function _extends$6(){return _extends$6=Object.assign||function(a){for(var b,c=1;c<arguments.length;c++)for(var d in b=arguments[c],b)Object.prototype.hasOwnProperty.call(b,d)&&(a[d]=b[d]);return a},_extends$6.apply(this,arguments)}var normalMerge=["attrs","props","domProps"],toArrayMerge=["class","style","directives"],functionalMerge=["on","nativeOn"],mergeJsxProps=function(a){return a.reduce(function(c,a){for(var b in a)if(!c[b])c[b]=a[b];else if(-1!==normalMerge.indexOf(b))c[b]=_extends$6({},c[b],a[b]);else if(-1!==toArrayMerge.indexOf(b)){var d=c[b]instanceof Array?c[b]:[c[b]],e=a[b]instanceof Array?a[b]:[a[b]];c[b]=d.concat(e);}else if(-1!==functionalMerge.indexOf(b)){for(var f in a[b])if(c[b][f]){var g=c[b][f]instanceof Array?c[b][f]:[c[b][f]],h=a[b][f]instanceof Array?a[b][f]:[a[b][f]];c[b][f]=g.concat(h);}else c[b][f]=a[b][f];}else if("hook"==b)for(var i in a[b])c[b][i]=c[b][i]?mergeFn(c[b][i],a[b][i]):a[b][i];else c[b]=a[b];return c},{})},mergeFn=function(a,b){return function(){a&&a.apply(this,arguments),b&&b.apply(this,arguments);}};var helper$5=mergeJsxProps;
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-12 14:49:13
+   * @LastEditTime : 2020-11-12 14:49:29
+   * @Description :
+   */
+  var config$1 = {
+    rightPanelWidth: 375
+  };
+
+  var defineProperty$8 = objectDefineProperty.f;
+
+
+  var NativeSymbol = global_1.Symbol;
+
+  if (descriptors && typeof NativeSymbol == 'function' && (!('description' in NativeSymbol.prototype) ||
+    // Safari 12 bug
+    NativeSymbol().description !== undefined
+  )) {
+    var EmptyStringDescriptionStore = {};
+    // wrap Symbol constructor for correct work with undefined description
+    var SymbolWrapper = function Symbol() {
+      var description = arguments.length < 1 || arguments[0] === undefined ? undefined : String(arguments[0]);
+      var result = this instanceof SymbolWrapper
+        ? new NativeSymbol(description)
+        // in Edge 13, String(Symbol(undefined)) === 'Symbol(undefined)'
+        : description === undefined ? NativeSymbol() : NativeSymbol(description);
+      if (description === '') EmptyStringDescriptionStore[result] = true;
+      return result;
+    };
+    copyConstructorProperties(SymbolWrapper, NativeSymbol);
+    var symbolPrototype = SymbolWrapper.prototype = NativeSymbol.prototype;
+    symbolPrototype.constructor = SymbolWrapper;
+
+    var symbolToString = symbolPrototype.toString;
+    var native = String(NativeSymbol('test')) == 'Symbol(test)';
+    var regexp = /^Symbol\((.*)\)[^)]+$/;
+    defineProperty$8(symbolPrototype, 'description', {
+      configurable: true,
+      get: function description() {
+        var symbol = isObject(this) ? this.valueOf() : this;
+        var string = symbolToString.call(symbol);
+        if (has(EmptyStringDescriptionStore, symbol)) return '';
+        var desc = native ? string.slice(7, -1) : string.replace(regexp, '$1');
+        return desc === '' ? undefined : desc;
+      }
+    });
+
+    _export({ global: true, forced: true }, {
+      Symbol: SymbolWrapper
+    });
+  }
 
   var $entries = objectToArray.entries;
 
@@ -64871,6 +67581,43 @@
       return $entries(O);
     }
   });
+
+  /** `Object#toString` result references. */
+  var asyncTag = '[object AsyncFunction]',
+      funcTag = '[object Function]',
+      genTag = '[object GeneratorFunction]',
+      proxyTag = '[object Proxy]';
+
+  /**
+   * Checks if `value` is classified as a `Function` object.
+   *
+   * @static
+   * @memberOf _
+   * @since 0.1.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+   * @example
+   *
+   * _.isFunction(_);
+   * // => true
+   *
+   * _.isFunction(/abc/);
+   * // => false
+   */
+  function isFunction$7(value) {
+    if (!isObject_1(value)) {
+      return false;
+    }
+    // The use of `Object#toString` avoids issues with the `typeof` operator
+    // in Safari 9 which returns 'object' for typed arrays and other constructors.
+    var tag = _baseGetTag(value);
+    return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+  }
+
+  var isFunction_1$1 = isFunction$7;
+
+  function _extends$6(){return _extends$6=Object.assign||function(a){for(var b,c=1;c<arguments.length;c++)for(var d in b=arguments[c],b)Object.prototype.hasOwnProperty.call(b,d)&&(a[d]=b[d]);return a},_extends$6.apply(this,arguments)}var normalMerge=["attrs","props","domProps"],toArrayMerge=["class","style","directives"],functionalMerge=["on","nativeOn"],mergeJsxProps=function(a){return a.reduce(function(c,a){for(var b in a)if(!c[b])c[b]=a[b];else if(-1!==normalMerge.indexOf(b))c[b]=_extends$6({},c[b],a[b]);else if(-1!==toArrayMerge.indexOf(b)){var d=c[b]instanceof Array?c[b]:[c[b]],e=a[b]instanceof Array?a[b]:[a[b]];c[b]=d.concat(e);}else if(-1!==functionalMerge.indexOf(b)){for(var f in a[b])if(c[b][f]){var g=c[b][f]instanceof Array?c[b][f]:[c[b][f]],h=a[b][f]instanceof Array?a[b][f]:[a[b][f]];c[b][f]=g.concat(h);}else c[b][f]=a[b][f];}else if("hook"==b)for(var i in a[b])c[b][i]=c[b][i]?mergeFn(c[b][i],a[b][i]):a[b][i];else c[b]=a[b];return c},{})},mergeFn=function(a,b){return function(){a&&a.apply(this,arguments),b&&b.apply(this,arguments);}};var helper$5=mergeJsxProps;
 
   // `RegExp.prototype.flags` getter implementation
   // https://tc39.github.io/ecma262/#sec-get-regexp.prototype.flags
@@ -65302,6 +68049,42 @@
     }
   });
 
+  /** `Object#toString` result references. */
+  var numberTag = '[object Number]';
+
+  /**
+   * Checks if `value` is classified as a `Number` primitive or object.
+   *
+   * **Note:** To exclude `Infinity`, `-Infinity`, and `NaN`, which are
+   * classified as numbers, use the `_.isFinite` method.
+   *
+   * @static
+   * @memberOf _
+   * @since 0.1.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a number, else `false`.
+   * @example
+   *
+   * _.isNumber(3);
+   * // => true
+   *
+   * _.isNumber(Number.MIN_VALUE);
+   * // => true
+   *
+   * _.isNumber(Infinity);
+   * // => true
+   *
+   * _.isNumber('3');
+   * // => false
+   */
+  function isNumber$1(value) {
+    return typeof value == 'number' ||
+      (isObjectLike_1(value) && _baseGetTag(value) == numberTag);
+  }
+
+  var isNumber_1 = isNumber$1;
+
   var hyphenateStyleName = function hyphenateStyleName(name) {
     var uppercasePattern = /([A-Z])/g;
     var msPattern = /^ms-/;
@@ -65329,7 +68112,7 @@
           key = _ref3[0],
           value = _ref3[1];
 
-      if (lodash.isNumber(value)) {
+      if (isNumber_1(value)) {
         switch (unit) {
           case 'rem':
             value = value / rootValue;
@@ -65430,7 +68213,7 @@
     });
   }
 
-  function bind$4(el, _ref4) {
+  function bind$5(el, _ref4) {
     var value = _ref4.value;
 
     var _processDirectiveArgu = processDirectiveArguments(value),
@@ -65496,7 +68279,7 @@
     });
   }
 
-  function unbind(el) {
+  function unbind$1(el) {
     var handlers = el[HANDLERS_PROPERTY] || [];
     handlers.forEach(function (_ref6) {
       var event = _ref6.event,
@@ -65508,7 +68291,7 @@
     delete el[HANDLERS_PROPERTY];
   }
 
-  function update(el, _ref7) {
+  function update$1(el, _ref7) {
     var value = _ref7.value,
         oldValue = _ref7.oldValue;
 
@@ -65516,16 +68299,16 @@
       return;
     }
 
-    unbind(el);
-    bind$4(el, {
+    unbind$1(el);
+    bind$5(el, {
       value: value
     });
   }
 
   var directive = {
-    bind: bind$4,
-    update: update,
-    unbind: unbind
+    bind: bind$5,
+    update: update$1,
+    unbind: unbind$1
   };
   var vClickOutside = HAS_WINDOWS ? directive : {};
 
@@ -65759,7 +68542,7 @@
         on: {
           mousedown: this.handleShapeDown
         },
-        class: ['shape-layer', {
+        class: [{
           active: this.active
         }],
         attrs: {
@@ -65767,7 +68550,8 @@
         }
       };
       return h("div", helper$5([{
-        "style": this.shapeStyle
+        "style": this.shapeStyle,
+        "class": "shape-layer"
       }, !readonly ? options : {}]), [h("div", {
         "class": "shape-content"
       }, [this.$slots.default]), !readonly && h("div", {
@@ -65884,11 +68668,119 @@
         }
 
         var def = prop.default;
-        return lodash.isFunction(def) ? def.call(vm) : def;
+        return isFunction_1$1(def) ? def.call(vm) : def;
       }
     }]);
 
     return LbpElement;
+  }();
+
+  /*
+   * @author : Mater
+   * @Email : bxh8640@gmail.com
+   * @Date : 2020-11-02 16:12:09
+   * @LastEditTime : 2020-11-06 14:56:14
+   * @Description :
+   */
+
+  /**
+    * 页面模式，枚举值
+    * h5_swipper 翻页H5
+    * h5_long_page 长页面H5
+   */
+  var PAGE_MODE = {
+    SWIPPER_PAGE: 'h5_swipper',
+    LONG_PAGE: 'h5_long_page',
+    WIDTH: 375,
+    HEIGHT: 667
+  };
+  var PAGE_MODE_LABEL = {
+    SWIPPER_PAGE: '翻页H5',
+    LONG_PAGE: '长页面'
+  };
+
+  var LbpPage = /*#__PURE__*/function () {
+    function LbpPage() {
+      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+          _ref$title = _ref.title,
+          title = _ref$title === void 0 ? '' : _ref$title,
+          _ref$elements = _ref.elements,
+          elements = _ref$elements === void 0 ? [] : _ref$elements,
+          _ref$height = _ref.height,
+          height = _ref$height === void 0 ? PAGE_MODE.HEIGHT : _ref$height,
+          _ref$width = _ref.width,
+          width = _ref$width === void 0 ? PAGE_MODE.WIDTH : _ref$width,
+          _ref$pageMode = _ref.pageMode,
+          pageMode = _ref$pageMode === void 0 ? PAGE_MODE.SWIPPER_PAGE : _ref$pageMode;
+
+      classCallCheck(this, LbpPage);
+
+      this.id = +new Date();
+      this.title = title;
+      this.width = width >= 0 ? width : PAGE_MODE.WIDTH;
+      this.height = height >= 0 ? height : PAGE_MODE.HEIGHT;
+      this.pageMode = pageMode;
+      this.elements = this.genElements(elements);
+    }
+
+    createClass(LbpPage, [{
+      key: "clone",
+      value: function clone() {
+        var elements = this.elements.map(function (element) {
+          return new LbpElement(element);
+        });
+        return new LbpPage({
+          title: this.title,
+          elements: elements
+        });
+      }
+    }, {
+      key: "genElements",
+      value: function genElements() {
+        var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+        return Array.isArray(elements) && elements.length > 0 ? elements.map(function (v) {
+          return new LbpElement(v);
+        }) : [];
+      }
+    }]);
+
+    return LbpPage;
+  }();
+
+  var LbpWork = /*#__PURE__*/function () {
+    function LbpWork() {
+      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+          id = _ref.id,
+          _ref$title = _ref.title,
+          title = _ref$title === void 0 ? '标题' : _ref$title,
+          _ref$description = _ref.description,
+          description = _ref$description === void 0 ? '描述' : _ref$description,
+          _ref$pages = _ref.pages,
+          pages = _ref$pages === void 0 ? [] : _ref$pages,
+          isPublish = _ref.isPublish,
+          isTemplate = _ref.isTemplate;
+
+      classCallCheck(this, LbpWork);
+
+      this.id = id;
+      this.title = title;
+      this.description = description;
+      this.pages = this.genPages(pages);
+      this.cover_image_url = '';
+      this.is_publish = !!isPublish;
+      this.is_template = !!isTemplate;
+    }
+
+    createClass(LbpWork, [{
+      key: "genPages",
+      value: function genPages(pages) {
+        return Array.isArray(pages) && pages.length > 0 ? pages.map(function (v) {
+          return new LbpPage(v);
+        }) : [new LbpPage()];
+      }
+    }]);
+
+    return LbpWork;
   }();
 
   var Render = {
@@ -66004,7 +68896,7 @@
    * @LastEditTime : 2020-11-19 17:19:27
    * @Description :
    */
-  var ElementRender = {
+  var LbpElementRender = {
     props: {
       element: {
         type: LbpElement,
@@ -66116,14 +69008,14 @@
 
       var h = arguments[0];
       return h("div", {
-        "class": "lb-canvas",
+        "class": "lbp-canvas",
         "style": this.canvasStyle
       }, [h("div", {
-        "class": "lb-canvas-wrapper"
+        "class": "lbp-canvas-wrapper"
       }, [h("div", {
-        "class": "elements"
+        "class": "lbp-elements"
       }, [this.elements.map(function (element) {
-        return h(ElementRender, helper$5([{
+        return h(LbpElementRender, helper$5([{
           "key": element.id,
           "attrs": {
             "element": element,
@@ -66495,6 +69387,1573 @@
       return obj;
     }
   });
+
+  /**
+   * Checks if `value` is classified as an `Array` object.
+   *
+   * @static
+   * @memberOf _
+   * @since 0.1.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+   * @example
+   *
+   * _.isArray([1, 2, 3]);
+   * // => true
+   *
+   * _.isArray(document.body.children);
+   * // => false
+   *
+   * _.isArray('abc');
+   * // => false
+   *
+   * _.isArray(_.noop);
+   * // => false
+   */
+  var isArray$b = Array.isArray;
+
+  var isArray_1$1 = isArray$b;
+
+  /** Used to match property names within property paths. */
+  var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
+      reIsPlainProp = /^\w*$/;
+
+  /**
+   * Checks if `value` is a property name and not a property path.
+   *
+   * @private
+   * @param {*} value The value to check.
+   * @param {Object} [object] The object to query keys on.
+   * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
+   */
+  function isKey(value, object) {
+    if (isArray_1$1(value)) {
+      return false;
+    }
+    var type = typeof value;
+    if (type == 'number' || type == 'symbol' || type == 'boolean' ||
+        value == null || isSymbol_1(value)) {
+      return true;
+    }
+    return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
+      (object != null && value in Object(object));
+  }
+
+  var _isKey = isKey;
+
+  /** Used to detect overreaching core-js shims. */
+  var coreJsData = _root['__core-js_shared__'];
+
+  var _coreJsData = coreJsData;
+
+  /** Used to detect methods masquerading as native. */
+  var maskSrcKey = (function() {
+    var uid = /[^.]+$/.exec(_coreJsData && _coreJsData.keys && _coreJsData.keys.IE_PROTO || '');
+    return uid ? ('Symbol(src)_1.' + uid) : '';
+  }());
+
+  /**
+   * Checks if `func` has its source masked.
+   *
+   * @private
+   * @param {Function} func The function to check.
+   * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+   */
+  function isMasked(func) {
+    return !!maskSrcKey && (maskSrcKey in func);
+  }
+
+  var _isMasked = isMasked;
+
+  /** Used for built-in method references. */
+  var funcProto = Function.prototype;
+
+  /** Used to resolve the decompiled source of functions. */
+  var funcToString = funcProto.toString;
+
+  /**
+   * Converts `func` to its source code.
+   *
+   * @private
+   * @param {Function} func The function to convert.
+   * @returns {string} Returns the source code.
+   */
+  function toSource(func) {
+    if (func != null) {
+      try {
+        return funcToString.call(func);
+      } catch (e) {}
+      try {
+        return (func + '');
+      } catch (e) {}
+    }
+    return '';
+  }
+
+  var _toSource = toSource;
+
+  /**
+   * Used to match `RegExp`
+   * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+   */
+  var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+  /** Used to detect host constructors (Safari). */
+  var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+  /** Used for built-in method references. */
+  var funcProto$1 = Function.prototype,
+      objectProto$2 = Object.prototype;
+
+  /** Used to resolve the decompiled source of functions. */
+  var funcToString$1 = funcProto$1.toString;
+
+  /** Used to check objects for own properties. */
+  var hasOwnProperty$3 = objectProto$2.hasOwnProperty;
+
+  /** Used to detect if a method is native. */
+  var reIsNative = RegExp('^' +
+    funcToString$1.call(hasOwnProperty$3).replace(reRegExpChar, '\\$&')
+    .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+  );
+
+  /**
+   * The base implementation of `_.isNative` without bad shim checks.
+   *
+   * @private
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a native function,
+   *  else `false`.
+   */
+  function baseIsNative(value) {
+    if (!isObject_1(value) || _isMasked(value)) {
+      return false;
+    }
+    var pattern = isFunction_1$1(value) ? reIsNative : reIsHostCtor;
+    return pattern.test(_toSource(value));
+  }
+
+  var _baseIsNative = baseIsNative;
+
+  /**
+   * Gets the value at `key` of `object`.
+   *
+   * @private
+   * @param {Object} [object] The object to query.
+   * @param {string} key The key of the property to get.
+   * @returns {*} Returns the property value.
+   */
+  function getValue(object, key) {
+    return object == null ? undefined : object[key];
+  }
+
+  var _getValue = getValue;
+
+  /**
+   * Gets the native function at `key` of `object`.
+   *
+   * @private
+   * @param {Object} object The object to query.
+   * @param {string} key The key of the method to get.
+   * @returns {*} Returns the function if it's native, else `undefined`.
+   */
+  function getNative(object, key) {
+    var value = _getValue(object, key);
+    return _baseIsNative(value) ? value : undefined;
+  }
+
+  var _getNative = getNative;
+
+  /* Built-in method references that are verified to be native. */
+  var nativeCreate = _getNative(Object, 'create');
+
+  var _nativeCreate = nativeCreate;
+
+  /**
+   * Removes all key-value entries from the hash.
+   *
+   * @private
+   * @name clear
+   * @memberOf Hash
+   */
+  function hashClear() {
+    this.__data__ = _nativeCreate ? _nativeCreate(null) : {};
+    this.size = 0;
+  }
+
+  var _hashClear = hashClear;
+
+  /**
+   * Removes `key` and its value from the hash.
+   *
+   * @private
+   * @name delete
+   * @memberOf Hash
+   * @param {Object} hash The hash to modify.
+   * @param {string} key The key of the value to remove.
+   * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+   */
+  function hashDelete(key) {
+    var result = this.has(key) && delete this.__data__[key];
+    this.size -= result ? 1 : 0;
+    return result;
+  }
+
+  var _hashDelete = hashDelete;
+
+  /** Used to stand-in for `undefined` hash values. */
+  var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+  /** Used for built-in method references. */
+  var objectProto$3 = Object.prototype;
+
+  /** Used to check objects for own properties. */
+  var hasOwnProperty$4 = objectProto$3.hasOwnProperty;
+
+  /**
+   * Gets the hash value for `key`.
+   *
+   * @private
+   * @name get
+   * @memberOf Hash
+   * @param {string} key The key of the value to get.
+   * @returns {*} Returns the entry value.
+   */
+  function hashGet(key) {
+    var data = this.__data__;
+    if (_nativeCreate) {
+      var result = data[key];
+      return result === HASH_UNDEFINED ? undefined : result;
+    }
+    return hasOwnProperty$4.call(data, key) ? data[key] : undefined;
+  }
+
+  var _hashGet = hashGet;
+
+  /** Used for built-in method references. */
+  var objectProto$4 = Object.prototype;
+
+  /** Used to check objects for own properties. */
+  var hasOwnProperty$5 = objectProto$4.hasOwnProperty;
+
+  /**
+   * Checks if a hash value for `key` exists.
+   *
+   * @private
+   * @name has
+   * @memberOf Hash
+   * @param {string} key The key of the entry to check.
+   * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+   */
+  function hashHas(key) {
+    var data = this.__data__;
+    return _nativeCreate ? (data[key] !== undefined) : hasOwnProperty$5.call(data, key);
+  }
+
+  var _hashHas = hashHas;
+
+  /** Used to stand-in for `undefined` hash values. */
+  var HASH_UNDEFINED$1 = '__lodash_hash_undefined__';
+
+  /**
+   * Sets the hash `key` to `value`.
+   *
+   * @private
+   * @name set
+   * @memberOf Hash
+   * @param {string} key The key of the value to set.
+   * @param {*} value The value to set.
+   * @returns {Object} Returns the hash instance.
+   */
+  function hashSet(key, value) {
+    var data = this.__data__;
+    this.size += this.has(key) ? 0 : 1;
+    data[key] = (_nativeCreate && value === undefined) ? HASH_UNDEFINED$1 : value;
+    return this;
+  }
+
+  var _hashSet = hashSet;
+
+  /**
+   * Creates a hash object.
+   *
+   * @private
+   * @constructor
+   * @param {Array} [entries] The key-value pairs to cache.
+   */
+  function Hash(entries) {
+    var index = -1,
+        length = entries == null ? 0 : entries.length;
+
+    this.clear();
+    while (++index < length) {
+      var entry = entries[index];
+      this.set(entry[0], entry[1]);
+    }
+  }
+
+  // Add methods to `Hash`.
+  Hash.prototype.clear = _hashClear;
+  Hash.prototype['delete'] = _hashDelete;
+  Hash.prototype.get = _hashGet;
+  Hash.prototype.has = _hashHas;
+  Hash.prototype.set = _hashSet;
+
+  var _Hash = Hash;
+
+  /**
+   * Removes all key-value entries from the list cache.
+   *
+   * @private
+   * @name clear
+   * @memberOf ListCache
+   */
+  function listCacheClear() {
+    this.__data__ = [];
+    this.size = 0;
+  }
+
+  var _listCacheClear = listCacheClear;
+
+  /**
+   * Performs a
+   * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+   * comparison between two values to determine if they are equivalent.
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to compare.
+   * @param {*} other The other value to compare.
+   * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+   * @example
+   *
+   * var object = { 'a': 1 };
+   * var other = { 'a': 1 };
+   *
+   * _.eq(object, object);
+   * // => true
+   *
+   * _.eq(object, other);
+   * // => false
+   *
+   * _.eq('a', 'a');
+   * // => true
+   *
+   * _.eq('a', Object('a'));
+   * // => false
+   *
+   * _.eq(NaN, NaN);
+   * // => true
+   */
+  function eq(value, other) {
+    return value === other || (value !== value && other !== other);
+  }
+
+  var eq_1 = eq;
+
+  /**
+   * Gets the index at which the `key` is found in `array` of key-value pairs.
+   *
+   * @private
+   * @param {Array} array The array to inspect.
+   * @param {*} key The key to search for.
+   * @returns {number} Returns the index of the matched value, else `-1`.
+   */
+  function assocIndexOf(array, key) {
+    var length = array.length;
+    while (length--) {
+      if (eq_1(array[length][0], key)) {
+        return length;
+      }
+    }
+    return -1;
+  }
+
+  var _assocIndexOf = assocIndexOf;
+
+  /** Used for built-in method references. */
+  var arrayProto$1 = Array.prototype;
+
+  /** Built-in value references. */
+  var splice = arrayProto$1.splice;
+
+  /**
+   * Removes `key` and its value from the list cache.
+   *
+   * @private
+   * @name delete
+   * @memberOf ListCache
+   * @param {string} key The key of the value to remove.
+   * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+   */
+  function listCacheDelete(key) {
+    var data = this.__data__,
+        index = _assocIndexOf(data, key);
+
+    if (index < 0) {
+      return false;
+    }
+    var lastIndex = data.length - 1;
+    if (index == lastIndex) {
+      data.pop();
+    } else {
+      splice.call(data, index, 1);
+    }
+    --this.size;
+    return true;
+  }
+
+  var _listCacheDelete = listCacheDelete;
+
+  /**
+   * Gets the list cache value for `key`.
+   *
+   * @private
+   * @name get
+   * @memberOf ListCache
+   * @param {string} key The key of the value to get.
+   * @returns {*} Returns the entry value.
+   */
+  function listCacheGet$1(key) {
+    var data = this.__data__,
+        index = _assocIndexOf(data, key);
+
+    return index < 0 ? undefined : data[index][1];
+  }
+
+  var _listCacheGet = listCacheGet$1;
+
+  /**
+   * Checks if a list cache value for `key` exists.
+   *
+   * @private
+   * @name has
+   * @memberOf ListCache
+   * @param {string} key The key of the entry to check.
+   * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+   */
+  function listCacheHas(key) {
+    return _assocIndexOf(this.__data__, key) > -1;
+  }
+
+  var _listCacheHas = listCacheHas;
+
+  /**
+   * Sets the list cache `key` to `value`.
+   *
+   * @private
+   * @name set
+   * @memberOf ListCache
+   * @param {string} key The key of the value to set.
+   * @param {*} value The value to set.
+   * @returns {Object} Returns the list cache instance.
+   */
+  function listCacheSet$1(key, value) {
+    var data = this.__data__,
+        index = _assocIndexOf(data, key);
+
+    if (index < 0) {
+      ++this.size;
+      data.push([key, value]);
+    } else {
+      data[index][1] = value;
+    }
+    return this;
+  }
+
+  var _listCacheSet = listCacheSet$1;
+
+  /**
+   * Creates an list cache object.
+   *
+   * @private
+   * @constructor
+   * @param {Array} [entries] The key-value pairs to cache.
+   */
+  function ListCache(entries) {
+    var index = -1,
+        length = entries == null ? 0 : entries.length;
+
+    this.clear();
+    while (++index < length) {
+      var entry = entries[index];
+      this.set(entry[0], entry[1]);
+    }
+  }
+
+  // Add methods to `ListCache`.
+  ListCache.prototype.clear = _listCacheClear;
+  ListCache.prototype['delete'] = _listCacheDelete;
+  ListCache.prototype.get = _listCacheGet;
+  ListCache.prototype.has = _listCacheHas;
+  ListCache.prototype.set = _listCacheSet;
+
+  var _ListCache = ListCache;
+
+  /* Built-in method references that are verified to be native. */
+  var Map$1 = _getNative(_root, 'Map');
+
+  var _Map = Map$1;
+
+  /**
+   * Removes all key-value entries from the map.
+   *
+   * @private
+   * @name clear
+   * @memberOf MapCache
+   */
+  function mapCacheClear() {
+    this.size = 0;
+    this.__data__ = {
+      'hash': new _Hash,
+      'map': new (_Map || _ListCache),
+      'string': new _Hash
+    };
+  }
+
+  var _mapCacheClear = mapCacheClear;
+
+  /**
+   * Checks if `value` is suitable for use as unique object key.
+   *
+   * @private
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+   */
+  function isKeyable(value) {
+    var type = typeof value;
+    return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
+      ? (value !== '__proto__')
+      : (value === null);
+  }
+
+  var _isKeyable = isKeyable;
+
+  /**
+   * Gets the data for `map`.
+   *
+   * @private
+   * @param {Object} map The map to query.
+   * @param {string} key The reference key.
+   * @returns {*} Returns the map data.
+   */
+  function getMapData(map, key) {
+    var data = map.__data__;
+    return _isKeyable(key)
+      ? data[typeof key == 'string' ? 'string' : 'hash']
+      : data.map;
+  }
+
+  var _getMapData = getMapData;
+
+  /**
+   * Removes `key` and its value from the map.
+   *
+   * @private
+   * @name delete
+   * @memberOf MapCache
+   * @param {string} key The key of the value to remove.
+   * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+   */
+  function mapCacheDelete(key) {
+    var result = _getMapData(this, key)['delete'](key);
+    this.size -= result ? 1 : 0;
+    return result;
+  }
+
+  var _mapCacheDelete = mapCacheDelete;
+
+  /**
+   * Gets the map value for `key`.
+   *
+   * @private
+   * @name get
+   * @memberOf MapCache
+   * @param {string} key The key of the value to get.
+   * @returns {*} Returns the entry value.
+   */
+  function mapCacheGet(key) {
+    return _getMapData(this, key).get(key);
+  }
+
+  var _mapCacheGet = mapCacheGet;
+
+  /**
+   * Checks if a map value for `key` exists.
+   *
+   * @private
+   * @name has
+   * @memberOf MapCache
+   * @param {string} key The key of the entry to check.
+   * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+   */
+  function mapCacheHas(key) {
+    return _getMapData(this, key).has(key);
+  }
+
+  var _mapCacheHas = mapCacheHas;
+
+  /**
+   * Sets the map `key` to `value`.
+   *
+   * @private
+   * @name set
+   * @memberOf MapCache
+   * @param {string} key The key of the value to set.
+   * @param {*} value The value to set.
+   * @returns {Object} Returns the map cache instance.
+   */
+  function mapCacheSet(key, value) {
+    var data = _getMapData(this, key),
+        size = data.size;
+
+    data.set(key, value);
+    this.size += data.size == size ? 0 : 1;
+    return this;
+  }
+
+  var _mapCacheSet = mapCacheSet;
+
+  /**
+   * Creates a map cache object to store key-value pairs.
+   *
+   * @private
+   * @constructor
+   * @param {Array} [entries] The key-value pairs to cache.
+   */
+  function MapCache(entries) {
+    var index = -1,
+        length = entries == null ? 0 : entries.length;
+
+    this.clear();
+    while (++index < length) {
+      var entry = entries[index];
+      this.set(entry[0], entry[1]);
+    }
+  }
+
+  // Add methods to `MapCache`.
+  MapCache.prototype.clear = _mapCacheClear;
+  MapCache.prototype['delete'] = _mapCacheDelete;
+  MapCache.prototype.get = _mapCacheGet;
+  MapCache.prototype.has = _mapCacheHas;
+  MapCache.prototype.set = _mapCacheSet;
+
+  var _MapCache = MapCache;
+
+  /** Error message constants. */
+  var FUNC_ERROR_TEXT$1 = 'Expected a function';
+
+  /**
+   * Creates a function that memoizes the result of `func`. If `resolver` is
+   * provided, it determines the cache key for storing the result based on the
+   * arguments provided to the memoized function. By default, the first argument
+   * provided to the memoized function is used as the map cache key. The `func`
+   * is invoked with the `this` binding of the memoized function.
+   *
+   * **Note:** The cache is exposed as the `cache` property on the memoized
+   * function. Its creation may be customized by replacing the `_.memoize.Cache`
+   * constructor with one whose instances implement the
+   * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
+   * method interface of `clear`, `delete`, `get`, `has`, and `set`.
+   *
+   * @static
+   * @memberOf _
+   * @since 0.1.0
+   * @category Function
+   * @param {Function} func The function to have its output memoized.
+   * @param {Function} [resolver] The function to resolve the cache key.
+   * @returns {Function} Returns the new memoized function.
+   * @example
+   *
+   * var object = { 'a': 1, 'b': 2 };
+   * var other = { 'c': 3, 'd': 4 };
+   *
+   * var values = _.memoize(_.values);
+   * values(object);
+   * // => [1, 2]
+   *
+   * values(other);
+   * // => [3, 4]
+   *
+   * object.a = 2;
+   * values(object);
+   * // => [1, 2]
+   *
+   * // Modify the result cache.
+   * values.cache.set(object, ['a', 'b']);
+   * values(object);
+   * // => ['a', 'b']
+   *
+   * // Replace `_.memoize.Cache`.
+   * _.memoize.Cache = WeakMap;
+   */
+  function memoize(func, resolver) {
+    if (typeof func != 'function' || (resolver != null && typeof resolver != 'function')) {
+      throw new TypeError(FUNC_ERROR_TEXT$1);
+    }
+    var memoized = function() {
+      var args = arguments,
+          key = resolver ? resolver.apply(this, args) : args[0],
+          cache = memoized.cache;
+
+      if (cache.has(key)) {
+        return cache.get(key);
+      }
+      var result = func.apply(this, args);
+      memoized.cache = cache.set(key, result) || cache;
+      return result;
+    };
+    memoized.cache = new (memoize.Cache || _MapCache);
+    return memoized;
+  }
+
+  // Expose `MapCache`.
+  memoize.Cache = _MapCache;
+
+  var memoize_1 = memoize;
+
+  /** Used as the maximum memoize cache size. */
+  var MAX_MEMOIZE_SIZE = 500;
+
+  /**
+   * A specialized version of `_.memoize` which clears the memoized function's
+   * cache when it exceeds `MAX_MEMOIZE_SIZE`.
+   *
+   * @private
+   * @param {Function} func The function to have its output memoized.
+   * @returns {Function} Returns the new memoized function.
+   */
+  function memoizeCapped(func) {
+    var result = memoize_1(func, function(key) {
+      if (cache.size === MAX_MEMOIZE_SIZE) {
+        cache.clear();
+      }
+      return key;
+    });
+
+    var cache = result.cache;
+    return result;
+  }
+
+  var _memoizeCapped = memoizeCapped;
+
+  /** Used to match property names within property paths. */
+  var rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
+
+  /** Used to match backslashes in property paths. */
+  var reEscapeChar = /\\(\\)?/g;
+
+  /**
+   * Converts `string` to a property path array.
+   *
+   * @private
+   * @param {string} string The string to convert.
+   * @returns {Array} Returns the property path array.
+   */
+  var stringToPath = _memoizeCapped(function(string) {
+    var result = [];
+    if (string.charCodeAt(0) === 46 /* . */) {
+      result.push('');
+    }
+    string.replace(rePropName, function(match, number, quote, subString) {
+      result.push(quote ? subString.replace(reEscapeChar, '$1') : (number || match));
+    });
+    return result;
+  });
+
+  var _stringToPath = stringToPath;
+
+  /**
+   * A specialized version of `_.map` for arrays without support for iteratee
+   * shorthands.
+   *
+   * @private
+   * @param {Array} [array] The array to iterate over.
+   * @param {Function} iteratee The function invoked per iteration.
+   * @returns {Array} Returns the new mapped array.
+   */
+  function arrayMap(array, iteratee) {
+    var index = -1,
+        length = array == null ? 0 : array.length,
+        result = Array(length);
+
+    while (++index < length) {
+      result[index] = iteratee(array[index], index, array);
+    }
+    return result;
+  }
+
+  var _arrayMap = arrayMap;
+
+  /** Used as references for various `Number` constants. */
+  var INFINITY = 1 / 0;
+
+  /** Used to convert symbols to primitives and strings. */
+  var symbolProto$1 = _Symbol ? _Symbol.prototype : undefined,
+      symbolToString$1 = symbolProto$1 ? symbolProto$1.toString : undefined;
+
+  /**
+   * The base implementation of `_.toString` which doesn't convert nullish
+   * values to empty strings.
+   *
+   * @private
+   * @param {*} value The value to process.
+   * @returns {string} Returns the string.
+   */
+  function baseToString(value) {
+    // Exit early for strings to avoid a performance hit in some environments.
+    if (typeof value == 'string') {
+      return value;
+    }
+    if (isArray_1$1(value)) {
+      // Recursively convert values (susceptible to call stack limits).
+      return _arrayMap(value, baseToString) + '';
+    }
+    if (isSymbol_1(value)) {
+      return symbolToString$1 ? symbolToString$1.call(value) : '';
+    }
+    var result = (value + '');
+    return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+  }
+
+  var _baseToString = baseToString;
+
+  /**
+   * Converts `value` to a string. An empty string is returned for `null`
+   * and `undefined` values. The sign of `-0` is preserved.
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to convert.
+   * @returns {string} Returns the converted string.
+   * @example
+   *
+   * _.toString(null);
+   * // => ''
+   *
+   * _.toString(-0);
+   * // => '-0'
+   *
+   * _.toString([1, 2, 3]);
+   * // => '1,2,3'
+   */
+  function toString$3(value) {
+    return value == null ? '' : _baseToString(value);
+  }
+
+  var toString_1 = toString$3;
+
+  /**
+   * Casts `value` to a path array if it's not one.
+   *
+   * @private
+   * @param {*} value The value to inspect.
+   * @param {Object} [object] The object to query keys on.
+   * @returns {Array} Returns the cast property path array.
+   */
+  function castPath(value, object) {
+    if (isArray_1$1(value)) {
+      return value;
+    }
+    return _isKey(value, object) ? [value] : _stringToPath(toString_1(value));
+  }
+
+  var _castPath = castPath;
+
+  /** Used as references for various `Number` constants. */
+  var INFINITY$1 = 1 / 0;
+
+  /**
+   * Converts `value` to a string key if it's not a string or symbol.
+   *
+   * @private
+   * @param {*} value The value to inspect.
+   * @returns {string|symbol} Returns the key.
+   */
+  function toKey(value) {
+    if (typeof value == 'string' || isSymbol_1(value)) {
+      return value;
+    }
+    var result = (value + '');
+    return (result == '0' && (1 / value) == -INFINITY$1) ? '-0' : result;
+  }
+
+  var _toKey = toKey;
+
+  /**
+   * The base implementation of `_.get` without support for default values.
+   *
+   * @private
+   * @param {Object} object The object to query.
+   * @param {Array|string} path The path of the property to get.
+   * @returns {*} Returns the resolved value.
+   */
+  function baseGet(object, path) {
+    path = _castPath(path, object);
+
+    var index = 0,
+        length = path.length;
+
+    while (object != null && index < length) {
+      object = object[_toKey(path[index++])];
+    }
+    return (index && index == length) ? object : undefined;
+  }
+
+  var _baseGet = baseGet;
+
+  var defineProperty$9 = (function() {
+    try {
+      var func = _getNative(Object, 'defineProperty');
+      func({}, '', {});
+      return func;
+    } catch (e) {}
+  }());
+
+  var _defineProperty$1 = defineProperty$9;
+
+  /**
+   * The base implementation of `assignValue` and `assignMergeValue` without
+   * value checks.
+   *
+   * @private
+   * @param {Object} object The object to modify.
+   * @param {string} key The key of the property to assign.
+   * @param {*} value The value to assign.
+   */
+  function baseAssignValue(object, key, value) {
+    if (key == '__proto__' && _defineProperty$1) {
+      _defineProperty$1(object, key, {
+        'configurable': true,
+        'enumerable': true,
+        'value': value,
+        'writable': true
+      });
+    } else {
+      object[key] = value;
+    }
+  }
+
+  var _baseAssignValue = baseAssignValue;
+
+  /** Used for built-in method references. */
+  var objectProto$5 = Object.prototype;
+
+  /** Used to check objects for own properties. */
+  var hasOwnProperty$6 = objectProto$5.hasOwnProperty;
+
+  /**
+   * Assigns `value` to `key` of `object` if the existing value is not equivalent
+   * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+   * for equality comparisons.
+   *
+   * @private
+   * @param {Object} object The object to modify.
+   * @param {string} key The key of the property to assign.
+   * @param {*} value The value to assign.
+   */
+  function assignValue(object, key, value) {
+    var objValue = object[key];
+    if (!(hasOwnProperty$6.call(object, key) && eq_1(objValue, value)) ||
+        (value === undefined && !(key in object))) {
+      _baseAssignValue(object, key, value);
+    }
+  }
+
+  var _assignValue = assignValue;
+
+  /** Used as references for various `Number` constants. */
+  var MAX_SAFE_INTEGER$3 = 9007199254740991;
+
+  /** Used to detect unsigned integer values. */
+  var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+  /**
+   * Checks if `value` is a valid array-like index.
+   *
+   * @private
+   * @param {*} value The value to check.
+   * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+   * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+   */
+  function isIndex(value, length) {
+    var type = typeof value;
+    length = length == null ? MAX_SAFE_INTEGER$3 : length;
+
+    return !!length &&
+      (type == 'number' ||
+        (type != 'symbol' && reIsUint.test(value))) &&
+          (value > -1 && value % 1 == 0 && value < length);
+  }
+
+  var _isIndex = isIndex;
+
+  /**
+   * The base implementation of `_.set`.
+   *
+   * @private
+   * @param {Object} object The object to modify.
+   * @param {Array|string} path The path of the property to set.
+   * @param {*} value The value to set.
+   * @param {Function} [customizer] The function to customize path creation.
+   * @returns {Object} Returns `object`.
+   */
+  function baseSet(object, path, value, customizer) {
+    if (!isObject_1(object)) {
+      return object;
+    }
+    path = _castPath(path, object);
+
+    var index = -1,
+        length = path.length,
+        lastIndex = length - 1,
+        nested = object;
+
+    while (nested != null && ++index < length) {
+      var key = _toKey(path[index]),
+          newValue = value;
+
+      if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+        return object;
+      }
+
+      if (index != lastIndex) {
+        var objValue = nested[key];
+        newValue = customizer ? customizer(objValue, key, nested) : undefined;
+        if (newValue === undefined) {
+          newValue = isObject_1(objValue)
+            ? objValue
+            : (_isIndex(path[index + 1]) ? [] : {});
+        }
+      }
+      _assignValue(nested, key, newValue);
+      nested = nested[key];
+    }
+    return object;
+  }
+
+  var _baseSet = baseSet;
+
+  /**
+   * The base implementation of  `_.pickBy` without support for iteratee shorthands.
+   *
+   * @private
+   * @param {Object} object The source object.
+   * @param {string[]} paths The property paths to pick.
+   * @param {Function} predicate The function invoked per property.
+   * @returns {Object} Returns the new object.
+   */
+  function basePickBy(object, paths, predicate) {
+    var index = -1,
+        length = paths.length,
+        result = {};
+
+    while (++index < length) {
+      var path = paths[index],
+          value = _baseGet(object, path);
+
+      if (predicate(value, path)) {
+        _baseSet(result, _castPath(path, object), value);
+      }
+    }
+    return result;
+  }
+
+  var _basePickBy = basePickBy;
+
+  /**
+   * The base implementation of `_.hasIn` without support for deep paths.
+   *
+   * @private
+   * @param {Object} [object] The object to query.
+   * @param {Array|string} key The key to check.
+   * @returns {boolean} Returns `true` if `key` exists, else `false`.
+   */
+  function baseHasIn(object, key) {
+    return object != null && key in Object(object);
+  }
+
+  var _baseHasIn = baseHasIn;
+
+  /** `Object#toString` result references. */
+  var argsTag = '[object Arguments]';
+
+  /**
+   * The base implementation of `_.isArguments`.
+   *
+   * @private
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+   */
+  function baseIsArguments(value) {
+    return isObjectLike_1(value) && _baseGetTag(value) == argsTag;
+  }
+
+  var _baseIsArguments = baseIsArguments;
+
+  /** Used for built-in method references. */
+  var objectProto$6 = Object.prototype;
+
+  /** Used to check objects for own properties. */
+  var hasOwnProperty$7 = objectProto$6.hasOwnProperty;
+
+  /** Built-in value references. */
+  var propertyIsEnumerable$1 = objectProto$6.propertyIsEnumerable;
+
+  /**
+   * Checks if `value` is likely an `arguments` object.
+   *
+   * @static
+   * @memberOf _
+   * @since 0.1.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+   *  else `false`.
+   * @example
+   *
+   * _.isArguments(function() { return arguments; }());
+   * // => true
+   *
+   * _.isArguments([1, 2, 3]);
+   * // => false
+   */
+  var isArguments = _baseIsArguments(function() { return arguments; }()) ? _baseIsArguments : function(value) {
+    return isObjectLike_1(value) && hasOwnProperty$7.call(value, 'callee') &&
+      !propertyIsEnumerable$1.call(value, 'callee');
+  };
+
+  var isArguments_1 = isArguments;
+
+  /** Used as references for various `Number` constants. */
+  var MAX_SAFE_INTEGER$4 = 9007199254740991;
+
+  /**
+   * Checks if `value` is a valid array-like length.
+   *
+   * **Note:** This method is loosely based on
+   * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+   * @example
+   *
+   * _.isLength(3);
+   * // => true
+   *
+   * _.isLength(Number.MIN_VALUE);
+   * // => false
+   *
+   * _.isLength(Infinity);
+   * // => false
+   *
+   * _.isLength('3');
+   * // => false
+   */
+  function isLength(value) {
+    return typeof value == 'number' &&
+      value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER$4;
+  }
+
+  var isLength_1 = isLength;
+
+  /**
+   * Checks if `path` exists on `object`.
+   *
+   * @private
+   * @param {Object} object The object to query.
+   * @param {Array|string} path The path to check.
+   * @param {Function} hasFunc The function to check properties.
+   * @returns {boolean} Returns `true` if `path` exists, else `false`.
+   */
+  function hasPath(object, path, hasFunc) {
+    path = _castPath(path, object);
+
+    var index = -1,
+        length = path.length,
+        result = false;
+
+    while (++index < length) {
+      var key = _toKey(path[index]);
+      if (!(result = object != null && hasFunc(object, key))) {
+        break;
+      }
+      object = object[key];
+    }
+    if (result || ++index != length) {
+      return result;
+    }
+    length = object == null ? 0 : object.length;
+    return !!length && isLength_1(length) && _isIndex(key, length) &&
+      (isArray_1$1(object) || isArguments_1(object));
+  }
+
+  var _hasPath = hasPath;
+
+  /**
+   * Checks if `path` is a direct or inherited property of `object`.
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Object
+   * @param {Object} object The object to query.
+   * @param {Array|string} path The path to check.
+   * @returns {boolean} Returns `true` if `path` exists, else `false`.
+   * @example
+   *
+   * var object = _.create({ 'a': _.create({ 'b': 2 }) });
+   *
+   * _.hasIn(object, 'a');
+   * // => true
+   *
+   * _.hasIn(object, 'a.b');
+   * // => true
+   *
+   * _.hasIn(object, ['a', 'b']);
+   * // => true
+   *
+   * _.hasIn(object, 'b');
+   * // => false
+   */
+  function hasIn(object, path) {
+    return object != null && _hasPath(object, path, _baseHasIn);
+  }
+
+  var hasIn_1 = hasIn;
+
+  /**
+   * The base implementation of `_.pick` without support for individual
+   * property identifiers.
+   *
+   * @private
+   * @param {Object} object The source object.
+   * @param {string[]} paths The property paths to pick.
+   * @returns {Object} Returns the new object.
+   */
+  function basePick(object, paths) {
+    return _basePickBy(object, paths, function(value, path) {
+      return hasIn_1(object, path);
+    });
+  }
+
+  var _basePick = basePick;
+
+  /**
+   * Appends the elements of `values` to `array`.
+   *
+   * @private
+   * @param {Array} array The array to modify.
+   * @param {Array} values The values to append.
+   * @returns {Array} Returns `array`.
+   */
+  function arrayPush(array, values) {
+    var index = -1,
+        length = values.length,
+        offset = array.length;
+
+    while (++index < length) {
+      array[offset + index] = values[index];
+    }
+    return array;
+  }
+
+  var _arrayPush = arrayPush;
+
+  /** Built-in value references. */
+  var spreadableSymbol = _Symbol ? _Symbol.isConcatSpreadable : undefined;
+
+  /**
+   * Checks if `value` is a flattenable `arguments` object or array.
+   *
+   * @private
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is flattenable, else `false`.
+   */
+  function isFlattenable(value) {
+    return isArray_1$1(value) || isArguments_1(value) ||
+      !!(spreadableSymbol && value && value[spreadableSymbol]);
+  }
+
+  var _isFlattenable = isFlattenable;
+
+  /**
+   * The base implementation of `_.flatten` with support for restricting flattening.
+   *
+   * @private
+   * @param {Array} array The array to flatten.
+   * @param {number} depth The maximum recursion depth.
+   * @param {boolean} [predicate=isFlattenable] The function invoked per iteration.
+   * @param {boolean} [isStrict] Restrict to values that pass `predicate` checks.
+   * @param {Array} [result=[]] The initial result value.
+   * @returns {Array} Returns the new flattened array.
+   */
+  function baseFlatten(array, depth, predicate, isStrict, result) {
+    var index = -1,
+        length = array.length;
+
+    predicate || (predicate = _isFlattenable);
+    result || (result = []);
+
+    while (++index < length) {
+      var value = array[index];
+      if (depth > 0 && predicate(value)) {
+        if (depth > 1) {
+          // Recursively flatten arrays (susceptible to call stack limits).
+          baseFlatten(value, depth - 1, predicate, isStrict, result);
+        } else {
+          _arrayPush(result, value);
+        }
+      } else if (!isStrict) {
+        result[result.length] = value;
+      }
+    }
+    return result;
+  }
+
+  var _baseFlatten = baseFlatten;
+
+  /**
+   * Flattens `array` a single level deep.
+   *
+   * @static
+   * @memberOf _
+   * @since 0.1.0
+   * @category Array
+   * @param {Array} array The array to flatten.
+   * @returns {Array} Returns the new flattened array.
+   * @example
+   *
+   * _.flatten([1, [2, [3, [4]], 5]]);
+   * // => [1, 2, [3, [4]], 5]
+   */
+  function flatten(array) {
+    var length = array == null ? 0 : array.length;
+    return length ? _baseFlatten(array, 1) : [];
+  }
+
+  var flatten_1 = flatten;
+
+  /**
+   * A faster alternative to `Function#apply`, this function invokes `func`
+   * with the `this` binding of `thisArg` and the arguments of `args`.
+   *
+   * @private
+   * @param {Function} func The function to invoke.
+   * @param {*} thisArg The `this` binding of `func`.
+   * @param {Array} args The arguments to invoke `func` with.
+   * @returns {*} Returns the result of `func`.
+   */
+  function apply(func, thisArg, args) {
+    switch (args.length) {
+      case 0: return func.call(thisArg);
+      case 1: return func.call(thisArg, args[0]);
+      case 2: return func.call(thisArg, args[0], args[1]);
+      case 3: return func.call(thisArg, args[0], args[1], args[2]);
+    }
+    return func.apply(thisArg, args);
+  }
+
+  var _apply = apply;
+
+  /* Built-in method references for those with the same name as other `lodash` methods. */
+  var nativeMax$1 = Math.max;
+
+  /**
+   * A specialized version of `baseRest` which transforms the rest array.
+   *
+   * @private
+   * @param {Function} func The function to apply a rest parameter to.
+   * @param {number} [start=func.length-1] The start position of the rest parameter.
+   * @param {Function} transform The rest array transform.
+   * @returns {Function} Returns the new function.
+   */
+  function overRest(func, start, transform) {
+    start = nativeMax$1(start === undefined ? (func.length - 1) : start, 0);
+    return function() {
+      var args = arguments,
+          index = -1,
+          length = nativeMax$1(args.length - start, 0),
+          array = Array(length);
+
+      while (++index < length) {
+        array[index] = args[start + index];
+      }
+      index = -1;
+      var otherArgs = Array(start + 1);
+      while (++index < start) {
+        otherArgs[index] = args[index];
+      }
+      otherArgs[start] = transform(array);
+      return _apply(func, this, otherArgs);
+    };
+  }
+
+  var _overRest = overRest;
+
+  /**
+   * Creates a function that returns `value`.
+   *
+   * @static
+   * @memberOf _
+   * @since 2.4.0
+   * @category Util
+   * @param {*} value The value to return from the new function.
+   * @returns {Function} Returns the new constant function.
+   * @example
+   *
+   * var objects = _.times(2, _.constant({ 'a': 1 }));
+   *
+   * console.log(objects);
+   * // => [{ 'a': 1 }, { 'a': 1 }]
+   *
+   * console.log(objects[0] === objects[1]);
+   * // => true
+   */
+  function constant$1(value) {
+    return function() {
+      return value;
+    };
+  }
+
+  var constant_1 = constant$1;
+
+  /**
+   * This method returns the first argument it receives.
+   *
+   * @static
+   * @since 0.1.0
+   * @memberOf _
+   * @category Util
+   * @param {*} value Any value.
+   * @returns {*} Returns `value`.
+   * @example
+   *
+   * var object = { 'a': 1 };
+   *
+   * console.log(_.identity(object) === object);
+   * // => true
+   */
+  function identity$1(value) {
+    return value;
+  }
+
+  var identity_1$1 = identity$1;
+
+  /**
+   * The base implementation of `setToString` without support for hot loop shorting.
+   *
+   * @private
+   * @param {Function} func The function to modify.
+   * @param {Function} string The `toString` result.
+   * @returns {Function} Returns `func`.
+   */
+  var baseSetToString = !_defineProperty$1 ? identity_1$1 : function(func, string) {
+    return _defineProperty$1(func, 'toString', {
+      'configurable': true,
+      'enumerable': false,
+      'value': constant_1(string),
+      'writable': true
+    });
+  };
+
+  var _baseSetToString = baseSetToString;
+
+  /** Used to detect hot functions by number of calls within a span of milliseconds. */
+  var HOT_COUNT = 800,
+      HOT_SPAN = 16;
+
+  /* Built-in method references for those with the same name as other `lodash` methods. */
+  var nativeNow = Date.now;
+
+  /**
+   * Creates a function that'll short out and invoke `identity` instead
+   * of `func` when it's called `HOT_COUNT` or more times in `HOT_SPAN`
+   * milliseconds.
+   *
+   * @private
+   * @param {Function} func The function to restrict.
+   * @returns {Function} Returns the new shortable function.
+   */
+  function shortOut(func) {
+    var count = 0,
+        lastCalled = 0;
+
+    return function() {
+      var stamp = nativeNow(),
+          remaining = HOT_SPAN - (stamp - lastCalled);
+
+      lastCalled = stamp;
+      if (remaining > 0) {
+        if (++count >= HOT_COUNT) {
+          return arguments[0];
+        }
+      } else {
+        count = 0;
+      }
+      return func.apply(undefined, arguments);
+    };
+  }
+
+  var _shortOut = shortOut;
+
+  /**
+   * Sets the `toString` method of `func` to return `string`.
+   *
+   * @private
+   * @param {Function} func The function to modify.
+   * @param {Function} string The `toString` result.
+   * @returns {Function} Returns `func`.
+   */
+  var setToString = _shortOut(_baseSetToString);
+
+  var _setToString = setToString;
+
+  /**
+   * A specialized version of `baseRest` which flattens the rest array.
+   *
+   * @private
+   * @param {Function} func The function to apply a rest parameter to.
+   * @returns {Function} Returns the new function.
+   */
+  function flatRest(func) {
+    return _setToString(_overRest(func, undefined, flatten_1), func + '');
+  }
+
+  var _flatRest = flatRest;
+
+  /**
+   * Creates an object composed of the picked `object` properties.
+   *
+   * @static
+   * @since 0.1.0
+   * @memberOf _
+   * @category Object
+   * @param {Object} object The source object.
+   * @param {...(string|string[])} [paths] The property paths to pick.
+   * @returns {Object} Returns the new object.
+   * @example
+   *
+   * var object = { 'a': 1, 'b': '2', 'c': 3 };
+   *
+   * _.pick(object, ['a', 'c']);
+   * // => { 'a': 1, 'c': 3 }
+   */
+  var pick = _flatRest(function(object, paths) {
+    return object == null ? {} : _basePick(object, paths);
+  });
+
+  var pick_1 = pick;
 
   /*
    * @author : Mater
@@ -68095,30 +72554,6 @@
     }
   });
 
-  /*
-   * @author : Mater
-   * @Email : bxh8640@gmail.com
-   * @Date : 2020-11-02 16:12:09
-   * @LastEditTime : 2020-11-06 14:56:14
-   * @Description :
-   */
-
-  /**
-    * 页面模式，枚举值
-    * h5_swipper 翻页H5
-    * h5_long_page 长页面H5
-   */
-  var PAGE_MODE = {
-    SWIPPER_PAGE: 'h5_swipper',
-    LONG_PAGE: 'h5_long_page',
-    WIDTH: 375,
-    HEIGHT: 667
-  };
-  var PAGE_MODE_LABEL = {
-    SWIPPER_PAGE: '翻页H5',
-    LONG_PAGE: '长页面'
-  };
-
   var _components$6;
   var RenderBackgroundEditor = {
     components: (_components$6 = {}, defineProperty$3(_components$6, antDesignVue.Form.name, antDesignVue.Form), defineProperty$3(_components$6, antDesignVue.Form.Item.name, antDesignVue.Form.Item), defineProperty$3(_components$6, antDesignVue.Radio.Group.name, antDesignVue.Radio.Group), defineProperty$3(_components$6, antDesignVue.Radio.Button.name, antDesignVue.Radio.Button), _components$6),
@@ -68208,7 +72643,7 @@
             editPropsConfig = this.editPropsConfig;
         var editPropsConfigKeys = Object.keys(editPropsConfig);
         var props = element ? element.props : {};
-        return lodash.pick(props, editPropsConfigKeys);
+        return pick_1(props, editPropsConfigKeys);
       },
       editAnimationValue: function editAnimationValue() {
         var element = this.element;
@@ -69371,144 +73806,6 @@
     }
   };
 
-  var defineProperty$8 = objectDefineProperty.f;
-
-
-  var NativeSymbol = global_1.Symbol;
-
-  if (descriptors && typeof NativeSymbol == 'function' && (!('description' in NativeSymbol.prototype) ||
-    // Safari 12 bug
-    NativeSymbol().description !== undefined
-  )) {
-    var EmptyStringDescriptionStore = {};
-    // wrap Symbol constructor for correct work with undefined description
-    var SymbolWrapper = function Symbol() {
-      var description = arguments.length < 1 || arguments[0] === undefined ? undefined : String(arguments[0]);
-      var result = this instanceof SymbolWrapper
-        ? new NativeSymbol(description)
-        // in Edge 13, String(Symbol(undefined)) === 'Symbol(undefined)'
-        : description === undefined ? NativeSymbol() : NativeSymbol(description);
-      if (description === '') EmptyStringDescriptionStore[result] = true;
-      return result;
-    };
-    copyConstructorProperties(SymbolWrapper, NativeSymbol);
-    var symbolPrototype = SymbolWrapper.prototype = NativeSymbol.prototype;
-    symbolPrototype.constructor = SymbolWrapper;
-
-    var symbolToString = symbolPrototype.toString;
-    var native = String(NativeSymbol('test')) == 'Symbol(test)';
-    var regexp = /^Symbol\((.*)\)[^)]+$/;
-    defineProperty$8(symbolPrototype, 'description', {
-      configurable: true,
-      get: function description() {
-        var symbol = isObject(this) ? this.valueOf() : this;
-        var string = symbolToString.call(symbol);
-        if (has(EmptyStringDescriptionStore, symbol)) return '';
-        var desc = native ? string.slice(7, -1) : string.replace(regexp, '$1');
-        return desc === '' ? undefined : desc;
-      }
-    });
-
-    _export({ global: true, forced: true }, {
-      Symbol: SymbolWrapper
-    });
-  }
-
-  var LbpPage = /*#__PURE__*/function () {
-    function LbpPage() {
-      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-          _ref$title = _ref.title,
-          title = _ref$title === void 0 ? '' : _ref$title,
-          _ref$elements = _ref.elements,
-          elements = _ref$elements === void 0 ? [] : _ref$elements,
-          _ref$height = _ref.height,
-          height = _ref$height === void 0 ? PAGE_MODE.HEIGHT : _ref$height,
-          _ref$width = _ref.width,
-          width = _ref$width === void 0 ? PAGE_MODE.WIDTH : _ref$width,
-          _ref$pageMode = _ref.pageMode,
-          pageMode = _ref$pageMode === void 0 ? PAGE_MODE.SWIPPER_PAGE : _ref$pageMode;
-
-      classCallCheck(this, LbpPage);
-
-      this.id = +new Date();
-      this.title = title;
-      this.width = width >= 0 ? width : PAGE_MODE.WIDTH;
-      this.height = height >= 0 ? height : PAGE_MODE.HEIGHT;
-      this.pageMode = pageMode;
-      this.elements = this.genElements(elements);
-    }
-
-    createClass(LbpPage, [{
-      key: "clone",
-      value: function clone() {
-        var elements = this.elements.map(function (element) {
-          return new LbpElement(element);
-        });
-        return new LbpPage({
-          title: this.title,
-          elements: elements
-        });
-      }
-    }, {
-      key: "genElements",
-      value: function genElements() {
-        var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-        return Array.isArray(elements) && elements.length > 0 ? elements.map(function (v) {
-          return new LbpElement(v);
-        }) : [];
-      }
-    }]);
-
-    return LbpPage;
-  }();
-
-  var LbpWork = /*#__PURE__*/function () {
-    function LbpWork() {
-      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-          id = _ref.id,
-          _ref$title = _ref.title,
-          title = _ref$title === void 0 ? '标题' : _ref$title,
-          _ref$description = _ref.description,
-          description = _ref$description === void 0 ? '描述' : _ref$description,
-          _ref$pages = _ref.pages,
-          pages = _ref$pages === void 0 ? [] : _ref$pages,
-          isPublish = _ref.isPublish,
-          isTemplate = _ref.isTemplate;
-
-      classCallCheck(this, LbpWork);
-
-      this.id = id;
-      this.title = title;
-      this.description = description;
-      this.pages = this.genPages(pages);
-      this.cover_image_url = '';
-      this.is_publish = !!isPublish;
-      this.is_template = !!isTemplate;
-    }
-
-    createClass(LbpWork, [{
-      key: "genPages",
-      value: function genPages(pages) {
-        return Array.isArray(pages) && pages.length > 0 ? pages.map(function (v) {
-          return new LbpPage(v);
-        }) : [new LbpPage()];
-      }
-    }]);
-
-    return LbpWork;
-  }();
-
-  /*
-   * @author : Mater
-   * @Email : bxh8640@gmail.com
-   * @Date : 2020-11-12 14:49:13
-   * @LastEditTime : 2020-11-12 14:49:29
-   * @Description :
-   */
-  var config$1 = {
-    rightPanelWidth: 375
-  };
-
   var _components$d;
   var LpbH5Editor = {
     name: 'lbp-h5-editor',
@@ -69561,7 +73858,7 @@
       }
     },
     methods: {
-      record: lodash.debounce(function () {
+      record: debounce_1(function () {
         history.addState(this.work);
       }, 80),
       getData: function getData() {
@@ -69745,55 +74042,6 @@
     }
   };
 
-  var _components$e;
-  var LbpH5Preview = {
-    name: 'lbp-h5-preview',
-    components: (_components$e = {}, defineProperty$3(_components$e, antDesignVue.Layout.name, antDesignVue.Layout), defineProperty$3(_components$e, antDesignVue.Layout.Content.name, antDesignVue.Layout), _components$e),
-    props: {
-      data: {
-        type: Object,
-        default: function _default() {
-          return {};
-        }
-      }
-    },
-    data: function data() {
-      return {
-        work: {},
-        pageIndex: 0
-      };
-    },
-    computed: {
-      currentPage: function currentPage() {
-        var _this$work$pages = this.work.pages,
-            pages = _this$work$pages === void 0 ? [] : _this$work$pages;
-        var currentPage = pages[this.pageIndex] || {};
-        return currentPage;
-      }
-    },
-    watch: {
-      data: {
-        handler: function handler() {
-          var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-          this.work = new LbpWork(data);
-          console.log(this.work);
-        },
-        immediate: true
-      }
-    },
-    render: function render() {
-      var h = arguments[0];
-      return h(LbpCanvas, {
-        "attrs": {
-          "width": this.currentPage.width,
-          "height": this.currentPage.height,
-          "elements": this.currentPage.elements,
-          "readonly": true
-        }
-      });
-    }
-  };
-
   LpbH5Editor.install = function (Vue) {
     Vue.component(LpbH5Editor.name, LpbH5Editor);
   };
@@ -69802,10 +74050,7 @@
     LpbH5Editor.install(window.Vue);
   }
 
-  exports.LbpH5Preview = LbpH5Preview;
-  exports.default = LpbH5Editor;
-
-  Object.defineProperty(exports, '__esModule', { value: true });
+  return LpbH5Editor;
 
 })));
 //# sourceMappingURL=luban-h5-editor.js.map
