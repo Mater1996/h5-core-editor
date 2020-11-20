@@ -68407,7 +68407,7 @@
       this.vcoConfig = {
         events: ['mousedown'],
         handler: this.onClickOutside,
-        scopeNode: document.querySelector('.lb-canvas-wrapper')
+        scopeNode: document.querySelector('.lbp-canvas-wrapper')
       };
     },
     watch: {
