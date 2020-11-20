@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-06 11:03:51
- * @LastEditTime : 2020-11-17 11:40:28
+ * @LastEditTime : 2020-11-20 15:22:27
  * @Description :
  */
 import { InputNumber } from 'ant-design-vue'
@@ -73,6 +73,7 @@ export default {
             <span>375 x</span>
             <a-input-number
               size="small"
+              min={0}
               style="margin: 0 4px; width:60px;"
               value={this.height}
               onChange={this.updateWorkHeight}
