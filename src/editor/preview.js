@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-20 09:20:56
+ * @LastEditTime : 2020-11-20 11:36:21
  * @Description :
  */
 import '@/styles/index.scss'
@@ -13,14 +13,6 @@ import LbpWork from './models/LbpWork'
 
 const LbpH5Preview = {
   name: 'lbp-h5-preview',
-  props: {
-    data: {
-      type: Object,
-      default () {
-        return {}
-      }
-    }
-  },
   data: () => ({
     work: new LbpWork(window.__work),
     pageIndex: 0

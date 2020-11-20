@@ -2,11 +2,10 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-19 17:21:23
+ * @LastEditTime : 2020-11-20 11:35:21
  * @Description :
  */
 import 'font-awesome/css/font-awesome.min.css'
-import 'ant-design-vue/dist/antd.css'
 import { Layout } from 'ant-design-vue'
 import { debounce } from 'lodash'
 
@@ -15,6 +14,10 @@ import '@/plugins'
 import i18n from '@/locales'
 import history from '@/utils/history'
 
+import config from './config'
+import LbpWork from './models/LbpWork'
+import LbpPage from './models/LbpPage'
+import LbpElement from './models/LbpElement'
 import LbpCanvas from './components/lbp-canvas'
 import FixedTools from './components/fixed-tools/index'
 import EditorRightPanel from './components/right-panel'
@@ -22,10 +25,6 @@ import EditorLeftPanel from './components/left-panel'
 import AuxiliayLine from './components/AuxiliayLine'
 import AdjustHeight from './components/AdjustHeight'
 import AdjustLineV from './components/adjust-line/vertical'
-import LbpWork from './models/LbpWork'
-import LbpPage from './models/LbpPage'
-import LbpElement from './models/LbpElement'
-import config from './config'
 
 const LpbH5Editor = {
   name: 'lbp-h5-editor',

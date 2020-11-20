@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime : 2020-11-20 09:32:03
+ * @LastEditTime : 2020-11-20 11:32:06
  * @Description :
  */
 const path = require('path')
@@ -93,7 +93,7 @@ module.exports = args => {
 
   function resolveUrl (dir) {
     return !isProd
-      ? path.join(__dirname, '../', 'example/src/lib/luban-h5-editor', dir)
+      ? path.join(__dirname, '../example/src/lib/luban-h5-editor', dir)
       : path.join(__dirname, '../', dir)
   }
 
