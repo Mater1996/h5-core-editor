@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-17 16:59:14
- * @LastEditTime : 2020-11-19 17:05:34
+ * @LastEditTime : 2020-11-20 15:33:39
  * @Description :
  */
 import { isNumber } from 'lodash'
@@ -27,7 +27,7 @@ export const hyphenateStyleName = function (name) {
 export const renderStyle = function (
   styleObj,
   unit = 'px',
-  { rootValue = 100 } = {}
+  { rootValue = 50 } = {}
 ) {
   const newStyle = {}
   Object.entries(styleObj).forEach(([key, value]) => {
