@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-06 11:03:51
- * @LastEditTime : 2020-11-20 15:22:27
+ * @LastEditTime : 2020-11-20 15:28:05
  * @Description :
  */
 import { InputNumber } from 'ant-design-vue'
@@ -23,7 +23,7 @@ export default {
      * @param {Number} height
      */
     updateWorkHeight (height) {
-      this.$emit('change', height)
+      this.$emit('change', height || 0)
     },
     /**
      * TODO 封装 adjust editor scale 组件

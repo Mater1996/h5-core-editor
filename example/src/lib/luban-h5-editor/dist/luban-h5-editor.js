@@ -73694,7 +73694,7 @@
        * @param {Number} height
        */
       updateWorkHeight: function updateWorkHeight(height) {
-        this.$emit('change', height);
+        this.$emit('change', height || 0);
       },
 
       /**
@@ -73758,6 +73758,7 @@
       }, [h("span", ["375 x"]), h("a-input-number", {
         "attrs": {
           "size": "small",
+          "min": 0,
           "value": this.height
         },
         "style": "margin: 0 4px; width:60px;",

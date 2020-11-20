@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-20 11:36:21
+ * @LastEditTime : 2020-11-20 15:24:20
  * @Description :
  */
 import '@/styles/index.scss'
@@ -31,6 +31,7 @@ const LbpH5Preview = {
         height={this.currentPage.height}
         elements={this.currentPage.elements}
         readonly
+        unit={window.__isRem ? 'rem' : 'px'}
       />
     )
   }
