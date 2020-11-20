@@ -2,7 +2,7 @@
  * @Author: ly525
  * @Date: 2020-05-17 17:21:04
  * @LastEditors : Please set LastEditors
- * @LastEditTime : 2020-11-11 17:03:29
+ * @LastEditTime : 2020-11-20 15:03:28
  * @FilePath: /luban-h5/front-end/h5/src/components/@/mixins/drag.js
  * @Github: https://github.com/ly525/luban-h5
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
@@ -123,7 +123,7 @@ export default {
       const canMousedown = this.checkCanMousedown(e, { minOffset: 10 })
       if (!canMousedown) return
 
-      const canvasWrapper = document.querySelector('.lb-canvas')
+      const canvasWrapper = document.querySelector('.lbp-canvas')
       const position = canvasWrapper.getBoundingClientRect()
       this.dragElement && this.clone({
         ...this.dragElement,
