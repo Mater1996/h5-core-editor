@@ -2,9 +2,10 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-05 10:04:35
- * @LastEditTime : 2020-11-19 10:29:35
+ * @LastEditTime : 2020-11-25 18:51:55
  * @Description :
  */
+import { cloneDeep } from 'lodash'
 import pluginsControl from '@/plugins'
 import LbpElement from '@/editor/models/LbpElement'
 
@@ -15,9 +16,30 @@ export default {
       require: true
     }
   },
+  watch: {
+    element: {
+      handler (newValue) {
+        this.trigger('onLbpElementChange', cloneDeep(newValue))
+      },
+      deep: true
+    }
+  },
+  mounted () {
+    this.$lbpPluginEl = this.$refs.lbpPluginEl
+  },
+  methods: {
+    trigger (hookName, data) {
+      const hook = this.plugin.component[hookName]
+      hook && hook.call(this.$lbpPluginEl, data)
+    }
+  },
   render () {
     const element = this.element
-    const component = pluginsControl.getPlugin(element.pluginName).component
-    return component ? <component props={element.props}></component> : null
+    const { component } = (this.plugin = pluginsControl.getPlugin(
+      element.pluginName
+    ))
+    return component ? (
+      <component ref="lbpPluginEl" props={element.props}></component>
+    ) : null
   }
 }

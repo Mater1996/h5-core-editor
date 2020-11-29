@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-19 20:10:27
+ * @LastEditTime : 2020-11-25 17:00:09
  * @Description :
  */
 import './index.scss'
@@ -73,7 +73,10 @@ export default {
   },
   render () {
     return (
-      <div class="lbp-canvas" style={this.canvasStyle}>
+      <div
+        class={['lbp-canvas', this.readonly ? 'readonly' : 'edit', 'readonly']}
+        style={this.canvasStyle}
+      >
         <div class="lbp-canvas-wrapper">
           <div class="lbp-elements">
             {this.elements.map(element => (
