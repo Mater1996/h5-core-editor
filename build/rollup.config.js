@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime : 2020-11-20 14:28:11
+ * @LastEditTime : 2020-12-03 14:45:35
  * @Description :
  */
 const path = require('path')
@@ -88,12 +88,10 @@ const external = [
 module.exports = args => {
   const isProd = args.prod
   const needAnalyze = args.analyze
-  const name = packageJson.name
+  const name = args.name
 
   function resolveUrl (dir) {
-    return !isProd
-      ? path.join(__dirname, '../example/src/lib/luban-h5-editor', dir)
-      : path.join(__dirname, '../', dir)
+    path.join(__dirname, '../', dir)
   }
 
   return {
@@ -103,7 +101,7 @@ module.exports = args => {
         exports: 'auto',
         name: name,
         format: 'umd',
-        file: !isProd ? resolveUrl(`dist/${name}.js`) : `dist/${name}.js`,
+        file: resolveUrl(`dist/${name}.prod.js`),
         sourcemap: !isProd,
         indent: isProd,
         globals
