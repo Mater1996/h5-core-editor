@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-19 10:56:51
+ * @LastEditTime : 2020-12-04 11:44:49
  * @Description : 右侧panel为修改 props， events, animations 等属性
  */
 import { Layout, Tabs } from 'ant-design-vue'

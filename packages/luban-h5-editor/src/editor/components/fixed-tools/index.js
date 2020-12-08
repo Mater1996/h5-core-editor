@@ -2,12 +2,14 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-17 14:52:03
+ * @LastEditTime : 2020-12-04 11:02:30
  * @Description :
  */
 import { Layout, Button, Tooltip } from 'ant-design-vue'
 import hotkeys from 'hotkeys-js'
 import fixedTools from './options'
+
+console.log(Layout)
 
 export default {
   components: {

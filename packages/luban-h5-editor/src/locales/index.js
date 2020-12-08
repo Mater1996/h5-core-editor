@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-29 09:41:50
- * @LastEditTime : 2020-11-17 14:44:02
+ * @LastEditTime : 2020-12-03 18:11:07
  * @Description :
  */
 import Vue from 'vue'
@@ -12,6 +12,8 @@ import enUSLang from './lang/en-US'
 import zhCNLang from './lang/zh-CN'
 
 Vue.use(VueI18n)
+
+console.log(Vue.prototype)
 
 const messages = {
   'en-US': {

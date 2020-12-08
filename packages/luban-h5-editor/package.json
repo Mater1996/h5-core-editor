@@ -8,8 +8,9 @@
   "author": "Mater <bxh8640@gmail.com>",
   "homepage": "https://github.com/luban-h5/luban-h5-editor",
   "license": "ISC",
-  "main": "dist/luban-h5-editor.js",
+  "main": "index.js",
   "files": [
+    "index.js",
     "dist"
   ],
   "publishConfig": {

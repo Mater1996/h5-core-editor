@@ -5,9 +5,15 @@
     "target": "es6",
     "module": "commonjs",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./packages/luban-h5-editor/src/*"],
+      "luban-h5-editor": ["./packages/luban-h5-editor/src"],
+      "luban-h5-plugins": ["./packages/luban-h5-plugins/src"],
+      "luban-h5-preview": ["./packages/luban-h5-preview/src"]
     }
   },
-  "include": ["src/**/*"],
+  "include": [
+    "packages/*/src",
+    "packages/*/__tests__"
+  ],
   "exclude": ["node_modules", "example"]
 }

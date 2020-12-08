@@ -2,9 +2,10 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-20 09:16:10
+ * @LastEditTime : 2020-12-04 16:05:44
  * @Description :
  */
+
 import LpbH5Editor from '@/editor'
 
 LpbH5Editor.install = (Vue, opts = {}) => {

@@ -22,9 +22,8 @@ import {
 export default {
   components: {
     [InputNumber.name]: InputNumber,
-    [Tabs.name]: Tabs,
-    [List.name]: List,
     [List.Item.name]: List.Item,
+    [Tabs.name]: Tabs,
     [Form.name]: Form,
     [Button.name]: Button,
     [Popover.name]: Popover,
@@ -95,6 +94,7 @@ export default {
         >
           {animations.map(group => (
             <a-tab-pane tab={group.label || group.value} key={group.value}>
+
               <a-list
                 grid={{ gutter: 12, column: 2 }}
                 dataSource={group.children}
@@ -105,7 +105,7 @@ export default {
                       class={[
                         'shortcut-button',
                         this.activePreviewAnimation === item.value &&
-                          `${item.value} animated`
+                      `${item.value} animated`
                       ]}
                       onMouseenter={e => {
                         this.activePreviewAnimation = item.value

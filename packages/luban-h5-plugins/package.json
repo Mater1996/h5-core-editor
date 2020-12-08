@@ -8,8 +8,9 @@
   "author": "Mater <bxh8640@gmail.com>",
   "homepage": "https://github.com/Mater1996/luban-h5-plugins#readme",
   "license": "ISC",
-  "main": "dist/luban-h5-plugins.js",
+  "main": "index.js",
   "files": [
+    "index.js",
     "dist"
   ],
   "publishConfig": {
@@ -25,8 +26,6 @@
   "dependencies": {
     "ant-design-vue": "^1.7.0",
     "echarts": "^4.8.0",
-    "hotkeys-js": "^3.7.6",
-    "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.20",
     "papaparse": "^5.2.0",
     "resize-detector": "^0.2.2",
