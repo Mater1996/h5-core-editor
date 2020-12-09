@@ -1,6 +1,6 @@
 {
   "name": "luban-h5-preview",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "> TODO: description",
   "author": "Mater <bxh8640@gmail.com>",
   "homepage": "https://github.com/Mater1996/luban-h5-preview#readme",
@@ -20,5 +20,5 @@
   "bugs": {
     "url": "https://github.com/Mater1996/luban-h5-preview/issues"
   },
-  "gitHead": "b1cb4fbed37f4971c5d7cdbaefb5b7435f605757"
+  "gitHead": "0aca1273879104e681a55303c513d62510422e29"
 }
