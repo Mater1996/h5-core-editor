@@ -1,6 +1,5 @@
 {
-  "packages": [
-    "packages/*"
-  ],
+  "packages": ["packages/*"],
+  "registry": "http://npm.dict.inner.youdao.com/",
   "version": "1.0.1"
 }
