@@ -33,6 +33,5 @@
     "luban-h5-plugins": "^1.0.1",
     "vue": "^2.6.10",
     "vue-i18n": "^8.14.1"
-  },
-  "gitHead": "03ceef3d9107a290f0eda0f4080b84abeb95e2fe"
+  }
 }
