@@ -1,7 +1,9 @@
 {
-  "packages": ["packages/*"],
+  "packages": [
+    "packages/*"
+  ],
   "command": {
     "publish": {}
   },
-  "version": "1.0.9"
+  "version": "1.0.10"
 }
