@@ -1,6 +1,6 @@
 {
   "name": "luban-h5-editor",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "鲁班H5核心编辑器",
   "keywords": [
     "鲁班H5"
@@ -30,9 +30,9 @@
     "hotkeys-js": "^3.7.6",
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.20",
-    "luban-h5-plugins": "^1.0.3",
+    "luban-h5-plugins": "^1.0.4",
     "vue": "^2.6.10",
     "vue-i18n": "^8.14.1"
   },
-  "gitHead": "9ba472a2ebd4e1897bf21641ba08c9b25ae6aea8"
+  "gitHead": "b1cb4fbed37f4971c5d7cdbaefb5b7435f605757"
 }

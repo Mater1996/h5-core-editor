@@ -1,6 +1,6 @@
 {
   "name": "luban-h5-support",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "鲁班H5参数编辑器集合",
   "author": "Mater <bxh8640@gmail.com>",
   "homepage": "https://github.com/Mater1996/luban-h5-support#readme",
@@ -20,5 +20,5 @@
   "bugs": {
     "url": "https://github.com/Mater1996/luban-h5-support/issues"
   },
-  "gitHead": "9ba472a2ebd4e1897bf21641ba08c9b25ae6aea8"
+  "gitHead": "b1cb4fbed37f4971c5d7cdbaefb5b7435f605757"
 }
