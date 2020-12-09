@@ -6,12 +6,11 @@
     "module": "commonjs",
     "paths": {
       "@/*": ["./packages/luban-h5-editor/src/*"],
-      "@luban/*": ["./packages/*/src"]
+      "luban-h5-editor": ["./packages/luban-h5-editor/src"],
+      "luban-h5-plugins": ["./packages/luban-h5-plugins/src"],
+      "luban-h5-preview": ["./packages/luban-h5-preview/src"]
     }
   },
-  "include": [
-    "packages/*/src",
-    "packages/*/__tests__"
-  ],
+  "include": ["packages/*/src", "packages/*/__tests__"],
   "exclude": ["node_modules", "example"]
 }
