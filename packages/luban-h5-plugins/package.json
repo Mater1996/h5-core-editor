@@ -1,6 +1,6 @@
 {
   "name": "luban-h5-plugins",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "鲁班H5插件集",
   "keywords": [
     "鲁班H5、插件"
@@ -35,5 +35,5 @@
     "vue-quill-editor": "^3.0.6",
     "x-data-spreadsheet": "^1.1.4"
   },
-  "gitHead": "68e493ea71c4f2be9e4877b3b0afc303dbc7a2ac"
+  "gitHead": "9622d062d8741c3727910db19a7cef1b0b5b5138"
 }
