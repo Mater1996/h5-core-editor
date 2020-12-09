@@ -21,7 +21,6 @@
     "less-loader": "^7.0.2",
     "prettier": "^1.19.1",
     "vue-template-compiler": "^2.6.11",
-    "core-js": "^3.6.5",
-    "luban-h5-editor": "../packages/luban-h5-editor"
+    "core-js": "^3.6.5"
   }
 }

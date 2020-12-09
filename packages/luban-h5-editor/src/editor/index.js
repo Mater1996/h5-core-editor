@@ -65,7 +65,6 @@ const LpbH5Editor = {
     data: {
       handler (data = {}) {
         this.work = new LbpWork(data)
-        console.log(this.work)
         history.init(this.work)
       },
       immediate: true

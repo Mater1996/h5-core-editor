@@ -102,7 +102,6 @@ export default class Parser {
       const cells = Object.values(row.cells).map(item => item.text)
       return cells
     })
-    console.log('dataset', dataset)
     return dataset
   }
 

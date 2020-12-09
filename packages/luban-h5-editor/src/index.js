@@ -6,6 +6,7 @@
  * @Description :
  */
 
+import lbpPluginController from './plugins'
 import LpbH5Editor from '@/editor'
 
 LpbH5Editor.install = (Vue, opts = {}) => {
@@ -14,5 +15,7 @@ LpbH5Editor.install = (Vue, opts = {}) => {
 if (typeof window !== 'undefined' && window.Vue) {
   LpbH5Editor.install(window.Vue)
 }
+
+LpbH5Editor.lbpPlugin = lbpPluginController
 
 export default LpbH5Editor

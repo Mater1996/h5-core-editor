@@ -9,8 +9,6 @@ import { Layout, Button, Tooltip } from 'ant-design-vue'
 import hotkeys from 'hotkeys-js'
 import fixedTools from './options'
 
-console.log(Layout)
-
 export default {
   components: {
     [Layout.Sider.name]: Layout.Sider,

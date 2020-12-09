@@ -27,7 +27,7 @@ const packageDir = path.resolve(packagesDir, process.env.TARGET)
 const name = path.basename(packageDir)
 const resolveRoot = p => path.resolve(packagesDir, '../', p)
 const resolve = p => path.resolve(packageDir, p)
-// const pkg = require(resolve('package.json'))
+const pkg = require(resolve('package.json'))
 const isProd = process.env.NODE_ENV === 'production'
 
 const babelConfig = {
@@ -74,24 +74,13 @@ const globals = {
   immutable: 'immutable'
 }
 
+// 这里需要开发模式的时候分离所有的luban的包用来测试
+const { dependencies = {} } = pkg
 const external = [
-  'vue',
-  'quill',
-  'vant',
-  'resize-detector',
-  'hotkeys-js',
-  'ant-design-vue',
-  'vue-quill-editor',
-  'v-charts',
-  'stream',
-  'x-data-spreadsheet',
-  'papaparse',
-  'echarts',
-  'font-awesome',
-  'immutable'
+  ...Object.keys(dependencies).filter(v => {
+    return isProd ? true : !/luban/.test(v)
+  })
 ]
-
-isProd && external.push(...['luban-h5-plugins'])
 
 module.exports = () => {
   return {
@@ -121,8 +110,7 @@ module.exports = () => {
       !isProd && alias({
         resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
         entries: {
-          'luban-h5-plugins': resolveRoot('packages/luban-h5-plugins/src'),
-          '@ant-design/icons/lib/': resolve('@ant-design/icons/es/')
+          'luban-h5-plugins': resolveRoot('packages/luban-h5-plugins/src')
         }
       }),
       image({
@@ -166,7 +154,7 @@ module.exports = () => {
       nodeResolve({
         browser: true,
         preferBuiltins: true,
-        mainFields: ['browser', 'module', 'main']
+        mainFields: ['main']
       }),
       commonjs({}),
       json(),

@@ -6,9 +6,7 @@
     "module": "commonjs",
     "paths": {
       "@/*": ["./packages/luban-h5-editor/src/*"],
-      "luban-h5-editor": ["./packages/luban-h5-editor/src"],
-      "luban-h5-plugins": ["./packages/luban-h5-plugins/src"],
-      "luban-h5-preview": ["./packages/luban-h5-preview/src"]
+      "@luban/*": ["./packages/*/src"]
     }
   },
   "include": [

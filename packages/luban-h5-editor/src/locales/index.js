@@ -13,8 +13,6 @@ import zhCNLang from './lang/zh-CN'
 
 Vue.use(VueI18n)
 
-console.log(Vue.prototype)
-
 const messages = {
   'en-US': {
     ...enUSLang
