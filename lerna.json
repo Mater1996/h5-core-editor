@@ -1,11 +1,7 @@
 {
-  "packages": [
-    "packages/*"
-  ],
+  "packages": ["packages/*"],
   "command": {
-    "publish": {
-      "registry": "http://npm.dict.inner.youdao.com/"
-    }
+    "publish": {}
   },
   "version": "1.0.9"
 }

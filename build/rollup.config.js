@@ -86,11 +86,20 @@ module.exports = () => {
   return {
     input: resolve('./src/index.js'),
     output: [
+      isProd && {
+        exports: 'auto',
+        name: name,
+        format: 'umd',
+        file: resolve(`./dist/${name}.prod.js`),
+        sourcemap: !isProd,
+        indent: isProd,
+        globals
+      },
       {
         exports: 'auto',
         name: name,
         format: 'umd',
-        file: resolve(isProd ? `./dist/${name}.prod.js` : `./dist/${name}.js`),
+        file: resolve(`./dist/${name}.js`),
         sourcemap: !isProd,
         indent: isProd,
         globals
