@@ -74,18 +74,25 @@ const globals = {
   immutable: 'immutable'
 }
 
-// 这里需要开发模式的时候分离所有的luban的包用来测试
+// 开发模式的时候合入所有的luban的包用来测试
 const { dependencies = {} } = pkg
-const external = [
-  ...Object.keys(dependencies)
-]
+const dependenciesKeys = Object.keys(dependencies)
+const lubanDependenciesKeys = dependenciesKeys.filter(v => /luban/.test(v))
+const external = dependenciesKeys.filter(v => isProd ? true : !/luban/.test(v))
+const devAlias = {}
+lubanDependenciesKeys.forEach(v => {
+  devAlias[v] = resolveRoot(`packages/${v}/src`)
+})
 
 module.exports = () => {
   return {
+    watch: {
+      clearScreen: false
+    },
     input: resolve('./src/index.js'),
     output: [
       isProd && {
-        exports: 'auto',
+        exports: 'named',
         name: name,
         format: 'umd',
         file: resolve(`./dist/${name}.prod.js`),
@@ -94,7 +101,7 @@ module.exports = () => {
         globals
       },
       {
-        exports: 'auto',
+        exports: 'named',
         name: name,
         format: 'umd',
         file: resolve(`./dist/${name}.js`),
@@ -113,6 +120,10 @@ module.exports = () => {
         entries: {
           '@': resolve('./src')
         }
+      }),
+      !isProd && alias({
+        resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
+        entries: devAlias
       }),
       image({
         output: resolve('dist/images'),

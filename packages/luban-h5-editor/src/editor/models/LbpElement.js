@@ -7,7 +7,6 @@
  */
 
 import lbpH5Plugins from 'luban-h5-plugins'
-import { isFunction } from 'lodash'
 import { ShapeLayerDefaultProps } from '../components/lbp-canvas/components/LbpElementRender/ShapeLayer'
 
 let id = 0
@@ -85,7 +84,7 @@ class LbpElement {
       return undefined
     }
     const def = prop.default
-    return isFunction(def) ? def.call(vm) : def
+    return typeof def === 'function' ? def.call(vm) : def
   }
 }
 
