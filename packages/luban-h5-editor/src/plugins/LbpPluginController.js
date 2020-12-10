@@ -6,7 +6,6 @@
  * @Description :
  */
 
-import { propsType } from 'luban-h5-plugins'
 import LbpPlugin from './LbpPlugin'
 
 class LbpPluginController {
@@ -36,7 +35,5 @@ class LbpPluginController {
     return this.getPluginsMap()[name]
   }
 }
-
-LbpPluginController.propsType = propsType
 
 export default LbpPluginController

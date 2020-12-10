@@ -5,8 +5,8 @@
  * @LastEditTime : 2020-12-03 15:07:48
  * @Description :
  */
-import propsType from './commom-props'
+import PropTypes from './commom-props'
 import _plugins from './plugins/_plugins'
 
-export { propsType }
+export { PropTypes }
 export default _plugins
