@@ -16,6 +16,7 @@ class LbpPluginController {
   }
 
   registerPlugin (option = {}) {
+    // TODO support system-js module register
     const plugin = new LbpPlugin(option)
     if (plugin) {
       this._plugins.push(plugin)

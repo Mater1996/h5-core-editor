@@ -5,7 +5,7 @@
  * @LastEditTime : 2020-11-17 16:48:13
  * @Description :
  */
-import PropTypes from '../../../commom-props'
+import PropTypes from '../../../PropTypes'
 import Parser from './excel-parser'
 import './index.scss'
 

@@ -5,7 +5,7 @@
  * @LastEditTime : 2020-11-25 18:52:19
  * @Description :
  */
-import PropTypes from '../../../commom-props'
+import PropTypes from '../../../PropTypes'
 
 export default {
   name: 'lbp-picture',

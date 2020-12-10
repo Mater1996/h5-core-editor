@@ -8,7 +8,7 @@
  * @Description: Do not edit
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
-import PropTypes from '../../../commom-props'
+import PropTypes from '../../../PropTypes'
 import './index.scss'
 
 export default {

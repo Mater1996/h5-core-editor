@@ -6,7 +6,7 @@
  * @Description :
  */
 
-import pluginsControl from '@/plugins'
+import lbpH5Plugins from 'luban-h5-plugins'
 import { isFunction } from 'lodash'
 import { ShapeLayerDefaultProps } from '../components/lbp-canvas/components/LbpElementRender/ShapeLayer'
 
@@ -23,7 +23,7 @@ class LbpElement {
     if (pluginName) {
       this.id = id++
       this.pluginName = pluginName
-      const plugin = pluginsControl.getPlugin(pluginName)
+      const plugin = lbpH5Plugins.getPlugin(pluginName)
       // 传入具体的element render 的 参数
       this.props = {
         ...LbpElement.getPluginProps(plugin.component),

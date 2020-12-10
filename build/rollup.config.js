@@ -77,9 +77,7 @@ const globals = {
 // 这里需要开发模式的时候分离所有的luban的包用来测试
 const { dependencies = {} } = pkg
 const external = [
-  ...Object.keys(dependencies).filter(v => {
-    return isProd ? true : !/luban/.test(v)
-  })
+  ...Object.keys(dependencies)
 ]
 
 module.exports = () => {
@@ -114,12 +112,6 @@ module.exports = () => {
         resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
         entries: {
           '@': resolve('./src')
-        }
-      }),
-      !isProd && alias({
-        resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
-        entries: {
-          'luban-h5-plugins': resolveRoot('packages/luban-h5-plugins/src')
         }
       }),
       image({

@@ -9,7 +9,7 @@
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
 
-import PropTypes from '../../../commom-props'
+import PropTypes from '../../../PropTypes'
 import { NoticeBar } from 'vant'
 import 'vant/lib/notice-bar/style'
 

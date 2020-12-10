@@ -9,7 +9,7 @@ import ShortcutButton from './shortcut-button'
 import UsageTip from './usage-tip'
 import LoadNpmPlugins from './load-npm-plugins.vue'
 import dragMixin from './mixins/drag'
-import pluginsControl from '@/plugins'
+import lbpH5Plugins from 'luban-h5-plugins'
 import { Row, Col } from 'ant-design-vue'
 
 export default {
@@ -32,7 +32,7 @@ export default {
       <a-row style="padding-bottom: 24px">
         <UsageTip />
         {[]
-          .concat(pluginsControl.getPlugins(), this.npmPackages)
+          .concat(lbpH5Plugins.getPlugins(), this.npmPackages)
           .filter(plugin => plugin.visible)
           .map(plugin => (
             <a-col span={12} style={{ marginTop: '10px' }}>

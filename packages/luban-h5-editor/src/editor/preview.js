@@ -6,7 +6,7 @@
  * @Description :
  */
 import '@/styles/index.scss'
-import '@/plugins'
+import 'luban-h5-plugins'
 
 import LbpCanvas from './components/lbp-canvas'
 import LbpWork from './models/LbpWork'

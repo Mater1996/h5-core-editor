@@ -6,7 +6,7 @@
  * @Description : 右侧panel为修改 props， events, animations 等属性
  */
 import { Layout, Tabs } from 'ant-design-vue'
-import pluginsControl from '@/plugins'
+import lbpH5Plugins from 'luban-h5-plugins'
 import { pick } from 'lodash'
 import RenderPropsEditor from './props'
 import RenderScriptEditor from './script'
@@ -35,7 +35,7 @@ export default {
     editPropsConfig () {
       const { element } = this
       if (element && element.pluginName) {
-        const { component } = pluginsControl.getPlugin(element.pluginName)
+        const { component } = lbpH5Plugins.getPlugin(element.pluginName)
         return this.getPropsWithEditor(component.props)
       } else {
         return {}

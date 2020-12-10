@@ -5,13 +5,13 @@
  * @LastEditTime : 2020-12-04 16:15:33
  * @Description :
  */
+import 'luban-h5-plugins'
 import 'font-awesome/css/font-awesome.min.css'
 import 'ant-design-vue/dist/antd.css'
 import { Layout } from 'ant-design-vue'
 import { debounce } from 'lodash'
 
 import '@/styles/index.scss'
-import '@/plugins'
 import i18n from '@/locales'
 import history from '@/utils/history'
 
@@ -19,7 +19,7 @@ import config from './config'
 import LbpWork from './models/LbpWork'
 import LbpPage from './models/LbpPage'
 import LbpElement from './models/LbpElement'
-import LbpCanvas from './components/lbp-canvas'
+import LbpH5Canvas from './components/lbp-canvas'
 import FixedTools from './components/fixed-tools/index'
 import EditorRightPanel from './components/right-panel'
 import EditorLeftPanel from './components/left-panel'
@@ -183,7 +183,7 @@ const LpbH5Editor = {
                 height={this.currentPage.height}
                 v-show={this.auxiliayVisible}
               />
-              <LbpCanvas
+              <LbpH5Canvas
                 width={this.currentPage.width}
                 height={this.currentPage.height}
                 elements={this.currentPage.elements}

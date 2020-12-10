@@ -5,8 +5,13 @@
  * @LastEditTime : 2020-12-03 15:07:48
  * @Description :
  */
-import PropTypes from './commom-props'
+import PropTypes from './PropTypes'
 import _plugins from './plugins/_plugins'
+import LbpPluginController from './LbpPluginController'
+
+const lbpPluginController = new LbpPluginController({
+  plugins: _plugins
+})
 
 export { PropTypes }
-export default _plugins
+export default lbpPluginController

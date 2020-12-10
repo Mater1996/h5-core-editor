@@ -1,4 +1,4 @@
-import PropTypes from '../../../commom-props'
+import PropTypes from '../../../PropTypes'
 import LbpFormRadio from '../lbp-form-radio'
 
 function getDefaultItems () {

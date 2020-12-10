@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/Mater1996/luban-h5-preview/issues"
   },
-  "gitHead": "324c2ec954ede4a064d75a14d255f2b1cac604bc"
+  "gitHead": "324c2ec954ede4a064d75a14d255f2b1cac604bc",
+  "dependencies": {
+    "luban-h5-editor": "^1.0.13"
+  }
 }

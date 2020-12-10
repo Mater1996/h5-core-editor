@@ -6,7 +6,7 @@
  * @Description :
  */
 import { cloneDeep } from 'lodash'
-import pluginsControl from '@/plugins'
+import lbpH5Plugins from 'luban-h5-plugins'
 import LbpElement from '@/editor/models/LbpElement'
 
 export default {
@@ -35,7 +35,7 @@ export default {
   },
   render () {
     const element = this.element
-    const { component } = (this.plugin = pluginsControl.getPlugin(
+    const { component } = (this.plugin = lbpH5Plugins.getPlugin(
       element.pluginName
     ))
     return component ? (

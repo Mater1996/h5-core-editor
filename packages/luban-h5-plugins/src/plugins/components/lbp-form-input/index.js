@@ -1,5 +1,5 @@
 // https://github.com/luban-h5-components/plugin-common-props
-import PropTypes from '../../../commom-props'
+import PropTypes from '../../../PropTypes'
 
 const typeOptions = [
   {

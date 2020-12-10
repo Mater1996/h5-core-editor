@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-import PropTypes from '../../../../commom-props'
+import PropTypes from '../../../../PropTypes'
 import Map from './Map'
 import MapMixin from './mixin'
 

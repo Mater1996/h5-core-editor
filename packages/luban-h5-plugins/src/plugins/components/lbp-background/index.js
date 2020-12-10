@@ -8,7 +8,7 @@
  * @Description: luban-h5 background image/color component/plugin
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
-import PropTypes from '../../../commom-props'
+import PropTypes from '../../../PropTypes'
 
 function renderWaterMark ({
   // 使用 ES6 的函数默认值方式设置参数的默认取值
