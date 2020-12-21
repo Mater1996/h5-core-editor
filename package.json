@@ -6,10 +6,30 @@
   "scripts": {
     "dev": "node scripts/dev.js",
     "build": "node scripts/build.js",
-    "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx,.vue ./src && npm run lint:style",
-    "lint:js": "eslint --ext .js,.jsx,.ts,.tsx,.vue ./src",
-    "lint:style": "stylelint --fix \"./src/**/*.scss\" --syntax scss",
-    "prettier": "prettier -c --write \"**/*\""
+    "build:plugins": "node scripts/build.plugin.js",
+    "lint:fix": "npm run lint:js && npm run lint:style",
+    "lint:js": "eslint --fix packages/*/src/**/*.js --cache",
+    "lint:style": "stylelint --fix \"packages/*/src/**/*.scss\" --syntax scss",
+    "prettier": "prettier -c --write \"**/*\"",
+    "release": "npx standard-version"
+  },
+  "script": {
+    "release": "npx standard-version",
+    "commit": "git-cz"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "lint-staged": {
+    "*.{js,vue}": [
+      "npm run lint:fix",
+      "git add"
+    ]
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
@@ -30,6 +50,7 @@
     "babel-plugin-import": "^1.13.1",
     "core-js": "^3.6.5",
     "cross-env": "^6.0.3",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^5.16.0",
     "eslint-plugin-cypress": "^2.11.1",
     "eslint-plugin-import": "^2.22.1",
@@ -39,6 +60,7 @@
     "eslint-plugin-vue": "^4.0.0",
     "execa": "^5.0.0",
     "lerna": "^3.22.1",
+    "lint-staged": "^10.5.3",
     "node-sass": "^4.14.1",
     "postcss-url": "^9.0.0",
     "rollup": "^2.32.1",
@@ -59,6 +81,7 @@
     "stylelint-scss": "^3.18.0",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
-    "vue-template-compiler": "^2.6.12"
+    "vue-template-compiler": "^2.6.12",
+    "yorkie": "^2.0.0"
   }
 }

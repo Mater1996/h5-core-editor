@@ -86,20 +86,8 @@ lubanDependenciesKeys.forEach(v => {
 
 module.exports = () => {
   return {
-    watch: {
-      clearScreen: false
-    },
     input: resolve('./src/index.js'),
     output: [
-      isProd && {
-        exports: 'named',
-        name: name,
-        format: 'umd',
-        file: resolve(`./dist/${name}.prod.js`),
-        sourcemap: !isProd,
-        indent: isProd,
-        globals
-      },
       {
         exports: 'named',
         name: name,
@@ -133,7 +121,7 @@ module.exports = () => {
       }),
       replace({
         'process.env.NODE_ENV': JSON.stringify(
-          !isProd ? 'development' : 'production'
+          process.env.NODE_ENV
         )
       }),
       postcss({

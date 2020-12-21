@@ -5,8 +5,7 @@
  * @LastEditTime : 2020-12-04 16:05:44
  * @Description :
  */
-
-import LbpH5Plugin from 'luban-h5-plugins'
+import LbpH5Plugin from '@/plugins'
 import LbpH5Editor from '@/editor'
 import LbpH5Canvas from '@/editor/components/lbp-canvas'
 import LbpWork from '@/editor/models/LbpWork'

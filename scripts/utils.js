@@ -17,3 +17,10 @@ exports.targets = fs.readdirSync('packages').filter(f => {
   }
   return true
 })
+
+exports.plugins = fs.readdirSync('packages/luban-h5-plugins/src/plugins').filter(f => {
+  if (!fs.statSync(`packages/luban-h5-plugins/src/plugins/${f}`).isDirectory()) {
+    return false
+  }
+  return true
+})

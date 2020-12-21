@@ -1,9 +1,10 @@
 {
-  "allowJs": true,
   "compilerOptions": {
     "baseUrl": ".",
     "target": "es6",
     "module": "commonjs",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "paths": {
       "@/*": ["./packages/luban-h5-editor/src/*"],
       "luban-h5-editor": ["./packages/luban-h5-editor/src"],

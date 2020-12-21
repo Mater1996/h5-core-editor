@@ -11,7 +11,6 @@ module.exports = {
   chainWebpack: function(config) {
     config.module.rule('js').exclude.add(/luban-h5-editor.js/)
     config.module.rule('js').exclude.add(/luban-h5-plugins.js/)
-    config.module.rule('eslint').exclude.add(/luban-h5-editor.js/)
-    config.module.rule('eslint').exclude.add(/luban-h5-plugins.js/)
+    config.module.rule('eslint').exclude.add(/luban-h5-editor|luban-h5-plugins/)
   }
 }

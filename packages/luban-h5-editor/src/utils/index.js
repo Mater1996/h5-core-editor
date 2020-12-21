@@ -44,3 +44,7 @@ export const renderStyle = function (
   })
   return newStyle
 }
+
+export function isPromise (value) {
+  return value && typeof value.subscribe !== 'function' && typeof value.then === 'function'
+}

@@ -4,9 +4,10 @@
  * @Date : 2020-11-05 10:04:35
  * @LastEditTime : 2020-11-25 18:51:55
  * @Description :
+ * TODO support system-js to async component
  */
 import { cloneDeep } from 'lodash'
-import lbpH5Plugins from 'luban-h5-plugins'
+import lbpH5Plugins from '@/plugins'
 import LbpElement from '@/editor/models/LbpElement'
 
 export default {

@@ -2,11 +2,10 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-12-04 11:44:49
+ * @LastEditTime: 2020-12-21 16:40:28
  * @Description : 右侧panel为修改 props， events, animations 等属性
  */
 import { Layout, Tabs } from 'ant-design-vue'
-import lbpH5Plugins from 'luban-h5-plugins'
 import { pick } from 'lodash'
 import RenderPropsEditor from './props'
 import RenderScriptEditor from './script'
@@ -35,8 +34,7 @@ export default {
     editPropsConfig () {
       const { element } = this
       if (element && element.pluginName) {
-        const { component } = lbpH5Plugins.getPlugin(element.pluginName)
-        return this.getPropsWithEditor(component.props)
+        return element.editorProps
       } else {
         return {}
       }
@@ -59,11 +57,6 @@ export default {
   methods: {
     setActiveTab (activeTabKey) {
       this.activeTabKey = activeTabKey
-    },
-    getPropsWithEditor (props) {
-      return Object.fromEntries(
-        Object.entries(props).filter(([, value]) => value.editor)
-      )
     }
   },
   render () {

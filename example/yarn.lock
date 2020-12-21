@@ -7678,6 +7678,11 @@ svgo@^1.0.0:
     unquote "~1.1.1"
     util.promisify "~1.0.0"
 
+systemjs@^6.8.1:
+  version "6.8.1"
+  resolved "http://npm.dict.inner.youdao.com/systemjs/-/systemjs-6.8.1.tgz#556f9254b3867568d6b3e43c4732aca8c29bc981"
+  integrity sha512-HjxELHbx2LpfHfrsrYFMvkK1Hfh3IpUxPUNUzClxThW0POUlv53qb8N0FZ48+hlfIC4OANFwzxwRp4fTXSfYKw==
+
 table@^5.2.3:
   version "5.4.6"
   resolved "https://registry.npm.taobao.org/table/download/table-5.4.6.tgz?cache=0&sync_timestamp=1599191046284&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftable%2Fdownload%2Ftable-5.4.6.tgz#1292d19500ce3f86053b05f0e8e7e4a3bb21079e"

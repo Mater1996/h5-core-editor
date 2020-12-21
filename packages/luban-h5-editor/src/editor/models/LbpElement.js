@@ -6,7 +6,8 @@
  * @Description :
  */
 
-import lbpH5Plugins from 'luban-h5-plugins'
+import { isPromise } from '@/utils'
+import lbpH5Plugins from '@/plugins'
 import { ShapeLayerDefaultProps } from '../components/lbp-canvas/components/LbpElementRender/ShapeLayer'
 
 let id = 0
@@ -25,9 +26,19 @@ class LbpElement {
       const plugin = lbpH5Plugins.getPlugin(pluginName)
       // 传入具体的element render 的 参数
       this.props = {
-        ...LbpElement.getPluginProps(plugin.component),
         ...props
       }
+      this.editorProps = {}
+      LbpElement.getComponent(plugin, component => {
+        this.component = component
+        this.props = {
+          ...LbpElement.getPluginProps(component),
+          ...this.props
+        }
+        this.editorProps = {
+          ...LbpElement.getEditorProps(component)
+        }
+      })
       // 传入具体的element render 的 属性
       this.attrs = {
         ...attrs
@@ -43,6 +54,8 @@ class LbpElement {
       }
       // 传入 animateLayer 以实现动画效果
       this.animations = [...animations]
+
+      console.log(this)
     } else {
       console.error('lbpElement need a name of plugin ：pluginName')
     }
@@ -70,6 +83,23 @@ class LbpElement {
     }
   }
 
+  static getComponent (plugin, cb) {
+    const { component } = plugin
+    if (typeof component === 'object') {
+      cb && cb(component)
+      return component
+    } else if (typeof component === 'function') {
+      const c = component()
+      if (isPromise(c)) {
+        c.then(res => {
+          cb && cb(res.default)
+        })
+      } else {
+        cb && cb(c)
+      }
+    }
+  }
+
   static getPluginProps (component) {
     const props = {}
     const { props: propsDefine } = component
@@ -85,6 +115,12 @@ class LbpElement {
     }
     const def = prop.default
     return typeof def === 'function' ? def.call(vm) : def
+  }
+
+  static getEditorProps ({ props = {} }) {
+    return Object.fromEntries(
+      Object.entries(props).filter(([, value]) => value.editor)
+    )
   }
 }
 

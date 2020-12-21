@@ -7,8 +7,4 @@
  */
 'use strict'
 
-if (process.env.NODE_ENV === 'production') {
-  module.exports = require('./dist/luban-h5-editor.prod.js')
-} else {
-  module.exports = require('./dist/luban-h5-editor.js')
-}
+module.exports = require('./dist/luban-h5-editor.js')

@@ -33,4 +33,11 @@ const LbpH5Preview = {
   }
 }
 
+LbpH5Preview.install = (Vue, opts = {}) => {
+  Vue.component(LbpH5Preview.name, LbpH5Preview)
+}
+if (typeof window !== 'undefined' && window.Vue) {
+  LbpH5Preview.install(window.Vue)
+}
+
 export default LbpH5Preview

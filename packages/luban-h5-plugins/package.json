@@ -11,7 +11,8 @@
   "main": "index.js",
   "files": [
     "index.js",
-    "dist"
+    "dist",
+    "lib"
   ],
   "repository": {
     "type": "git",

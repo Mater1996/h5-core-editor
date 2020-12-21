@@ -9,7 +9,7 @@ import ShortcutButton from './shortcut-button'
 import UsageTip from './usage-tip'
 import LoadNpmPlugins from './load-npm-plugins.vue'
 import dragMixin from './mixins/drag'
-import lbpH5Plugins from 'luban-h5-plugins'
+import lbpH5Plugins from '@/plugins'
 import { Row, Col } from 'ant-design-vue'
 
 export default {
