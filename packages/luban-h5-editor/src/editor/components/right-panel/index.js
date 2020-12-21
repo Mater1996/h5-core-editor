@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2020-12-21 16:40:28
+ * @LastEditTime: 2020-12-21 17:13:38
  * @Description : 右侧panel为修改 props， events, animations 等属性
  */
 import { Layout, Tabs } from 'ant-design-vue'
@@ -34,7 +34,8 @@ export default {
     editPropsConfig () {
       const { element } = this
       if (element && element.pluginName) {
-        return element.editorProps
+        console.log(element.getEditorProps())
+        return element.getEditorProps()
       } else {
         return {}
       }

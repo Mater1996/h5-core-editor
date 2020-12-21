@@ -1,8 +1,8 @@
 /*
  * @Author: ly525
  * @Date: 2019-11-24 18:51:58
- * @LastEditors : Please set LastEditors
- * @LastEditTime : 2020-11-17 16:51:38
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2020-12-21 17:31:38
  * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-text.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: luban-h5 text component/plugin
@@ -75,8 +75,7 @@ export default {
               }}
               onChange={({ quill, html, text }) => {
                 this.$emit('input', {
-                  value: html,
-                  pluginName: 'lbp-text'
+                  value: html
                 })
               }}>
             </quillEditor>
