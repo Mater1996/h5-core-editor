@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node scripts/dev.js",
     "build": "node scripts/build.js",
+    "build:example": "npm run --prefix ./example build",
     "build:plugins": "node scripts/build.plugin.js",
     "lint:fix": "npm run lint:js && npm run lint:style",
     "lint:js": "eslint --fix packages/*/src/**/*.js --cache",
