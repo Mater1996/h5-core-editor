@@ -1,16 +1,11 @@
 **/*.svg
 package.json
-.umi
-.umi-production
 /dist
-.dockerignore
 .DS_Store
 .eslintignore
 *.png
 *.toml
-docker
 .editorconfig
-Dockerfile*
 .gitignore
 .prettierignore
 LICENSE
@@ -18,5 +13,4 @@ LICENSE
 *.lock
 yarn-error.log
 .history
-CNAME
 /build
