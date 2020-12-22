@@ -12,10 +12,9 @@
     "lint:js": "eslint --fix packages/*/src/**/*.js --cache",
     "lint:style": "stylelint --fix \"packages/*/src/**/*.scss\" --syntax scss",
     "prettier": "prettier -c --write \"**/*\"",
-    "release": "npx standard-version"
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
   "script": {
-    "release": "npx standard-version",
     "commit": "git-cz"
   },
   "config": {
@@ -49,6 +48,7 @@
     "babel-eslint": "^10.1.0",
     "babel-plugin-component": "^1.1.1",
     "babel-plugin-import": "^1.13.1",
+    "conventional-changelog-cli": "^2.1.1",
     "core-js": "^3.6.5",
     "cross-env": "^6.0.3",
     "cz-conventional-changelog": "^3.3.0",
