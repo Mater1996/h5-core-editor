@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-12-04 16:15:33
+ * @LastEditTime: 2020-12-25 15:06:51
  * @Description :
  */
 import 'luban-h5-plugins'
@@ -47,7 +47,8 @@ const LpbH5Editor = {
     pageIndex: 0,
     activeElement: null,
     auxiliayVisible: false,
-    rightPanelWidth: config.rightPanelWidth
+    rightPanelWidth: config.rightPanelWidth,
+    lockElementUpdate: false
   }),
   computed: {
     currentPage () {
@@ -56,9 +57,9 @@ const LpbH5Editor = {
       return currentPage
     },
     elementsRect () {
-      const { currentPage = {} } = this
+      const { currentPage = {}, activeElement } = this
       const { elements = [] } = currentPage
-      return elements.map(({ style }) => style)
+      return elements.filter(v => v !== activeElement).map(({ style }) => style)
     }
   },
   watch: {
@@ -113,6 +114,9 @@ const LpbH5Editor = {
     redo () {
       this.work = new LbpWork(history.redo())
     },
+    _handlerEditorMouseDown () {
+      this.activeElement && this._showAuxiliay()
+    },
     _hideAuxiliay () {
       this.auxiliayVisible = false
     },
@@ -137,6 +141,13 @@ const LpbH5Editor = {
       this.updateElement({ animations: value })
     },
     _handleElementRectChange (value) {
+      const [lockX, lockY] = this.$refs.auxiliayLine.calcVHLine(value)
+      if (lockX) {
+        delete value.left
+      }
+      if (lockY) {
+        delete value.top
+      }
       this.updateElement({ style: value })
     },
     _handleAddElement (data) {
@@ -174,10 +185,11 @@ const LpbH5Editor = {
           <a-layout-content class="scroll-view remove-scrollbar">
             <div
               class="editor-content"
-              onMousedown={this._showAuxiliay}
+              onMousedown={this._handlerEditorMouseDown}
               onMouseup={this._hideAuxiliay}
             >
               <AuxiliayLine
+                ref="auxiliayLine"
                 data={this.elementsRect}
                 width={this.currentPage.width}
                 height={this.currentPage.height}

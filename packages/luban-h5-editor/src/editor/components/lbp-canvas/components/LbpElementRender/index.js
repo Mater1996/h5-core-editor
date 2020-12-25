@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-13 10:09:46
- * @LastEditTime : 2020-11-19 17:19:27
+ * @LastEditTime: 2020-12-24 16:36:28
  * @Description :
  */
 import LbpElement from '@/editor/models/LbpElement'

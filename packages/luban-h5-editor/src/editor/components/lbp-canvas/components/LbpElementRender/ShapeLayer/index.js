@@ -66,20 +66,19 @@ export default {
     }
   },
   watch: {
-    elStyle () {
-      const { elStyle } = this
-      this.rect = this.getReact(elStyle)
-      this.shapeStyle = renderStyle(elStyle, this.lbpCanvasContext.unit)
+    elStyle: {
+      handler () {
+        const { elStyle } = this
+        this.rect = this.getReact(elStyle)
+        this.shapeStyle = renderStyle(elStyle, this.lbpCanvasContext.unit)
+      },
+      deep: true
     },
     rect: {
       handler () {
         const newStyle = {
           ...this.elStyle,
           ...this.rect
-        }
-        this.shapeStyle = {
-          ...this.shapeStyle,
-          ...renderStyle(this.rect, this.lbpCanvasContext.unit)
         }
         this.$emit('change', newStyle)
       },
