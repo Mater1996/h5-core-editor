@@ -2,7 +2,7 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-10-29 19:52:14
- * @LastEditTime: 2020-12-29 12:02:00
+ * @LastEditTime: 2020-12-29 12:03:21
  * @Description: 
 -->
 # 鲁班H5核心编辑模块
@@ -28,14 +28,14 @@ Vue.use(lubanH5Editor)
 ```
 
 ```html
-<CoreEditor work="{this.work}" ref="editor" />
+<CoreEditor ref="editor" />
 ```
 
 #### props
 
 | name | default |      |
 | ---- | ------- | ---- |
-| data | {}      | 数据 |
+| data | {}      | 初始数据 |
 
 #### method
 
