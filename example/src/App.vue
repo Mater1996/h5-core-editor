@@ -2,7 +2,7 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-11-02 09:25:51
- * @LastEditTime: 2020-12-25 14:38:26
+ * @LastEditTime: 2020-12-25 17:31:16
  * @Description:
 -->
 <template>
@@ -27,24 +27,24 @@ export default {
           {
             title: '',
             elements: [
-              {
-                pluginName: 'lbp-background',
-                props: {
-                  imgSrc: '',
-                  isRem: false,
-                },
-                style: {
-                  fillType: 'contain',
-                  top: 140,
-                  left: 57,
-                  width: 186,
-                  height: 292,
-                  textAlign: 'center',
-                  color: '#000000',
-                  backgroundColor: 'rgba(255, 255, 255, 0)',
-                  fontSize: 14,
-                },
-              },
+              // {
+              //   pluginName: 'lbp-background',
+              //   props: {
+              //     imgSrc: '',
+              //     isRem: false,
+              //   },
+              //   style: {
+              //     fillType: 'contain',
+              //     top: 140,
+              //     left: 57,
+              //     width: 186,
+              //     height: 292,
+              //     textAlign: 'center',
+              //     color: '#000000',
+              //     backgroundColor: 'rgba(255, 255, 255, 0)',
+              //     fontSize: 14,
+              //   },
+              // },
               // {
               //   name: 'lbp-picture',
               //   props: {

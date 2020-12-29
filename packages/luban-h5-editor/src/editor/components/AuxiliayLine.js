@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-06 10:50:05
- * @LastEditTime: 2020-12-25 15:24:21
+ * @LastEditTime: 2020-12-28 18:18:56
  * @Description :
  */
 const maxOffset = 4
@@ -23,20 +23,16 @@ export default {
     }
   },
   data: () => ({
+    vLinesFlag: [],
     vLines: [],
+    hLinesFlag: [],
     hLines: []
   }),
   computed: {
-    pageCenter () {
-      return [
-        [null, this.width / 2, null],
-        [null, this.height / 2, null]
-      ]
-    },
     elementsCoords () {
       const elements = [
-        ...this.data,
-        { left: 0, top: 0, width: this.width, height: this.height }
+        { left: 0, top: 0, width: this.width, height: this.height },
+        ...this.data
       ]
       const referElementsXCoords = []
       const referElementsYCoords = []
@@ -55,69 +51,58 @@ export default {
         [top, top + height / 2, top + height]
       ]
     },
+    genLines (referElements, coords, currentLines) {
+      let index = 0
+      const lines = [false, false, false]
+      referElements.forEach(referElement => {
+        referElement.forEach(referPosition => {
+          coords.forEach(coordsPosition => {
+            const lineIndex = index++
+            const offset = referPosition - coordsPosition
+            const hasLine = currentLines[lineIndex]
+            if (hasLine) {
+              if (Math.abs(offset) > maxOffset) {
+                currentLines[lineIndex] = false
+              } else {
+                lines[lineIndex % 3] = referPosition
+              }
+            } else if (parseInt(offset) === 0) {
+              currentLines[lineIndex] = true
+              lines[lineIndex % 3] = referPosition
+            } else {
+              currentLines[lineIndex] = false
+            }
+          })
+        })
+      })
+      return lines
+    },
     calcVHLine (data) {
       const [exCoords, eyCoords] = this.genBorder(data)
       const [referElementsX, referElementsY] = this.elementsCoords
-      let xIndex = 0
-      exCoords.forEach(eX => {
-        referElementsX.forEach(referElementX => {
-          referElementX.forEach(referX => {
-            const lineIndex = xIndex++
-            const offset = referX - eX
-            const hasLine = this.vLines[lineIndex]
-            if (hasLine) {
-              if (Math.abs(offset) > maxOffset) {
-                this.$set(this.vLines, lineIndex, null)
-              }
-            } else if (parseInt(offset) === 0) {
-              this.$set(this.vLines, lineIndex, { left: eX })
-            }
-          })
-        })
-      })
-      let yIndex = 0
-      eyCoords.forEach(eY => {
-        referElementsY.forEach(referElementY => {
-          referElementY.forEach(referY => {
-            const lineIndex = yIndex++
-            const offset = referY - eY
-            const hasLine = this.hLines[lineIndex]
-            if (hasLine) {
-              if (Math.abs(offset) > maxOffset) {
-                this.$set(this.hLines, lineIndex, null)
-              }
-            } else if (parseInt(offset) === 0) {
-              this.$set(this.hLines, lineIndex, { top: eY })
-            }
-          })
-        })
-      })
-      return [
-        this.vLines.filter(Boolean).length,
-        this.hLines.filter(Boolean).length
-      ]
+      this.vLines = this.genLines(referElementsX, exCoords, this.vLinesFlag)
+      this.hLines = this.genLines(referElementsY, eyCoords, this.hLinesFlag)
+      return [this.vLines, this.hLines]
     }
   },
   render () {
     return (
       <div class="luban-auxiliary-line">
-        {this.vLines.map(
-          line =>
-            line && (
-              <div
-                class="v-line"
-                style={{ left: `${line.left}px`, height: `${this.height}px` }}
-              ></div>
-            )
+        {this.vLines.map(value =>
+          value ? (
+            <div
+              class="v-line"
+              style={{ left: `${value}px`, height: `${this.height}px` }}
+            ></div>
+          ) : null
         )}
-        {this.hLines.map(
-          line =>
-            line && (
-              <div
-                class="h-line"
-                style={{ top: `${line.top}px`, width: `${this.width}px` }}
-              ></div>
-            )
+        {this.hLines.map(value =>
+          value ? (
+            <div
+              class="h-line"
+              style={{ top: `${value}px`, width: `${this.width}px` }}
+            ></div>
+          ) : null
         )}
       </div>
     )

@@ -2,11 +2,12 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2020-12-21 17:13:38
+ * @LastEditTime: 2020-12-29 10:45:32
  * @Description : 右侧panel为修改 props， events, animations 等属性
  */
 import { Layout, Tabs } from 'ant-design-vue'
 import { pick } from 'lodash'
+import { PAGE_MODE } from '@/constants/work'
 import RenderPropsEditor from './props'
 import RenderScriptEditor from './script'
 import RenderAnimationEditor from './animation'
@@ -23,7 +24,7 @@ export default {
   props: {
     width: {
       type: Number,
-      default: 375
+      default: PAGE_MODE.WIDTH
     },
     element: {
       type: Object,
@@ -34,7 +35,6 @@ export default {
     editPropsConfig () {
       const { element } = this
       if (element && element.pluginName) {
-        console.log(element.getEditorProps())
         return element.getEditorProps()
       } else {
         return {}

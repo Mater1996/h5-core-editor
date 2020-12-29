@@ -2,10 +2,11 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-06 11:03:51
- * @LastEditTime : 2020-11-20 15:28:05
+ * @LastEditTime: 2020-12-25 15:49:06
  * @Description :
  */
 import { InputNumber } from 'ant-design-vue'
+import { PAGE_MODE } from '@/constants/work'
 
 export default {
   props: {
@@ -70,7 +71,7 @@ export default {
             <div class="indicator"></div>
           </div>
           <div class="adjust-tip">
-            <span>375 x</span>
+            <span>{PAGE_MODE.WIDTH} x</span>
             <a-input-number
               size="small"
               min={0}

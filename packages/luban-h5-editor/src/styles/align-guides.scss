@@ -16,6 +16,7 @@
   background-color: #94f5ff;
   z-index: 999;
   transform: translateX(-50%);
+  pointer-events: none;
 }
 
 // 水平对齐参考线
@@ -26,4 +27,5 @@
   left: 0;
   background-color: #94f5ff;
   z-index: 999;
+  pointer-events: none;
 }

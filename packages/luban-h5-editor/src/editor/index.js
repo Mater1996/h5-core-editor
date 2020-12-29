@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2020-12-25 15:06:51
+ * @LastEditTime: 2020-12-29 10:43:51
  * @Description :
  */
 import 'luban-h5-plugins'
@@ -140,16 +140,40 @@ const LpbH5Editor = {
     _handleAnimationsChange (value) {
       this.updateElement({ animations: value })
     },
-    _handleElementRectChange (value) {
-      const [lockX, lockY] = this.$refs.auxiliayLine.calcVHLine(value)
-      if (lockX) {
-        delete value.left
+    _handleElementRectChange: (function () {
+      const lock = []
+      const vHandler = ['l', 'm', 'r']
+      const hHandler = ['t', 'm', 'b']
+      const effectRegex = [/l/, /t/, /r|lm/, /b|mt/]
+      const isFalse = v => v === false
+      return function (value = {}, effectHandler = []) {
+        const [point = 'mm'] = effectHandler
+        const [vLines, hLines] = this.$refs.auxiliayLine.calcVHLine(value) || []
+        const lockHandlerSet = new Set([])
+        let hasVLine = false
+        let hasHLine = false
+        vLines.forEach((v, vk) => {
+          hLines.forEach((h, hk) => {
+            const hasV = !isFalse(v)
+            const hasH = !isFalse(h)
+            !hasVLine && (hasVLine = hasV)
+            !hasHLine && (hasHLine = hasH)
+            const res = `${hasV ? vHandler[vk] : ''}${hasH ? hHandler[hk] : ''}`
+            if (res && new RegExp(res).test(point)) lockHandlerSet.add(res)
+          })
+        })
+        const [lockLeft, lockTop, lockW, lockH] = lock
+        lockLeft && delete value.left && delete value.width
+        lockTop && delete value.top && delete value.height
+        !lockLeft && lockW && delete value.width
+        !lockTop && lockH && delete value.height
+        this.updateElement({ style: value })
+        const lockHandler = [...lockHandlerSet]
+        const isLock = v => !!lockHandler.find(v.test.bind(v))
+        const lockTypes = effectRegex.map(isLock)
+        Object.assign(lock, point === 'mm' ? [hasVLine, hasHLine] : lockTypes)
       }
-      if (lockY) {
-        delete value.top
-      }
-      this.updateElement({ style: value })
-    },
+    })(),
     _handleAddElement (data) {
       this.addElement({
         pluginName: data.name,
