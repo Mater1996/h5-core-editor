@@ -2,7 +2,7 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-12-03 11:27:45
- * @LastEditTime: 2020-12-29 11:52:54
+ * @LastEditTime: 2020-12-29 12:04:07
  * @Description:
 -->
 
@@ -15,24 +15,8 @@
 ```js
 import 'luban-h5-editor/dist/luban-h5-editor.css'
 import lubanH5Editor from 'luban-h5-editor'
-
-Vue.use(lubanH5Editor)
-```
-
-```html
-<CoreEditor work="{this.work}" ref="editor" />
-```
-
-#### props
-
-| name | default |      |
-| ---- | ------- | ---- |
-| data | {}      | 数据 |
-
-#### method
-
-```js
 import { LbpButton } from 'luban-h5-plugins'
+
 lubanH5Editor.LbpH5Plugin.register({
   title: '普通按钮',
   name: LbpButton.name,
@@ -40,7 +24,21 @@ lubanH5Editor.LbpH5Plugin.register({
   visible: true,
   component: LbpButton
 }) // 注册某个插件
+
+Vue.use(lubanH5Editor)
 ```
+
+```html
+<CoreEditor ref="editor" />
+```
+
+#### props
+
+| name | default |      |
+| ---- | ------- | ---- |
+| data | {}      | 初始数据 |
+
+#### method
 
 实例方法
 
