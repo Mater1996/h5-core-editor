@@ -1,8 +1,6 @@
 const execa = require('execa')
 const { plugins: allPlugins } = require('./utils')
 
-console.log(allPlugins)
-
 async function build (target) {
   await execa(
     'rollup',

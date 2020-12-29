@@ -74,7 +74,7 @@ $pointSize: 8;
   cursor: w-resize;
 }
 
-.shape-scale__point[data-point='tm'] {
+.shape-scale__point[data-point='mt'] {
   margin-left: -#{$pointSize/2}px;
   margin-top: -#{$pointSize/2}px;
   left: 50%;
@@ -90,7 +90,7 @@ $pointSize: 8;
   cursor: e-resize;
 }
 
-.shape-scale__point[data-point='bm'] {
+.shape-scale__point[data-point='mb'] {
   margin-left: -#{$pointSize/2}px;
   margin-bottom: -#{$pointSize/2}px;
   left: 50%;

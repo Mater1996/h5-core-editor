@@ -10,7 +10,7 @@
     "build:plugins": "node scripts/build.plugin.js",
     "lint:fix": "npm run lint:js && npm run lint:style",
     "lint:js": "eslint --fix packages/*/src/**/*.js --cache",
-    "lint:style": "stylelint --fix \"packages/*/src/**/*.scss\" --syntax scss",
+    "lint:style": "stylelint --fix \"packages/*/src/**/*.scss\"",
     "prettier": "prettier -c --write \"**/*\"",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },

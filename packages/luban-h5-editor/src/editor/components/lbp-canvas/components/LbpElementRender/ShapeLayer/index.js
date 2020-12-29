@@ -1,16 +1,9 @@
+import { pickBy } from 'lodash'
 import './index.scss'
 import { renderStyle } from '@/utils'
 import vClickOutside from '@/directive/v-click-outside'
-/**
- * #!zh: 上下左右 对应的 东南西北
- * #!en: top(north)、bottom(south)、left(west)、right(east)
- */
-// const directionKey = {
-//   t: 'n',
-//   b: 's',
-//   l: 'w',
-//   r: 'e'
-// }
+
+const points = ['lt', 'rt', 'lb', 'rb', 'lm', 'rm', 'mt', 'mb']
 
 export const ShapeLayerDefaultProps = {
   top: 0,
@@ -19,27 +12,40 @@ export const ShapeLayerDefaultProps = {
   height: 40
 }
 
-const points = ['lt', 'rt', 'lb', 'rb', 'lm', 'rm', 'tm', 'bm']
-
 export default {
   directives: {
     vClickOutside: vClickOutside
   },
   props: {
-    elStyle: {
-      type: Object,
-      default: () => ({})
+    width: {
+      type: Number,
+      default: ShapeLayerDefaultProps.width
+    },
+    height: {
+      type: Number,
+      default: ShapeLayerDefaultProps.height
+    },
+    left: {
+      type: Number,
+      default: ShapeLayerDefaultProps.left
+    },
+    top: {
+      type: Number,
+      default: ShapeLayerDefaultProps.top
     },
     disable: {
       type: Boolean,
-      default: ShapeLayerDefaultProps.disable
+      default: false
     }
   },
   inject: ['lbpCanvasContext'],
   data () {
     return {
-      rect: this.getReact(this.elStyle),
-      shapeStyle: renderStyle(this.elStyle, this.lbpCanvasContext.unit),
+      rect: this.getShape(),
+      shapeStyle: renderStyle(
+        this.getShape(),
+        this.lbpCanvasContext.unit
+      ),
       startY: 0,
       startX: 0,
       point: '',
@@ -56,6 +62,14 @@ export default {
         right: lbpCanvasContext.width,
         bottom: lbpCanvasContext.height
       }
+    },
+    shape () {
+      return {
+        width: this.width,
+        height: this.height,
+        left: this.left,
+        top: this.top
+      }
     }
   },
   mounted () {
@@ -66,33 +80,46 @@ export default {
     }
   },
   watch: {
-    elStyle: {
-      handler () {
-        const { elStyle } = this
-        this.rect = this.getReact(elStyle)
-        this.shapeStyle = renderStyle(elStyle, this.lbpCanvasContext.unit)
-      },
-      deep: true
+    top (top) {
+      this.rect.top = top
+      this.renderShapeStyle()
+    },
+    left (left) {
+      this.rect.left = left
+      this.renderShapeStyle()
+    },
+    width (width) {
+      this.rect.width = width
+      this.renderShapeStyle()
+    },
+    height (height) {
+      this.rect.height = height
+      this.renderShapeStyle()
     },
     rect: {
-      handler () {
-        const newStyle = {
-          ...this.elStyle,
-          ...this.rect
-        }
-        this.$emit('change', newStyle)
+      handler (rect) {
+        this.$emit('change', { ...rect }, this.effect)
       },
       deep: true
     }
   },
   methods: {
-    getReact (elStyle) {
+    getShape () {
       return {
-        left: elStyle.left,
-        top: elStyle.top,
-        width: elStyle.width,
-        height: elStyle.height
+        width: this.width,
+        height: this.height,
+        left: this.left,
+        top: this.top
       }
+    },
+    renderShapeStyle () {
+      this.shapeStyle = {
+        ...this.shapeStyle,
+        ...renderStyle(this.shape, this.lbpCanvasContext.unit)
+      }
+    },
+    getReact (elStyle) {
+      return pickBy(elStyle, v => v !== undefined)
     },
     setActive (active) {
       if (this.active === active) return
@@ -135,6 +162,7 @@ export default {
       return (this.rect.top = nextTop)
     },
     handleShapeDown (e) {
+      this.rect = this.shape
       this.setActive(true)
       this.startY = e.clientY
       this.startX = e.clientX
@@ -143,6 +171,7 @@ export default {
     },
     handleShapeMove (e) {
       e.preventDefault()
+      this.effect = []
       const distanceX = e.clientX - this.startX
       const distanceY = e.clientY - this.startY
       this.startX = e.clientX
@@ -155,6 +184,7 @@ export default {
       document.removeEventListener('mouseup', this.handleShapeUp)
     },
     handlePointDown (point, e) {
+      this.rect = this.shape
       this.startY = e.clientY
       this.startX = e.clientX
       this.point = point
@@ -162,7 +192,9 @@ export default {
       document.addEventListener('mouseup', this.handlePointUp)
     },
     handlePointMove (e) {
-      const effect = [/l/, /t/, /r/, /b/].map(v => v.test(this.point))
+      const effectRegex = [/l/, /t/, /r|lm/, /b|mt/]
+      const effect = effectRegex.map(v => v.test(this.point))
+      this.effect = [this.point]
       const [effectLeft, effectTop, effectWidth, effectHeight] = effect
       const distanceX = e.clientX - this.startX
       const distanceY = e.clientY - this.startY
@@ -172,18 +204,28 @@ export default {
         const { left: currentLeft, width: currentWidth } = this.rect
         const effectLeftDistance = Math.min(currentWidth, distanceX)
         const effectWidthDistance = Math.min(currentLeft, -distanceX)
-        this.addLeft(effectLeftDistance)
-        this.addWidth(effectWidthDistance)
+        if (effectLeftDistance > 0) {
+          this.addWidth(effectWidthDistance)
+          this.addLeft(effectLeftDistance)
+        } else {
+          this.addLeft(effectLeftDistance)
+          this.addWidth(effectWidthDistance)
+        }
       }
       if (effectTop) {
         const { top: currentTop, height: currentHeight } = this.rect
         const effectTopDistance = Math.min(currentHeight, distanceY)
         const effectHeightDistance = Math.min(currentTop, -distanceY)
-        this.addTop(effectTopDistance)
-        this.addHeight(effectHeightDistance)
+        if (effectTopDistance > 0) {
+          this.addHeight(effectHeightDistance)
+          this.addTop(effectTopDistance)
+        } else {
+          this.addTop(effectTopDistance)
+          this.addHeight(effectHeightDistance)
+        }
       }
-      effectWidth && this.addWidth(distanceX)
-      effectHeight && this.addHeight(distanceY)
+      !effectLeft && effectWidth && this.addWidth(distanceX)
+      !effectTop && effectHeight && this.addHeight(distanceY)
     },
     handlePointUp () {
       document.removeEventListener('mousemove', this.handlePointMove)
@@ -203,7 +245,11 @@ export default {
       }
     }
     return (
-      <div style={this.shapeStyle} class="shape-layer" {...(!readonly ? options : {})}>
+      <div
+        style={this.shapeStyle}
+        class="shape-layer"
+        {...(!readonly ? options : {})}
+      >
         <div class="shape-content">{this.$slots.default}</div>
         {!readonly && (
           <div class="control">

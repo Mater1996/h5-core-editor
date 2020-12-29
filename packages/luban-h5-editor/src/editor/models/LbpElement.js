@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2020-12-21 17:53:45
+ * @LastEditTime: 2020-12-29 10:45:40
  * @Description :
  */
 
@@ -50,8 +50,6 @@ class LbpElement {
       }
       // 传入 animateLayer 以实现动画效果
       this.animations = [...animations]
-
-      console.log(this)
     } else {
       console.error('lbpElement need a name of plugin ：pluginName')
     }
