@@ -2,7 +2,7 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-10-29 19:52:14
- * @LastEditTime: 2020-12-29 12:00:28
+ * @LastEditTime: 2020-12-29 12:02:00
  * @Description: 
 -->
 # 鲁班H5核心编辑模块
@@ -14,6 +14,15 @@
 ```js
 import 'luban-h5-editor/dist/luban-h5-editor.css'
 import lubanH5Editor from 'luban-h5-editor'
+import { LbpButton } from 'luban-h5-plugins'
+
+lubanH5Editor.LbpH5Plugin.register({
+  title: '普通按钮',
+  name: LbpButton.name,
+  icon: 'hand-pointer-o',
+  visible: true,
+  component: LbpButton
+}) // 注册某个插件
 
 Vue.use(lubanH5Editor)
 ```
@@ -29,17 +38,6 @@ Vue.use(lubanH5Editor)
 | data | {}      | 数据 |
 
 #### method
-
-```js
-import { LbpButton } from 'luban-h5-plugins'
-lubanH5Editor.LbpH5Plugin.register({
-  title: '普通按钮',
-  name: LbpButton.name,
-  icon: 'hand-pointer-o',
-  visible: true,
-  component: LbpButton
-}) // 注册某个插件
-```
 
 实例方法
 
