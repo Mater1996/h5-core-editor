@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2020-12-29 10:43:51
+ * @LastEditTime: 2020-12-30 16:08:21
  * @Description :
  */
 import 'luban-h5-plugins'
@@ -140,14 +140,17 @@ const LpbH5Editor = {
     _handleAnimationsChange (value) {
       this.updateElement({ animations: value })
     },
+    /**
+     * TODO 目前只做到了锁定元素在辅助线位置 但是未做到吸附动作
+     * 因此需要判断当前拖拽的点 例如右侧影响宽 那么采取吸附的动作是增加宽度到辅助线
+     */
     _handleElementRectChange: (function () {
       const lock = []
       const vHandler = ['l', 'm', 'r']
       const hHandler = ['t', 'm', 'b']
       const effectRegex = [/l/, /t/, /r|lm/, /b|mt/]
       const isFalse = v => v === false
-      return function (value = {}, effectHandler = []) {
-        const [point = 'mm'] = effectHandler
+      return function (value = {}, [point = 'mm'] = []) {
         const [vLines, hLines] = this.$refs.auxiliayLine.calcVHLine(value) || []
         const lockHandlerSet = new Set([])
         let hasVLine = false
