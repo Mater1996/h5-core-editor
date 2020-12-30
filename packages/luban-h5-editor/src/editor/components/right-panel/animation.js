@@ -22,6 +22,7 @@ import {
 export default {
   components: {
     [InputNumber.name]: InputNumber,
+    [List.name]: List,
     [List.Item.name]: List.Item,
     [Tabs.name]: Tabs,
     [Form.name]: Form,
