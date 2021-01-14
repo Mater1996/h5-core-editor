@@ -9,6 +9,7 @@
       "@/*": ["./packages/luban-h5-editor/src/*"],
       "luban-h5-editor": ["./packages/luban-h5-editor/src"],
       "luban-h5-plugins": ["./packages/luban-h5-plugins/src"],
+      "luban-h5-canvas": ["./packages/luban-h5-canvas/src"],
       "luban-h5-preview": ["./packages/luban-h5-preview/src"]
     }
   },

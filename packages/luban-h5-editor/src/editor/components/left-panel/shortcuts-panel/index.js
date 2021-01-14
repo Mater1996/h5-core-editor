@@ -2,14 +2,14 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-18 09:35:11
- * @LastEditTime : 2020-11-19 10:35:25
+ * @LastEditTime: 2021-01-06 11:51:17
  * @Description :
  */
 import ShortcutButton from './shortcut-button'
 import UsageTip from './usage-tip'
 import LoadNpmPlugins from './load-npm-plugins.vue'
 import dragMixin from './mixins/drag'
-import lbpH5Plugins from '@/plugins'
+import lbpH5Plugins from '../../../../plugins'
 import { Row, Col } from 'ant-design-vue'
 
 export default {

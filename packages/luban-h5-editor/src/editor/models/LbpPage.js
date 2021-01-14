@@ -2,11 +2,11 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-19 21:14:56
+ * @LastEditTime: 2021-01-06 15:25:55
  * @Description :
  */
-import LbpElement from './LbpElement'
-import { PAGE_MODE } from '@/constants/work'
+import { createLbpElement } from './LbpElement'
+import { PAGE_MODE } from '../../constants/work'
 class LbpPage {
   constructor ({
     title = '',
@@ -24,13 +24,13 @@ class LbpPage {
   }
 
   clone () {
-    const elements = this.elements.map(element => new LbpElement(element))
+    const elements = this.elements.map(element => createLbpElement(element))
     return new LbpPage({ title: this.title, elements })
   }
 
   genElements (elements = []) {
     return Array.isArray(elements) && elements.length > 0
-      ? elements.map(v => new LbpElement(v))
+      ? elements.map(v => createLbpElement(v))
       : []
   }
 }

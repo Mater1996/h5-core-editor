@@ -2,8 +2,8 @@ import {
   animationOptions,
   animationValue2Name,
   firstLevelAnimationOptions
-} from '@/constants/animation.js'
-import EventBus from '@/bus'
+} from '../../../constants/animation.js'
+import EventBus from '../../../bus'
 import {
   Tabs,
   List,
@@ -95,7 +95,6 @@ export default {
         >
           {animations.map(group => (
             <a-tab-pane tab={group.label || group.value} key={group.value}>
-
               <a-list
                 grid={{ gutter: 12, column: 2 }}
                 dataSource={group.children}

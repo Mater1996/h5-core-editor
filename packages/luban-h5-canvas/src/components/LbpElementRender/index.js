@@ -2,10 +2,9 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-13 10:09:46
- * @LastEditTime: 2020-12-28 13:07:10
+ * @LastEditTime: 2021-01-14 16:21:45
  * @Description :
  */
-import LbpElement from '@/editor/models/LbpElement'
 import Render from './Render'
 import ShapeLayer from './ShapeLayer'
 import AnimateLayer from './AnimateLayer'
@@ -13,7 +12,7 @@ import AnimateLayer from './AnimateLayer'
 export default {
   props: {
     element: {
-      type: LbpElement,
+      type: Object,
       require: true
     }
   },

@@ -2,11 +2,11 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-25 17:00:09
+ * @LastEditTime: 2021-01-14 16:13:54
  * @Description :
  */
 import './index.scss'
-import { renderStyle } from '@/utils'
+import { renderStyle } from './utils'
 import LbpElementRender from './components/LbpElementRender'
 
 export default {

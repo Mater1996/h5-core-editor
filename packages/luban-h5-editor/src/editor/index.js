@@ -2,24 +2,23 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2020-12-30 16:08:21
+ * @LastEditTime: 2021-01-14 16:20:42
  * @Description :
  */
-import 'luban-h5-plugins'
 import 'font-awesome/css/font-awesome.min.css'
 import 'ant-design-vue/dist/antd.css'
 import { Layout } from 'ant-design-vue'
 import { debounce } from 'lodash'
+import LbpH5Canvas from 'luban-h5-canvas'
 
-import '@/styles/index.scss'
-import i18n from '@/locales'
-import history from '@/utils/history'
+import '../styles/index.scss'
+import i18n from '../locales'
+import history from '../utils/history'
 
 import config from './config'
 import LbpWork from './models/LbpWork'
 import LbpPage from './models/LbpPage'
-import LbpElement from './models/LbpElement'
-import LbpH5Canvas from './components/lbp-canvas'
+import { createLbpElement, LbpElement } from './models/LbpElement'
 import FixedTools from './components/fixed-tools/index'
 import EditorRightPanel from './components/right-panel'
 import EditorLeftPanel from './components/left-panel'
@@ -67,6 +66,7 @@ const LpbH5Editor = {
       handler (data = {}) {
         this.work = new LbpWork(data)
         history.init(this.work)
+        console.log(this.work)
       },
       immediate: true
     }
@@ -94,7 +94,7 @@ const LpbH5Editor = {
         if (element instanceof LbpElement) {
           this.currentPage.elements.push(element)
         } else {
-          const lbpElement = new LbpElement(element)
+          const lbpElement = createLbpElement(element)
           this.currentPage.elements.push(lbpElement)
         }
       })

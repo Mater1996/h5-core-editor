@@ -2,12 +2,13 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-11-02 09:25:51
- * @LastEditTime: 2020-12-25 17:31:16
+ * @LastEditTime: 2021-01-14 16:34:51
  * @Description:
 -->
 <template>
   <div id="app">
-    <lbp-h5-editor :data="work" ref="editor" style="height: 100vh;" />
+    <lbp-h5-preview :data="work"></lbp-h5-preview>
+    <!-- <lbp-h5-editor :data="work" ref="editor" style="height: 100vh;" /> -->
   </div>
 </template>
 
@@ -27,62 +28,6 @@ export default {
           {
             title: '',
             elements: [
-              // {
-              //   pluginName: 'lbp-background',
-              //   props: {
-              //     imgSrc: '',
-              //     isRem: false,
-              //   },
-              //   style: {
-              //     fillType: 'contain',
-              //     top: 140,
-              //     left: 57,
-              //     width: 186,
-              //     height: 292,
-              //     textAlign: 'center',
-              //     color: '#000000',
-              //     backgroundColor: 'rgba(255, 255, 255, 0)',
-              //     fontSize: 14,
-              //   },
-              // },
-              // {
-              //   name: 'lbp-picture',
-              //   props: {
-              //     imgSrc:
-              //       'https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg!0x0.webp',
-              //     isRem: false,
-              //   },
-              //   style: {
-              //     fillType: 'contain',
-              //     top: 140,
-              //     left: 57,
-              //     width: 186,
-              //     height: 292,
-              //     textAlign: 'center',
-              //     color: '#000000',
-              //     backgroundColor: 'rgba(255, 255, 255, 0)',
-              //     fontSize: 14,
-              //   },
-              // },
-              // {
-              //   name: 'lbp-picture',
-              //   props: {
-              //     imgSrc:
-              //       'https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg!0x0.webp',
-              //     isRem: false,
-              //   },
-              //   style: {
-              //     fillType: 'contain',
-              //     top: 140,
-              //     left: 57,
-              //     width: 186,
-              //     height: 292,
-              //     textAlign: 'center',
-              //     color: '#000000',
-              //     backgroundColor: 'rgba(255, 255, 255, 0)',
-              //     fontSize: 14,
-              //   },
-              // },
               {
                 pluginName: 'lbp-picture',
                 props: {

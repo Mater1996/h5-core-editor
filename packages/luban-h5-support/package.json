@@ -10,12 +10,15 @@
     "index.js",
     "dist"
   ],
+  "buildOptions":{
+    "name": "LubanH5Support",
+    "formats":["umd"]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Mater1996/luban-h5-support.git"
   },
   "bugs": {
     "url": "https://github.com/Mater1996/luban-h5-support/issues"
-  },
-  "gitHead": "324c2ec954ede4a064d75a14d255f2b1cac604bc"
+  }
 }

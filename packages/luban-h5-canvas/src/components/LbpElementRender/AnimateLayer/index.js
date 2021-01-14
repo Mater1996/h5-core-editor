@@ -2,12 +2,11 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-16 14:11:44
- * @LastEditTime : 2020-11-18 10:08:24
+ * @LastEditTime: 2021-01-06 14:57:39
  * @Description :
  */
 
 import 'animate.css/animate.css'
-import EventBus from '@/bus'
 import './index.scss'
 
 const AnimateLayer = {
@@ -37,11 +36,6 @@ const AnimateLayer = {
         animationFillMode: 'both'
       }
     }
-  },
-  created () {
-    EventBus.$on('RUN_ANIMATIONS', () => {
-      this.runAnimations()
-    })
   },
   methods: {
     runAnimations () {

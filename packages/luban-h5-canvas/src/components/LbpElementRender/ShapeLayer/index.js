@@ -1,16 +1,9 @@
 import { pickBy } from 'lodash'
 import './index.scss'
-import { renderStyle } from '@/utils'
-import vClickOutside from '@/directive/v-click-outside'
+import { renderStyle } from '../../../utils'
+import vClickOutside from '../../../directive/v-click-outside'
 
 const points = ['lt', 'rt', 'lb', 'rb', 'lm', 'rm', 'mt', 'mb']
-
-export const ShapeLayerDefaultProps = {
-  top: 0,
-  left: 0,
-  width: 100,
-  height: 40
-}
 
 export default {
   directives: {
@@ -19,19 +12,19 @@ export default {
   props: {
     width: {
       type: Number,
-      default: ShapeLayerDefaultProps.width
+      default: 0
     },
     height: {
       type: Number,
-      default: ShapeLayerDefaultProps.height
+      default: 0
     },
     left: {
       type: Number,
-      default: ShapeLayerDefaultProps.left
+      default: 0
     },
     top: {
       type: Number,
-      default: ShapeLayerDefaultProps.top
+      default: 0
     },
     disable: {
       type: Boolean,

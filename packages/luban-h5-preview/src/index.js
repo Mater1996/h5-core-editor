@@ -1,4 +1,4 @@
-import { LbpH5Canvas, LbpWork } from 'luban-h5-editor'
+import LbpH5Canvas from 'luban-h5-canvas'
 import './styles/index.scss'
 
 const LbpH5Preview = {
@@ -9,10 +9,12 @@ const LbpH5Preview = {
       default: () => ({})
     }
   },
-  data: () => ({
-    work: new LbpWork(this.data || window.__work),
-    pageIndex: 0
-  }),
+  data () {
+    return {
+      work: this.data,
+      pageIndex: 0
+    }
+  },
   computed: {
     currentPage () {
       const { pages = [] } = this.work
@@ -27,7 +29,7 @@ const LbpH5Preview = {
         height={this.currentPage.height}
         elements={this.currentPage.elements}
         readonly
-        unit={window.__isRem ? 'rem' : 'px'}
+        unit="rem"
       />
     )
   }

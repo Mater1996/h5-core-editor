@@ -2,18 +2,16 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-05 10:04:35
- * @LastEditTime : 2020-11-25 18:51:55
+ * @LastEditTime: 2021-01-14 14:15:31
  * @Description :
  * TODO support system-js to async component
  */
 import { cloneDeep } from 'lodash'
-import lbpH5Plugins from '@/plugins'
-import LbpElement from '@/editor/models/LbpElement'
 
 export default {
   props: {
     element: {
-      type: LbpElement,
+      type: Object,
       require: true
     }
   },
@@ -26,21 +24,19 @@ export default {
     }
   },
   mounted () {
-    this.$lbpPluginEl = this.$refs.lbpPluginEl
+    this.$lbpElement = this.$refs.lbpElement
   },
   methods: {
     trigger (hookName, data) {
-      const hook = this.plugin.component[hookName]
-      hook && hook.call(this.$lbpPluginEl, data)
+      const hook = this.element.getComponent()[hookName]
+      hook && hook.call(this.$lbpElement, data)
     }
   },
   render () {
-    const element = this.element
-    const { component } = (this.plugin = lbpH5Plugins.getPlugin(
-      element.pluginName
-    ))
+    const { element } = this
+    const component = element.getComponent()
     return component ? (
-      <component ref="lbpPluginEl" props={element.props}></component>
+      <component ref="lbpElement" props={element.props}></component>
     ) : null
   }
 }

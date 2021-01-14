@@ -2,15 +2,14 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2020-12-29 10:45:32
+ * @LastEditTime: 2021-01-14 16:12:12
  * @Description : 右侧panel为修改 props， events, animations 等属性
  */
 import { Layout, Tabs } from 'ant-design-vue'
 import { pick } from 'lodash'
-import { PAGE_MODE } from '@/constants/work'
+import { PAGE_MODE } from '../../../constants/work'
 import RenderPropsEditor from './props'
 import RenderScriptEditor from './script'
-import RenderAnimationEditor from './animation'
 import RenderActionEditor from './action'
 import RenderBackgroundEditor from './background'
 
@@ -34,7 +33,7 @@ export default {
   computed: {
     editPropsConfig () {
       const { element } = this
-      if (element && element.pluginName) {
+      if (element) {
         return element.getEditorProps()
       } else {
         return {}
@@ -87,10 +86,10 @@ export default {
             key="动画"
             tab={this.$t('editor.editPanel.tab.animation')}
           >
-            <RenderAnimationEditor
+            {/* <RenderAnimationEditor
               value={this.editAnimationValue}
               onChange={this.$listeners.animationsChange}
-            />
+            /> */}
           </a-tab-pane>
           <a-tab-pane
             label="动作"

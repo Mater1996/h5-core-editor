@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime : 2020-12-04 16:12:08
+ * @LastEditTime: 2021-01-14 16:04:52
  * @Description :
  */
 const path = require('path')
@@ -22,13 +22,15 @@ const filesize = require('rollup-plugin-filesize')
 const analyze = require('rollup-plugin-analyzer')
 const replace = require('@rollup/plugin-replace')
 
+const { TARGET, NODE_ENV, FORMAT } = process.env
 const packagesDir = path.resolve(__dirname, '../packages')
-const packageDir = path.resolve(packagesDir, process.env.TARGET)
+const packageDir = path.resolve(packagesDir, TARGET)
 const name = path.basename(packageDir)
 const resolveRoot = p => path.resolve(packagesDir, '../', p)
 const resolve = p => path.resolve(packageDir, p)
 const pkg = require(resolve('package.json'))
-const isProd = process.env.NODE_ENV === 'production'
+const isProd = NODE_ENV === 'production'
+const isUmd = FORMAT === 'umd'
 
 const babelConfig = {
   presets: [
@@ -50,7 +52,7 @@ const babelConfig = {
     ['@babel/plugin-transform-runtime'],
     ['@babel/plugin-syntax-jsx'],
     ['@babel/plugin-proposal-class-properties'],
-    // ['import', { libraryName: 'ant-design-vue', libraryDirectory: 'es', style: 'css' }],
+    ['import', { libraryName: 'ant-design-vue' }],
     ['import', { libraryName: 'lodash', libraryDirectory: '', camel2DashComponentName: false }, 'lodash']
   ],
   externalHelpers: false,
@@ -65,7 +67,6 @@ const globals = {
   'resize-detector': 'resizeDetector',
   'hotkeys-js': 'hotkeys',
   'ant-design-vue': 'ant-design-vue',
-  'vue-quill-editor': 'VueQuillEditor',
   'v-charts': 'VeIndex',
   stream: 'stream',
   'x-data-spreadsheet': 'x_spreadsheet',
@@ -74,19 +75,31 @@ const globals = {
   immutable: 'immutable'
 }
 
+const isLubanLib = (name) => /luban/.test(name)
 // 开发模式的时候合入所有的luban的包用来测试
 const { dependencies = {} } = pkg
 const dependenciesKeys = Object.keys(dependencies)
-const lubanDependenciesKeys = dependenciesKeys.filter(v => /luban/.test(v))
-const external = dependenciesKeys.filter(v => isProd ? true : !/luban/.test(v))
-const devAlias = {}
-lubanDependenciesKeys.forEach(v => {
-  devAlias[v] = resolveRoot(`packages/${v}/src`)
-})
+const lubanDependenciesKeys = dependenciesKeys.filter(isLubanLib)
+const anotherDependenciesKeys = dependenciesKeys.filter(v => !isLubanLib(v))
+const lubanAlias = lubanDependenciesKeys.reduce((a, b) => {
+  a[b] = resolveRoot(`packages/${b}/src`)
+  return a
+}, {})
+const external = []
+const entries = {}
+if (!isProd) Object.assign(entries, lubanAlias)
+if (isUmd || !isProd) {
+  external.push(...anotherDependenciesKeys)
+} else {
+  external.push(...lubanDependenciesKeys)
+}
 
 module.exports = () => {
   return {
     input: resolve('./src/index.js'),
+    watch: {
+      clearScreen: false
+    },
     output: [
       {
         exports: 'named',
@@ -105,13 +118,7 @@ module.exports = () => {
       peerDepsExternal(),
       alias({
         resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
-        entries: {
-          '@': resolve('./src')
-        }
-      }),
-      !isProd && alias({
-        resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
-        entries: devAlias
+        entries: entries
       }),
       image({
         output: resolve('dist/images'),

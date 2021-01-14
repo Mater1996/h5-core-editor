@@ -1,8 +1,8 @@
 /*
  * @Author: ly525
  * @Date: 2019-12-01 18:11:49
- * @LastEditors : Please set LastEditors
- * @LastEditTime : 2020-11-12 16:43:02
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-01-06 11:51:54
  * @FilePath: /luban-h5/front-end/h5/src/components/@/editor/right-panel/background.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
@@ -10,7 +10,7 @@
  */
 
 import { Radio, Form } from 'ant-design-vue'
-import { PAGE_MODE, PAGE_MODE_LABEL } from '@/constants/work'
+import { PAGE_MODE, PAGE_MODE_LABEL } from '../../../constants/work'
 
 export default {
   components: {

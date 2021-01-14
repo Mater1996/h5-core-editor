@@ -2,11 +2,11 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-06 11:03:51
- * @LastEditTime: 2020-12-25 15:49:06
+ * @LastEditTime: 2021-01-06 11:49:11
  * @Description :
  */
 import { InputNumber } from 'ant-design-vue'
-import { PAGE_MODE } from '@/constants/work'
+import { PAGE_MODE } from '../../constants/work'
 
 export default {
   props: {

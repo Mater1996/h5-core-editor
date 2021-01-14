@@ -1,4 +1,4 @@
-import '@/styles/props-config-panel.scss'
+import '../../../styles/props-config-panel.scss'
 import {
   Form,
   Tabs,
@@ -9,10 +9,10 @@ import {
   InputNumber,
   Select
 } from 'ant-design-vue'
-import colorsPanel from '@/support/colors-panel'
-import lbsTextAlign from '@/support/text-align'
-import lbsExcelEditor from '@/support/excel'
-import lbpSlideCustomEditor from '@/support/lbp-slide__editor'
+import colorsPanel from '../../../support/colors-panel'
+import lbsTextAlign from '../../../support/text-align'
+import lbsExcelEditor from '../../../support/excel'
+import lbpSlideCustomEditor from '../../../support/lbp-slide__editor'
 
 export default {
   components: {
