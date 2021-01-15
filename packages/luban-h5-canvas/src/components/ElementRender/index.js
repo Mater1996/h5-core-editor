@@ -2,10 +2,10 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-13 10:09:46
- * @LastEditTime: 2021-01-14 16:21:45
+ * @LastEditTime: 2021-01-15 11:11:11
  * @Description :
  */
-import Render from './Render'
+import { cloneDeep } from 'lodash'
 import ShapeLayer from './ShapeLayer'
 import AnimateLayer from './AnimateLayer'
 
@@ -16,7 +16,22 @@ export default {
       require: true
     }
   },
+  watch: {
+    element: {
+      handler (newValue) {
+        this._trigger('onLbpElementChange', cloneDeep(newValue))
+      },
+      deep: true
+    }
+  },
+  mounted () {
+    this.$lbpElement = this.$refs.lbpElement
+  },
   methods: {
+    _trigger (hookName, data) {
+      const hook = this.element.getComponent()[hookName]
+      hook && hook.call(this.$lbpElement, data)
+    },
     _handleChange (...args) {
       this.$emit('elementChange', ...args)
     },
@@ -29,6 +44,7 @@ export default {
   },
   render () {
     const { element } = this
+    const component = element.getComponent()
     const { style, animations } = element
     return (
       <ShapeLayer
@@ -41,7 +57,9 @@ export default {
         onDeactive={this._handleDeactive}
       >
         <AnimateLayer animations={animations}>
-          <Render element={element}></Render>
+          {component ? (
+            <component ref="lbpElement" props={element.props}></component>
+          ) : null}
         </AnimateLayer>
       </ShapeLayer>
     )

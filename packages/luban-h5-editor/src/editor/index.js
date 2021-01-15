@@ -2,14 +2,14 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-01-14 16:20:42
+ * @LastEditTime: 2021-01-15 11:24:40
  * @Description :
  */
 import 'font-awesome/css/font-awesome.min.css'
 import 'ant-design-vue/dist/antd.css'
 import { Layout } from 'ant-design-vue'
 import { debounce } from 'lodash'
-import LbpH5Canvas from 'luban-h5-canvas'
+import LbpH5Canvas, { Element } from 'luban-h5-canvas'
 
 import '../styles/index.scss'
 import i18n from '../locales'
@@ -18,7 +18,7 @@ import history from '../utils/history'
 import config from './config'
 import LbpWork from './models/LbpWork'
 import LbpPage from './models/LbpPage'
-import { createLbpElement, LbpElement } from './models/LbpElement'
+import lbpPlugins from '../plugins'
 import FixedTools from './components/fixed-tools/index'
 import EditorRightPanel from './components/right-panel'
 import EditorLeftPanel from './components/left-panel'
@@ -91,10 +91,13 @@ const LpbH5Editor = {
     },
     addElement (...elements) {
       elements.forEach(element => {
-        if (element instanceof LbpElement) {
+        if (element instanceof Element) {
           this.currentPage.elements.push(element)
         } else {
-          const lbpElement = createLbpElement(element)
+          const lbpElement = Element.create({
+            ...element,
+            component: lbpPlugins.getPlugin(element.pluginName).component
+          })
           this.currentPage.elements.push(lbpElement)
         }
       })

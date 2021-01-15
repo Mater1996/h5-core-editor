@@ -2,14 +2,16 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-01-14 16:13:54
+ * @LastEditTime: 2021-01-15 11:15:10
  * @Description :
  */
 import './index.scss'
 import { renderStyle } from './utils'
-import LbpElementRender from './components/LbpElementRender'
+import Element from './Element'
+import ElementRender from './components/ElementRender'
 
-export default {
+const LbpCanvas = {
+  name: 'luban-h5-canvas',
   props: {
     width: {
       type: Number,
@@ -80,12 +82,12 @@ export default {
         <div class="lbp-canvas-wrapper">
           <div class="lbp-elements">
             {this.elements.map(element => (
-              <LbpElementRender
+              <ElementRender
                 key={element.id}
                 element={element}
                 disabled={this.disabled}
                 on={this.$listeners}
-              ></LbpElementRender>
+              ></ElementRender>
             ))}
           </div>
         </div>
@@ -93,3 +95,8 @@ export default {
     )
   }
 }
+
+LbpCanvas.Element = Element
+
+export { Element }
+export default LbpCanvas

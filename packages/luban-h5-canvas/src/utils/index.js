@@ -8,7 +8,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-17 16:59:14
- * @LastEditTime: 2021-01-06 14:39:30
+ * @LastEditTime: 2021-01-15 11:19:23
  * @Description :
  */
 import { isNumber } from 'lodash'
@@ -49,4 +49,8 @@ export const renderStyle = function (
     newStyle[n] = v
   })
   return newStyle
+}
+
+export function isPromise (value) {
+  return value && typeof value.subscribe !== 'function' && typeof value.then === 'function'
 }

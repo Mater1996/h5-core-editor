@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-01-14 16:04:52
+ * @LastEditTime: 2021-01-15 14:22:19
  * @Description :
  */
 const path = require('path')
@@ -23,15 +23,26 @@ const analyze = require('rollup-plugin-analyzer')
 const replace = require('@rollup/plugin-replace')
 
 const { TARGET, NODE_ENV, FORMAT } = process.env
-const packagesDir = path.resolve(__dirname, '../packages')
-const packageDir = path.resolve(packagesDir, TARGET)
-const name = path.basename(packageDir)
-const resolveRoot = p => path.resolve(packagesDir, '../', p)
-const resolve = p => path.resolve(packageDir, p)
-const pkg = require(resolve('package.json'))
 const isProd = NODE_ENV === 'production'
 const isUmd = FORMAT === 'umd'
+const rootDir = path.resolve(__dirname, '../')
+const resolveRoot = p => path.resolve(rootDir, p)
+const packageDir = resolveRoot(`packages/${TARGET}`)
+const name = path.basename(packageDir)
+const resolvePackage = p => path.resolve(packageDir, p)
+const isLubanLib = (packageName) => /luban/.test(packageName)
+const pkg = require(resolvePackage('package.json'))
+const { dependencies = {} } = pkg
+const dependenciesName = Object.keys(dependencies)
+const lubanDependenciesName = dependenciesName.filter(isLubanLib)
+const anotherDependenciesName = dependenciesName.filter(v => !isLubanLib(v))
+const lubanAlias = lubanDependenciesName.reduce((a, b) => {
+  a[b] = resolveRoot(`packages/${b}/src`)
+  return a
+}, {})
 
+const external = []
+const entries = {}
 const babelConfig = {
   presets: [
     [
@@ -59,7 +70,6 @@ const babelConfig = {
   runtimeHelpers: true,
   exclude: 'node_modules/**'
 }
-
 const globals = {
   vue: 'Vue',
   'vue-i18n': 'VueI18n',
@@ -75,28 +85,18 @@ const globals = {
   immutable: 'immutable'
 }
 
-const isLubanLib = (name) => /luban/.test(name)
-// 开发模式的时候合入所有的luban的包用来测试
-const { dependencies = {} } = pkg
-const dependenciesKeys = Object.keys(dependencies)
-const lubanDependenciesKeys = dependenciesKeys.filter(isLubanLib)
-const anotherDependenciesKeys = dependenciesKeys.filter(v => !isLubanLib(v))
-const lubanAlias = lubanDependenciesKeys.reduce((a, b) => {
-  a[b] = resolveRoot(`packages/${b}/src`)
-  return a
-}, {})
-const external = []
-const entries = {}
-if (!isProd) Object.assign(entries, lubanAlias)
-if (isUmd || !isProd) {
-  external.push(...anotherDependenciesKeys)
+if (!isProd) {
+  external.push(...anotherDependenciesName)
+  Object.assign(entries, lubanAlias)
+} else if (isUmd) {
+  external.push(...dependenciesName)
 } else {
-  external.push(...lubanDependenciesKeys)
+  Object.assign(entries, lubanAlias)
 }
 
 module.exports = () => {
   return {
-    input: resolve('./src/index.js'),
+    input: resolvePackage('src/index.js'),
     watch: {
       clearScreen: false
     },
@@ -105,7 +105,7 @@ module.exports = () => {
         exports: 'named',
         name: name,
         format: 'umd',
-        file: resolve(`./dist/${name}.js`),
+        file: resolvePackage(`dist/${name}.js`),
         sourcemap: !isProd,
         indent: isProd,
         globals
@@ -114,14 +114,14 @@ module.exports = () => {
     treeshake: isProd,
     external,
     plugins: [
-      isProd && del({ targets: `${resolve('dist/*')}` }),
+      isProd && del({ targets: `${resolvePackage('dist/*')}` }),
       peerDepsExternal(),
       alias({
         resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
         entries: entries
       }),
       image({
-        output: resolve('dist/images'),
+        output: resolvePackage('dist/images'),
         extensions: /\.(png|jpg|jpeg|gif|svg)$/,
         limit: 8192,
         exclude: 'node_modules/**'
@@ -132,7 +132,7 @@ module.exports = () => {
         )
       }),
       postcss({
-        to: resolve(`dist/${name}.css`),
+        to: resolvePackage(`dist/${name}.css`),
         extract: true,
         minimize: isProd,
         sourceMap: !isProd,

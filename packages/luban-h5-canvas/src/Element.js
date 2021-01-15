@@ -2,13 +2,12 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-01-14 16:19:09
+ * @LastEditTime: 2021-01-15 11:27:51
  * @Description :
  */
 
 import { cloneDeep } from 'lodash'
-import { isPromise } from '../../utils'
-import lbpH5Plugins from '../../plugins'
+import { isPromise } from './utils'
 
 const ShapeLayerDefaultProps = {
   top: 0,
@@ -49,14 +48,13 @@ class LbpElement {
     // 传入 animateLayer 以实现动画效果
     this.animations = [...animations]
 
+    console.log(component)
     if (component) {
       LbpElement.saveComponent(this.id, component)
       this.props = {
         ...LbpElement.getComponentProps(component),
         ...this.props
       }
-    } else {
-      console.error('lbpElement need a name of plugin ：pluginName')
     }
   }
 
@@ -176,14 +174,10 @@ class LbpElement {
     const def = prop.default
     return typeof def === 'function' ? def.call(vm) : def
   }
+
+  static create (...options) {
+    return new LbpElement(...options)
+  }
 }
 
-export function createLbpElement ({ pluginName, ...restOptions }) {
-  const { component } = lbpH5Plugins.getPlugin(pluginName)
-  return new LbpElement({
-    component,
-    ...restOptions
-  })
-}
-
-export { LbpElement }
+export default LbpElement

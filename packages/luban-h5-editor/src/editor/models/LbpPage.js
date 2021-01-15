@@ -2,10 +2,12 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-01-06 15:25:55
+ * @LastEditTime: 2021-01-15 11:28:13
  * @Description :
  */
-import { createLbpElement } from './LbpElement'
+
+import { Element } from 'luban-h5-canvas'
+import lbpPlugins from '../../plugins'
 import { PAGE_MODE } from '../../constants/work'
 class LbpPage {
   constructor ({
@@ -24,13 +26,18 @@ class LbpPage {
   }
 
   clone () {
-    const elements = this.elements.map(element => createLbpElement(element))
+    const elements = this.elements.map(element => Element.create(element))
     return new LbpPage({ title: this.title, elements })
   }
 
   genElements (elements = []) {
     return Array.isArray(elements) && elements.length > 0
-      ? elements.map(v => createLbpElement(v))
+      ? elements.map(v => {
+        return Element.create({
+          ...v,
+          component: lbpPlugins.getPlugin(v.pluginName).component
+        })
+      })
       : []
   }
 }
