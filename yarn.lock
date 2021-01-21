@@ -11,7 +11,7 @@
 
 "@ant-design/icons-vue@^2.0.0":
   version "2.0.0"
-  resolved "https://registry.npm.taobao.org/@ant-design/icons-vue/download/@ant-design/icons-vue-2.0.0.tgz#0357f5010a404e9f34a87a4b41b2a08df691dbce"
+  resolved "https://registry.npm.taobao.org/@ant-design/icons-vue/download/@ant-design/icons-vue-2.0.0.tgz?cache=0&sync_timestamp=1610022711056&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40ant-design%2Ficons-vue%2Fdownload%2F%40ant-design%2Ficons-vue-2.0.0.tgz#0357f5010a404e9f34a87a4b41b2a08df691dbce"
   integrity sha1-A1f1AQpATp80qHpLQbKgjfaR284=
   dependencies:
     "@ant-design/colors" "^3.1.0"
@@ -19,7 +19,7 @@
 
 "@ant-design/icons@^2.1.1":
   version "2.1.1"
-  resolved "https://registry.npm.taobao.org/@ant-design/icons/download/@ant-design/icons-2.1.1.tgz?cache=0&sync_timestamp=1605268034416&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40ant-design%2Ficons%2Fdownload%2F%40ant-design%2Ficons-2.1.1.tgz#7b9c08dffd4f5d41db667d9dbe5e0107d0bd9a4a"
+  resolved "https://registry.npm.taobao.org/@ant-design/icons/download/@ant-design/icons-2.1.1.tgz?cache=0&sync_timestamp=1611038913279&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40ant-design%2Ficons%2Fdownload%2F%40ant-design%2Ficons-2.1.1.tgz#7b9c08dffd4f5d41db667d9dbe5e0107d0bd9a4a"
   integrity sha1-e5wI3/1PXUHbZn2dvl4BB9C9mko=
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4":
@@ -2449,9 +2449,9 @@ ansi-styles@^4.0.0, ansi-styles@^4.1.0:
   dependencies:
     color-convert "^2.0.1"
 
-ant-design-vue@^1.7.0:
+ant-design-vue@^1.7.2:
   version "1.7.2"
-  resolved "https://registry.npm.taobao.org/ant-design-vue/download/ant-design-vue-1.7.2.tgz?cache=0&sync_timestamp=1605366960625&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fant-design-vue%2Fdownload%2Fant-design-vue-1.7.2.tgz#aac7ff802205711631c8698e2a0c7b4e61dfd73e"
+  resolved "https://registry.npm.taobao.org/ant-design-vue/download/ant-design-vue-1.7.2.tgz#aac7ff802205711631c8698e2a0c7b4e61dfd73e"
   integrity sha1-qsf/gCIFcRYxyGmOKgx7TmHf1z4=
   dependencies:
     "@ant-design/icons" "^2.1.1"
@@ -6709,7 +6709,7 @@ isexe@^2.0.0:
 
 ismobilejs@^1.0.0:
   version "1.1.1"
-  resolved "https://registry.npm.taobao.org/ismobilejs/download/ismobilejs-1.1.1.tgz?cache=0&sync_timestamp=1586902809632&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fismobilejs%2Fdownload%2Fismobilejs-1.1.1.tgz#c56ca0ae8e52b24ca0f22ba5ef3215a2ddbbaa0e"
+  resolved "https://registry.npm.taobao.org/ismobilejs/download/ismobilejs-1.1.1.tgz#c56ca0ae8e52b24ca0f22ba5ef3215a2ddbbaa0e"
   integrity sha1-xWygro5Sskyg8iul7zIVot27qg4=
 
 isobject@^2.0.0:

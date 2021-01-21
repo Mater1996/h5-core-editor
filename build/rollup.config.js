@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-01-20 15:10:38
+ * @LastEditTime: 2021-01-21 16:38:55
  * @Description :
  */
 const path = require('path')
@@ -63,6 +63,7 @@ const babelConfig = {
     ['@babel/plugin-transform-runtime'],
     ['@babel/plugin-syntax-jsx'],
     ['@babel/plugin-proposal-class-properties'],
+    ['import', { libraryName: 'ant-design-vue' }],
     ['import', { libraryName: 'lodash', libraryDirectory: '', camel2DashComponentName: false }, 'lodash']
   ],
   externalHelpers: false,
@@ -78,7 +79,7 @@ const globals = {
 const external = []
 const entries = {}
 // 递归luban内部依赖包
-lubanDependenciesName.forEach(function genRes(lubanPackageName){
+lubanDependenciesName.forEach(function genRes (lubanPackageName) {
   const pkg = require(resolveRoot(`packages/${lubanPackageName}/package.json`))
   const lubanDependencies = Object.keys(pkg.dependencies || {})
   lubanDependencies.forEach(v => {
@@ -96,20 +97,32 @@ lubanDependenciesName.forEach(function genRes(lubanPackageName){
 if (!isProd) {
   external.push(...anotherDependenciesName)
   Object.assign(entries, lubanAlias)
-  console.log(entries,external)
+  console.log(entries, external)
 } else if (isESM || isUMD) {
   external.push(...dependenciesName)
+  console.log(entries, external)
 } else {
   Object.assign(entries, lubanAlias)
 }
 
-const file = resolvePackage(isESM ? `dist/${name}.esm.js` : `dist/${name}.js`)
+let file
+switch (FORMAT) {
+  case 'esm':
+    file = resolvePackage(`dist/${name}.esm.js`)
+    break
+  case 'iife':
+    file = resolvePackage(`dist/${name}.global.js`)
+    break
+  default:
+    file = resolvePackage(`dist/${name}.js`)
+    break
+}
 
 module.exports = () => {
   return {
     input: resolvePackage('src/index.js'),
     watch: {
-      clearScreen: false
+      // clearScreen: false
     },
     output: [
       {
@@ -119,6 +132,7 @@ module.exports = () => {
         file,
         sourcemap: !isProd,
         indent: isProd,
+        extend: true,
         globals
       }
     ],
@@ -185,10 +199,10 @@ module.exports = () => {
         }
       }),
       isProd &&
-          analyze({
-            summaryOnly: true,
-            limit: 5
-          })
+      analyze({
+        summaryOnly: true,
+        limit: 5
+      })
     ]
   }
 }

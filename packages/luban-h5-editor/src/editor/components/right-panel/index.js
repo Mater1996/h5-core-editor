@@ -2,10 +2,11 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-01-21 10:20:51
+ * @LastEditTime: 2021-01-21 14:39:25
  * @Description : 右侧panel为修改 props， events, animations 等属性
  */
 import { pick } from 'lodash'
+import { Tabs, Tab } from '../../../components/vue-tabs-component'
 import RenderPropsEditor from './props'
 import RenderActionEditor from './action'
 
@@ -42,54 +43,28 @@ export default {
       return animations
     }
   },
-  data: () => ({
-    activeTabKey: '属性'
-  }),
-  methods: {
-    setActiveTab (activeTabKey) {
-      this.activeTabKey = activeTabKey
-    }
-  },
   render () {
     return (
-      <div
-        width={this.width}
-        theme="light"
-        style={{ padding: '0 12px' }}
-      >
-        <div
-          style="height: 100%;"
-          tabBarGutter={10}
-          defaultActiveKey={this.activeTabKey}
-          activeKey={this.activeTabKey}
-          onChange={this.setActiveTab}
-        >
-          <div key="属性">
+      <div style={{ width: `${this.width}px` }}>
+        <Tabs style="height: 100%;" options={{ useUrlFragment: false }}>
+          <Tab name="属性">
             <span slot="tab">{this.$t('editor.editPanel.tab.prop')}</span>
             <RenderPropsEditor
               config={this.editPropsConfig}
               value={this.editPropsValue}
               onChange={this.$listeners.propsChange}
             />
-          </div>
-          <div
-            label="动画"
-            key="动画"
-            tab={this.$t('editor.editPanel.tab.animation')}
-          >
+          </Tab>
+          <Tab name="动画">
             {/* <RenderAnimationEditor
               value={this.editAnimationValue}
               onChange={this.$listeners.animationsChange}
             /> */}
-          </div>
-          <div
-            label="动作"
-            key="动作"
-            tab={this.$t('editor.editPanel.tab.action')}
-          >
+          </Tab>
+          <Tab name="动作">
             {this.activeTabKey === '动作' && <RenderActionEditor />}
-          </div>
-        </div>
+          </Tab>
+        </Tabs>
       </div>
     )
   }

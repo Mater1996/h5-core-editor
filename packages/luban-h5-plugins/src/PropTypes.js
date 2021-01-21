@@ -1,8 +1,9 @@
-const defaultNumberInputProp = {
-  // step: 1,
-  // min: 0,
-  // max: 144
-}
+import Select from 'ant-design-vue/lib/select'
+import 'ant-design-vue/lib/select/style/css'
+import Switch from 'ant-design-vue/lib/switch'
+import 'ant-design-vue/lib/switch/style/css'
+import Input from 'ant-design-vue/lib/input'
+import 'ant-design-vue/lib/input/style/css'
 
 const dataSourceLayout = {
   labelCol: { span: 24 },
@@ -20,7 +21,7 @@ export default {
     default: defaultValue,
     visible,
     editor: {
-      type: 'a-switch',
+      type: Switch,
       label,
       props
     }
@@ -33,14 +34,6 @@ export default {
     type: Boolean,
     default: false
   },
-  /**
-   * 颜色 默认编辑器
-   * Q: 为什么 transparent 无效？
-   * A: 注意，根据 MDN 文档，颜色选择器的 value 只能是：# + 6个16进制字符串
-   * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color#Value
-   * The value of an <input> element of type color is always a DOMString which contains a 7-character string specifying an RGB color in hexadecimal format.
-   *
-   */
   color: ({
     label = '文字颜色',
     defaultValue = '#000000',
@@ -86,7 +79,7 @@ export default {
   number: ({
     label = '数值',
     defaultValue = 10,
-    props = defaultNumberInputProp,
+    props = {},
     visible = true
   } = {}) => ({
     type: Number,
@@ -110,7 +103,7 @@ export default {
   string: ({
     label = '按钮文字',
     defaultValue = '按钮',
-    component = 'a-input',
+    component = Input,
     props = {},
     extra,
     visible = true
@@ -189,7 +182,7 @@ export default {
   select: ({
     valueType = String,
     label = '选项',
-    defaultValue = [],
+    defaultValue = '',
     visible = true,
     options = []
   } = {}) => ({
@@ -197,7 +190,7 @@ export default {
     default: defaultValue,
     visible,
     editor: {
-      type: 'a-select',
+      type: Select,
       label,
       props: {
         options

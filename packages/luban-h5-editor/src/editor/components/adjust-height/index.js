@@ -2,9 +2,12 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-06 11:03:51
- * @LastEditTime: 2021-01-21 10:22:06
+ * @LastEditTime: 2021-01-21 15:06:24
  * @Description :
  */
+import './index.scss'
+import AdjustLine from '../adjust-line'
+
 export default {
   name: 'AdjustHeight',
   props: {
@@ -26,56 +29,32 @@ export default {
      * scale: height/width
      * @param {MouseEvent} e
      */
-    mousedownForAdjustLine (e) {
-      const startY = e.clientY
+    handleAdjustHeight (offset) {
       const startHeight = this.height
       const canvasOuterWrapper = document.querySelector(
-        '#editor-wrapper .ant-layout'
+        '#editor-wrapper .scroll-view'
       )
-      const move = moveEvent => {
-        // !#zh 移动的时候，不需要向后代元素传递事件，只需要单纯的移动就OK
-        moveEvent.stopPropagation()
-        moveEvent.preventDefault()
-        const currY = moveEvent.clientY
-        const moveHeight = currY - startY
-        const currentHeight = moveHeight + startHeight
-        this.updateWorkHeight(currentHeight)
-        if (canvasOuterWrapper) { canvasOuterWrapper.scrollTop = canvasOuterWrapper.scrollHeight }
+      const currentHeight = startHeight + offset
+      this.updateWorkHeight(currentHeight)
+      if (canvasOuterWrapper) {
+        canvasOuterWrapper.scrollTop = canvasOuterWrapper.scrollHeight
       }
-      const up = () => {
-        document.removeEventListener('mousemove', move, true)
-        document.removeEventListener('mouseup', up, true)
-      }
-      document.addEventListener('mousemove', move, true)
-      document.addEventListener('mouseup', up, true)
     }
   },
   render () {
     return (
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '0px',
-          width: '100%',
-          transform: 'translateY(100%)'
-        }}
-      >
-        <div class="adjust-line-wrapper adjust-line-wrapper-h">
-          <div class="adjust-line adjust-line-h"></div>
-          <div class="adjust-button" onMousedown={this.mousedownForAdjustLine}>
-            <div class="indicator"></div>
-          </div>
-          <div class="adjust-tip">
-            <span>{0} x</span>
-            <input
-              size="small"
-              min={0}
-              style="margin: 0 4px; width:60px;"
-              value={this.height}
-              onChange={this.updateWorkHeight}
-            />
-            <span>px</span>
-          </div>
+      <div class="adjust-height">
+        <AdjustLine type="vertical" onLineMove={this.handleAdjustHeight} />
+        <div class="adjust-tip">
+          <span>{0} x</span>
+          <input
+            size="small"
+            min={0}
+            style="margin: 0 4px; width:60px;"
+            value={this.height}
+            onChange={this.updateWorkHeight}
+          />
+          <span>px</span>
         </div>
       </div>
     )

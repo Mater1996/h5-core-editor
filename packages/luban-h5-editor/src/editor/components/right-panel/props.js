@@ -17,19 +17,14 @@ export default {
     }
   },
   watch: {
-    config () { // config 需要重新render
-      setTimeout(() => {
-        this.form.setFieldsValue(this.value)
-      })
+    config () {
+      // config 需要重新render
+      // setTimeout(() => {
+      //   this.form.setFieldsValue(this.value)
+      // })
     }
   },
-  created () {
-    this.form = this.$form.createForm(this, {
-      onFieldsChange: () => {
-        this.$emit('change', this.form.getFieldsValue())
-      }
-    })
-  },
+  created () {},
   computed: {
     formItemLayout () {
       return this.layout === 'horizontal'
@@ -53,16 +48,14 @@ export default {
       }
       return (
         <div {...formItemData}>
-          <editor.type
-            v-decorator={[propName]}
-            props={editor.props}
-          ></editor.type>
+          <editor.type props={editor.props}></editor.type>
         </div>
       )
     }
   },
   render () {
     const configEntries = Object.entries(this.config)
+    console.log(configEntries)
     return (
       <div
         form={this.form}

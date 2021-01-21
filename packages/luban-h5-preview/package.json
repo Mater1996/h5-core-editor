@@ -15,7 +15,8 @@
     "name": "LubanH5Preview",
     "formats": [
       "umd",
-      "esm"
+      "esm",
+      "iife"
     ]
   },
   "repository": {

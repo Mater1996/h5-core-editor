@@ -1,8 +1,8 @@
 /*
  * @Author: ly525
  * @Date: 2020-05-17 20:04:23
- * @LastEditors : Please set LastEditors
- * @LastEditTime : 2020-10-28 17:58:59
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-01-21 16:18:05
  * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-rate.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
@@ -32,47 +32,35 @@ export default {
       defaultValue: 16,
       label: '图标间距'
     }),
-    mode: {
-      type: String,
-      default: '',
-      editor: {
-        type: 'a-select',
-        label: '模式',
-        props: {
-          options: [
-            {
-              label: 'star',
-              value: 'star'
-            },
-            {
-              label: '点赞',
-              value: 'like'
-            },
-            {
-              label: 'Good',
-              value: 'good-job'
-            }
-          ]
+    mode: PropTypes.select({
+      label: '模式',
+      options: [
+        {
+          label: 'star',
+          value: 'star'
+        },
+        {
+          label: '点赞',
+          value: 'like'
+        },
+        {
+          label: 'Good',
+          value: 'good-job'
         }
-      }
-    }
-  },
-  componentsForPropsEditor: {
-  },
-  mounted () {
-  },
-  methods: {
-
+      ]
+    })
   },
   render () {
-    return <Rate
-      value={this.value}
-      count={this.count}
-      size={this.size}
-      color={this.color}
-      gutter={this.gutter}
-      void-icon="star"
-      void-color="#eee"
-    />
+    return (
+      <Rate
+        value={this.value}
+        count={this.count}
+        size={this.size}
+        color={this.color}
+        gutter={this.gutter}
+        void-icon="star"
+        void-color="#eee"
+      />
+    )
   }
 }

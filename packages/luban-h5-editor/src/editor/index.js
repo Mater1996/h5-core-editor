@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-01-21 10:08:59
+ * @LastEditTime: 2021-01-21 15:04:03
  * @Description :
  */
 import 'normalize.css/normalize.css'
@@ -20,7 +20,7 @@ import EditorRightPanel from './components/right-panel'
 import EditorLeftPanel from './components/left-panel'
 import AuxiliayLine from './components/auxiliay-line'
 import AdjustHeight from './components/adjust-height'
-import AdjustLineV from './components/adjust-line'
+import AdjustLine from './components/adjust-line'
 
 const LpbH5Editor = {
   name: 'lbp-h5-editor',
@@ -127,7 +127,7 @@ const LpbH5Editor = {
       }
     },
     _handleAdjustLieMove (offset) {
-      this.rightPanelWidth += offset
+      this.rightPanelWidth -= offset
     },
     _handlePropsChange (value) {
       this.updateElement({ props: value })
@@ -233,7 +233,7 @@ const LpbH5Editor = {
             </div>
           </div>
         </div>
-        <AdjustLineV class="section tools" onLineMove={this._handleAdjustLieMove} />
+        <AdjustLine onLineMove={this._handleAdjustLieMove} />
         <EditorRightPanel
           class="section feature"
           width={this.rightPanelWidth}

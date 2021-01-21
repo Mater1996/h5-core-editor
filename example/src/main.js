@@ -2,17 +2,16 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 09:25:51
- * @LastEditTime: 2021-01-20 15:23:13
+ * @LastEditTime: 2021-01-21 15:56:23
  * @Description :
  */
 import Vue from 'vue'
 import App from './App.vue'
 
 import 'luban-h5/dist/luban-h5.esm.css'
-import lubanH5, { lubanH5Editor, lubanH5Preview } from 'luban-h5'
+import lubanH5, { lubanH5Editor } from 'luban-h5'
 
-console.log(lubanH5, lubanH5Editor, lubanH5Preview)
-
+import 'luban-h5-plugins/dist/luban-h5-plugins.esm.css'
 import {
   LbpButton,
   LbpPicture,
@@ -30,6 +29,10 @@ import {
   LbpTable,
   LbpNewsList
 } from 'luban-h5-plugins'
+
+
+console.log(lubanH5, lubanH5Editor)
+
 
 const plugins = [
   {
@@ -154,7 +157,6 @@ plugins.forEach(v => lubanH5.plugin.register(v))
 Vue.config.productionTip = false
 
 Vue.use(lubanH5Editor)
-Vue.use(lubanH5Preview)
 
 new Vue({
   render: h => h(App)

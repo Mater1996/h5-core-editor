@@ -30,7 +30,7 @@
     "url": "https://github.com/Mater1996/luban-h5-plugins/issues"
   },
   "dependencies": {
-    "ant-design-vue": "^1.7.0",
+    "ant-design-vue": "^1.7.2",
     "echarts": "^4.8.0",
     "lodash": "^4.17.20",
     "papaparse": "^5.2.0",

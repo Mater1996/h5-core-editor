@@ -1,12 +1,15 @@
 
-.adjust-line-wrapper-h {
-  cursor: ns-resize;
+.adjust-height {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  transform: translateY(100%);
 
   .adjust-tip {
     letter-spacing: 1px;
     padding: 0;
     height: 24px;
-    margin: 2px auto 0;
+    margin: 16px auto 0;
     text-align: center;
     line-height: 24px;
     font-size: 12px;

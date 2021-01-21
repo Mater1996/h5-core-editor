@@ -1,4 +1,6 @@
-dist
-node_modules
-lib
 *.js
+.history
+node_modules
+docs
+dist
+lib

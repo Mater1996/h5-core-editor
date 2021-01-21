@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-16 15:11:01
- * @LastEditTime: 2021-01-19 11:05:54
+ * @LastEditTime: 2021-01-21 14:39:49
  * @Description :
  */
 
@@ -16,7 +16,6 @@ class LbpPluginController {
   }
 
   register (option = {}) {
-    console.log(option)
     // TODO support system-js module register
     const plugin = new LbpPlugin(option)
     if (plugin) {

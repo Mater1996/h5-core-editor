@@ -5,8 +5,7 @@
   flex-direction: row;
 
   .section.plugins {
-    flex: 0 1 260px;
-    padding: 16px;
+    flex: 0 0 260px;
     height: 100%;
     overflow: auto;
     box-sizing: border-box;
@@ -21,15 +20,18 @@
   }
 
   .section.feature {
-    flex: 0 1 260px;
+    width: 375px;
   }
 
   #editor-wrapper {
     padding: 60px 16px 24px;
+    background-color: #f0f2f5;
   }
 
   #editor-wrapper .scroll-view {
     overflow: auto;
+    height: 100%;
+    text-align: center;
   }
 
   #editor-wrapper .scroll-view .editor-content {
