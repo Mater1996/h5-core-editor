@@ -9,13 +9,17 @@
   "homepage": "https://github.com/luban-h5/luban-h5-canvas",
   "license": "ISC",
   "main": "index.js",
+  "module": "dist/luban-h5-canvas.esm.js",
   "files": [
     "index.js",
     "dist"
   ],
-  "buildOptions":{
+  "buildOptions": {
     "name": "LubanH5Editor",
-    "formats":["umd", "global"]
+    "formats": [
+      "esm",
+      "umd"
+    ]
   },
   "repository": {
     "type": "git",

@@ -2,12 +2,11 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-01-15 11:15:10
+ * @LastEditTime: 2021-01-20 12:00:39
  * @Description :
  */
 import './index.scss'
 import { renderStyle } from './utils'
-import Element from './Element'
 import ElementRender from './components/ElementRender'
 
 const LbpCanvas = {
@@ -76,7 +75,7 @@ const LbpCanvas = {
   render () {
     return (
       <div
-        class={['lbp-canvas', this.readonly ? 'readonly' : 'edit', 'readonly']}
+        class={['lbp-canvas', this.readonly ? 'readonly' : 'edit']}
         style={this.canvasStyle}
       >
         <div class="lbp-canvas-wrapper">
@@ -96,7 +95,4 @@ const LbpCanvas = {
   }
 }
 
-LbpCanvas.Element = Element
-
-export { Element }
 export default LbpCanvas

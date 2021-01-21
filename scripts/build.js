@@ -2,15 +2,18 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-12-04 09:35:14
- * @LastEditTime: 2021-01-06 17:30:55
+ * @LastEditTime: 2021-01-20 11:42:40
  * @Description :
  */
+const yargs = require('yargs')
 const execa = require('execa')
-const { targets: allTargets } = require('./utils')
+const argv = yargs(process.argv).argv
+const { targets: allTargets, getTarget } = require('./utils')
 
 async function build (target) {
   const { formats } = target.buildOptions
-  for (const i of formats) {
+  for (let i = 0; i < formats.length; i++) {
+    const format = formats[i]
     await execa(
       'rollup',
       [
@@ -20,7 +23,8 @@ async function build (target) {
         [
           'NODE_ENV:production',
           `TARGET:${target.name}`,
-          `FORMAT:${i}`
+          `FORMAT:${format}`,
+          `CLEAR:${i === 0 ? 1 : 0}`
         ]
           .filter(Boolean)
           .join(',')
@@ -37,7 +41,7 @@ async function buildAll (targets) {
 }
 
 async function run () {
-  await buildAll(allTargets)
+  await buildAll(argv.target ? [getTarget(argv.target)] : allTargets)
 }
 
 run()

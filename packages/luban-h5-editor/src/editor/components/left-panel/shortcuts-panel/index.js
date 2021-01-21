@@ -2,26 +2,17 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-18 09:35:11
- * @LastEditTime: 2021-01-06 11:51:17
+ * @LastEditTime: 2021-01-21 10:08:20
  * @Description :
  */
+import { LbpPlugin } from 'luban-h5-core'
+import './index.scss'
 import ShortcutButton from './shortcut-button'
-import UsageTip from './usage-tip'
-import LoadNpmPlugins from './load-npm-plugins.vue'
 import dragMixin from './mixins/drag'
-import lbpH5Plugins from '../../../../plugins'
-import { Row, Col } from 'ant-design-vue'
 
 export default {
-  name: 'shotcuts-panel',
-  components: {
-    [Row.name]: Row,
-    [Col.name]: Col
-  },
+  name: 'ShotcutsPanel',
   mixins: [dragMixin],
-  data: () => ({
-    npmPackages: []
-  }),
   methods: {
     clone (shortcutItem) {
       this.$emit('add', shortcutItem)
@@ -29,28 +20,19 @@ export default {
   },
   render (h) {
     return (
-      <a-row style="padding-bottom: 24px">
-        <UsageTip />
-        {[]
-          .concat(lbpH5Plugins.getPlugins(), this.npmPackages)
+      <div class="shortcuts-panel">
+        {LbpPlugin.getPlugins()
           .filter(plugin => plugin.visible)
           .map(plugin => (
-            <a-col span={12} style={{ marginTop: '10px' }}>
-              <ShortcutButton
-                clickFn={this.clone.bind(this, plugin)}
-                mousedownFn={this.handleDragStartFromMixin.bind(this, plugin)}
-                name={plugin.title || plugin.name}
-                faIcon={plugin.icon}
-                disabled={plugin.disabled}
-              />
-            </a-col>
+            <ShortcutButton
+              clickFn={this.clone.bind(this, plugin)}
+              mousedownFn={this.handleDragStartFromMixin.bind(this, plugin)}
+              name={plugin.title || plugin.name}
+              faIcon={plugin.icon}
+              disabled={plugin.disabled}
+            />
           ))}
-        <LoadNpmPlugins
-          onLoadComplete={npmPackages => {
-            this.npmPackages = npmPackages
-          }}
-        />
-      </a-row>
+      </div>
     )
   }
 }

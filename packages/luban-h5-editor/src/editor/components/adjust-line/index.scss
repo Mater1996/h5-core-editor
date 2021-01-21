@@ -1,0 +1,56 @@
+@import '../../../styles/theme.scss';
+
+.adjust-line-wrapper-v {
+  position: relative;
+  height: 100%;
+  cursor: ew-resize;
+
+  .adjust-button {
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: rotate(90deg);
+  }
+}
+
+.adjust-line-wrapper {
+  .adjust-line {
+    border: 1px solid #eee;
+    box-sizing: border-box;
+  }
+
+  .adjust-line-h {
+    width: 100%;
+  }
+
+  .adjust-line-v {
+    height: 100%;
+  }
+
+  .adjust-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    width: 30px;
+    height: 10px;
+    background-color: #fff;
+
+    .indicator {
+      margin: 0 auto;
+      width: 10px;
+      height: 1px;
+      background-color: #ccd5db;
+    }
+  }
+
+  &:hover {
+    .adjust-button {
+      background-color: $activeHoverColor;
+    }
+
+    .adjust-line {
+      border-color: $activeHoverColor;
+    }
+  }
+}

@@ -1,0 +1,40 @@
+.luban-h5-editor {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+
+  .section.plugins {
+    flex: 0 1 260px;
+    padding: 16px;
+    height: 100%;
+    overflow: auto;
+    box-sizing: border-box;
+  }
+
+  .section.container {
+    flex: 1;
+  }
+
+  .section.tools {
+    flex: 0 0 36px;
+  }
+
+  .section.feature {
+    flex: 0 1 260px;
+  }
+
+  #editor-wrapper {
+    padding: 60px 16px 24px;
+  }
+
+  #editor-wrapper .scroll-view {
+    overflow: auto;
+  }
+
+  #editor-wrapper .scroll-view .editor-content {
+    display: inline-block;
+    position: relative;
+    align-self: center;
+  }
+}

@@ -1,5 +1,6 @@
 import LbpH5Canvas from 'luban-h5-canvas'
 import './styles/index.scss'
+import lubanH5 from 'luban-h5-core'
 
 const LbpH5Preview = {
   name: 'lbp-h5-preview',
@@ -11,7 +12,7 @@ const LbpH5Preview = {
   },
   data () {
     return {
-      work: this.data,
+      work: lubanH5.create(this.data),
       pageIndex: 0
     }
   },

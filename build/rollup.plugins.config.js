@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime : 2020-12-04 16:12:08
+ * @LastEditTime: 2021-01-19 15:33:27
  * @Description :
  */
 const path = require('path')
@@ -49,7 +49,6 @@ const babelConfig = {
     ['@babel/plugin-transform-runtime'],
     ['@babel/plugin-syntax-jsx'],
     ['@babel/plugin-proposal-class-properties'],
-    // ['import', { libraryName: 'ant-design-vue', libraryDirectory: 'es', style: 'css' }],
     ['import', { libraryName: 'lodash', libraryDirectory: '', camel2DashComponentName: false }, 'lodash']
   ],
   externalHelpers: false,

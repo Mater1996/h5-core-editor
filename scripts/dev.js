@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-12-04 09:17:12
- * @LastEditTime: 2021-01-14 16:34:12
+ * @LastEditTime: 2021-01-20 10:09:07
  * @Description :
  */
 
@@ -17,7 +17,8 @@ execa(
     './build/rollup.config.js',
     '--environment',
     [
-      `TARGET:${argv.target}`
+      `TARGET:${argv.target}`,
+      `FORMAT:${'esm'}`
     ]
       .filter(Boolean)
       .join(',')

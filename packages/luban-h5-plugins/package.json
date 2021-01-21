@@ -9,14 +9,18 @@
   "homepage": "https://github.com/Mater1996/luban-h5-plugins#readme",
   "license": "ISC",
   "main": "index.js",
+  "module": "dist/luban-h5-plugins.esm.js",
   "files": [
     "index.js",
     "dist",
     "lib"
   ],
-  "buildOptions":{
+  "buildOptions": {
     "name": "LubanH5Plugins",
-    "formats":["umd"]
+    "formats": [
+      "esm",
+      "umd"
+    ]
   },
   "repository": {
     "type": "git",

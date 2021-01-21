@@ -2,24 +2,21 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-17 13:10:47
+ * @LastEditTime: 2021-01-21 10:07:41
  * @Description :
  */
-import { Button } from 'ant-design-vue'
+import './index.scss'
 import PageTitleEditor from './title-editor'
 import PageTitleMenu from './title-menu'
 import PageTitleText from './title-text'
 
 export default {
-  name: 'page-manager',
+  name: 'PageManager',
   props: {
     pages: {
       type: Array,
       default: []
     }
-  },
-  components: {
-    [Button.name]: Button
   },
   data: () => ({
     pageIndex: 0 // 显示编辑按钮
@@ -67,14 +64,14 @@ export default {
             </span>
           </span>
         ))}
-        <a-button
+        <button
           icon="plus"
           type="dashed"
           class="footer-actions"
           onClick={() => this.onSelectMenuItem('add')}
         >
           {this.$t('editor.pageManager.action.add')}
-        </a-button>
+        </button>
       </div>
     )
   }

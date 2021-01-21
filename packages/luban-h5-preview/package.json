@@ -6,13 +6,17 @@
   "homepage": "https://github.com/Mater1996/luban-h5-preview#readme",
   "license": "ISC",
   "main": "index.js",
+  "module": "dist/luban-h5-preview.esm.js",
   "files": [
     "index.js",
     "dist"
   ],
-  "buildOptions":{
+  "buildOptions": {
     "name": "LubanH5Preview",
-    "formats":["global"]
+    "formats": [
+      "umd",
+      "esm"
+    ]
   },
   "repository": {
     "type": "git",
@@ -22,7 +26,8 @@
     "url": "https://github.com/Mater1996/luban-h5-preview/issues"
   },
   "dependencies": {
-    "vue": "^2.6.10",
-    "luban-h5-canvas": "^1.1.2"
+    "luban-h5-core": "^1.1.2",
+    "luban-h5-canvas": "^1.1.2",
+    "vue": "^2.6.10"
   }
 }

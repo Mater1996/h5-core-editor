@@ -4,9 +4,10 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "node scripts/dev.js --target=luban-h5-editor",
+    "dev": "node scripts/dev.js --target=luban-h5",
     "dev:preview": "node scripts/dev.js --target=luban-h5-preview",
     "build": "node scripts/build.js",
+    "build:editor": "node scripts/build.js --target=luban-h5-editor",
     "build:example": "npm run --prefix ./example build",
     "build:plugins": "node scripts/build.plugin.js",
     "lint:fix": "npm run lint:js && npm run lint:style",

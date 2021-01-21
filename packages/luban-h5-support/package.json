@@ -6,13 +6,17 @@
   "homepage": "https://github.com/Mater1996/luban-h5-support#readme",
   "license": "ISC",
   "main": "index.js",
+  "module": "dist/luban-h5-support.esm.js",
   "files": [
     "index.js",
     "dist"
   ],
-  "buildOptions":{
+  "buildOptions": {
     "name": "LubanH5Support",
-    "formats":["umd"]
+    "formats": [
+      "umd",
+      "esm"
+    ]
   },
   "repository": {
     "type": "git",

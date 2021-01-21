@@ -1,38 +1,4 @@
-import '../../../styles/props-config-panel.scss'
-import {
-  Form,
-  Tabs,
-  Button,
-  Radio,
-  Input,
-  Switch,
-  InputNumber,
-  Select
-} from 'ant-design-vue'
-import colorsPanel from '../../../support/colors-panel'
-import lbsTextAlign from '../../../support/text-align'
-import lbsExcelEditor from '../../../support/excel'
-import lbpSlideCustomEditor from '../../../support/lbp-slide__editor'
-
 export default {
-  components: {
-    [Form.name]: Form,
-    [Form.Item.name]: Form.Item,
-    [Tabs.name]: Tabs,
-    [Button.name]: Button,
-    [Radio.name]: Radio,
-    [Radio.Group.name]: Radio.Group,
-    [Radio.Button.name]: Radio.Button,
-    [Input.name]: Input,
-    [Input.TextArea.name]: Input.TextArea,
-    [Switch.name]: Switch,
-    [InputNumber.name]: InputNumber,
-    [Select.name]: Select,
-    colorsPanel,
-    lbsTextAlign,
-    lbsExcelEditor,
-    lbpSlideCustomEditor
-  },
   data: () => ({
     loadCustomEditorFlag: false
   }),
@@ -86,19 +52,19 @@ export default {
         }
       }
       return (
-        <a-form-item {...formItemData}>
+        <div {...formItemData}>
           <editor.type
             v-decorator={[propName]}
             props={editor.props}
           ></editor.type>
-        </a-form-item>
+        </div>
       )
     }
   },
   render () {
     const configEntries = Object.entries(this.config)
     return (
-      <a-form
+      <div
         form={this.form}
         size="mini"
         class="props-config-form"
@@ -108,7 +74,7 @@ export default {
         {configEntries.map(([propName, propConfig]) =>
           this.renderPropFormItem(propName, propConfig)
         )}
-      </a-form>
+      </div>
     )
   }
 }

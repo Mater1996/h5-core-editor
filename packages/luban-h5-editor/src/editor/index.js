@@ -2,37 +2,29 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-01-15 11:24:40
+ * @LastEditTime: 2021-01-21 10:08:59
  * @Description :
  */
+import 'normalize.css/normalize.css'
 import 'font-awesome/css/font-awesome.min.css'
-import 'ant-design-vue/dist/antd.css'
-import { Layout } from 'ant-design-vue'
 import { debounce } from 'lodash'
-import LbpH5Canvas, { Element } from 'luban-h5-canvas'
+import LbpH5Canvas from 'luban-h5-canvas'
+import lubanH5, { LbpPlugin, LbpPage, LbpElement } from 'luban-h5-core'
 
-import '../styles/index.scss'
+import './index.scss'
 import i18n from '../locales'
 import history from '../utils/history'
 
 import config from './config'
-import LbpWork from './models/LbpWork'
-import LbpPage from './models/LbpPage'
-import lbpPlugins from '../plugins'
-import FixedTools from './components/fixed-tools/index'
 import EditorRightPanel from './components/right-panel'
 import EditorLeftPanel from './components/left-panel'
-import AuxiliayLine from './components/AuxiliayLine'
-import AdjustHeight from './components/AdjustHeight'
-import AdjustLineV from './components/adjust-line/vertical'
+import AuxiliayLine from './components/auxiliay-line'
+import AdjustHeight from './components/adjust-height'
+import AdjustLineV from './components/adjust-line'
 
 const LpbH5Editor = {
   name: 'lbp-h5-editor',
   i18n,
-  components: {
-    [Layout.name]: Layout,
-    [Layout.Content.name]: Layout
-  },
   props: {
     data: {
       type: Object,
@@ -64,7 +56,7 @@ const LpbH5Editor = {
   watch: {
     data: {
       handler (data = {}) {
-        this.work = new LbpWork(data)
+        this.work = lubanH5.create(data)
         history.init(this.work)
         console.log(this.work)
       },
@@ -91,12 +83,12 @@ const LpbH5Editor = {
     },
     addElement (...elements) {
       elements.forEach(element => {
-        if (element instanceof Element) {
+        if (element instanceof LbpElement) {
           this.currentPage.elements.push(element)
         } else {
-          const lbpElement = Element.create({
+          const lbpElement = LbpElement.create({
             ...element,
-            component: lbpPlugins.getPlugin(element.pluginName).component
+            component: LbpPlugin.getPlugin(element.pluginName).component
           })
           this.currentPage.elements.push(lbpElement)
         }
@@ -112,10 +104,10 @@ const LpbH5Editor = {
       this.record()
     },
     undo () {
-      this.work = new LbpWork(history.undo())
+      this.work = lubanH5.create(history.undo())
     },
     redo () {
-      this.work = new LbpWork(history.redo())
+      this.work = lubanH5.create(history.redo())
     },
     _handlerEditorMouseDown () {
       this.activeElement && this._showAuxiliay()
@@ -204,15 +196,16 @@ const LpbH5Editor = {
   },
   render () {
     return (
-      <a-layout style={{ height: '100%' }}>
+      <div class="luban-h5-editor">
         <EditorLeftPanel
+          class="section plugins"
           pages={this.work.pages}
           onPageChange={this._handlePageIndexChange}
           onAddElement={this._handleAddElement}
           onAddPage={this._handleAddPage}
         />
-        <a-layout id="editor-wrapper">
-          <a-layout-content class="scroll-view remove-scrollbar">
+        <div class="section container" id="editor-wrapper">
+          <div class="scroll-view remove-scrollbar">
             <div
               class="editor-content"
               onMousedown={this._handlerEditorMouseDown}
@@ -238,17 +231,17 @@ const LpbH5Editor = {
                 onChange={this._handlePageHeightChange}
               />
             </div>
-          </a-layout-content>
-        </a-layout>
-        <AdjustLineV onLineMove={this._handleAdjustLieMove} />
-        <FixedTools onRedo={this._handleRedo} onUndo={this._handleUndo} />
+          </div>
+        </div>
+        <AdjustLineV class="section tools" onLineMove={this._handleAdjustLieMove} />
         <EditorRightPanel
+          class="section feature"
           width={this.rightPanelWidth}
           element={this.activeElement}
           onPropsChange={this._handlePropsChange}
           onAnimationsChange={this._handleAnimationsChange}
         />
-      </a-layout>
+      </div>
     )
   }
 }
