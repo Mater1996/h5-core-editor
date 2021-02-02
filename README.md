@@ -11,11 +11,11 @@
 ## Usage
 
 ```js
-import 'luban-h5-editor/dist/luban-h5-editor.css'
-import lubanH5Editor from 'luban-h5-editor'
+import 'luban-h5/dist/luban-h5.esm.css'
+import lubanH5, { LubanH5Editor } from 'luban-h5'
 import { LbpButton } from 'luban-h5-plugins'
 
-lubanH5Editor.LbpH5Plugin.register({
+lubanH5.plugin.register({
   title: '普通按钮',
   name: LbpButton.name,
   icon: 'hand-pointer-o',
@@ -23,11 +23,11 @@ lubanH5Editor.LbpH5Plugin.register({
   component: LbpButton
 }) // 注册某个插件
 
-Vue.use(lubanH5Editor)
+Vue.use(LubanH5Editor)
 ```
 
 ```html
-<CoreEditor ref="editor" />
+<LubanH5Editor ref="editor" :h5="{}"/>
 ```
 
 #### props
@@ -41,15 +41,16 @@ Vue.use(lubanH5Editor)
 实例方法
 
 ```js
-this.$refs['editor'].getData() // 获取当前数据
-this.$refs['editor'].changePageIndex(index) // 修改当前页面
-this.$refs['editor'].addPage(title) // 添加页面
-this.$refs['editor'].updatePage(data) // 更新页面
-this.$refs['editor'].addElement(...elements) // 向当前页面添加元素
-this.$refs['editor'].updateElement(data) // 更新当前选中的元素
-this.$refs['editor'].clear() // 清空当前元素
-this.$refs['editor'].undo() // 后退一步
-this.$refs['editor'].redo() // 前进一步
+const $editor = this.$refs['editor']
+$editor.getData() // 获取当前数据
+$editor.changePageIndex(index) // 修改当前页面
+$editor.addPage(title) // 添加页面
+$editor.updatePage(data) // 更新页面
+$editor.addElement(...elements) // 向当前页面添加元素
+$editor.updateElement(data) // 更新当前选中的元素
+$editor.clear() // 清空当前元素
+$editor.undo() // 后退一步
+$editor.redo() // 前进一步
 ```
 
 ## 文档

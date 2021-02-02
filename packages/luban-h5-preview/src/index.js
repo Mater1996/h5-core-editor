@@ -5,14 +5,14 @@ import lubanH5 from 'luban-h5'
 const LbpH5Preview = {
   name: 'LubanH5Preview',
   props: {
-    data: {
+    h5: {
       type: Object,
       default: () => ({})
     }
   },
   data () {
     return {
-      work: lubanH5.create(this.data),
+      work: lubanH5.create(this.h5),
       pageIndex: 0
     }
   },

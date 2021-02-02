@@ -5,7 +5,7 @@
 ## Usage
 
 ```js
-import lubanH5, { lubanH5Editor, lubanH5Preview } from 'luban-h5'
+import lubanH5, { LubanH5Editor, LubanH5Preview } from 'luban-h5'
 import { LbpButton } from 'luban-h5-plugins'
 lubanH5.plugins.register({
   component: LbpButton
@@ -13,8 +13,8 @@ lubanH5.plugins.register({
 ```
 
 ```html
-<luban-h5-editor :h5="{}"></luban-h5-editor>
-<luban-h5-preview :h5="{}"></luban-h5-preview>
+<LubanH5Editor :h5="{}"></LubanH5Editor>
+<LubanH5Preview :h5="{}"></LubanH5Preview>
 ```
 
 ```html
@@ -23,7 +23,7 @@ lubanH5.plugins.register({
   <script src="luban-h5/luban-h5.js"></script>
   <script src="luban-h5/preview.js"></script>
   <script type="javascript">
-    lubanH5.plugins.register({
+    lubanH5.plugin.register({
       component: LbpButton
     })
     new Vue({
