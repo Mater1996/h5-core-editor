@@ -26,7 +26,7 @@ const LpbH5Editor = {
   name: 'LubanH5Editor',
   i18n,
   props: {
-    data: {
+    h5: {
       type: Object,
       default () {
         return {}
@@ -54,10 +54,9 @@ const LpbH5Editor = {
     }
   },
   watch: {
-    data: {
-      handler (data = {}) {
-        console.log(lubanH5)
-        this.work = lubanH5.create(data)
+    h5: {
+      handler (h5 = {}) {
+        this.work = lubanH5.create(h5)
         history.init(this.work)
         console.log(this.work)
       },
