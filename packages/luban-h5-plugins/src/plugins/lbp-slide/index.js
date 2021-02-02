@@ -1,14 +1,14 @@
 /*
  * @Author: ly525
  * @Date: 2019-11-23 12:35:21
- * @LastEditors : Please set LastEditors
- * @LastEditTime : 2020-10-28 16:07:05
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-02-02 14:56:22
  * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-slide.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: #!zh: 轮播图组件 #!en slide component
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
-import PropTypes from '../../PropTypes'
+import PropTypes from 'luban-h5-support'
 
 import { Swipe, SwipeItem } from 'vant'
 import 'vant/lib/swipe/style'
@@ -30,14 +30,8 @@ function getDefaultItems () {
 export default {
   name: 'lbp-slide',
   props: {
-    interval: PropTypes.number({
-      defaultValue: 4000,
-      label: '间隔时间'
-    }),
-    editorMode: PropTypes.string({
-      defaultValue: 'preview',
-      label: '模式'
-    }),
+    interval: PropTypes.number({ label: '间隔时间' }),
+    editorMode: PropTypes.string({ label: '模式' }),
     activeIndex: {
       type: Number,
       default: 0,

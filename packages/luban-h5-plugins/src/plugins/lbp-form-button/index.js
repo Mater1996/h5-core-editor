@@ -2,11 +2,11 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime : 2020-11-10 19:51:59
+ * @LastEditTime: 2021-02-02 14:42:51
  * @Description :
  */
 // https://github.com/luban-h5-components/plugin-common-props
-import PropTypes from '../../PropTypes'
+import PropTypes from 'luban-h5-support'
 
 export default {
   render () {
@@ -43,16 +43,12 @@ export default {
   },
   name: 'lbp-form-button',
   props: {
-    text: PropTypes.string({ defaultValue: '提交' }),
+    text: PropTypes.string(),
     vertical: PropTypes.boolean(),
-    backgroundColor: PropTypes.color({ label: '背景色', defaultValue: 'rgba(255, 255, 255, 0.2)' }),
-    color: PropTypes.color(),
-    fontSize: PropTypes.number({ label: '字号(px)', defaultValue: 14 }),
-    lineHeight: PropTypes.number({ label: '行高(px)', defaultValue: 1 }),
-    borderWidth: PropTypes.number({ label: '边框宽度(px)', defaultValue: 1 }),
-    borderRadius: PropTypes.number({ label: '圆角(px)', defaultValue: 4 }),
-    borderColor: PropTypes.color({ label: '边框颜色', defaultValue: '#ced4da' }),
-    textAlign: PropTypes.textAlign(),
+    fontSize: PropTypes.number({ label: '字号(px)', default: 14 }),
+    lineHeight: PropTypes.number({ label: '行高(px)', default: 1 }),
+    borderWidth: PropTypes.number({ label: '边框宽度(px)', default: 1 }),
+    borderRadius: PropTypes.number({ label: '圆角(px)', default: 4 }),
     disabled: PropTypes.boolean()
   },
   methods: {

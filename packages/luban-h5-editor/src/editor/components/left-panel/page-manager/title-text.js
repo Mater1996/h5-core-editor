@@ -2,15 +2,11 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime : 2020-11-02 10:41:22
+ * @LastEditTime: 2021-01-21 10:08:09
  * @Description :
  */
-import { Badge } from 'ant-design-vue'
-
 export default {
-  components: {
-    [Badge.name]: Badge
-  },
+  name: 'TitleText',
   props: ['page', 'pageIndex'],
   methods: {
     getTitle () {
@@ -21,11 +17,9 @@ export default {
     }
   },
   render (h) {
-    // #!en: Page<Index>
-    // #!zh: 第<Index>页面
     return (
       <span>
-        <a-badge
+        <span
           count={this.pageIndex + 1}
           numberStyle={{
             backgroundColor: '#fff',

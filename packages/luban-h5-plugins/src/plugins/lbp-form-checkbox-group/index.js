@@ -1,4 +1,4 @@
-import PropTypes from '../../PropTypes'
+import PropTypes from 'luban-h5-support'
 import LbpFormRadio from '../lbp-form-radio'
 
 function getDefaultItems () {
@@ -33,13 +33,12 @@ export default {
     height: {
       default: 120
     },
-    aliasName: PropTypes.string({
-      defaultValue: '标题演示',
-      label: '填写标题'
-    }),
-    items: PropTypes.textOptions({
+    aliasName: PropTypes.string({ label: '填写标题' }),
+    items: PropTypes.select({
       label: '选项列表',
-      defaultValue: () => getDefaultItems()
+      props: {
+        options: getDefaultItems()
+      }
     }),
     // TODO 抽离 radio-group 至 common-props
     type: {

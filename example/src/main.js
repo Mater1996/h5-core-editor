@@ -2,14 +2,17 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 09:25:51
- * @LastEditTime : 2020-12-04 10:28:29
+ * @LastEditTime: 2021-02-02 16:49:28
  * @Description :
  */
 import Vue from 'vue'
 import App from './App.vue'
 
-import 'luban-h5-editor/dist/luban-h5-editor.css'
-import lubanH5Editor from 'luban-h5-editor'
+import 'luban-h5/dist/luban-h5.esm.css'
+import lubanH5, { LubanH5Editor } from 'luban-h5'
+
+import 'luban-h5-support/dist/luban-h5-support.esm.css'
+import 'luban-h5-plugins/dist/luban-h5-plugins.esm.css'
 import {
   LbpButton,
   LbpPicture,
@@ -27,6 +30,10 @@ import {
   LbpTable,
   LbpNewsList
 } from 'luban-h5-plugins'
+
+
+console.log(lubanH5, LubanH5Editor)
+
 
 const plugins = [
   {
@@ -48,7 +55,10 @@ const plugins = [
     name: LbpPicture.name,
     icon: 'photo',
     visible: true,
-    component: () => import('luban-h5-plugins/lib/lbp-picture')
+    component: LbpPicture,
+    asyncComponent: () => ({
+      component: () => import('luban-h5-plugins/lib/lbp-picture')
+    })
   },
   {
     title: '文字',
@@ -143,11 +153,11 @@ const plugins = [
   }
 ]
 
-plugins.forEach(v => lubanH5Editor.LbpH5Plugin.register(v))
+plugins.forEach(v => lubanH5.plugin.register(v))
 
 Vue.config.productionTip = false
 
-Vue.use(lubanH5Editor)
+Vue.use(LubanH5Editor)
 
 new Vue({
   render: h => h(App)

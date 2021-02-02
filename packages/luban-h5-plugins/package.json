@@ -1,6 +1,6 @@
 {
   "name": "luban-h5-plugins",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "鲁班H5插件集",
   "keywords": [
     "鲁班H5、插件"
@@ -9,11 +9,19 @@
   "homepage": "https://github.com/Mater1996/luban-h5-plugins#readme",
   "license": "ISC",
   "main": "index.js",
+  "module": "dist/luban-h5-plugins.esm.js",
   "files": [
     "index.js",
     "dist",
     "lib"
   ],
+  "buildOptions": {
+    "name": "LubanH5Plugins",
+    "formats": [
+      "esm",
+      "umd"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Mater1996/luban-h5-plugins.git"
@@ -22,16 +30,9 @@
     "url": "https://github.com/Mater1996/luban-h5-plugins/issues"
   },
   "dependencies": {
-    "ant-design-vue": "^1.7.0",
-    "echarts": "^4.8.0",
-    "lodash": "^4.17.20",
-    "papaparse": "^5.2.0",
+    "luban-h5-support": "^1.1.2",
     "resize-detector": "^0.2.2",
-    "v-charts": "^1.19.0",
     "vant": "^2.10.11",
-    "vue": "^2.6.10",
-    "vue-quill-editor": "^3.0.6",
-    "x-data-spreadsheet": "^1.1.4"
-  },
-  "gitHead": "324c2ec954ede4a064d75a14d255f2b1cac604bc"
+    "vue": "^2.6.10"
+  }
 }

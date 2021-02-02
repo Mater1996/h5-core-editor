@@ -2,7 +2,6 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-10-29 19:52:14
- * @LastEditTime: 2020-12-29 12:03:21
  * @Description: 
 -->
 # 鲁班H5核心编辑模块
@@ -56,6 +55,14 @@ this.$refs['editor'].redo() // 前进一步
 ## 文档
 
 - [鲁班H5中文文档-编辑器模块](https://www.yuque.com/luban-h5/docs/esniuh)
+
+## Note
+
+关于注册异步组件的预览方面，有两种解决方案
+
+一个是直接构建预览页面，然后直接异步构建，这里也是可以分开的，因为preview也可以渲染异步组件，在使用方看来，他们在发布的时候需要的就是多执行一次build构建而已与example一样
+
+一个是预览包提供systemjs状态，这样不需要build，而是直接内联preview.js并进行渲染就可以了 // TODO
 
 ## 本地开发
 

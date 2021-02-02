@@ -1,4 +1,5 @@
 export default {
+  name: 'ShortcutButton',
   functional: true,
   props: {
     faIcon: {
@@ -32,7 +33,7 @@ export default {
         onMousedown={props.mousedownFn}
         disabled={props.disabled}
       >
-        <i
+        <div
           class={['shortcut-icon', 'fa', `fa-${props.faIcon}`]}
           aria-hidden='true'
         />

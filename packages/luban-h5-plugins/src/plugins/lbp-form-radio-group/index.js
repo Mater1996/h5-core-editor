@@ -1,15 +1,15 @@
 /*
  * @Author: ly525
  * @Date: 2019-11-23 12:35:43
- * @LastEditors : Please set LastEditors
- * @LastEditTime : 2020-11-17 16:55:02
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-02-02 14:55:08
  * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-form-radio-group.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: 表单单选组组件 #!en: radio group component
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
 
-import PropTypes from '../../PropTypes'
+import PropTypes from 'luban-h5-support'
 import LbpFormRadio from '../lbp-form-radio'
 
 function getDefaultItems () {
@@ -41,30 +41,24 @@ export default {
     height: {
       default: 120
     },
-    aliasName: PropTypes.string({
-      defaultValue: '标题演示',
-      label: '填写标题'
-    }),
-    items: PropTypes.textOptions({
+    aliasName: PropTypes.string({ label: '填写标题' }),
+    items: PropTypes.select({
       label: '选项列表',
-      defaultValue: () => getDefaultItems()
+      props: {
+        options: () => getDefaultItems()
+      }
     }),
-    type: {
+    type: PropTypes.select({
       type: String,
       default: 'radio',
-      editor: {
-        type: 'a-radio-group',
-        label: '选择模式',
-        require: true,
-        props: {
-          options: [
-            { label: '单选', value: 'radio' },
-            { label: '多选', value: 'checkbox' }
-          ],
-          name: 'mode'
-        }
+      label: '选择模式',
+      props: {
+        options: [
+          { label: '单选', value: 'radio' },
+          { label: '多选', value: 'checkbox' }
+        ]
       }
-    }
+    })
   },
   data () {
     return {
@@ -122,20 +116,25 @@ export default {
     return (
       <div>
         <h3>{this.aliasName}</h3>
-        <input type="text" hidden value={this.value_} data-type="lbp-form-input" data-uuid={this.uuid} />
-        {
-          this.items.map(item => (
-            <LbpFormRadio
-              vertical
-              value={item.value}
-              checked={this.value === item.value}
-              aliasName={this.uuid}
-              type={this.type}
-              onChange={this.onChange}
-            >{item.value}
-            </LbpFormRadio>
-          ))
-        }
+        <input
+          type="text"
+          hidden
+          value={this.value_}
+          data-type="lbp-form-input"
+          data-uuid={this.uuid}
+        />
+        {this.items.map(item => (
+          <LbpFormRadio
+            vertical
+            value={item.value}
+            checked={this.value === item.value}
+            aliasName={this.uuid}
+            type={this.type}
+            onChange={this.onChange}
+          >
+            {item.value}
+          </LbpFormRadio>
+        ))}
       </div>
     )
   }

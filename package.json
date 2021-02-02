@@ -4,7 +4,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "node scripts/dev.js",
+    "dev": "node scripts/dev.js --target=luban-h5",
     "build": "node scripts/build.js",
     "build:example": "npm run --prefix ./example build",
     "build:plugins": "node scripts/build.plugin.js",

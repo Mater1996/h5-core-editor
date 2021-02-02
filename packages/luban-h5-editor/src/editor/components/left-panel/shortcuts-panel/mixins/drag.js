@@ -1,8 +1,8 @@
 /*
  * @Author: ly525
  * @Date: 2020-05-17 17:21:04
- * @LastEditors : Please set LastEditors
- * @LastEditTime : 2020-11-20 15:03:28
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-01-21 10:08:47
  * @FilePath: /luban-h5/front-end/h5/src/components/@/mixins/drag.js
  * @Github: https://github.com/ly525/luban-h5
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
@@ -60,10 +60,9 @@ class Drag {
 }
 
 export default {
+  name: 'Drag',
   data () {
-    return {
-
-    }
+    return {}
   },
   methods: {
     /**
@@ -125,19 +124,23 @@ export default {
 
       const canvasWrapper = document.querySelector('.lbp-canvas')
       const position = canvasWrapper.getBoundingClientRect()
-      this.dragElement && this.clone({
-        ...this.dragElement,
-        dragStyle: {
-          left: e.clientX - layerX - position.left,
-          top: e.clientY - layerY - position.top
-        }
-      })
+      this.dragElement &&
+        this.clone({
+          ...this.dragElement,
+          dragStyle: {
+            left: e.clientX - layerX - position.left,
+            top: e.clientY - layerY - position.top
+          }
+        })
     },
     checkCanMousedown (e, { minOffsetX, minOffsetY, minOffset }) {
       const offsetX = e.clientX - dragConfig.origin.clientX
       const offsetY = e.clientY - dragConfig.origin.clientY
 
-      return offsetX >= (minOffsetX || minOffset) || offsetY >= (minOffsetY || minOffset)
+      return (
+        offsetX >= (minOffsetX || minOffset) ||
+        offsetY >= (minOffsetY || minOffset)
+      )
     }
   },
   updated () {

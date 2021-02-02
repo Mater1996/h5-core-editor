@@ -1,15 +1,24 @@
 {
   "name": "luban-h5-preview",
-  "version": "1.1.0",
-  "description": "> TODO: description",
+  "version": "1.1.2",
+  "description": "鲁班H5预览",
   "author": "Mater <bxh8640@gmail.com>",
   "homepage": "https://github.com/Mater1996/luban-h5-preview#readme",
   "license": "ISC",
   "main": "index.js",
+  "module": "dist/luban-h5-preview.esm.js",
   "files": [
     "index.js",
     "dist"
   ],
+  "buildOptions": {
+    "name": "LubanH5Preview",
+    "formats": [
+      "umd",
+      "esm",
+      "iife"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Mater1996/luban-h5-preview.git"
@@ -17,8 +26,9 @@
   "bugs": {
     "url": "https://github.com/Mater1996/luban-h5-preview/issues"
   },
-  "gitHead": "324c2ec954ede4a064d75a14d255f2b1cac604bc",
   "dependencies": {
-    "luban-h5-editor": "^1.1.0"
+    "luban-h5": "^1.1.2",
+    "luban-h5-canvas": "^1.1.2",
+    "vue": "^2.6.10"
   }
 }

@@ -1,0 +1,74 @@
+.tabs-component {
+  margin: 0 0;
+  height: 100%;
+  position: relative;
+  box-sizing: border-box;
+  padding-top: 34px;
+}
+
+.tabs-component-tabs {
+  display: flex;
+  position: absolute;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  padding-inline-start: 0;
+  border: solid 1px #ddd;
+  border-radius: 6px 6px 0 0;
+  height: 36px;
+  left: 0;
+  right: 0;
+  top: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  box-sizing: border-box;
+}
+
+.tabs-component-tab {
+  color: #999;
+  font-weight: 600;
+  list-style: none;
+  line-height: 34px;
+  background-color: #fff;
+  border-right: solid 1px #ddd;
+  border-bottom: solid 1px #ddd;
+  border-radius: 3px 3px 0 0;
+}
+
+.tabs-component-tab.is-active {
+  z-index: 2;
+  border-bottom: solid 1px transparent;
+  color: #000;
+}
+
+.tabs-component-tab:not(:last-child) {
+  border-bottom: dotted 1px #ddd;
+}
+
+.tabs-component-tab:hover a {
+  color: #666;
+}
+
+.tabs-component-tab.is-disabled * {
+  color: #cdcdcd;
+  cursor: not-allowed !important;
+}
+
+.tabs-component-tab-a {
+  color: inherit;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.tabs-component-panels {
+  position: relative;
+  border-radius: 0 0 6px 6px;
+  background-color: #fff;
+  border: solid 1px #ddd;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  padding: 8px;
+  height: 100%;
+  box-sizing: border-box;
+}

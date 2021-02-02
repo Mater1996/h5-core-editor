@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime : 2020-12-04 16:12:08
+ * @LastEditTime: 2021-02-02 16:45:36
  * @Description :
  */
 const path = require('path')
@@ -22,13 +22,26 @@ const filesize = require('rollup-plugin-filesize')
 const analyze = require('rollup-plugin-analyzer')
 const replace = require('@rollup/plugin-replace')
 
-const packagesDir = path.resolve(__dirname, '../packages')
-const packageDir = path.resolve(packagesDir, process.env.TARGET)
+const { TARGET, NODE_ENV, FORMAT, CLEAR } = process.env
+const isProd = NODE_ENV === 'production'
+const isESM = FORMAT === 'esm'
+const isUMD = FORMAT === 'umd'
+const isClear = CLEAR === '1'
+const rootDir = path.resolve(__dirname, '../')
+const resolveRoot = p => path.resolve(rootDir, p)
+const packageDir = resolveRoot(`packages/${TARGET}`)
 const name = path.basename(packageDir)
-const resolveRoot = p => path.resolve(packagesDir, '../', p)
-const resolve = p => path.resolve(packageDir, p)
-const pkg = require(resolve('package.json'))
-const isProd = process.env.NODE_ENV === 'production'
+const resolvePackage = p => path.resolve(packageDir, p)
+const isLubanLib = (packageName) => /luban/.test(packageName)
+const pkg = require(resolvePackage('package.json'))
+const { dependencies = {} } = pkg
+const dependenciesName = Object.keys(dependencies)
+const lubanDependenciesName = dependenciesName.filter(isLubanLib)
+const anotherDependenciesName = new Set(dependenciesName.filter(v => !isLubanLib(v)))
+const lubanAlias = lubanDependenciesName.reduce((a, b) => {
+  a[b] = resolveRoot(`packages/${b}/src`)
+  return a
+}, {})
 
 const babelConfig = {
   presets: [
@@ -50,7 +63,7 @@ const babelConfig = {
     ['@babel/plugin-transform-runtime'],
     ['@babel/plugin-syntax-jsx'],
     ['@babel/plugin-proposal-class-properties'],
-    // ['import', { libraryName: 'ant-design-vue', libraryDirectory: 'es', style: 'css' }],
+    ['import', { libraryName: 'ant-design-vue' }],
     ['import', { libraryName: 'lodash', libraryDirectory: '', camel2DashComponentName: false }, 'lodash']
   ],
   externalHelpers: false,
@@ -60,61 +73,83 @@ const babelConfig = {
 
 const globals = {
   vue: 'Vue',
-  'vue-i18n': 'VueI18n',
-  vant: 'vant',
-  'resize-detector': 'resizeDetector',
-  'hotkeys-js': 'hotkeys',
-  'ant-design-vue': 'ant-design-vue',
-  'vue-quill-editor': 'VueQuillEditor',
-  'v-charts': 'VeIndex',
-  stream: 'stream',
-  'x-data-spreadsheet': 'x_spreadsheet',
-  papaparse: 'papaparse',
-  echarts: 'echarts',
-  immutable: 'immutable'
+  'vue-i18n': 'VueI18n'
 }
 
-// 开发模式的时候合入所有的luban的包用来测试
-const { dependencies = {} } = pkg
-const dependenciesKeys = Object.keys(dependencies)
-const lubanDependenciesKeys = dependenciesKeys.filter(v => /luban/.test(v))
-const external = dependenciesKeys.filter(v => isProd ? true : !/luban/.test(v))
-const devAlias = {}
-lubanDependenciesKeys.forEach(v => {
-  devAlias[v] = resolveRoot(`packages/${v}/src`)
+const outputConfig = {
+  esm: {
+    format: FORMAT,
+    file: resolvePackage(`dist/${name}.esm.js`)
+  },
+  iife: {
+    format: FORMAT,
+    file: resolvePackage(`dist/${name}.global.js`)
+  },
+  umd: {
+    format: FORMAT,
+    file: resolvePackage(`dist/${name}.js`)
+  }
+}
+
+const external = []
+const entries = {}
+// 递归luban内部依赖包
+lubanDependenciesName.forEach(function genRes (lubanPackageName) {
+  const pkg = require(resolveRoot(`packages/${lubanPackageName}/package.json`))
+  const lubanDependencies = Object.keys(pkg.dependencies || {})
+  lubanDependencies.forEach(v => {
+    if (v !== lubanPackageName) {
+      if (!isLubanLib(v)) {
+        anotherDependenciesName.add(v)
+      } else {
+        lubanAlias[v] = resolveRoot(`packages/${v}/src`)
+        if (v !== TARGET) {
+          genRes(v)
+        }
+      }
+    }
+  })
 })
+
+if (!isProd) {
+  external.push(...anotherDependenciesName)
+  Object.assign(entries, lubanAlias)
+} else {
+  if (isESM || isUMD) {
+    external.push(...dependenciesName)
+  } else {
+    Object.assign(entries, lubanAlias)
+  }
+}
 
 module.exports = () => {
   return {
-    input: resolve('./src/index.js'),
+    input: resolvePackage('src/index.js'),
+    watch: {
+      clearScreen: false
+    },
     output: [
       {
         exports: 'named',
+        extend: true,
+        globals,
         name: name,
-        format: 'umd',
-        file: resolve(`./dist/${name}.js`),
         sourcemap: !isProd,
         indent: isProd,
-        globals
+        ...outputConfig[FORMAT]
       }
     ],
     treeshake: isProd,
     external,
     plugins: [
-      isProd && del({ targets: `${resolve('dist/*')}` }),
+      isProd && isClear && del({ targets: `${resolvePackage('dist/*')}` }),
       peerDepsExternal(),
       alias({
         resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
-        entries: {
-          '@': resolve('./src')
-        }
-      }),
-      !isProd && alias({
-        resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
-        entries: devAlias
+        entries: entries
       }),
       image({
-        output: resolve('dist/images'),
+        output: resolvePackage('dist/images'),
         extensions: /\.(png|jpg|jpeg|gif|svg)$/,
         limit: 8192,
         exclude: 'node_modules/**'
@@ -125,7 +160,7 @@ module.exports = () => {
         )
       }),
       postcss({
-        to: resolve(`dist/${name}.css`),
+        to: resolvePackage(`dist/${name}.css`),
         extract: true,
         minimize: isProd,
         sourceMap: !isProd,
@@ -167,10 +202,10 @@ module.exports = () => {
         }
       }),
       isProd &&
-          analyze({
-            summaryOnly: true,
-            limit: 5
-          })
+      analyze({
+        summaryOnly: true,
+        limit: 5
+      })
     ]
   }
 }

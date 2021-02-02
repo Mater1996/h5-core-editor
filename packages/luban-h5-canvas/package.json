@@ -1,0 +1,34 @@
+{
+  "name": "luban-h5-canvas",
+  "version": "1.1.2",
+  "description": "鲁班H5渲染器",
+  "author": "Mater <baixh@rd.netease.com>",
+  "keywords": [
+    "鲁班H5"
+  ],
+  "homepage": "https://github.com/luban-h5/luban-h5-canvas",
+  "license": "ISC",
+  "main": "index.js",
+  "module": "dist/luban-h5-canvas.esm.js",
+  "files": [
+    "index.js",
+    "dist"
+  ],
+  "buildOptions": {
+    "name": "LubanH5Editor",
+    "formats": [
+      "esm",
+      "umd"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mater1996/h5-core-editor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Mater1996/h5-core-editor/issues"
+  },
+  "dependencies": {
+    "vue": "^2.6.10"
+  }
+}

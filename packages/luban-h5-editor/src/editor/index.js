@@ -2,38 +2,29 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2020-12-29 10:43:51
+ * @LastEditTime: 2021-02-02 16:39:02
  * @Description :
  */
-import 'luban-h5-plugins'
+import 'normalize.css/normalize.css'
 import 'font-awesome/css/font-awesome.min.css'
-import 'ant-design-vue/dist/antd.css'
-import { Layout } from 'ant-design-vue'
 import { debounce } from 'lodash'
+import LbpH5Canvas from 'luban-h5-canvas'
+import lubanH5, { LbpPlugin, LbpPage, LbpElement } from 'luban-h5'
 
-import '@/styles/index.scss'
-import i18n from '@/locales'
-import history from '@/utils/history'
+import './index.scss'
+import i18n from '../locales'
+import history from '../utils/history'
 
 import config from './config'
-import LbpWork from './models/LbpWork'
-import LbpPage from './models/LbpPage'
-import LbpElement from './models/LbpElement'
-import LbpH5Canvas from './components/lbp-canvas'
-import FixedTools from './components/fixed-tools/index'
 import EditorRightPanel from './components/right-panel'
 import EditorLeftPanel from './components/left-panel'
-import AuxiliayLine from './components/AuxiliayLine'
-import AdjustHeight from './components/AdjustHeight'
-import AdjustLineV from './components/adjust-line/vertical'
+import AuxiliayLine from './components/auxiliay-line'
+import AdjustHeight from './components/adjust-height'
+import AdjustLine from './components/adjust-line'
 
 const LpbH5Editor = {
-  name: 'lbp-h5-editor',
+  name: 'LubanH5Editor',
   i18n,
-  components: {
-    [Layout.name]: Layout,
-    [Layout.Content.name]: Layout
-  },
   props: {
     data: {
       type: Object,
@@ -65,8 +56,10 @@ const LpbH5Editor = {
   watch: {
     data: {
       handler (data = {}) {
-        this.work = new LbpWork(data)
+        console.log(lubanH5)
+        this.work = lubanH5.create(data)
         history.init(this.work)
+        console.log(this.work)
       },
       immediate: true
     }
@@ -94,7 +87,10 @@ const LpbH5Editor = {
         if (element instanceof LbpElement) {
           this.currentPage.elements.push(element)
         } else {
-          const lbpElement = new LbpElement(element)
+          const lbpElement = LbpElement.create({
+            ...element,
+            component: LbpPlugin.getPlugin(element.pluginName).component
+          })
           this.currentPage.elements.push(lbpElement)
         }
       })
@@ -109,10 +105,10 @@ const LpbH5Editor = {
       this.record()
     },
     undo () {
-      this.work = new LbpWork(history.undo())
+      this.work = lubanH5.create(history.undo())
     },
     redo () {
-      this.work = new LbpWork(history.redo())
+      this.work = lubanH5.create(history.redo())
     },
     _handlerEditorMouseDown () {
       this.activeElement && this._showAuxiliay()
@@ -132,7 +128,7 @@ const LpbH5Editor = {
       }
     },
     _handleAdjustLieMove (offset) {
-      this.rightPanelWidth += offset
+      this.rightPanelWidth -= offset
     },
     _handlePropsChange (value) {
       this.updateElement({ props: value })
@@ -140,14 +136,17 @@ const LpbH5Editor = {
     _handleAnimationsChange (value) {
       this.updateElement({ animations: value })
     },
+    /**
+     * TODO 目前只做到了锁定元素在辅助线位置 但是未做到吸附动作
+     * 因此需要判断当前拖拽的点 例如右侧影响宽 那么采取吸附的动作是增加宽度到辅助线
+     */
     _handleElementRectChange: (function () {
       const lock = []
       const vHandler = ['l', 'm', 'r']
       const hHandler = ['t', 'm', 'b']
       const effectRegex = [/l/, /t/, /r|lm/, /b|mt/]
       const isFalse = v => v === false
-      return function (value = {}, effectHandler = []) {
-        const [point = 'mm'] = effectHandler
+      return function (value = {}, [point = 'mm'] = []) {
         const [vLines, hLines] = this.$refs.auxiliayLine.calcVHLine(value) || []
         const lockHandlerSet = new Set([])
         let hasVLine = false
@@ -198,15 +197,16 @@ const LpbH5Editor = {
   },
   render () {
     return (
-      <a-layout style={{ height: '100%' }}>
+      <div class="luban-h5-editor">
         <EditorLeftPanel
+          class="section plugins"
           pages={this.work.pages}
           onPageChange={this._handlePageIndexChange}
           onAddElement={this._handleAddElement}
           onAddPage={this._handleAddPage}
         />
-        <a-layout id="editor-wrapper">
-          <a-layout-content class="scroll-view remove-scrollbar">
+        <div class="section container" id="editor-wrapper">
+          <div class="scroll-view remove-scrollbar">
             <div
               class="editor-content"
               onMousedown={this._handlerEditorMouseDown}
@@ -232,17 +232,17 @@ const LpbH5Editor = {
                 onChange={this._handlePageHeightChange}
               />
             </div>
-          </a-layout-content>
-        </a-layout>
-        <AdjustLineV onLineMove={this._handleAdjustLieMove} />
-        <FixedTools onRedo={this._handleRedo} onUndo={this._handleUndo} />
+          </div>
+        </div>
+        <AdjustLine onLineMove={this._handleAdjustLieMove} />
         <EditorRightPanel
+          class="section feature"
           width={this.rightPanelWidth}
           element={this.activeElement}
           onPropsChange={this._handlePropsChange}
           onAnimationsChange={this._handleAnimationsChange}
         />
-      </a-layout>
+      </div>
     )
   }
 }

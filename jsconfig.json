@@ -7,9 +7,12 @@
     "experimentalDecorators": true,
     "paths": {
       "@/*": ["./packages/luban-h5-editor/src/*"],
+      "luban-h5": ["./packages/luban-h5/src"],
       "luban-h5-editor": ["./packages/luban-h5-editor/src"],
       "luban-h5-plugins": ["./packages/luban-h5-plugins/src"],
-      "luban-h5-preview": ["./packages/luban-h5-preview/src"]
+      "luban-h5-canvas": ["./packages/luban-h5-canvas/src"],
+      "luban-h5-preview": ["./packages/luban-h5-preview/src"],
+      "luban-h5-support": ["./packages/luban-h5-support/src"]
     }
   },
   "include": ["packages/*/src", "packages/*/__tests__"],

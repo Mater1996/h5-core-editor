@@ -1,5 +1,6 @@
-/example
 .history
+node_modules
 docs
 dist
-node_modules
+lib
+/example
