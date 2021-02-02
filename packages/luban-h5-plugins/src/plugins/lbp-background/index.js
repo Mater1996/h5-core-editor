@@ -1,14 +1,14 @@
 /*
  * @Author: ly525
  * @Date: 2019-11-24 18:51:58
- * @LastEditors : Please set LastEditors
- * @LastEditTime : 2020-11-17 16:43:14
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-02-02 14:45:06
  * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-background.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: luban-h5 background image/color component/plugin
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
-import PropTypes from '../../PropTypes'
+import PropTypes from 'luban-h5-support'
 
 function renderWaterMark ({
   // 使用 ES6 的函数默认值方式设置参数的默认取值
@@ -67,26 +67,9 @@ export default {
   name: 'lbp-background',
   props: {
     imgSrc: PropTypes.string({ label: '背景图' }),
-    backgroundColor: PropTypes.color({
-      label: '背景色',
-      defaultValue: 'rgba(255, 255, 255, 0.2)'
-    }),
-    waterMarkText: PropTypes.string({
-      label: '水印文字',
-      defaultValue: '水印文字'
-    }),
-    waterMarkFontSize: PropTypes.number({
-      label: '水印文字大小(px)',
-      defaultValue: 16
-    }),
-    waterMarkRotate: PropTypes.number({
-      label: '水印旋转角度',
-      defaultValue: 10
-    }),
-    waterMarkColor: PropTypes.color({
-      label: '水印文字颜色',
-      defaultValue: 'rgba(184, 184, 184, 0.2)'
-    })
+    waterMarkText: PropTypes.string({ label: '水印文字' }),
+    waterMarkFontSize: PropTypes.number({ label: '水印文水印文字大小(px)' }),
+    waterMarkRotate: PropTypes.number({ label: '水印旋转角度' })
   },
   methods: {
     renderWaterMark () {

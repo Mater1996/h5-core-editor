@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-16 14:11:44
- * @LastEditTime: 2021-01-06 14:57:39
+ * @LastEditTime: 2021-02-02 14:00:47
  * @Description :
  */
 
@@ -10,6 +10,7 @@ import 'animate.css/animate.css'
 import './index.scss'
 
 const AnimateLayer = {
+  name: 'AnimateLayer',
   props: {
     animations: {
       type: Array,

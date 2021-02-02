@@ -30,14 +30,9 @@
     "url": "https://github.com/Mater1996/luban-h5-plugins/issues"
   },
   "dependencies": {
-    "ant-design-vue": "^1.7.2",
-    "echarts": "^4.8.0",
-    "lodash": "^4.17.20",
-    "papaparse": "^5.2.0",
+    "luban-h5-support": "^1.1.2",
     "resize-detector": "^0.2.2",
-    "v-charts": "^1.19.0",
     "vant": "^2.10.11",
-    "vue": "^2.6.10",
-    "x-data-spreadsheet": "^1.1.4"
+    "vue": "^2.6.10"
   }
 }

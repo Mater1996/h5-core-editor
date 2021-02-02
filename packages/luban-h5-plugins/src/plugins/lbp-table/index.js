@@ -1,5 +1,5 @@
 // https://github.com/luban-h5-components/plugin-common-props
-import PropTypes from '../../PropTypes'
+import PropTypes from 'luban-h5-support'
 import { addListener as addResizeListener, removeListener as removeResizeListener } from 'resize-detector'
 import './index.scss'
 
@@ -22,17 +22,9 @@ export default {
     height: {
       default: 120
     },
-    theme: PropTypes.string({ defaultValue: '', label: '主题', visible: false }),
-    columnWidth: PropTypes.number({ label: '每列宽度(px)', defaultValue: 100 }),
-    freezeCount: PropTypes.number({ label: '冻结列数(px)', defaultValue: 0 }),
-    dataset: PropTypes.excel({
-      defaultValue: () => [
-        ['列A', '列B', '列C'],
-        ['————', '————', '————'],
-        ['————', '————', '————'],
-        ['————', '————', '————']
-      ]
-    })
+    theme: PropTypes.string({ label: '主题' }),
+    columnWidth: PropTypes.number({ label: '每列宽度(px)' }),
+    freezeCount: PropTypes.number({ label: '冻结列数(px)' })
   },
   watch: {
     freezeCount () {

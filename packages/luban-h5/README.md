@@ -1,6 +1,6 @@
 # `luban-h5`
 
-> luban-h5 core
+> luban-h5
 
 ## Usage
 

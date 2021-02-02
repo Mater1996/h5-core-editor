@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-01-21 14:39:25
+ * @LastEditTime: 2021-02-02 15:37:09
  * @Description : 右侧panel为修改 props， events, animations 等属性
  */
 import { pick } from 'lodash'
@@ -11,7 +11,7 @@ import RenderPropsEditor from './props'
 import RenderActionEditor from './action'
 
 export default {
-  name: 'ElementPropsEditor',
+  name: 'RightPanel',
   props: {
     width: {
       type: Number,
@@ -48,7 +48,6 @@ export default {
       <div style={{ width: `${this.width}px` }}>
         <Tabs style="height: 100%;" options={{ useUrlFragment: false }}>
           <Tab name="属性">
-            <span slot="tab">{this.$t('editor.editPanel.tab.prop')}</span>
             <RenderPropsEditor
               config={this.editPropsConfig}
               value={this.editPropsValue}

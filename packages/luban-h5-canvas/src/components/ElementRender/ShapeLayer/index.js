@@ -6,6 +6,7 @@ import vClickOutside from '../../../directive/v-click-outside'
 const points = ['lt', 'rt', 'lb', 'rb', 'lm', 'rm', 'mt', 'mb']
 
 export default {
+  name: 'ShapeLayer',
   directives: {
     vClickOutside: vClickOutside
   },

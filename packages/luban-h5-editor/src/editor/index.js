@@ -2,14 +2,14 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-01-21 15:04:03
+ * @LastEditTime: 2021-02-02 16:39:02
  * @Description :
  */
 import 'normalize.css/normalize.css'
 import 'font-awesome/css/font-awesome.min.css'
 import { debounce } from 'lodash'
 import LbpH5Canvas from 'luban-h5-canvas'
-import lubanH5, { LbpPlugin, LbpPage, LbpElement } from 'luban-h5-core'
+import lubanH5, { LbpPlugin, LbpPage, LbpElement } from 'luban-h5'
 
 import './index.scss'
 import i18n from '../locales'
@@ -23,7 +23,7 @@ import AdjustHeight from './components/adjust-height'
 import AdjustLine from './components/adjust-line'
 
 const LpbH5Editor = {
-  name: 'lbp-h5-editor',
+  name: 'LubanH5Editor',
   i18n,
   props: {
     data: {
@@ -56,6 +56,7 @@ const LpbH5Editor = {
   watch: {
     data: {
       handler (data = {}) {
+        console.log(lubanH5)
         this.work = lubanH5.create(data)
         history.init(this.work)
         console.log(this.work)

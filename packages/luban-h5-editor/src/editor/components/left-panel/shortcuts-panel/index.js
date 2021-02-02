@@ -5,7 +5,7 @@
  * @LastEditTime: 2021-01-21 10:08:20
  * @Description :
  */
-import { LbpPlugin } from 'luban-h5-core'
+import { LbpPlugin } from 'luban-h5'
 import './index.scss'
 import ShortcutButton from './shortcut-button'
 import dragMixin from './mixins/drag'

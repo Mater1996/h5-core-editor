@@ -2,13 +2,13 @@
  * @Author: ly525
  * @Date: 2019-11-24 18:51:58
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-01-14 14:44:11
+ * @LastEditTime: 2021-02-02 14:56:59
  * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-text.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: luban-h5 text component/plugin
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
-import PropTypes from '../../PropTypes'
+import PropTypes from 'luban-h5-support'
 import './text-overwrite-quil-snow-theme.scss'
 // https://github.com/luban-h5-components/plugin-common-props
 
@@ -36,7 +36,9 @@ export default {
           e.stopPropagation()
         }}
         onMousedown={e => {
-          if (this.canEdit) { e.stopPropagation() }
+          if (this.canEdit) {
+            e.stopPropagation()
+          }
         }}
         style={style}
         onKeydown={event => {
@@ -47,8 +49,7 @@ export default {
             event.stopPropagation()
           }
         }}
-      >
-      </div>
+      ></div>
     )
   },
   name: 'lbp-text',
@@ -59,17 +60,10 @@ export default {
     }
   },
   props: {
-    backgroundColor: PropTypes.color({ label: '背景色', defaultValue: 'rgba(0, 0, 0, 0)' }),
-    borderWidth: PropTypes.number({ label: '边框宽度(px)', defaultValue: 0 }),
+    borderWidth: PropTypes.number({ label: '边框宽度(px)' }),
     borderRadius: PropTypes.number({ label: '圆角(px)' }),
-    borderColor: PropTypes.color({ label: '边框颜色' }),
-    text: PropTypes.string({ label: '内容', defaultValue: '双击修改文字', visible: false }),
-    editorMode: PropTypes.string({
-      defaultValue: 'preview', // 可选值: preview/edit
-      label: '模式',
-      visible: false
-    })
+    text: PropTypes.string({ label: '内容' }),
+    editorMode: PropTypes.string({ label: '模式' })
   },
-  editorConfig: {
-  }
+  editorConfig: {}
 }

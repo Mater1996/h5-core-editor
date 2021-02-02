@@ -2,13 +2,13 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-11-02 09:25:51
- * @LastEditTime: 2021-01-20 11:58:02
+ * @LastEditTime: 2021-02-02 16:22:22
  * @Description:
 -->
 <template>
   <div id="app">
     <!-- <lbp-h5-preview :data="work"></lbp-h5-preview> -->
-    <lbp-h5-editor :data="work" ref="editor" style="height: 100vh;" />
+    <LubanH5Editor :data="work" ref="editor" style="height: 100vh;" />
   </div>
 </template>
 
@@ -31,12 +31,12 @@ export default {
               {
                 pluginName: 'lbp-picture',
                 props: {
+                  fillType: 'contain',
                   imgSrc:
                     'https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg!0x0.webp',
                   isRem: false,
                 },
                 style: {
-                  fillType: 'contain',
                   top: 0,
                   left: 0,
                   width: 186,

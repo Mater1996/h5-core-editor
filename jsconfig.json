@@ -8,7 +8,6 @@
     "paths": {
       "@/*": ["./packages/luban-h5-editor/src/*"],
       "luban-h5": ["./packages/luban-h5/src"],
-      "luban-h5-core": ["./packages/luban-h5-core/src"],
       "luban-h5-editor": ["./packages/luban-h5-editor/src"],
       "luban-h5-plugins": ["./packages/luban-h5-plugins/src"],
       "luban-h5-canvas": ["./packages/luban-h5-canvas/src"],

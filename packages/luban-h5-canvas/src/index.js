@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-01-20 12:00:39
+ * @LastEditTime: 2021-02-02 15:31:25
  * @Description :
  */
 import './index.scss'
@@ -10,7 +10,7 @@ import { renderStyle } from './utils'
 import ElementRender from './components/ElementRender'
 
 const LbpCanvas = {
-  name: 'luban-h5-canvas',
+  name: 'LubanH5Canvas',
   props: {
     width: {
       type: Number,

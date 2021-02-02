@@ -1,14 +1,14 @@
 /*
  * @Author: ly525
  * @Date: 2019-12-01 18:11:50
- * @LastEditors : Please set LastEditors
- * @LastEditTime : 2020-11-17 16:52:08
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-02-02 14:57:23
  * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-video.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
-import PropTypes from '../../PropTypes'
+import PropTypes from 'luban-h5-support'
 
 import playIcon from './play.svg'
 import './index.scss'
@@ -20,17 +20,7 @@ export default {
     src: PropTypes.string({ label: '视频地址' }),
     disabled: PropTypes.boolean({ label: 'disabled' }),
     useIframe: PropTypes.boolean({ label: '使用iframe' }),
-    iframeSrc: PropTypes.string({
-      default: '',
-      label: 'iframe 地址',
-      props: {
-        type: 'textarea',
-        placeholder: '只有使用iframe打开的时候，这个才有效'
-      },
-      extra: h => {
-        return '「使用iframe」打开的时候，这个才有效；上传视频请忽略该配置'
-      }
-    })
+    iframeSrc: PropTypes.string({ label: 'iframe 地址' })
   },
   watch: {
     src () {

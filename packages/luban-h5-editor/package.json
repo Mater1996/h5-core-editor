@@ -35,7 +35,7 @@
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.20",
     "luban-h5-canvas": "^1.1.2",
-    "luban-h5-core": "^1.1.2",
+    "luban-h5": "^1.1.2",
     "normalize.css": "^8.0.1",
     "vue": "^2.6.10",
     "vue-i18n": "^8.14.1",

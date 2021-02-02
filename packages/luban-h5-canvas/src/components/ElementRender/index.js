@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-13 10:09:46
- * @LastEditTime: 2021-01-15 11:11:11
+ * @LastEditTime: 2021-02-02 15:30:58
  * @Description :
  */
 import { cloneDeep } from 'lodash'
@@ -10,6 +10,7 @@ import ShapeLayer from './ShapeLayer'
 import AnimateLayer from './AnimateLayer'
 
 export default {
+  name: 'ElementRender',
   props: {
     element: {
       type: Object,

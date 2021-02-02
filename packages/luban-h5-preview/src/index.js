@@ -1,9 +1,9 @@
 import LbpH5Canvas from 'luban-h5-canvas'
 import './styles/index.scss'
-import lubanH5 from 'luban-h5-core'
+import lubanH5 from 'luban-h5'
 
 const LbpH5Preview = {
-  name: 'lbp-h5-preview',
+  name: 'LubanH5Preview',
   props: {
     data: {
       type: Object,

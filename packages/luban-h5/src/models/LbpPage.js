@@ -2,10 +2,11 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-01-19 11:11:43
+ * @LastEditTime: 2021-02-02 10:27:48
  * @Description :
  */
 
+import { cloneDeep } from 'lodash'
 import Element from './LbpElement'
 import lbpPlugins from '../plugins'
 
@@ -29,24 +30,35 @@ class LbpPage {
     this.width = width
     this.height = height
     this.pageMode = pageMode
-    this.elements = this.genElements(elements)
+    this.elements = []
+    this.addElement(...elements)
+  }
+
+  addElement (...elements) {
+    return this.elements.push(
+      ...elements.map(v => {
+        const plugin = lbpPlugins.getPlugin(v.pluginName) || {}
+        return Element.create({
+          ...v,
+          component: plugin.component
+        })
+      })
+    )
+  }
+
+  deleteElement (index) {
+    return this.elements.splice(index, 1)
+  }
+
+  update (page) {
+    Object.assign(this, page)
   }
 
   clone () {
-    const elements = this.elements.map(element => Element.create(element))
-    return new LbpPage({ title: this.title, elements })
-  }
-
-  genElements (elements = []) {
-    console.log(lbpPlugins)
-    return Array.isArray(elements) && elements.length > 0
-      ? elements.map(v => {
-        return Element.create({
-          ...v,
-          component: lbpPlugins.getPlugin(v.pluginName).component
-        })
-      })
-      : []
+    return new LbpPage({
+      ...cloneDeep(this),
+      elements: this.elements.map(v => v.clone())
+    })
   }
 }
 

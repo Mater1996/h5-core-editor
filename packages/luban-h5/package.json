@@ -26,7 +26,6 @@
     "url": "https://github.com/Mater1996/luban-h5/issues"
   },
   "dependencies": {
-    "luban-h5-core": "^1.1.2",
     "luban-h5-editor": "^1.1.2",
     "luban-h5-preview": "^1.1.2"
   }

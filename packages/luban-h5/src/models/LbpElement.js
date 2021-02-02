@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-01-19 10:49:07
+ * @LastEditTime: 2021-01-21 18:35:09
  * @Description :
  */
 
@@ -20,6 +20,7 @@ let id = 0
 class LbpElement {
   constructor (options = {}) {
     const {
+      id: oldId,
       component,
       props = {},
       style = {},
@@ -27,7 +28,7 @@ class LbpElement {
       animations = []
     } = options
 
-    this.id = id++
+    this.id = oldId || id++
     // 传入具体的element render 的 参数
     this.props = {
       ...props
@@ -101,7 +102,7 @@ class LbpElement {
    * 保存element对应的组件
    */
   static saveComponent (id, component) {
-    elementComponentMap[id] = component
+    elementComponentMap[id] = elementComponentMap[id] || component
   }
 
   /**

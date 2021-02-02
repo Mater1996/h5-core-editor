@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-01-21 16:38:55
+ * @LastEditTime: 2021-02-02 16:45:36
  * @Description :
  */
 const path = require('path')
@@ -76,6 +76,21 @@ const globals = {
   'vue-i18n': 'VueI18n'
 }
 
+const outputConfig = {
+  esm: {
+    format: FORMAT,
+    file: resolvePackage(`dist/${name}.esm.js`)
+  },
+  iife: {
+    format: FORMAT,
+    file: resolvePackage(`dist/${name}.global.js`)
+  },
+  umd: {
+    format: FORMAT,
+    file: resolvePackage(`dist/${name}.js`)
+  }
+}
+
 const external = []
 const entries = {}
 // 递归luban内部依赖包
@@ -83,12 +98,14 @@ lubanDependenciesName.forEach(function genRes (lubanPackageName) {
   const pkg = require(resolveRoot(`packages/${lubanPackageName}/package.json`))
   const lubanDependencies = Object.keys(pkg.dependencies || {})
   lubanDependencies.forEach(v => {
-    if (v !== lubanPackageName && v !== TARGET) {
+    if (v !== lubanPackageName) {
       if (!isLubanLib(v)) {
         anotherDependenciesName.add(v)
       } else {
         lubanAlias[v] = resolveRoot(`packages/${v}/src`)
-        genRes(v)
+        if (v !== TARGET) {
+          genRes(v)
+        }
       }
     }
   })
@@ -97,43 +114,29 @@ lubanDependenciesName.forEach(function genRes (lubanPackageName) {
 if (!isProd) {
   external.push(...anotherDependenciesName)
   Object.assign(entries, lubanAlias)
-  console.log(entries, external)
-} else if (isESM || isUMD) {
-  external.push(...dependenciesName)
-  console.log(entries, external)
 } else {
-  Object.assign(entries, lubanAlias)
-}
-
-let file
-switch (FORMAT) {
-  case 'esm':
-    file = resolvePackage(`dist/${name}.esm.js`)
-    break
-  case 'iife':
-    file = resolvePackage(`dist/${name}.global.js`)
-    break
-  default:
-    file = resolvePackage(`dist/${name}.js`)
-    break
+  if (isESM || isUMD) {
+    external.push(...dependenciesName)
+  } else {
+    Object.assign(entries, lubanAlias)
+  }
 }
 
 module.exports = () => {
   return {
     input: resolvePackage('src/index.js'),
     watch: {
-      // clearScreen: false
+      clearScreen: false
     },
     output: [
       {
         exports: 'named',
+        extend: true,
+        globals,
         name: name,
-        format: FORMAT,
-        file,
         sourcemap: !isProd,
         indent: isProd,
-        extend: true,
-        globals
+        ...outputConfig[FORMAT]
       }
     ],
     treeshake: isProd,
