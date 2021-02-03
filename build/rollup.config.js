@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-02-03 10:55:21
+ * @LastEditTime: 2021-02-03 15:04:53
  * @Description :
  */
 const path = require('path')
@@ -22,26 +22,20 @@ const filesize = require('rollup-plugin-filesize')
 const analyze = require('rollup-plugin-analyzer')
 const replace = require('@rollup/plugin-replace')
 
-const { TARGET, NODE_ENV, FORMAT, CLEAR, GLOBALNAME } = process.env
+const { TARGET, NODE_ENV, FORMAT, CLEAR, GLOBALNAME, INPUT } = process.env
 const isProd = NODE_ENV === 'production'
-const isESM = FORMAT === 'esm'
-const isUMD = FORMAT === 'umd'
 const isClear = CLEAR === '1'
 const rootDir = path.resolve(__dirname, '../')
 const resolveRoot = p => path.resolve(rootDir, p)
 const packageDir = resolveRoot(`packages/${TARGET}`)
-const packageFileName = path.basename(packageDir)
 const resolvePackage = p => path.resolve(packageDir, p)
+const inputFilePath = resolvePackage(INPUT)
+const inputFileName = path.basename(inputFilePath, '.js')
+const packageFileName = path.basename(packageDir) + (inputFileName === 'index' ? '' : `.${inputFileName}`)
 const isLubanLib = (packageName) => /luban/.test(packageName)
 const pkg = require(resolvePackage('package.json'))
 const { dependencies = {} } = pkg
 const dependenciesName = Object.keys(dependencies)
-const lubanDependenciesName = dependenciesName.filter(isLubanLib)
-const anotherDependenciesName = new Set(dependenciesName.filter(v => !isLubanLib(v)))
-const lubanAlias = lubanDependenciesName.reduce((a, b) => {
-  a[b] = resolveRoot(`packages/${b}/src`)
-  return a
-}, {})
 
 const babelConfig = {
   presets: [
@@ -98,34 +92,40 @@ const outputConfig = {
 
 const external = []
 const entries = {}
-// 递归luban内部依赖包
-lubanDependenciesName.forEach(function genRes (lubanPackageName) {
-  const pkg = require(resolveRoot(`packages/${lubanPackageName}/package.json`))
-  const lubanDependencies = Object.keys(pkg.dependencies || {})
-  lubanDependencies.forEach(v => {
-    if (v !== lubanPackageName) {
-      if (!isLubanLib(v)) {
-        anotherDependenciesName.add(v)
-      } else if (!lubanAlias[v]) {
-        lubanAlias[v] = resolveRoot(`packages/${v}/src`)
-        genRes(v)
-      }
-    }
-  })
-})
 
 if (!isProd) {
+  // 递归luban内部依赖包
+  const lubanDependenciesName = dependenciesName.filter(isLubanLib)
+  const anotherDependenciesName = new Set(dependenciesName.filter(v => !isLubanLib(v)))
+  const lubanAlias = lubanDependenciesName.reduce((a, b) => {
+    a[b] = resolveRoot(`packages/${b}/src`)
+    return a
+  }, {})
+  lubanDependenciesName.forEach(function genRes (lubanPackageName) {
+    const pkg = require(resolveRoot(`packages/${lubanPackageName}/package.json`))
+    const lubanDependencies = Object.keys(pkg.dependencies || {})
+    lubanDependencies.forEach(v => {
+      if (v !== lubanPackageName) {
+        if (!isLubanLib(v)) {
+          anotherDependenciesName.add(v)
+        } else if (!lubanAlias[v]) {
+          lubanAlias[v] = resolveRoot(`packages/${v}/src`)
+          genRes(v)
+        }
+      }
+    })
+  })
   external.push(...anotherDependenciesName)
   Object.assign(entries, lubanAlias)
 } else {
   external.push(...dependenciesName)
 }
 
-console.log(entries)
+console.log(inputFilePath, outputConfig[FORMAT])
 
 module.exports = () => {
   return {
-    input: resolvePackage('src/index.js'),
+    input: inputFilePath,
     watch: {
       clearScreen: false
     },

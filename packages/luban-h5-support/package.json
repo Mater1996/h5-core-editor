@@ -11,13 +11,24 @@
     "index.js",
     "dist"
   ],
-  "buildOptions": {
-    "name": "LubanH5Support",
-    "formats": [
-      "umd",
-      "esm"
-    ]
-  },
+  "buildOptions": [
+    {
+      "input": "./src/index.js",
+      "name": "LubanH5Support",
+      "formats": [
+        "umd",
+        "esm"
+      ]
+    },
+    {
+      "input": "./src/runtime.js",
+      "name": "LubanH5Support",
+      "formats": [
+        "umd",
+        "iife"
+      ]
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Mater1996/luban-h5-support.git"
