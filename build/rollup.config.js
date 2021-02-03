@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-02-02 16:45:36
+ * @LastEditTime: 2021-02-03 10:55:21
  * @Description :
  */
 const path = require('path')
@@ -22,7 +22,7 @@ const filesize = require('rollup-plugin-filesize')
 const analyze = require('rollup-plugin-analyzer')
 const replace = require('@rollup/plugin-replace')
 
-const { TARGET, NODE_ENV, FORMAT, CLEAR } = process.env
+const { TARGET, NODE_ENV, FORMAT, CLEAR, GLOBALNAME } = process.env
 const isProd = NODE_ENV === 'production'
 const isESM = FORMAT === 'esm'
 const isUMD = FORMAT === 'umd'
@@ -30,7 +30,7 @@ const isClear = CLEAR === '1'
 const rootDir = path.resolve(__dirname, '../')
 const resolveRoot = p => path.resolve(rootDir, p)
 const packageDir = resolveRoot(`packages/${TARGET}`)
-const name = path.basename(packageDir)
+const packageFileName = path.basename(packageDir)
 const resolvePackage = p => path.resolve(packageDir, p)
 const isLubanLib = (packageName) => /luban/.test(packageName)
 const pkg = require(resolvePackage('package.json'))
@@ -73,21 +73,26 @@ const babelConfig = {
 
 const globals = {
   vue: 'Vue',
-  'vue-i18n': 'VueI18n'
+  'luban-h5': 'LubanH5',
+  'luban-h5-canvas': 'LubanH5Canvas',
+  'luban-h5-editor': 'LubanH5Editor',
+  'luban-h5-plugins': 'LubanH5Plugins',
+  'luban-h5-support': 'LubanH5Support',
+  'luban-h5-preview': 'LubanH5Preview'
 }
 
 const outputConfig = {
   esm: {
-    format: FORMAT,
-    file: resolvePackage(`dist/${name}.esm.js`)
+    format: 'esm',
+    file: resolvePackage(`dist/${packageFileName}.esm.js`)
   },
   iife: {
-    format: FORMAT,
-    file: resolvePackage(`dist/${name}.global.js`)
+    format: 'iife',
+    file: resolvePackage(`dist/${packageFileName}.global.js`)
   },
   umd: {
-    format: FORMAT,
-    file: resolvePackage(`dist/${name}.js`)
+    format: 'umd',
+    file: resolvePackage(`dist/${packageFileName}.js`)
   }
 }
 
@@ -101,11 +106,9 @@ lubanDependenciesName.forEach(function genRes (lubanPackageName) {
     if (v !== lubanPackageName) {
       if (!isLubanLib(v)) {
         anotherDependenciesName.add(v)
-      } else {
+      } else if (!lubanAlias[v]) {
         lubanAlias[v] = resolveRoot(`packages/${v}/src`)
-        if (v !== TARGET) {
-          genRes(v)
-        }
+        genRes(v)
       }
     }
   })
@@ -115,12 +118,10 @@ if (!isProd) {
   external.push(...anotherDependenciesName)
   Object.assign(entries, lubanAlias)
 } else {
-  if (isESM || isUMD) {
-    external.push(...dependenciesName)
-  } else {
-    Object.assign(entries, lubanAlias)
-  }
+  external.push(...dependenciesName)
 }
+
+console.log(entries)
 
 module.exports = () => {
   return {
@@ -128,26 +129,28 @@ module.exports = () => {
     watch: {
       clearScreen: false
     },
+    external,
     output: [
       {
         exports: 'named',
         extend: true,
         globals,
-        name: name,
+        name: GLOBALNAME || packageFileName,
         sourcemap: !isProd,
         indent: isProd,
         ...outputConfig[FORMAT]
       }
     ],
     treeshake: isProd,
-    external,
     plugins: [
+      progress(),
       isProd && isClear && del({ targets: `${resolvePackage('dist/*')}` }),
       peerDepsExternal(),
       alias({
         resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
         entries: entries
       }),
+      json(),
       image({
         output: resolvePackage('dist/images'),
         extensions: /\.(png|jpg|jpeg|gif|svg)$/,
@@ -160,7 +163,7 @@ module.exports = () => {
         )
       }),
       postcss({
-        to: resolvePackage(`dist/${name}.css`),
+        to: resolvePackage(`dist/${packageFileName}.css`),
         extract: true,
         minimize: isProd,
         sourceMap: !isProd,
@@ -192,19 +195,16 @@ module.exports = () => {
         mainFields: ['main']
       }),
       commonjs({}),
-      json(),
-      progress(),
-      filesize(),
       isProd && terser({
         safari10: isProd,
         compress: {
           drop_console: isProd
         }
       }),
-      isProd &&
-      analyze({
+      filesize(),
+      isProd && analyze({
         summaryOnly: true,
-        limit: 5
+        limit: 3
       })
     ]
   }

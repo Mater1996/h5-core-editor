@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-01-19 15:33:27
+ * @LastEditTime: 2021-02-03 10:34:31
  * @Description :
  */
 const path = require('path')
@@ -29,6 +29,10 @@ const resolve = p => path.resolve(targetDir, p)
 const pkg = require(path.resolve(pluginDir, './package.json'))
 const isProd = process.env.NODE_ENV === 'production'
 
+const globals = {
+  vue: 'Vue',
+  'luban-h5-support': 'LubanH5Support'
+}
 const babelConfig = {
   presets: [
     [
@@ -69,6 +73,7 @@ module.exports = () => {
         exports: 'named',
         name: name,
         format: 'umd',
+        globals,
         file: resolveRoot(`./lib/${name}/index.js`),
         sourcemap: !isProd,
         indent: isProd

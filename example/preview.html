@@ -1,11 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.12/vue.min.js"></script>
+    <script src="../packages/luban-h5/dist/luban-h5.js"></script>
+    <script src="../packages/luban-h5-canvas/dist/luban-h5-canvas.js"></script>
+    <script src="../packages/luban-h5-preview/dist/luban-h5-preview.js"></script>
+    <script src="../packages/luban-h5-support/dist/luban-h5-support.js"></script>
+    <script src="../packages/luban-h5-plugins/lib/lbp-picture/index.js"></script>
+    <link
+      href="../packages/luban-h5-preview/dist/luban-h5-preview.css"
+      type="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      console.log(LubanH5)
+      LubanH5.default.plugin.register({
+        name: 'lbp-picture',
+        component: window['lbp-picture'].default
+      })
+      Vue.use(LubanH5Preview.default)
+      new Vue({
+        el: '#app',
+        data: () => {
+          return {
+            work: {
+              id: '3c31d1a0-0c91-4448-bf0a-9510b5b34be3',
+              title: '标题',
+              description: '描述',
+              cover_image_url: null,
+              pages: [
+                {
+                  title: '',
+                  elements: [
+                    {
+                      pluginName: 'lbp-picture',
+                      props: {
+                        fillType: 'contain',
+                        imgSrc:
+                          'https://img.iplaysoft.com/wp-content/uploads/2019/free-images/free_stock_photo.jpg!0x0.webp',
+                        isRem: false
+                      },
+                      style: {
+                        top: 0,
+                        left: 0,
+                        width: 186,
+                        height: 292,
+                        textAlign: 'center',
+                        color: '#000000',
+                        backgroundColor: 'rgba(255, 255, 255, 0)',
+                        fontSize: 14
+                      }
+                    }
+                  ]
+                }
+              ],
+              is_publish: 0,
+              is_template: 0,
+              created_at: '2020-10-12T06:34:41.000Z',
+              updated_at: '2020-10-28T01:24:23.000Z',
+              page_mode: 'h5_swipper'
+            }
+          }
+        },
+        template: '<LubanH5Preview :h5="work"/>'
+      })
+    </script>
+  </body>
 </html>

@@ -15,7 +15,7 @@
     "dist"
   ],
   "buildOptions": {
-    "name": "LubanH5Editor",
+    "name": "LubanH5Canvas",
     "formats": [
       "esm",
       "umd"

@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-12-04 09:35:14
- * @LastEditTime: 2021-01-20 11:42:40
+ * @LastEditTime: 2021-02-03 10:26:39
  * @Description :
  */
 const yargs = require('yargs')
@@ -11,7 +11,10 @@ const argv = yargs(process.argv).argv
 const { targets: allTargets, getTarget } = require('./utils')
 
 async function build (target) {
-  const { formats } = target.buildOptions
+  const {
+    buildOptions: { formats = [], name: globalName },
+    name
+  } = target
   for (let i = 0; i < formats.length; i++) {
     const format = formats[i]
     await execa(
@@ -22,8 +25,9 @@ async function build (target) {
         '--environment',
         [
           'NODE_ENV:production',
-          `TARGET:${target.name}`,
+          `TARGET:${name}`,
           `FORMAT:${format}`,
+          `GLOBALNAME:${globalName}`,
           `CLEAR:${i === 0 ? 1 : 0}`
         ]
           .filter(Boolean)
