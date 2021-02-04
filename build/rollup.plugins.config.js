@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-02-04 09:52:52
+ * @LastEditTime: 2021-02-04 15:17:57
  * @Description :
  */
 const path = require('path')
@@ -20,7 +20,7 @@ const { terser } = require('rollup-plugin-terser')
 const filesize = require('rollup-plugin-filesize')
 const replace = require('@rollup/plugin-replace')
 
-const { TARGET, NODE_ENV } = progress.env
+const { TARGET, NODE_ENV } = process.env
 const pluginDir = path.resolve(__dirname, '../packages/luban-h5-plugins/')
 const pluginsDir = path.resolve(pluginDir, './src/plugins/')
 const targetDir = path.resolve(pluginsDir, TARGET)

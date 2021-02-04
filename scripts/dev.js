@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-12-04 09:17:12
- * @LastEditTime: 2021-02-04 11:17:51
+ * @LastEditTime: 2021-02-04 14:59:10
  * @Description :
  */
 
@@ -20,7 +20,8 @@ execa(
       'NODE_ENV:development',
       `TARGET:${argv.target}`,
       `FORMAT:${'esm'}`,
-      'INPUT:src/index.js'
+      'INPUT:src/index.js',
+      'OUTPUT:dist'
     ]
       .filter(Boolean)
       .join(',')

@@ -8,16 +8,17 @@
 import { cloneDeep } from 'lodash'
 import LbpPage from './LbpPage'
 
-class LbpWork {
+let id = 0
+
+class LbpH5 {
   constructor ({
-    id,
     title = '标题',
     description = '描述',
     pages = [],
     isPublish,
     isTemplate
   } = {}) {
-    this.id = id
+    this.id = id++
     this.title = title
     this.description = description
     this.pages = []
@@ -40,15 +41,15 @@ class LbpWork {
   }
 
   clone () {
-    return new LbpWork({
+    return new LbpH5({
       ...cloneDeep(this),
       pages: this.pages.map(v => v.clone())
     })
   }
 
   static create (...options) {
-    return new LbpWork(...options)
+    return new LbpH5(...options)
   }
 }
 
-export default LbpWork
+export default LbpH5

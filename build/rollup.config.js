@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-02-04 11:31:46
+ * @LastEditTime: 2021-02-04 15:03:25
  * @Description :
  */
 const path = require('path')
@@ -22,19 +22,23 @@ const filesize = require('rollup-plugin-filesize')
 const analyze = require('rollup-plugin-analyzer')
 const replace = require('@rollup/plugin-replace')
 
-const { TARGET, NODE_ENV, FORMAT, CLEAR, GLOBALNAME, INPUT } = process.env
+const { TARGET, NODE_ENV, FORMAT, CLEAR, GLOBALNAME, INPUT, OUTPUT } = process.env
 const isProd = NODE_ENV === 'production'
 const isClear = CLEAR === '1'
-const rootDir = path.resolve(__dirname, '../')
-const resolveRoot = p => path.resolve(rootDir, p)
-const packageDir = resolveRoot(`packages/${TARGET}`)
-const resolvePackage = p => path.resolve(packageDir, p)
-const inputFilePath = resolvePackage(INPUT)
-const inputFileName = path.basename(inputFilePath, '.js')
-const packageFileName = path.basename(packageDir) + (inputFileName === 'index' ? '' : `.${inputFileName}`)
+const resolve = path.resolve
+const rootDir = resolve(__dirname, '../')
 const isLubanLib = (packageName) => /luban/.test(packageName)
-const pkg = require(resolvePackage('package.json'))
-const { dependencies = {} } = pkg
+const resolveRoot = p => resolve(rootDir, p)
+const targetPackageDir = resolveRoot(`packages/${TARGET}`)
+const resolveTargetPackage = p => resolve(targetPackageDir, p)
+const inputFilePath = resolveTargetPackage(INPUT)
+const outputDir = resolveTargetPackage(`${OUTPUT}`)
+const resolveOutput = p => resolve(outputDir, p)
+const inputFileName = path.basename(inputFilePath, '.js').replace(/index/, '')
+const targetPackageDirName = path.basename(targetPackageDir)
+const outputFileName = [targetPackageDirName, inputFileName].filter(Boolean).join('.')
+const targetPackagePkg = require(resolveTargetPackage('package.json'))
+const { dependencies = {} } = targetPackagePkg
 const dependenciesName = Object.keys(dependencies)
 
 const babelConfig = {
@@ -76,20 +80,20 @@ const globals = {
   'luban-h5-core': 'LubanH5Core'
 }
 
-const outputConfig = {
+const outputConfig = ({
   esm: {
     format: 'esm',
-    file: resolvePackage(`dist/${packageFileName}.esm.js`)
+    file: resolveOutput(`${outputFileName}.esm`)
   },
   iife: {
     format: 'iife',
-    file: resolvePackage(`dist/${packageFileName}.global.js`)
+    file: resolveOutput(`${outputFileName}.global`)
   },
   umd: {
     format: 'umd',
-    file: resolvePackage(`dist/${packageFileName}.js`)
+    file: resolveOutput(`${outputFileName}`)
   }
-}
+})[FORMAT]
 
 const external = []
 const entries = {}
@@ -127,8 +131,6 @@ if (!isProd) {
   }
 }
 
-console.log(external, entries, inputFilePath, outputConfig[FORMAT])
-
 module.exports = () => {
   return {
     input: inputFilePath,
@@ -141,16 +143,17 @@ module.exports = () => {
         exports: 'named',
         extend: true,
         globals,
-        name: GLOBALNAME || packageFileName,
+        name: GLOBALNAME || outputFileName,
         sourcemap: !isProd,
         indent: isProd,
-        ...outputConfig[FORMAT]
+        format: outputConfig.format,
+        file: `${outputConfig.file}.js`
       }
     ],
     treeshake: isProd,
     plugins: [
+      isClear && del({ targets: resolveOutput('*') }),
       progress(),
-      isProd && isClear && del({ targets: `${resolvePackage('dist/*')}` }),
       peerDepsExternal(),
       alias({
         resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
@@ -158,18 +161,16 @@ module.exports = () => {
       }),
       json(),
       image({
-        output: resolvePackage('dist/images'),
+        output: resolveOutput('images'),
         extensions: /\.(png|jpg|jpeg|gif|svg)$/,
         limit: 8192,
         exclude: 'node_modules/**'
       }),
       replace({
-        'process.env.NODE_ENV': JSON.stringify(
-          process.env.NODE_ENV
-        )
+        'process.env.NODE_ENV': JSON.stringify(NODE_ENV)
       }),
       postcss({
-        to: resolvePackage(`dist/${packageFileName}.css`),
+        to: resolveOutput(`${outputConfig.file}.css`),
         extract: true,
         minimize: isProd,
         sourceMap: !isProd,

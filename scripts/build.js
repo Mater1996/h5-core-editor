@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-12-04 09:35:14
- * @LastEditTime: 2021-02-03 15:09:50
+ * @LastEditTime: 2021-02-04 15:14:35
  * @Description :
  */
 const yargs = require('yargs')
@@ -16,7 +16,12 @@ async function build (target) {
   buildOptions = Array.isArray(buildOptions) ? buildOptions : [buildOptions]
   let clear = true
   for (const buildOption of buildOptions) {
-    const { formats = [], name: globalName, input = 'src/index.js' } = buildOption
+    const {
+      formats = [],
+      name: globalName,
+      input = 'src/index.js',
+      output = 'dist'
+    } = buildOption
     for (const format of formats) {
       await execa(
         'rollup',
@@ -30,10 +35,9 @@ async function build (target) {
             `FORMAT:${format}`,
             `GLOBALNAME:${globalName}`,
             `INPUT:${input}`,
-            `CLEAR:${clear ? 1 : 0}`
-          ]
-            .filter(Boolean)
-            .join(',')
+            `CLEAR:${clear ? 1 : 0}`,
+            `OUTPUT:${output}`
+          ].join(',')
         ],
         { stdio: 'inherit' }
       )

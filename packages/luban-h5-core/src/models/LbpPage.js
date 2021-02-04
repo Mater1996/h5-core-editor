@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-02-04 10:06:32
+ * @LastEditTime: 2021-02-04 14:26:27
  * @Description :
  */
 
@@ -17,6 +17,7 @@ export const PAGE = {
   HEIGHT: 667
 }
 
+let id = 0
 class LbpPage {
   constructor ({
     title = '',
@@ -25,7 +26,7 @@ class LbpPage {
     width = PAGE.WIDTH,
     pageMode
   } = {}) {
-    this.id = +new Date()
+    this.id = id++
     this.title = title
     this.width = width
     this.height = height

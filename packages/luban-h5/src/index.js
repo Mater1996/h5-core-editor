@@ -5,14 +5,14 @@
  * @Description:
  */
 import LubanH5Editor from 'luban-h5-editor'
-import { LbpWork, LbpPlugin } from 'luban-h5-core'
+import { LbpH5, LbpPlugin } from 'luban-h5-core'
 
 export default {
   create (...args) {
-    return LbpWork.create(...args)
+    return LbpH5.create(...args)
   },
   plugin: LbpPlugin,
   editor: LubanH5Editor
 }
 
-export { LbpWork, LbpPlugin, LubanH5Editor }
+export { LbpH5, LubanH5Editor }

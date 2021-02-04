@@ -2,7 +2,7 @@
  * @Author: ly525
  * @Date: 2019-11-23 12:35:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-02 14:56:22
+ * @LastEditTime: 2021-02-04 15:19:31
  * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-slide.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: #!zh: 轮播图组件 #!en slide component
@@ -10,7 +10,8 @@
  */
 import PropTypes from 'luban-h5-support'
 
-import { Swipe, SwipeItem } from 'vant'
+import Swipe from 'vant/lib/swipe'
+import SwipeItem from 'vant/lib/swipe-item'
 import 'vant/lib/swipe/style'
 import 'vant/lib/swipe-item/style'
 

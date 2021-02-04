@@ -5,7 +5,7 @@
 ## Usage
 
 ```js
-import { LbpElement } from 'luban-h5'
+import { LbpElement } from 'luban-h5-core'
 import LubanH5Canvas from 'luban-h5-canvas'
 const elements = [
   LbpElement.create({ component: button, style: {}, props: {}, animations: [] })

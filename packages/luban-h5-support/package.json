@@ -17,7 +17,8 @@
       "name": "LubanH5Support",
       "formats": [
         "umd",
-        "esm"
+        "esm",
+        "iife"
       ]
     },
     {

@@ -15,13 +15,24 @@
     "dist",
     "lib"
   ],
-  "buildOptions": {
-    "name": "LubanH5Plugins",
-    "formats": [
-      "esm",
-      "umd"
-    ]
-  },
+  "buildOptions": [
+    {
+      "name": "LubanH5Plugins",
+      "formats": [
+        "esm",
+        "umd"
+      ]
+    },
+    {
+      "name": "LbpPicture",
+      "input":"./src/plugins/lbp-picture",
+      "output":"./lib/lbp-picture",
+      "formats": [
+        "esm",
+        "umd"
+      ]
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Mater1996/luban-h5-plugins.git"

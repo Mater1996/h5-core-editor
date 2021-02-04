@@ -2,7 +2,7 @@
  * @Author: ly525
  * @Date: 2020-05-14 08:09:44
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-02 14:53:29
+ * @LastEditTime: 2021-02-04 15:19:03
  * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-notice-bar.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
@@ -10,7 +10,7 @@
  */
 
 import PropTypes from 'luban-h5-support'
-import { NoticeBar } from 'vant'
+import NoticeBar from 'vant/lib/nav-bar'
 import 'vant/lib/notice-bar/style'
 
 export default {

@@ -4,13 +4,13 @@
  * @Date: 2021-02-04 10:41:44
  * @Description:
  */
-import LbpWork from './models/LbpWork'
+import LbpH5 from './models/LbpH5'
 import LbpPage from './models/LbpPage'
 import LbpElement from './models/LbpElement'
 import LbpPlugin from './plugins'
 
 export {
-  LbpWork,
+  LbpH5,
   LbpPage,
   LbpElement,
   LbpPlugin
