@@ -45,6 +45,10 @@ class LbpWork {
       pages: this.pages.map(v => v.clone())
     })
   }
+
+  static create (...options) {
+    return new LbpWork(...options)
+  }
 }
 
 export default LbpWork

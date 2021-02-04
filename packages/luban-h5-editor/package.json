@@ -31,7 +31,6 @@
   "dependencies": {
     "animate.css": "^3.7.2",
     "font-awesome": "4.7.0",
-    "hotkeys-js": "^3.7.6",
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.20",
     "luban-h5-canvas": "^1.1.2",

@@ -11,13 +11,23 @@
     "index.js",
     "dist"
   ],
-  "buildOptions": {
-    "name": "LubanH5",
-    "formats": [
-      "esm",
-      "umd"
-    ]
-  },
+  "buildOptions": [
+    {
+      "input": "./src/index.js",
+      "name": "LubanH5",
+      "formats": [
+        "esm",
+        "umd"
+      ]
+    },
+    {
+      "input": "./src/preview.js",
+      "name": "LubanH5",
+      "formats": [
+        "iife"
+      ]
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Mater1996/h5-core-editor.git"
@@ -26,6 +36,7 @@
     "url": "https://github.com/Mater1996/luban-h5/issues"
   },
   "dependencies": {
+    "luban-h5-core": "^1.1.2",
     "luban-h5-editor": "^1.1.2",
     "luban-h5-preview": "^1.1.2"
   }

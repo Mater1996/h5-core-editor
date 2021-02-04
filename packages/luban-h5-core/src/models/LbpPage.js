@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-02-02 10:27:48
+ * @LastEditTime: 2021-02-04 10:06:32
  * @Description :
  */
 
@@ -59,6 +59,10 @@ class LbpPage {
       ...cloneDeep(this),
       elements: this.elements.map(v => v.clone())
     })
+  }
+
+  static create (...options) {
+    return new LbpPage(...options)
   }
 }
 

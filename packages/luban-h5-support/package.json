@@ -21,10 +21,9 @@
       ]
     },
     {
-      "input": "./src/runtime.js",
+      "input": "./src/preview.js",
       "name": "LubanH5Support",
       "formats": [
-        "umd",
         "iife"
       ]
     }
@@ -39,7 +38,6 @@
   "dependencies": {
     "ant-design-vue": "^1.7.2",
     "papaparse": "^5.2.0",
-    "lodash": "^4.17.20",
     "vue": "^2.6.10",
     "x-data-spreadsheet": "^1.1.4"
   }

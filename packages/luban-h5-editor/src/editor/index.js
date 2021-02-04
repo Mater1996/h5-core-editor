@@ -2,14 +2,14 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-02-02 16:39:02
+ * @LastEditTime: 2021-02-04 11:11:23
  * @Description :
  */
 import 'normalize.css/normalize.css'
 import 'font-awesome/css/font-awesome.min.css'
 import { debounce } from 'lodash'
 import LbpH5Canvas from 'luban-h5-canvas'
-import lubanH5, { LbpPlugin, LbpPage, LbpElement } from 'luban-h5'
+import lubanH5 from 'luban-h5'
 
 import './index.scss'
 import i18n from '../locales'
@@ -56,7 +56,7 @@ const LpbH5Editor = {
   watch: {
     h5: {
       handler (h5 = {}) {
-        this.work = lubanH5.create(h5)
+        this.work = h5
         history.init(this.work)
         console.log(this.work)
       },
@@ -74,7 +74,7 @@ const LpbH5Editor = {
       this.pageIndex = index
     },
     addPage (title) {
-      this.work.pages.push(new LbpPage({ title }))
+      this.work.addPage({ title })
       this.record()
     },
     updatePage (data) {
@@ -82,17 +82,7 @@ const LpbH5Editor = {
       this.record()
     },
     addElement (...elements) {
-      elements.forEach(element => {
-        if (element instanceof LbpElement) {
-          this.currentPage.elements.push(element)
-        } else {
-          const lbpElement = LbpElement.create({
-            ...element,
-            component: LbpPlugin.getPlugin(element.pluginName).component
-          })
-          this.currentPage.elements.push(lbpElement)
-        }
-      })
+      this.currentPage.addElement(...elements)
       this.record()
     },
     updateElement (data) {

@@ -2,7 +2,7 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-11-02 09:25:51
- * @LastEditTime: 2021-02-02 17:01:32
+ * @LastEditTime: 2021-02-04 11:11:57
  * @Description:
 -->
 <template>
@@ -14,12 +14,12 @@
 
 <script>
 // @ is an alias to /src";
-
+import lubanH5 from 'luban-h5'
 export default {
   name: 'app',
   data() {
     return {
-      work: {
+      work: lubanH5.create({
         id: '3c31d1a0-0c91-4448-bf0a-9510b5b34be3',
         title: '标题',
         description: '描述',
@@ -55,7 +55,7 @@ export default {
         created_at: '2020-10-12T06:34:41.000Z',
         updated_at: '2020-10-28T01:24:23.000Z',
         page_mode: 'h5_swipper',
-      },
+      }),
     }
   },
   components: {},

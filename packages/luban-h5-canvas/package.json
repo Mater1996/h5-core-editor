@@ -18,7 +18,8 @@
     "name": "LubanH5Canvas",
     "formats": [
       "esm",
-      "umd"
+      "umd",
+      "iife"
     ]
   },
   "repository": {

@@ -2,7 +2,7 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-12-03 11:33:24
- * @LastEditTime: 2020-12-29 12:00:00
+ * @LastEditTime: 2021-02-03 17:24:48
  * @Description:
 -->
 
@@ -13,15 +13,15 @@
 ## Usage
 
 ```js
-import lubanH5Editor from 'luban-h5-editor'
+import lubanH5 from 'luban-h5'
 import { LbpButton } from 'luban-h5-plugins'
-lubanH5Editor.LbpH5Plugin.register({
+lubanH5.plugin.register({
   title: '普通按钮',
   name: LbpButton.name,
   icon: 'hand-pointer-o',
   visible: true,
   component: LbpButton
-}) // 注册某个插件
+})
 ```
 
 ## 插件列表
@@ -46,8 +46,8 @@ lubanH5Editor.LbpH5Plugin.register({
 ## 自定义插件
 
 ```js
-import lubanH5Editor from 'luban-h5-editor'
-import { PropTypes } from 'luban-h5-plugins' // 引入luban自定义修改属性，由该方法声明的属性会可编辑
+import lubanH5 from 'luban-h5'
+import PropTypes from 'luban-h5-support' // 引入luban自定义修改属性，由该方法声明的属性会可编辑
 
 const customComponent {
   name: 'lbp-button2',
@@ -56,7 +56,7 @@ const customComponent {
   }
 }
 
-lubanH5Editor.LbpH5Plugin.register({
+lubanH5.plugin.register({
   title: '普通按钮',
   name: customComponent.name,
   icon: 'hand-pointer-o',

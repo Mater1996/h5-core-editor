@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-02-03 10:34:31
+ * @LastEditTime: 2021-02-04 09:52:52
  * @Description :
  */
 const path = require('path')
@@ -20,14 +20,15 @@ const { terser } = require('rollup-plugin-terser')
 const filesize = require('rollup-plugin-filesize')
 const replace = require('@rollup/plugin-replace')
 
+const { TARGET, NODE_ENV } = progress.env
 const pluginDir = path.resolve(__dirname, '../packages/luban-h5-plugins/')
 const pluginsDir = path.resolve(pluginDir, './src/plugins/')
-const targetDir = path.resolve(pluginsDir, process.env.TARGET)
+const targetDir = path.resolve(pluginsDir, TARGET)
 const name = path.basename(targetDir)
 const resolveRoot = p => path.resolve(pluginDir, p)
 const resolve = p => path.resolve(targetDir, p)
 const pkg = require(path.resolve(pluginDir, './package.json'))
-const isProd = process.env.NODE_ENV === 'production'
+const isProd = NODE_ENV === 'production'
 
 const globals = {
   vue: 'Vue',
@@ -92,7 +93,7 @@ module.exports = () => {
       }),
       replace({
         'process.env.NODE_ENV': JSON.stringify(
-          process.env.NODE_ENV
+          NODE_ENV
         )
       }),
       postcss({

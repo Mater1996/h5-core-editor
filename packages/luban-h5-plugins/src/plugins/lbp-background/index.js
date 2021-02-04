@@ -1,13 +1,10 @@
 /*
- * @Author: ly525
- * @Date: 2019-11-24 18:51:58
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-02 14:45:06
- * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-background.js
- * @Github: https://github.com/ly525/luban-h5
- * @Description: luban-h5 background image/color component/plugin
- * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
+ * @author: Mater
+ * @Email: bxh8640@gmail.com
+ * @Date: 2021-02-02 16:53:57
+ * @Description:
  */
+
 import PropTypes from 'luban-h5-support'
 
 function renderWaterMark ({

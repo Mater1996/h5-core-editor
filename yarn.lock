@@ -5938,11 +5938,6 @@ hosted-git-info@^3.0.6:
   dependencies:
     lru-cache "^6.0.0"
 
-hotkeys-js@^3.7.6:
-  version "3.8.1"
-  resolved "https://registry.npm.taobao.org/hotkeys-js/download/hotkeys-js-3.8.1.tgz#fa7051f73bf1dc92a8b8d580a40b247f91966376"
-  integrity sha1-+nBR9zvx3JKouNWApAskf5GWY3Y=
-
 hsl-regex@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npm.taobao.org/hsl-regex/download/hsl-regex-1.0.0.tgz#d49330c789ed819e276a4c0d272dffa30b18fe6e"

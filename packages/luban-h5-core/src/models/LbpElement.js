@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-01-21 18:35:09
+ * @LastEditTime: 2021-02-04 11:09:58
  * @Description :
  */
 
@@ -21,13 +21,14 @@ class LbpElement {
   constructor (options = {}) {
     const {
       id: oldId,
+      pluginName,
       component,
       props = {},
       style = {},
       attrs = {},
       animations = []
     } = options
-
+    this.pluginName = pluginName
     this.id = oldId || id++
     // 传入具体的element render 的 参数
     this.props = {

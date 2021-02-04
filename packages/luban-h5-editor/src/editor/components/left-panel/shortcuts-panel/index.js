@@ -2,10 +2,10 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-18 09:35:11
- * @LastEditTime: 2021-01-21 10:08:20
+ * @LastEditTime: 2021-02-04 11:13:54
  * @Description :
  */
-import { LbpPlugin } from 'luban-h5'
+import lubanH5 from 'luban-h5'
 import './index.scss'
 import ShortcutButton from './shortcut-button'
 import dragMixin from './mixins/drag'
@@ -21,7 +21,7 @@ export default {
   render (h) {
     return (
       <div class="shortcuts-panel">
-        {LbpPlugin.getPlugins()
+        {lubanH5.plugin.getPlugins()
           .filter(plugin => plugin.visible)
           .map(plugin => (
             <ShortcutButton

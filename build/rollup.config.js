@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-02-03 15:04:53
+ * @LastEditTime: 2021-02-04 11:31:46
  * @Description :
  */
 const path = require('path')
@@ -72,7 +72,8 @@ const globals = {
   'luban-h5-editor': 'LubanH5Editor',
   'luban-h5-plugins': 'LubanH5Plugins',
   'luban-h5-support': 'LubanH5Support',
-  'luban-h5-preview': 'LubanH5Preview'
+  'luban-h5-preview': 'LubanH5Preview',
+  'luban-h5-core': 'LubanH5Core'
 }
 
 const outputConfig = {
@@ -93,35 +94,40 @@ const outputConfig = {
 const external = []
 const entries = {}
 
-if (!isProd) {
-  // 递归luban内部依赖包
-  const lubanDependenciesName = dependenciesName.filter(isLubanLib)
-  const anotherDependenciesName = new Set(dependenciesName.filter(v => !isLubanLib(v)))
-  const lubanAlias = lubanDependenciesName.reduce((a, b) => {
-    a[b] = resolveRoot(`packages/${b}/src`)
-    return a
-  }, {})
-  lubanDependenciesName.forEach(function genRes (lubanPackageName) {
-    const pkg = require(resolveRoot(`packages/${lubanPackageName}/package.json`))
-    const lubanDependencies = Object.keys(pkg.dependencies || {})
-    lubanDependencies.forEach(v => {
-      if (v !== lubanPackageName) {
-        if (!isLubanLib(v)) {
-          anotherDependenciesName.add(v)
-        } else if (!lubanAlias[v]) {
-          lubanAlias[v] = resolveRoot(`packages/${v}/src`)
-          genRes(v)
-        }
+// 递归luban内部依赖包
+const lubanDependenciesName = dependenciesName.filter(isLubanLib)
+const anotherDependenciesName = new Set(dependenciesName.filter(v => !isLubanLib(v)))
+const lubanAlias = lubanDependenciesName.reduce((a, b) => {
+  a[b] = resolveRoot(`packages/${b}/src`)
+  return a
+}, {})
+lubanDependenciesName.forEach(function genRes (lubanPackageName) {
+  const pkg = require(resolveRoot(`packages/${lubanPackageName}/package.json`))
+  const lubanDependencies = Object.keys(pkg.dependencies || {})
+  lubanDependencies.forEach(v => {
+    if (v !== lubanPackageName) {
+      if (!isLubanLib(v)) {
+        anotherDependenciesName.add(v)
+      } else if (!lubanAlias[v]) {
+        lubanAlias[v] = resolveRoot(`packages/${v}/src`)
+        genRes(v)
       }
-    })
+    }
   })
+})
+
+if (!isProd) {
   external.push(...anotherDependenciesName)
   Object.assign(entries, lubanAlias)
 } else {
-  external.push(...dependenciesName)
+  if (FORMAT === 'iife') {
+    Object.assign(entries, lubanAlias)
+  } else {
+    external.push(...dependenciesName)
+  }
 }
 
-console.log(inputFilePath, outputConfig[FORMAT])
+console.log(external, entries, inputFilePath, outputConfig[FORMAT])
 
 module.exports = () => {
   return {
