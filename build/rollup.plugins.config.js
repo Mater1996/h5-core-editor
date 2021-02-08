@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-02-04 15:17:57
+ * @LastEditTime: 2021-02-08 09:55:02
  * @Description :
  */
 const path = require('path')
@@ -19,6 +19,7 @@ const progress = require('rollup-plugin-progress')
 const { terser } = require('rollup-plugin-terser')
 const filesize = require('rollup-plugin-filesize')
 const replace = require('@rollup/plugin-replace')
+const analyze = require('rollup-plugin-analyzer')
 
 const { TARGET, NODE_ENV } = process.env
 const pluginDir = path.resolve(__dirname, '../packages/luban-h5-plugins/')
@@ -64,7 +65,7 @@ const babelConfig = {
 // 开发模式的时候合入所有的luban的包用来测试
 const { dependencies = {} } = pkg
 const dependenciesKeys = Object.keys(dependencies)
-const external = dependenciesKeys.filter(v => isProd ? true : !/luban/.test(v))
+const external = dependenciesKeys.filter(v => isProd ? false : !/luban/.test(v))
 
 module.exports = () => {
   return {
@@ -136,6 +137,10 @@ module.exports = () => {
         compress: {
           drop_console: isProd
         }
+      }),
+      isProd && analyze({
+        summaryOnly: true,
+        limit: 3
       })
     ]
   }

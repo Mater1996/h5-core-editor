@@ -27,7 +27,6 @@
     "url": "https://github.com/Mater1996/luban-h5-preview/issues"
   },
   "dependencies": {
-    "luban-h5-canvas": "^1.1.2",
-    "vue": "^2.6.10"
+    "luban-h5-canvas": "^1.1.2"
   }
 }

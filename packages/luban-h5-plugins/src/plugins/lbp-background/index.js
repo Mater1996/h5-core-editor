@@ -5,7 +5,7 @@
  * @Description:
  */
 
-import PropTypes from 'luban-h5-support'
+import { string, number } from 'luban-h5-support'
 
 function renderWaterMark ({
   // 使用 ES6 的函数默认值方式设置参数的默认取值
@@ -63,10 +63,10 @@ function renderWaterMark ({
 export default {
   name: 'lbp-background',
   props: {
-    imgSrc: PropTypes.string({ label: '背景图' }),
-    waterMarkText: PropTypes.string({ label: '水印文字' }),
-    waterMarkFontSize: PropTypes.number({ label: '水印文水印文字大小(px)' }),
-    waterMarkRotate: PropTypes.number({ label: '水印旋转角度' })
+    imgSrc: string({ label: '背景图' }),
+    waterMarkText: string({ label: '水印文字' }),
+    waterMarkFontSize: number({ label: '水印文水印文字大小(px)' }),
+    waterMarkRotate: number({ label: '水印旋转角度' })
   },
   methods: {
     renderWaterMark () {

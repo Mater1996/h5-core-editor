@@ -17,8 +17,7 @@
       "name": "LubanH5Support",
       "formats": [
         "umd",
-        "esm",
-        "iife"
+        "esm"
       ]
     },
     {
@@ -35,11 +34,5 @@
   },
   "bugs": {
     "url": "https://github.com/Mater1996/luban-h5-support/issues"
-  },
-  "dependencies": {
-    "ant-design-vue": "^1.7.2",
-    "papaparse": "^5.2.0",
-    "vue": "^2.6.10",
-    "x-data-spreadsheet": "^1.1.4"
   }
 }

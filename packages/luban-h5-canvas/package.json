@@ -28,8 +28,5 @@
   },
   "bugs": {
     "url": "https://github.com/Mater1996/h5-core-editor/issues"
-  },
-  "dependencies": {
-    "vue": "^2.6.10"
   }
 }

@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-02-04 15:03:25
+ * @LastEditTime: 2021-02-07 14:46:17
  * @Description :
  */
 const path = require('path')
@@ -23,6 +23,7 @@ const analyze = require('rollup-plugin-analyzer')
 const replace = require('@rollup/plugin-replace')
 
 const { TARGET, NODE_ENV, FORMAT, CLEAR, GLOBALNAME, INPUT, OUTPUT } = process.env
+const isESM = FORMAT === 'esm'
 const isProd = NODE_ENV === 'production'
 const isClear = CLEAR === '1'
 const resolve = path.resolve
@@ -202,10 +203,16 @@ module.exports = () => {
         mainFields: ['main']
       }),
       commonjs({}),
-      isProd && terser({
-        safari10: isProd,
+      !isESM && isProd && terser({
+        format: {
+          safari10: isProd,
+          preserve_annotations: true
+        },
+        module: /^esm/.test(FORMAT),
         compress: {
-          drop_console: isProd
+          drop_console: isProd,
+          ecma: 2015,
+          pure_getters: true
         }
       }),
       filesize(),
