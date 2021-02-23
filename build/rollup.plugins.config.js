@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-02-08 09:55:02
+ * @LastEditTime: 2021-02-19 14:10:00
  * @Description :
  */
 const path = require('path')
@@ -32,8 +32,7 @@ const pkg = require(path.resolve(pluginDir, './package.json'))
 const isProd = NODE_ENV === 'production'
 
 const globals = {
-  vue: 'Vue',
-  'luban-h5-support': 'LubanH5Support'
+  '@luban-h5/support': 'LubanH5Support'
 }
 const babelConfig = {
   presets: [

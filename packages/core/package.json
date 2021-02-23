@@ -1,0 +1,32 @@
+{
+  "name": "@luban-h5/core",
+  "version": "1.1.2",
+  "description": "@luban-h5/core",
+  "keywords": [
+    "鲁班H5"
+  ],
+  "author": "Mater <baixh@rd.netease.com>",
+  "homepage": "https://github.com/Mater1996/luban-h5/tree/master/packages/luban-h5-core#readme",
+  "license": "ISC",
+  "main": "index.js",
+  "module": "dist/luban-h5-core.esm.js",
+  "files": [
+    "index.js",
+    "dist"
+  ],
+  "buildOptions": {
+    "name": "LubanH5Core",
+    "formats": [
+      "esm",
+      "umd",
+      "iife"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mater1996/luban-h5.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Mater1996/luban-h5/issues"
+  }
+}

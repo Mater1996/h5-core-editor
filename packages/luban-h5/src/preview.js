@@ -4,8 +4,8 @@
  * @Date: 2021-02-04 10:03:30
  * @Description:
  */
-import LubanH5Preview from 'luban-h5-preview'
-import { LbpWork, LbpPlugin } from 'luban-h5-core'
+import LubanH5Preview from '@luban-h5/preview'
+import { LbpWork, LbpPlugin } from '@luban-h5/core'
 
 export const create = (...args) => {
   return LbpWork.create(...args)

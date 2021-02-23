@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-12-04 09:35:14
- * @LastEditTime: 2021-02-04 15:14:35
+ * @LastEditTime: 2021-02-19 12:03:28
  * @Description :
  */
 const yargs = require('yargs')
@@ -12,6 +12,7 @@ const { targets: allTargets, getTarget } = require('./utils')
 const { Array } = require('core-js')
 
 async function build (target) {
+  console.log(target)
   let { buildOptions, name } = target
   buildOptions = Array.isArray(buildOptions) ? buildOptions : [buildOptions]
   let clear = true

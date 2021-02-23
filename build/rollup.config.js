@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-02-07 14:46:17
+ * @LastEditTime: 2021-02-19 16:49:21
  * @Description :
  */
 const path = require('path')
@@ -28,7 +28,7 @@ const isProd = NODE_ENV === 'production'
 const isClear = CLEAR === '1'
 const resolve = path.resolve
 const rootDir = resolve(__dirname, '../')
-const isLubanLib = (packageName) => /luban/.test(packageName)
+const isLubanLib = (packageName) => /@luban/.test(packageName)
 const resolveRoot = p => resolve(rootDir, p)
 const targetPackageDir = resolveRoot(`packages/${TARGET}`)
 const resolveTargetPackage = p => resolve(targetPackageDir, p)
@@ -73,12 +73,12 @@ const babelConfig = {
 const globals = {
   vue: 'Vue',
   'luban-h5': 'LubanH5',
-  'luban-h5-canvas': 'LubanH5Canvas',
-  'luban-h5-editor': 'LubanH5Editor',
-  'luban-h5-plugins': 'LubanH5Plugins',
-  'luban-h5-support': 'LubanH5Support',
-  'luban-h5-preview': 'LubanH5Preview',
-  'luban-h5-core': 'LubanH5Core'
+  '@luban-h5/canvas': 'LubanH5Canvas',
+  '@luban-h5/editor': 'LubanH5Editor',
+  '@luban-h5/plugins': 'LubanH5Plugins',
+  '@luban-h5/support': 'LubanH5Support',
+  '@luban-h5/preview': 'LubanH5Preview',
+  '@luban-h5/core': 'LubanH5Core'
 }
 
 const outputConfig = ({
@@ -97,36 +97,33 @@ const outputConfig = ({
 })[FORMAT]
 
 const external = []
-const entries = {}
+const entries = []
+const lubanAlias = [
+  { find: 'luban-h5', replacement: resolveRoot('packages/luban-h5/src') },
+  { find: /@luban\/(.*)/, replacement: resolveRoot('packages/$1/src') }
+]
 
 // 递归luban内部依赖包
 const lubanDependenciesName = dependenciesName.filter(isLubanLib)
 const anotherDependenciesName = new Set(dependenciesName.filter(v => !isLubanLib(v)))
-const lubanAlias = lubanDependenciesName.reduce((a, b) => {
-  a[b] = resolveRoot(`packages/${b}/src`)
-  return a
-}, {})
 lubanDependenciesName.forEach(function genRes (lubanPackageName) {
   const pkg = require(resolveRoot(`packages/${lubanPackageName}/package.json`))
   const lubanDependencies = Object.keys(pkg.dependencies || {})
   lubanDependencies.forEach(v => {
-    if (v !== lubanPackageName) {
-      if (!isLubanLib(v)) {
-        anotherDependenciesName.add(v)
-      } else if (!lubanAlias[v]) {
-        lubanAlias[v] = resolveRoot(`packages/${v}/src`)
-        genRes(v)
-      }
+    if (!isLubanLib(v)) {
+      anotherDependenciesName.add(v)
+    } else {
+      genRes(v)
     }
   })
 })
 
 if (!isProd) {
   external.push(...anotherDependenciesName)
-  Object.assign(entries, lubanAlias)
+  entries.push(...lubanAlias)
 } else {
   if (FORMAT === 'iife') {
-    Object.assign(entries, lubanAlias)
+    entries.push(...lubanAlias)
   } else {
     external.push(...dependenciesName)
   }
