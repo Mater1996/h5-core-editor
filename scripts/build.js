@@ -2,19 +2,16 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-12-04 09:35:14
- * @LastEditTime: 2021-02-19 12:03:28
+ * @LastEditTime: 2021-02-23 17:37:38
  * @Description :
  */
 const yargs = require('yargs')
 const execa = require('execa')
 const argv = yargs(process.argv).argv
-const { targets: allTargets, getTarget } = require('./utils')
-const { Array } = require('core-js')
+const { targets: allTargets, getTargetPkg } = require('./utils')
 
-async function build (target) {
-  console.log(target)
-  let { buildOptions, name } = target
-  buildOptions = Array.isArray(buildOptions) ? buildOptions : [buildOptions]
+async function build ([targetPkg, target]) {
+  const { buildOptions } = targetPkg
   let clear = true
   for (const buildOption of buildOptions) {
     const {
@@ -24,27 +21,26 @@ async function build (target) {
       output = 'dist'
     } = buildOption
     for (const format of formats) {
-      await execa(
-        'rollup',
-        [
-          '-c',
-          './build/rollup.config.js',
-          '--environment',
-          [
-            'NODE_ENV:production',
-            `TARGET:${name}`,
-            `FORMAT:${format}`,
-            `GLOBALNAME:${globalName}`,
-            `INPUT:${input}`,
-            `CLEAR:${clear ? 1 : 0}`,
-            `OUTPUT:${output}`
-          ].join(',')
-        ],
-        { stdio: 'inherit' }
-      )
+      await execaRollup([
+        'NODE_ENV:production',
+        `TARGET:${target}`,
+        `FORMAT:${format}`,
+        `GLOBALNAME:${globalName}`,
+        `INPUT:${input}`,
+        `CLEAR:${clear ? 1 : 0}`,
+        `OUTPUT:${output}`
+      ])
       clear = false
     }
   }
+}
+
+const execaRollup = (options) => {
+  return execa(
+    'rollup',
+    ['-c', './build/rollup.config.js', '--environment', options.join(',')],
+    { stdio: 'inherit' }
+  )
 }
 
 async function buildAll (targets) {
@@ -54,7 +50,7 @@ async function buildAll (targets) {
 }
 
 async function run () {
-  await buildAll(argv.target ? [getTarget(argv.target)] : allTargets)
+  await buildAll(argv.target ? [getTargetPkg(argv.target)] : allTargets)
 }
 
 run()

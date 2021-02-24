@@ -6,7 +6,7 @@
  * @Description :
  */
 // https://github.com/luban-h5-components/plugin-common-props
-import { Input, InputNumber, Switch } from 'packages/support'
+import { Input, InputNumber, Switch } from '@luban-h5/support'
 
 export default {
   name: 'lbp-button',

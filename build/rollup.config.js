@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-02-19 16:49:21
+ * @LastEditTime: 2021-02-24 16:36:59
  * @Description :
  */
 const path = require('path')
@@ -28,7 +28,7 @@ const isProd = NODE_ENV === 'production'
 const isClear = CLEAR === '1'
 const resolve = path.resolve
 const rootDir = resolve(__dirname, '../')
-const isLubanLib = (packageName) => /@luban/.test(packageName)
+const isLubanLib = (packageName) => /luban-h5/.test(packageName)
 const resolveRoot = p => resolve(rootDir, p)
 const targetPackageDir = resolveRoot(`packages/${TARGET}`)
 const resolveTargetPackage = p => resolve(targetPackageDir, p)
@@ -100,26 +100,29 @@ const external = []
 const entries = []
 const lubanAlias = [
   { find: 'luban-h5', replacement: resolveRoot('packages/luban-h5/src') },
-  { find: /@luban\/(.*)/, replacement: resolveRoot('packages/$1/src') }
+  { find: /@luban-h5\/(.*)/, replacement: resolveRoot('packages/$1/src') }
 ]
 
-// 递归luban内部依赖包
+// 递归并外置所有的luban外部依赖包
+const lubanDependenciesSet = new Set()
 const lubanDependenciesName = dependenciesName.filter(isLubanLib)
-const anotherDependenciesName = new Set(dependenciesName.filter(v => !isLubanLib(v)))
+const anotherDependenciesNameSet = new Set(dependenciesName.filter(v => !isLubanLib(v)))
 lubanDependenciesName.forEach(function genRes (lubanPackageName) {
+  lubanPackageName = lubanPackageName.replace(/@luban-h5\//, '')
   const pkg = require(resolveRoot(`packages/${lubanPackageName}/package.json`))
   const lubanDependencies = Object.keys(pkg.dependencies || {})
   lubanDependencies.forEach(v => {
     if (!isLubanLib(v)) {
-      anotherDependenciesName.add(v)
-    } else {
+      anotherDependenciesNameSet.add(v)
+    } else if (!lubanDependenciesSet.has(v)) {
+      lubanDependenciesSet.add(v)
       genRes(v)
     }
   })
 })
 
 if (!isProd) {
-  external.push(...anotherDependenciesName)
+  external.push(...anotherDependenciesNameSet)
   entries.push(...lubanAlias)
 } else {
   if (FORMAT === 'iife') {

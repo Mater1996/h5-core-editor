@@ -8,7 +8,7 @@
  * @Description: Do not edit
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
-import { Input, Switch } from 'packages/support'
+import { Input, Switch } from '@luban-h5/support'
 
 import playIcon from './play.svg'
 import './index.scss'

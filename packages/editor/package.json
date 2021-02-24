@@ -14,13 +14,13 @@
     "index.js",
     "dist"
   ],
-  "buildOptions": {
+  "buildOptions": [{
     "name": "LubanH5Editor",
     "formats": [
       "esm",
       "umd"
     ]
-  },
+  }],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Mater1996/luban-h5.git"

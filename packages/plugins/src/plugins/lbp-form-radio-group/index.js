@@ -9,7 +9,7 @@
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
 
-import { Input, Select } from 'packages/support'
+import { Input, Select } from '@luban-h5/support'
 import LbpFormRadio from '../lbp-form-radio'
 
 function getDefaultItems () {

@@ -4,7 +4,7 @@
  * @Date: 2021-01-19 10:32:26
  * @Description:
  */
-import LubanH5Editor from 'packages/editor'
+import LubanH5Editor from '@luban-h5/editor'
 import { LbpH5, LbpPlugin } from '@luban-h5/core'
 
 export default {

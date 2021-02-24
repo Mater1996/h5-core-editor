@@ -1,4 +1,4 @@
-import LbpH5Canvas from 'luban-h5-canvas'
+import LbpH5Canvas from '@luban-h5/canvas'
 import './styles/index.scss'
 
 const LbpH5Preview = {

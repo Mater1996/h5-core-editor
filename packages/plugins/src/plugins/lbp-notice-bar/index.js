@@ -9,7 +9,7 @@
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
 
-import { Input, Select, Switch } from 'packages/support'
+import { Input, Select, Switch } from '@luban-h5/support'
 import NoticeBar from 'vant/lib/nav-bar'
 import 'vant/lib/notice-bar/style'
 

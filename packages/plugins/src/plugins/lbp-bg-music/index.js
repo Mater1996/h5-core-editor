@@ -8,7 +8,7 @@
  * @Description: Do not edit
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
-import { Switch, Input } from 'packages/support'
+import { Switch, Input } from '@luban-h5/support'
 import './index.scss'
 
 export default {

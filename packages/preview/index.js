@@ -7,4 +7,4 @@
  */
 'use strict'
 
-module.exports = require('./dist/luban-h5-preview.js')
+module.exports = require('./dist/preview.js')

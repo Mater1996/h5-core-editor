@@ -7,4 +7,4 @@
 
 'use strict'
 
-module.exports = require('./dist/luban-h5-canvas.js.js')
+module.exports = require('./dist/canvas.js')

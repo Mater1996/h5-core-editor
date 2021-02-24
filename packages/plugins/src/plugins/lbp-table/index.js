@@ -1,5 +1,5 @@
 // https://github.com/luban-h5-components/plugin-common-props
-import { Input, InputNumber } from 'packages/support'
+import { Input, InputNumber } from '@luban-h5/support'
 import {
   addListener as addResizeListener,
   removeListener as removeResizeListener

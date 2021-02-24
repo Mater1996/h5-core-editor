@@ -1,5 +1,5 @@
 // https://github.com/luban-h5-components/plugin-common-props
-import { Select, Input, Switch, InputNumber } from 'packages/support'
+import { Select, Input, Switch, InputNumber } from '@luban-h5/support'
 const typeOptions = [
   {
     label: '文字',

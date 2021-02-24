@@ -8,7 +8,7 @@
  * @Description: #!zh: 轮播图组件 #!en slide component
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
-import { InputNumber, Input } from 'packages/support'
+import { InputNumber, Input } from '@luban-h5/support'
 
 import Swipe from 'vant/lib/swipe'
 import SwipeItem from 'vant/lib/swipe-item'

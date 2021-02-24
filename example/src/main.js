@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 09:25:51
- * @LastEditTime: 2021-02-07 15:02:59
+ * @LastEditTime: 2021-02-24 16:59:00
  * @Description :
  */
 import Vue from 'vue'
@@ -12,7 +12,7 @@ import 'luban-h5/dist/luban-h5.esm.css'
 import lubanH5, { LubanH5Editor } from 'luban-h5'
 
 // import 'luban-h5-support/dist/luban-h5-support.esm.css'
-import 'luban-h5-plugins/dist/luban-h5-plugins.esm.css'
+// import '@luban-h5/plugins/dist/luban-h5-plugins.esm.css'
 import {
   // LbpButton,
   LbpPicture,
@@ -29,7 +29,7 @@ import {
   // LbpRate,
   // LbpTable,
   // LbpNewsList
-} from 'luban-h5-plugins'
+} from '@luban-h5/plugins'
 
 
 console.log(lubanH5, LubanH5Editor)
@@ -57,7 +57,7 @@ const plugins = [
     visible: true,
     component: LbpPicture,
     asyncComponent: () => ({
-      component: () => import('luban-h5-plugins/lib/lbp-picture')
+      component: () => import('@luban-h5/plugins/lib/lbp-picture')
     })
   },
   // {

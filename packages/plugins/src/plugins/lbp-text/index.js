@@ -8,7 +8,7 @@
  * @Description: luban-h5 text component/plugin
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
-import { InputNumber, Input } from 'packages/support'
+import { InputNumber, Input } from '@luban-h5/support'
 import './text-overwrite-quil-snow-theme.scss'
 // https://github.com/luban-h5-components/plugin-common-props
 

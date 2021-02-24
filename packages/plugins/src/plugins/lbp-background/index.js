@@ -5,7 +5,7 @@
  * @Description:
  */
 
-import { Input, InputNumber } from 'packages/support'
+import { Input, InputNumber } from '@luban-h5/support'
 
 function renderWaterMark ({
   // 使用 ES6 的函数默认值方式设置参数的默认取值

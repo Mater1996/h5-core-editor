@@ -6,4 +6,4 @@
  */
 'use strict'
 
-module.exports = require('./dist/luban-h5-core.js')
+module.exports = require('./dist/core.js')

@@ -2,13 +2,13 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-02-04 11:11:23
+ * @LastEditTime: 2021-02-23 20:05:55
  * @Description :
  */
 import 'normalize.css/normalize.css'
 import 'font-awesome/css/font-awesome.min.css'
 import { debounce } from 'lodash'
-import LbpH5Canvas from 'luban-h5-canvas'
+import LbpH5Canvas from '@luban-h5/canvas'
 import lubanH5 from 'luban-h5'
 
 import './index.scss'
