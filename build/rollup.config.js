@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-02-02 16:45:36
+ * @LastEditTime: 2021-02-24 16:36:59
  * @Description :
  */
 const path = require('path')
@@ -22,26 +22,25 @@ const filesize = require('rollup-plugin-filesize')
 const analyze = require('rollup-plugin-analyzer')
 const replace = require('@rollup/plugin-replace')
 
-const { TARGET, NODE_ENV, FORMAT, CLEAR } = process.env
-const isProd = NODE_ENV === 'production'
+const { TARGET, NODE_ENV, FORMAT, CLEAR, GLOBALNAME, INPUT, OUTPUT } = process.env
 const isESM = FORMAT === 'esm'
-const isUMD = FORMAT === 'umd'
+const isProd = NODE_ENV === 'production'
 const isClear = CLEAR === '1'
-const rootDir = path.resolve(__dirname, '../')
-const resolveRoot = p => path.resolve(rootDir, p)
-const packageDir = resolveRoot(`packages/${TARGET}`)
-const name = path.basename(packageDir)
-const resolvePackage = p => path.resolve(packageDir, p)
-const isLubanLib = (packageName) => /luban/.test(packageName)
-const pkg = require(resolvePackage('package.json'))
-const { dependencies = {} } = pkg
+const resolve = path.resolve
+const rootDir = resolve(__dirname, '../')
+const isLubanLib = (packageName) => /luban-h5/.test(packageName)
+const resolveRoot = p => resolve(rootDir, p)
+const targetPackageDir = resolveRoot(`packages/${TARGET}`)
+const resolveTargetPackage = p => resolve(targetPackageDir, p)
+const inputFilePath = resolveTargetPackage(INPUT)
+const outputDir = resolveTargetPackage(`${OUTPUT}`)
+const resolveOutput = p => resolve(outputDir, p)
+const inputFileName = path.basename(inputFilePath, '.js').replace(/index/, '')
+const targetPackageDirName = path.basename(targetPackageDir)
+const outputFileName = [targetPackageDirName, inputFileName].filter(Boolean).join('.')
+const targetPackagePkg = require(resolveTargetPackage('package.json'))
+const { dependencies = {} } = targetPackagePkg
 const dependenciesName = Object.keys(dependencies)
-const lubanDependenciesName = dependenciesName.filter(isLubanLib)
-const anotherDependenciesName = new Set(dependenciesName.filter(v => !isLubanLib(v)))
-const lubanAlias = lubanDependenciesName.reduce((a, b) => {
-  a[b] = resolveRoot(`packages/${b}/src`)
-  return a
-}, {})
 
 const babelConfig = {
   presets: [
@@ -73,94 +72,106 @@ const babelConfig = {
 
 const globals = {
   vue: 'Vue',
-  'vue-i18n': 'VueI18n'
+  'luban-h5': 'LubanH5',
+  '@luban-h5/canvas': 'LubanH5Canvas',
+  '@luban-h5/editor': 'LubanH5Editor',
+  '@luban-h5/plugins': 'LubanH5Plugins',
+  '@luban-h5/support': 'LubanH5Support',
+  '@luban-h5/preview': 'LubanH5Preview',
+  '@luban-h5/core': 'LubanH5Core'
 }
 
-const outputConfig = {
+const outputConfig = ({
   esm: {
-    format: FORMAT,
-    file: resolvePackage(`dist/${name}.esm.js`)
+    format: 'esm',
+    file: resolveOutput(`${outputFileName}.esm`)
   },
   iife: {
-    format: FORMAT,
-    file: resolvePackage(`dist/${name}.global.js`)
+    format: 'iife',
+    file: resolveOutput(`${outputFileName}.global`)
   },
   umd: {
-    format: FORMAT,
-    file: resolvePackage(`dist/${name}.js`)
+    format: 'umd',
+    file: resolveOutput(`${outputFileName}`)
   }
-}
+})[FORMAT]
 
 const external = []
-const entries = {}
-// 递归luban内部依赖包
+const entries = []
+const lubanAlias = [
+  { find: 'luban-h5', replacement: resolveRoot('packages/luban-h5/src') },
+  { find: /@luban-h5\/(.*)/, replacement: resolveRoot('packages/$1/src') }
+]
+
+// 递归并外置所有的luban外部依赖包
+const lubanDependenciesSet = new Set()
+const lubanDependenciesName = dependenciesName.filter(isLubanLib)
+const anotherDependenciesNameSet = new Set(dependenciesName.filter(v => !isLubanLib(v)))
 lubanDependenciesName.forEach(function genRes (lubanPackageName) {
+  lubanPackageName = lubanPackageName.replace(/@luban-h5\//, '')
   const pkg = require(resolveRoot(`packages/${lubanPackageName}/package.json`))
   const lubanDependencies = Object.keys(pkg.dependencies || {})
   lubanDependencies.forEach(v => {
-    if (v !== lubanPackageName) {
-      if (!isLubanLib(v)) {
-        anotherDependenciesName.add(v)
-      } else {
-        lubanAlias[v] = resolveRoot(`packages/${v}/src`)
-        if (v !== TARGET) {
-          genRes(v)
-        }
-      }
+    if (!isLubanLib(v)) {
+      anotherDependenciesNameSet.add(v)
+    } else if (!lubanDependenciesSet.has(v)) {
+      lubanDependenciesSet.add(v)
+      genRes(v)
     }
   })
 })
 
 if (!isProd) {
-  external.push(...anotherDependenciesName)
-  Object.assign(entries, lubanAlias)
+  external.push(...anotherDependenciesNameSet)
+  entries.push(...lubanAlias)
 } else {
-  if (isESM || isUMD) {
-    external.push(...dependenciesName)
+  if (FORMAT === 'iife') {
+    entries.push(...lubanAlias)
   } else {
-    Object.assign(entries, lubanAlias)
+    external.push(...dependenciesName)
   }
 }
 
 module.exports = () => {
   return {
-    input: resolvePackage('src/index.js'),
+    input: inputFilePath,
     watch: {
       clearScreen: false
     },
+    external,
     output: [
       {
         exports: 'named',
         extend: true,
         globals,
-        name: name,
+        name: GLOBALNAME || outputFileName,
         sourcemap: !isProd,
         indent: isProd,
-        ...outputConfig[FORMAT]
+        format: outputConfig.format,
+        file: `${outputConfig.file}.js`
       }
     ],
     treeshake: isProd,
-    external,
     plugins: [
-      isProd && isClear && del({ targets: `${resolvePackage('dist/*')}` }),
+      isClear && del({ targets: resolveOutput('*') }),
+      progress(),
       peerDepsExternal(),
       alias({
         resolve: ['.jsx', '.js', '.css', '.scss', '.vue'],
         entries: entries
       }),
+      json(),
       image({
-        output: resolvePackage('dist/images'),
+        output: resolveOutput('images'),
         extensions: /\.(png|jpg|jpeg|gif|svg)$/,
         limit: 8192,
         exclude: 'node_modules/**'
       }),
       replace({
-        'process.env.NODE_ENV': JSON.stringify(
-          process.env.NODE_ENV
-        )
+        'process.env.NODE_ENV': JSON.stringify(NODE_ENV)
       }),
       postcss({
-        to: resolvePackage(`dist/${name}.css`),
+        to: resolveOutput(`${outputConfig.file}.css`),
         extract: true,
         minimize: isProd,
         sourceMap: !isProd,
@@ -192,19 +203,22 @@ module.exports = () => {
         mainFields: ['main']
       }),
       commonjs({}),
-      json(),
-      progress(),
-      filesize(),
-      isProd && terser({
-        safari10: isProd,
+      !isESM && isProd && terser({
+        format: {
+          safari10: isProd,
+          preserve_annotations: true
+        },
+        module: /^esm/.test(FORMAT),
         compress: {
-          drop_console: isProd
+          drop_console: isProd,
+          ecma: 2015,
+          pure_getters: true
         }
       }),
-      isProd &&
-      analyze({
+      filesize(),
+      isProd && analyze({
         summaryOnly: true,
-        limit: 5
+        limit: 3
       })
     ]
   }

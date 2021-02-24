@@ -1,0 +1,38 @@
+{
+  "name": "@luban-h5/support",
+  "version": "1.1.2",
+  "description": "@luban-h5/support",
+  "author": "Mater <bxh8640@gmail.com>",
+  "homepage": "https://github.com/Mater1996/luban-h5/tree/master/packages/luban-h5-support#readme",
+  "license": "ISC",
+  "main": "index.js",
+  "module": "dist/luban-h5-support.esm.js",
+  "files": [
+    "index.js",
+    "dist"
+  ],
+  "buildOptions": [
+    {
+      "input": "./src/index.js",
+      "name": "LubanH5Support",
+      "formats": [
+        "umd",
+        "esm"
+      ]
+    },
+    {
+      "input": "./src/preview.js",
+      "name": "LubanH5Support",
+      "formats": [
+        "iife"
+      ]
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mater1996/luban-h5.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Mater1996/luban-h5/issues"
+  }
+}

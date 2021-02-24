@@ -1,0 +1,48 @@
+{
+  "name": "@luban-h5/plugins",
+  "version": "1.1.2",
+  "description": "@luban-h5/plugins",
+  "keywords": [
+    "鲁班H5、插件"
+  ],
+  "author": "Mater <bxh8640@gmail.com>",
+  "homepage": "https://github.com/Mater1996/luban-h5/tree/master/packages/luban-h5-plugins#readme",
+  "license": "ISC",
+  "main": "index.js",
+  "module": "dist/luban-h5-plugins.esm.js",
+  "files": [
+    "index.js",
+    "dist",
+    "lib"
+  ],
+  "buildOptions": [
+    {
+      "name": "LubanH5Plugins",
+      "formats": [
+        "esm",
+        "umd"
+      ]
+    },
+    {
+      "name": "LbpPicture",
+      "input":"./src/plugins/lbp-picture",
+      "output":"./lib/lbp-picture",
+      "formats": [
+        "esm",
+        "umd"
+      ]
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mater1996/luban-h5.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Mater1996/luban-h5/issues"
+  },
+  "dependencies": {
+    "@luban-h5/support": "^1.1.2",
+    "resize-detector": "^0.2.2",
+    "vant": "^2.10.11"
+  }
+}

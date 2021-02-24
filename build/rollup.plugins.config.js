@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-01-19 15:33:27
+ * @LastEditTime: 2021-02-19 14:10:00
  * @Description :
  */
 const path = require('path')
@@ -19,16 +19,21 @@ const progress = require('rollup-plugin-progress')
 const { terser } = require('rollup-plugin-terser')
 const filesize = require('rollup-plugin-filesize')
 const replace = require('@rollup/plugin-replace')
+const analyze = require('rollup-plugin-analyzer')
 
+const { TARGET, NODE_ENV } = process.env
 const pluginDir = path.resolve(__dirname, '../packages/luban-h5-plugins/')
 const pluginsDir = path.resolve(pluginDir, './src/plugins/')
-const targetDir = path.resolve(pluginsDir, process.env.TARGET)
+const targetDir = path.resolve(pluginsDir, TARGET)
 const name = path.basename(targetDir)
 const resolveRoot = p => path.resolve(pluginDir, p)
 const resolve = p => path.resolve(targetDir, p)
 const pkg = require(path.resolve(pluginDir, './package.json'))
-const isProd = process.env.NODE_ENV === 'production'
+const isProd = NODE_ENV === 'production'
 
+const globals = {
+  '@luban-h5/support': 'LubanH5Support'
+}
 const babelConfig = {
   presets: [
     [
@@ -59,7 +64,7 @@ const babelConfig = {
 // 开发模式的时候合入所有的luban的包用来测试
 const { dependencies = {} } = pkg
 const dependenciesKeys = Object.keys(dependencies)
-const external = dependenciesKeys.filter(v => isProd ? true : !/luban/.test(v))
+const external = dependenciesKeys.filter(v => isProd ? false : !/luban/.test(v))
 
 module.exports = () => {
   return {
@@ -69,6 +74,7 @@ module.exports = () => {
         exports: 'named',
         name: name,
         format: 'umd',
+        globals,
         file: resolveRoot(`./lib/${name}/index.js`),
         sourcemap: !isProd,
         indent: isProd
@@ -87,7 +93,7 @@ module.exports = () => {
       }),
       replace({
         'process.env.NODE_ENV': JSON.stringify(
-          process.env.NODE_ENV
+          NODE_ENV
         )
       }),
       postcss({
@@ -130,6 +136,10 @@ module.exports = () => {
         compress: {
           drop_console: isProd
         }
+      }),
+      isProd && analyze({
+        summaryOnly: true,
+        limit: 3
       })
     ]
   }

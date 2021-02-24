@@ -65,6 +65,10 @@ $editor.redo() // 前进一步
 
 一个是预览包提供systemjs状态，这样不需要build，而是直接内联preview.js并进行渲染就可以了 // TODO
 
+luban-h5-support 包含了editor的组件 目前看起来不是很好  他会包裹 props 导致props增大 另外他不能用到内联script中
+
+
+
 ## 本地开发
 
 ```sh
