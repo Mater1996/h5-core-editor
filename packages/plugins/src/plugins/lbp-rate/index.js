@@ -2,13 +2,13 @@
  * @Author: ly525
  * @Date: 2020-05-17 20:04:23
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-19 11:42:44
+ * @LastEditTime: 2021-02-25 14:29:09
  * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-rate.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
-import { InputNumber, Select } @luban-h5/support'
+import { InputNumber, Select } from '@luban-h5/support'
 import Rate from 'vant/lib/rate'
 import 'vant/lib/rate/style'
 import 'vant/lib/icon/local.css'

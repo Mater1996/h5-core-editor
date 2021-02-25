@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-02-19 14:10:00
+ * @LastEditTime: 2021-02-25 15:54:33
  * @Description :
  */
 const path = require('path')
@@ -22,7 +22,7 @@ const replace = require('@rollup/plugin-replace')
 const analyze = require('rollup-plugin-analyzer')
 
 const { TARGET, NODE_ENV } = process.env
-const pluginDir = path.resolve(__dirname, '../packages/luban-h5-plugins/')
+const pluginDir = path.resolve(__dirname, '../packages/plugins/')
 const pluginsDir = path.resolve(pluginDir, './src/plugins/')
 const targetDir = path.resolve(pluginsDir, TARGET)
 const name = path.basename(targetDir)

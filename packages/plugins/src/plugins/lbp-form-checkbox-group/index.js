@@ -1,4 +1,4 @@
-import { Input, Select } @luban-h5/support'
+import { Input, Select } from '@luban-h5/support'
 import LbpFormRadio from '../lbp-form-radio'
 
 function getDefaultItems () {

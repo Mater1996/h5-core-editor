@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-02-19 14:07:21
+ * @LastEditTime: 2021-02-25 16:53:16
  * @Description :
  */
 // https://github.com/luban-h5-components/plugin-common-props
@@ -47,8 +47,8 @@ export default {
       type: Number,
       default: 40
     },
-    text: Input(),
-    vertical: Switch(),
+    text: Input({ label: '文字' }),
+    vertical: Switch({ label: '方向' }),
     fontSize: InputNumber({ label: '字号(px)', default: 14 }),
     lineHeight: InputNumber({ label: '行高(px)', default: 1 }),
     borderWidth: InputNumber({ label: '边框宽度(px)', default: 1 }),

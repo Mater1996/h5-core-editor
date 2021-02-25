@@ -2,11 +2,11 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-02-19 11:39:33
+ * @LastEditTime: 2021-02-25 14:29:50
  * @Description :
  */
 // https://github.com/luban-h5-components/plugin-common-props
-import { Input, Switch, InputNumber } @luban-h5/support'
+import { Input, Switch, InputNumber } from '@luban-h5/support'
 
 export default {
   render () {

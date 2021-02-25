@@ -1,4 +1,7 @@
+import support from '../../../../support'
 import './index.scss'
+
+console.log(support)
 
 export default {
   name: 'Props',
@@ -31,12 +34,13 @@ export default {
         [propName]: e.target ? e.target.value : e
       })
     },
-    renderPropFormItem (key, { editor: PropsEditor, props, label }) {
-      if (!PropsEditor) return null
+    renderPropFormItem (key, { name, props, label }) {
+      if (!name) return null
       const value = this.value[key]
+      const PropsEditor = support[name]
       return (
         <div class="props-config-form-item" key={key}>
-          <label>{label}:</label>
+          <label class="label">{label}:</label>
           <PropsEditor
             class="prop-editor"
             props={props}

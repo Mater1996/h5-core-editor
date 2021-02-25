@@ -9,7 +9,7 @@
   "homepage": "https://github.com/Mater1996/luban-h5/tree/master/packages/luban-h5-core#readme",
   "license": "ISC",
   "main": "index.js",
-  "module": "dist/luban-h5-core.esm.js",
+  "module": "dist/core.esm.js",
   "files": [
     "index.js",
     "dist"

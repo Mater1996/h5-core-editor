@@ -6,7 +6,7 @@
   "homepage": "https://github.com/Mater1996/luban-h5/tree/master/packages/luban-h5-support#readme",
   "license": "ISC",
   "main": "index.js",
-  "module": "dist/luban-h5-support.esm.js",
+  "module": "dist/support.esm.js",
   "files": [
     "index.js",
     "dist"

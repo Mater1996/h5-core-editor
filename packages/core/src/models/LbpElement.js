@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-02-04 11:09:58
+ * @LastEditTime: 2021-02-25 16:30:10
  * @Description :
  */
 
@@ -88,7 +88,7 @@ class LbpElement {
   getEditorProps () {
     const component = this.getComponent()
     return Object.fromEntries(
-      Object.entries(component.props).filter(([, value]) => value.editor)
+      Object.entries(component.props).filter(([, value]) => value.name)
     )
   }
 
