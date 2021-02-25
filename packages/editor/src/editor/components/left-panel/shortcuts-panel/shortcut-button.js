@@ -37,7 +37,7 @@ export default {
           class={['shortcut-icon', 'fa', `fa-${props.faIcon}`]}
           aria-hidden='true'
         />
-        <span>{ props.name }</span>
+        <span class="text-xs">{ props.name }</span>
       </button>
     )
   }

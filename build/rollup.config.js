@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-02-25 14:11:03
+ * @LastEditTime: 2021-02-25 19:36:14
  * @Description :
  */
 const path = require('path')
@@ -177,6 +177,7 @@ module.exports = () => {
         sourceMap: !isProd,
         modules: false,
         plugins: [
+          require('tailwindcss'),
           require('autoprefixer'),
           require('postcss-url')({
             filter: /\.(png|jpg|jpeg|gif|svg)$/,

@@ -2,9 +2,11 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-01-21 10:05:19
+ * @LastEditTime: 2021-02-25 19:28:48
  * @Description :
  */
+
+import 'tailwindcss/tailwind.css'
 import './styles/index.scss'
 import LbpH5Editor from './editor'
 
