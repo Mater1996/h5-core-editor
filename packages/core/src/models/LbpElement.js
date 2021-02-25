@@ -2,11 +2,11 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-02-25 16:30:10
+ * @LastEditTime: 2021-02-25 17:31:00
  * @Description :
  */
 
-import { cloneDeep } from 'lodash'
+import { cloneDeep, pickBy } from 'lodash'
 import { isPromise } from '../utils'
 
 const ShapeLayerDefaultProps = {
@@ -87,9 +87,7 @@ class LbpElement {
    */
   getEditorProps () {
     const component = this.getComponent()
-    return Object.fromEntries(
-      Object.entries(component.props).filter(([, value]) => value.name)
-    )
+    return pickBy(component.props, c => !!c.name)
   }
 
   /**

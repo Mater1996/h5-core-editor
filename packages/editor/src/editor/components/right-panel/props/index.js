@@ -1,8 +1,6 @@
 import support from '../../../../support'
 import './index.scss'
 
-console.log(support)
-
 export default {
   name: 'Props',
   data: () => ({
