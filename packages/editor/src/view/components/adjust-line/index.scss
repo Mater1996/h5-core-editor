@@ -1,0 +1,22 @@
+.adjust-line-wrapper {
+  &.adjust-line-wrapper-v {
+    cursor: s-resize;
+
+    .adjust-button {
+      bottom: -10px;
+      left: 50%;
+      margin-left: -15px;
+    }
+  }
+
+  &.adjust-line-wrapper-h {
+    cursor: ew-resize;
+
+    .adjust-button {
+      right: -10px;
+      top: 50%;
+      margin-top: -15px;
+      transform: rotate(90deg);
+    }
+  }
+}

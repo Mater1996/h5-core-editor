@@ -1,0 +1,22 @@
+.shortcuts-panel {
+  .shortcut-button {
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+
+  // 拖拽出来的控件
+  .dragging-dom-ele {
+    position: fixed !important;
+    z-index: 100;
+    display: inline-block;
+    box-sizing: border-box;
+    height: 30px;
+    width: 130px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    cursor: grabbing;
+    user-select: none;
+    opacity: 0.6;
+  }
+}
