@@ -36,10 +36,7 @@ export default {
   data () {
     return {
       rect: this.getShape(),
-      shapeStyle: renderStyle(
-        this.getShape(),
-        this.lbpCanvasContext.unit
-      ),
+      shapeStyle: renderStyle(this.getShape(), this.lbpCanvasContext.unit),
       startY: 0,
       startX: 0,
       point: '',
@@ -123,37 +120,21 @@ export default {
     onClickOutside () {
       this.setActive(false)
     },
-    addWidth (distance) {
-      const { left: currentLeft, width: currentWidth } = this.rect
-      const { right: boundRight } = this.bound
-      let nextWidth = currentWidth + distance
-      if (nextWidth < 0) nextWidth = 0
-      if (currentLeft + nextWidth > boundRight) return
-      return (this.rect.width = nextWidth)
-    },
-    addHeight (distance) {
-      const { top: currentTop, height: currentHeight } = this.rect
-      const { bottom: boundBottom } = this.bound
-      let nextHeight = currentHeight + distance
-      if (nextHeight < 0) nextHeight = 0
-      if (currentTop + nextHeight > boundBottom) return
-      return (this.rect.height = nextHeight)
-    },
-    addLeft (distance) {
-      const { left: currentLeft, width: currentWidth } = this.rect
-      const { left: boundLeft, right: boundRight } = this.bound
-      let nextLeft = currentLeft + distance
-      if (nextLeft < boundLeft) nextLeft = boundLeft
-      if (nextLeft + currentWidth > boundRight) return
-      return (this.rect.left = nextLeft)
-    },
-    addTop (distance) {
-      const { top: currentTop, height: currentHeight } = this.rect
-      const { top: boundTop, bottom: boundBottom } = this.bound
-      let nextTop = currentTop + distance
-      if (nextTop < boundTop) nextTop = boundTop
-      if (nextTop + currentHeight > boundBottom) return
-      return (this.rect.top = nextTop)
+    patchRect (nextRect) {
+      const {
+        width: nextWidth,
+        left: nextLeft,
+        height: nextHeight,
+        top: nextTop
+      } = nextRect
+      if (nextWidth < 0) nextRect.width = 0
+      if (nextLeft < 0) nextRect.left = 0
+      if (nextHeight < 0) nextRect.height = 0
+      if (nextTop < 0) nextRect.top = 0
+      const { right: boundRight, bottom: boundBottom } = this.bound
+      if (nextLeft + nextWidth > boundRight) return
+      if (nextTop + nextHeight > boundBottom) return
+      Object.assign(this.rect, nextRect)
     },
     handleShapeDown (e) {
       this.rect = this.shape
@@ -168,10 +149,14 @@ export default {
       this.effect = []
       const distanceX = e.clientX - this.startX
       const distanceY = e.clientY - this.startY
+      const { top: currentTop, left: currentLeft } = this.rect
+      this.patchRect({
+        ...this.rect,
+        left: currentLeft + distanceX,
+        top: currentTop + distanceY
+      })
       this.startX = e.clientX
       this.startY = e.clientY
-      this.addLeft(distanceX)
-      this.addTop(distanceY)
     },
     handleShapeUp () {
       document.removeEventListener('mousemove', this.handleShapeMove)
@@ -186,40 +171,56 @@ export default {
       document.addEventListener('mouseup', this.handlePointUp)
     },
     handlePointMove (e) {
+      console.log(e)
       const effectRegex = [/l/, /t/, /r|lm/, /b|mt/]
       const effect = effectRegex.map(v => v.test(this.point))
-      this.effect = [this.point]
       const [effectLeft, effectTop, effectWidth, effectHeight] = effect
-      const distanceX = e.clientX - this.startX
-      const distanceY = e.clientY - this.startY
-      this.startX = e.clientX
-      this.startY = e.clientY
+      const { clientX, clientY } = e
+      const distanceX = clientX - this.startX
+      const distanceY = clientY - this.startY
+      const {
+        top: currentTop,
+        height: currentHeight,
+        left: currentLeft,
+        width: currentWidth
+      } = this.rect
       if (effectLeft) {
-        const { left: currentLeft, width: currentWidth } = this.rect
-        const effectLeftDistance = Math.min(currentWidth, distanceX)
-        const effectWidthDistance = Math.min(currentLeft, -distanceX)
-        if (effectLeftDistance > 0) {
-          this.addWidth(effectWidthDistance)
-          this.addLeft(effectLeftDistance)
-        } else {
-          this.addLeft(effectLeftDistance)
-          this.addWidth(effectWidthDistance)
-        }
+        const isRight = distanceX > 0
+        const effectXDistance = isRight
+          ? Math.min(currentWidth, distanceX)
+          : Math.max(-currentLeft, distanceX)
+        this.patchRect({
+          ...this.rect,
+          left: currentLeft + effectXDistance,
+          width: currentWidth - effectXDistance
+        })
       }
       if (effectTop) {
-        const { top: currentTop, height: currentHeight } = this.rect
-        const effectTopDistance = Math.min(currentHeight, distanceY)
-        const effectHeightDistance = Math.min(currentTop, -distanceY)
-        if (effectTopDistance > 0) {
-          this.addHeight(effectHeightDistance)
-          this.addTop(effectTopDistance)
-        } else {
-          this.addTop(effectTopDistance)
-          this.addHeight(effectHeightDistance)
-        }
+        const isBottom = distanceY > 0
+        const effectYDistance = isBottom
+          ? Math.min(currentHeight, distanceY)
+          : Math.max(-currentTop, distanceY)
+        this.patchRect({
+          ...this.rect,
+          top: currentTop + effectYDistance,
+          height: currentHeight - effectYDistance
+        })
       }
-      !effectLeft && effectWidth && this.addWidth(distanceX)
-      !effectTop && effectHeight && this.addHeight(distanceY)
+      if (!effectLeft && effectWidth) {
+        this.patchRect({
+          ...this.rect,
+          width: currentWidth + distanceX
+        })
+      }
+      if (!effectTop && effectHeight) {
+        this.patchRect({
+          ...this.rect,
+          height: currentHeight + distanceY
+        })
+      }
+      this.effect = [this.point]
+      this.startX = clientX
+      this.startY = clientY
     },
     handlePointUp () {
       document.removeEventListener('mousemove', this.handlePointMove)

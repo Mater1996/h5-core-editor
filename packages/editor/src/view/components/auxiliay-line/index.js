@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-06 10:50:05
- * @LastEditTime: 2021-03-01 11:07:55
+ * @LastEditTime: 2021-03-01 15:50:51
  * @Description :
  */
 import './index.scss'
@@ -94,7 +94,7 @@ export default {
         {this.vLines.map(value =>
           value ? (
             <div
-              class="v-line absolute w-px h-full top-0 bg-indigo-200 translate-x-2/4 pointer-events-none"
+              class="v-line absolute w-px h-full top-0 bg-indigo-200 transform -translate-x-1/2 pointer-events-none"
               style={{ left: `${value}px`, height: `${this.height}px` }}
             ></div>
           ) : null
