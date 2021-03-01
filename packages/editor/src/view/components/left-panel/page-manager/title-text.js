@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-01-21 10:08:09
+ * @LastEditTime: 2021-03-01 16:49:53
  * @Description :
  */
 export default {
@@ -11,8 +11,7 @@ export default {
   methods: {
     getTitle () {
       return (
-        this.page.title ||
-        this.$t('editor.pageManager.title', { index: this.pageIndex })
+        this.$t('editor.pageManager.title', { index: this.pageIndex + 1 })
       )
     }
   },
@@ -27,7 +26,7 @@ export default {
             boxShadow: '0 0 0 1px #d9d9d9 inset'
           }}
         />
-        <span class="ml-3">{this.getTitle()}</span>
+        <span class="text-base font-medium text-gray-900">{this.getTitle()}</span>
       </span>
     )
   }

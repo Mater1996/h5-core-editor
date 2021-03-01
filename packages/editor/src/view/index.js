@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-03-01 15:53:02
+ * @LastEditTime: 2021-03-01 18:39:34
  * @Description :
  */
 import { debounce } from 'lodash'
@@ -70,9 +70,12 @@ const LpbH5Editor = {
     changePageIndex (index) {
       this.pageIndex = index
     },
-    addPage (title) {
-      this.work.addPage({ title })
+    addPage (page) {
+      this.work.addPage(page)
       this.record()
+    },
+    deletePage (index) {
+      this.work.deletePage(index)
     },
     updatePage (data) {
       Object.assign(this.currentPage, data)
@@ -109,9 +112,7 @@ const LpbH5Editor = {
       this.activeElement = element
     },
     _handleElementDeactive (deactiveElement) {
-      if (deactiveElement === this.activeElement) {
-        this.activeElement = null
-      }
+      if (deactiveElement === this.activeElement) this.activeElement = null
     },
     _handleAdjustLieMove (offset) {
       this.rightPanelWidth -= offset
@@ -160,13 +161,17 @@ const LpbH5Editor = {
       }
     })(),
     _handleAddElement (data) {
-      this.addElement({
-        pluginName: data.name,
-        style: data.dragStyle
-      })
+      console.log(data)
+      this.addElement(data)
     },
     _handleAddPage (data) {
       this.addPage(data)
+    },
+    _handleDeletePage (index) {
+      this.deletePage(index)
+    },
+    _handleCopyPage (index) {
+      this.addPage(this.work.pages[index].clone())
     },
     _handlePageHeightChange (height) {
       this.updatePage({ height })
@@ -189,9 +194,14 @@ const LpbH5Editor = {
           pages={this.work.pages}
           onPageChange={this._handlePageIndexChange}
           onAddElement={this._handleAddElement}
-          onAddPage={this._handleAddPage}
+          onAdd={this._handleAddPage}
+          onDelete={this._handleDeletePage}
+          onCopy={this._handleCopyPage}
         />
-        <div class="section container flex flex-1 justify-center px-4 pb-8 pt-16 bg-gray-200 " id="editor-wrapper">
+        <div
+          class="section container flex flex-1 justify-center px-4 pb-8 pt-16 bg-gray-200 "
+          id="editor-wrapper"
+        >
           <div class="scroll-view remove-scrollbar overflow-auto h-full text-center">
             <div
               class="editor-content inline-block relative self-center"

@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-01-21 10:56:52
+ * @LastEditTime: 2021-03-01 16:43:15
  * @Description :
  */
 import { Tabs, Tab } from '../../../components/tabs'
@@ -25,11 +25,7 @@ export default {
             <RenderShortcutsPanel onAdd={this.$listeners.addElement} />
           </Tab>
           <Tab name="页面" tab={this.$t('editor.sidebar.pages')}>
-            <RenderPageManager
-              pages={this.pages}
-              onAdd={this.$listeners.addPage}
-              onPageChange={this.$listeners.pageChange}
-            />
+            <RenderPageManager pages={this.pages} on={this.$listeners} />
           </Tab>
         </Tabs>
       </div>
