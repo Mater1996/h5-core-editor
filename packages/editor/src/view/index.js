@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-03-01 18:39:34
+ * @LastEditTime: 2021-03-01 18:42:30
  * @Description :
  */
 import { debounce } from 'lodash'
@@ -161,7 +161,6 @@ const LpbH5Editor = {
       }
     })(),
     _handleAddElement (data) {
-      console.log(data)
       this.addElement(data)
     },
     _handleAddPage (data) {
