@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-03-01 18:42:30
+ * @LastEditTime: 2021-03-02 11:34:04
  * @Description :
  */
 import { debounce } from 'lodash'
@@ -191,6 +191,7 @@ const LpbH5Editor = {
         <EditorLeftPanel
           class="section plugins flex flex-none w-64 overflow-auto h-full box-border"
           pages={this.work.pages}
+          dropTarget=".lbp-canvas"
           onPageChange={this._handlePageIndexChange}
           onAddElement={this._handleAddElement}
           onAdd={this._handleAddPage}

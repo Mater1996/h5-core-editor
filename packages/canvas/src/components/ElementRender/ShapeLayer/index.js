@@ -1,4 +1,3 @@
-import { pickBy } from 'lodash'
 import './index.scss'
 import { renderStyle } from '../../../utils'
 import vClickOutside from '../../../directive/v-click-outside'
@@ -8,7 +7,7 @@ const points = ['lt', 'rt', 'lb', 'rb', 'lm', 'rm', 'mt', 'mb']
 export default {
   name: 'ShapeLayer',
   directives: {
-    vClickOutside: vClickOutside
+    vClickOutside
   },
   props: {
     width: {
@@ -35,13 +34,12 @@ export default {
   inject: ['lbpCanvasContext'],
   data () {
     return {
-      rect: this.getShape(),
-      shapeStyle: renderStyle(this.getShape(), this.lbpCanvasContext.unit),
       startY: 0,
       startX: 0,
       point: '',
       active: false,
-      vcoConfig: {}
+      vcoConfig: {},
+      rect: {}
     }
   },
   computed: {
@@ -55,12 +53,35 @@ export default {
       }
     },
     shape () {
-      return {
+      return this.normalizeShape({
         width: this.width,
         height: this.height,
         left: this.left,
         top: this.top
-      }
+      })
+    },
+    shapeStyle () {
+      return renderStyle(this.shape, this.lbpCanvasContext.unit)
+    }
+  },
+  watch: {
+    top (top) {
+      this.rect.top = top
+    },
+    left (left) {
+      this.rect.left = left
+    },
+    width (width) {
+      this.rect.width = width
+    },
+    height (height) {
+      this.rect.height = height
+    },
+    rect: {
+      handler (rect) {
+        this.$emit('change', { ...rect }, this.effect)
+      },
+      deep: true
     }
   },
   mounted () {
@@ -70,47 +91,23 @@ export default {
       scopeNode: document.querySelector('.lbp-canvas-wrapper')
     }
   },
-  watch: {
-    top (top) {
-      this.rect.top = top
-      this.renderShapeStyle()
-    },
-    left (left) {
-      this.rect.left = left
-      this.renderShapeStyle()
-    },
-    width (width) {
-      this.rect.width = width
-      this.renderShapeStyle()
-    },
-    height (height) {
-      this.rect.height = height
-      this.renderShapeStyle()
-    },
-    rect: {
-      handler (rect) {
-        this.$emit('change', { ...rect }, this.effect)
-      },
-      deep: true
-    }
-  },
   methods: {
-    getShape () {
+    normalizeShape (shape) {
+      let { width, height, left, top } = shape
+      const { right: rightBound, bottom: bottomRound } = this.bound
+      if (left < 0) left = 0
+      if (top < 0) top = 0
+      if (width > rightBound) width = rightBound
+      if (height > bottomRound) height = bottomRound
+      if (left + width > rightBound) left = rightBound - width
+      if (top + height > bottomRound) top = bottomRound - height
       return {
-        width: this.width,
-        height: this.height,
-        left: this.left,
-        top: this.top
+        ...shape,
+        width,
+        height,
+        left,
+        top
       }
-    },
-    renderShapeStyle () {
-      this.shapeStyle = {
-        ...this.shapeStyle,
-        ...renderStyle(this.shape, this.lbpCanvasContext.unit)
-      }
-    },
-    getReact (elStyle) {
-      return pickBy(elStyle, v => v !== undefined)
     },
     setActive (active) {
       if (this.active === active) return
@@ -121,20 +118,7 @@ export default {
       this.setActive(false)
     },
     patchRect (nextRect) {
-      const {
-        width: nextWidth,
-        left: nextLeft,
-        height: nextHeight,
-        top: nextTop
-      } = nextRect
-      if (nextWidth < 0) nextRect.width = 0
-      if (nextLeft < 0) nextRect.left = 0
-      if (nextHeight < 0) nextRect.height = 0
-      if (nextTop < 0) nextRect.top = 0
-      const { right: boundRight, bottom: boundBottom } = this.bound
-      if (nextLeft + nextWidth > boundRight) return
-      if (nextTop + nextHeight > boundBottom) return
-      Object.assign(this.rect, nextRect)
+      Object.assign(this.rect, this.normalizeShape(nextRect))
     },
     handleShapeDown (e) {
       this.rect = this.shape
@@ -171,56 +155,36 @@ export default {
       document.addEventListener('mouseup', this.handlePointUp)
     },
     handlePointMove (e) {
-      console.log(e)
       const effectRegex = [/l/, /t/, /r|lm/, /b|mt/]
       const effect = effectRegex.map(v => v.test(this.point))
       const [effectLeft, effectTop, effectWidth, effectHeight] = effect
       const { clientX, clientY } = e
       const distanceX = clientX - this.startX
       const distanceY = clientY - this.startY
-      const {
-        top: currentTop,
-        height: currentHeight,
-        left: currentLeft,
-        width: currentWidth
-      } = this.rect
+      const { top, height, left, width } = this.rect
+      const nextRect = { ...this.rect }
       if (effectLeft) {
-        const isRight = distanceX > 0
-        const effectXDistance = isRight
-          ? Math.min(currentWidth, distanceX)
-          : Math.max(-currentLeft, distanceX)
-        this.patchRect({
-          ...this.rect,
-          left: currentLeft + effectXDistance,
-          width: currentWidth - effectXDistance
-        })
+        const toRight = distanceX > 0
+        const effectXDistance = toRight
+          ? Math.min(width, distanceX)
+          : Math.max(-left, distanceX)
+        nextRect.left = left + effectXDistance
+        nextRect.width = width - effectXDistance
       }
       if (effectTop) {
-        const isBottom = distanceY > 0
-        const effectYDistance = isBottom
-          ? Math.min(currentHeight, distanceY)
-          : Math.max(-currentTop, distanceY)
-        this.patchRect({
-          ...this.rect,
-          top: currentTop + effectYDistance,
-          height: currentHeight - effectYDistance
-        })
+        const toBottom = distanceY > 0
+        const effectYDistance = toBottom
+          ? Math.min(height, distanceY)
+          : Math.max(-top, distanceY)
+        nextRect.top = top + effectYDistance
+        nextRect.height = height - effectYDistance
       }
-      if (!effectLeft && effectWidth) {
-        this.patchRect({
-          ...this.rect,
-          width: currentWidth + distanceX
-        })
-      }
-      if (!effectTop && effectHeight) {
-        this.patchRect({
-          ...this.rect,
-          height: currentHeight + distanceY
-        })
-      }
+      if (!effectLeft && effectWidth) nextRect.width = width + distanceX
+      if (!effectTop && effectHeight) nextRect.height = height + distanceY
       this.effect = [this.point]
       this.startX = clientX
       this.startY = clientY
+      this.patchRect(nextRect)
     },
     handlePointUp () {
       document.removeEventListener('mousemove', this.handlePointMove)

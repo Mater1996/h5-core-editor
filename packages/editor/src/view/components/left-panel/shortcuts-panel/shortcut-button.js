@@ -1,7 +1,7 @@
 export default {
   name: 'ShortcutButton',
   props: {
-    faIcon: {
+    icon: {
       type: String
     },
     name: {
@@ -20,7 +20,7 @@ export default {
         on={this.$listeners}
       >
         <div
-          class={['shortcut-icon fa p-1 pointer-events-none', `fa-${this.faIcon}`]}
+          class={['shortcut-icon fa p-1 pointer-events-none', `fa-${this.icon}`]}
           aria-hidden="true"
         />
         <span class="text-xs pointer-events-none">{this.name}</span>
