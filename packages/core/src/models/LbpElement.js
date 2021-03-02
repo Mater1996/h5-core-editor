@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-02-25 17:31:00
+ * @LastEditTime: 2021-03-02 17:29:57
  * @Description :
  */
 
@@ -20,7 +20,6 @@ let id = 0
 class LbpElement {
   constructor (options = {}) {
     const {
-      id: oldId,
       pluginName,
       component,
       props = {},
@@ -29,7 +28,7 @@ class LbpElement {
       animations = []
     } = options
     this.pluginName = pluginName
-    this.id = oldId || id++
+    this.id = id++
     // 传入具体的element render 的 参数
     this.props = {
       ...props

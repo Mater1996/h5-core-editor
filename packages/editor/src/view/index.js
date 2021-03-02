@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-03-02 11:34:04
+ * @LastEditTime: 2021-03-02 17:30:51
  * @Description :
  */
 import { debounce } from 'lodash'
@@ -170,7 +170,8 @@ const LpbH5Editor = {
       this.deletePage(index)
     },
     _handleCopyPage (index) {
-      this.addPage(this.work.pages[index].clone())
+      const newPage = this.work.pages[index].clone()
+      this.addPage(newPage)
     },
     _handlePageHeightChange (height) {
       this.updatePage({ height })
