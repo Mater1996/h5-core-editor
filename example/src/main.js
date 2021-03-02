@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 09:25:51
- * @LastEditTime: 2021-02-26 10:29:02
+ * @LastEditTime: 2021-03-02 18:53:22
  * @Description :
  */
 import Vue from 'vue'
@@ -28,6 +28,7 @@ import {
   LbpTable,
   LbpNewsList
 } from '@luban-h5/plugins'
+import '@luban-h5/plugins/dist/plugins.css'
 
 console.log(lubanH5, LubanH5Editor)
 

@@ -2,7 +2,7 @@
  * @Author: ly525
  * @Date: 2020-05-14 08:09:44
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-19 11:42:14
+ * @LastEditTime: 2021-03-02 18:59:03
  * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-notice-bar.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
@@ -10,7 +10,7 @@
  */
 
 import { Input, Select, Switch } from '@luban-h5/support'
-import NoticeBar from 'vant/lib/nav-bar'
+import NoticeBar from 'vant/lib/notice-bar'
 import 'vant/lib/notice-bar/style'
 
 export default {
@@ -47,13 +47,6 @@ export default {
         }
       ]
     })
-  },
-  componentsForPropsEditor: {
-  },
-  mounted () {
-  },
-  methods: {
-
   },
   render () {
     return <NoticeBar
