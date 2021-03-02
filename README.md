@@ -11,32 +11,60 @@
 ## Usage
 
 ```js
-import 'luban-h5/dist/luban-h5.esm.css'
-import lubanH5, { LubanH5Editor } from 'luban-h5'
+import LubanH5, { LubanH5Editor, LubanH5Preview } from 'luban-h5'
 import { LbpButton } from 'luban-h5-plugins'
 
-lubanH5.plugin.register({
-  title: '普通按钮',
-  name: LbpButton.name,
-  icon: 'hand-pointer-o',
-  visible: true,
+LubanH5.plugins.register({
   component: LbpButton
-}) // 注册某个插件
+})
 
-Vue.use(LubanH5Editor)
+export default {
+  data(){
+    return {
+      h5: LubanH5.create()
+    }
+  }
+}
 ```
 
 ```html
-<LubanH5Editor ref="editor" :h5="{}"/>
+<LubanH5Editor :h5="h5"></LubanH5Editor>
+<LubanH5Preview :h5="h5"></LubanH5Preview>
 ```
 
-#### props
+预览模式也可以使用cdn的方式创建
+
+```html
+<head>
+  <script src="vue.js"></script>
+  <script src="luban-h5/luban-h5.js"></script>
+  <script src="luban-h5/preview.js"></script>
+  <script type="javascript">
+    LubanH5.plugin.register({
+      component: LbpButton
+    })
+    new Vue({
+      el: '#app',
+      data(){
+        return {
+          h5: LubanH5.create()
+        }
+      },
+      render(){
+        return <luban-h5-preview :h5="h5"></luban-h5-preview>
+      }
+    })
+  </script>
+</head>
+```
+
+#### LubanH5Editor props
 
 | name | default |      |
 | ---- | ------- | ---- |
-| data | {}      | 初始数据 |
+| h5 | {}      | h5数据 |
 
-#### method
+#### LubanH5Editor method
 
 实例方法
 

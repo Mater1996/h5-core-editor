@@ -5,16 +5,25 @@
 ## Usage
 
 ```js
-import lubanH5, { LubanH5Editor, LubanH5Preview } from 'luban-h5'
+import LubanH5, { LubanH5Editor, LubanH5Preview } from 'luban-h5'
 import { LbpButton } from 'luban-h5-plugins'
-lubanH5.plugins.register({
+
+LubanH5.plugins.register({
   component: LbpButton
 })
+
+export default {
+  data(){
+    return {
+      h5: LubanH5.create()
+    }
+  }
+}
 ```
 
 ```html
-<LubanH5Editor :h5="{}"></LubanH5Editor>
-<LubanH5Preview :h5="{}"></LubanH5Preview>
+<LubanH5Editor :h5="h5"></LubanH5Editor>
+<LubanH5Preview :h5="h5"></LubanH5Preview>
 ```
 
 ```html
@@ -23,13 +32,18 @@ lubanH5.plugins.register({
   <script src="luban-h5/luban-h5.js"></script>
   <script src="luban-h5/preview.js"></script>
   <script type="javascript">
-    lubanH5.plugin.register({
+    LubanH5.plugin.register({
       component: LbpButton
     })
     new Vue({
       el: '#app',
+      data(){
+        return {
+          h5: LubanH5.create()
+        }
+      },
       render(){
-        return <luban-h5-preview :h5="{}"></luban-h5-preview>
+        return <luban-h5-preview :h5="h5"></luban-h5-preview>
       }
     })
   </script>
