@@ -3,9 +3,6 @@ import './index.scss'
 
 export default {
   name: 'Props',
-  data: () => ({
-    loadCustomEditorFlag: false
-  }),
   props: {
     layout: {
       type: String,

@@ -158,29 +158,38 @@ export default {
       const effectRegex = [/l/, /t/, /r|lm/, /b|mt/]
       const effect = effectRegex.map(v => v.test(this.point))
       const [effectLeft, effectTop, effectWidth, effectHeight] = effect
+      const { right: rightBound, bottom: bottomRound } = this.bound
       const { clientX, clientY } = e
       const distanceX = clientX - this.startX
       const distanceY = clientY - this.startY
       const { top, height, left, width } = this.rect
       const nextRect = { ...this.rect }
+      const toRight = distanceX > 0
+      const toBottom = distanceY > 0
       if (effectLeft) {
-        const toRight = distanceX > 0
         const effectXDistance = toRight
           ? Math.min(width, distanceX)
           : Math.max(-left, distanceX)
         nextRect.left = left + effectXDistance
         nextRect.width = width - effectXDistance
+      } else if (effectWidth) {
+        const effectXDistance = toRight
+          ? Math.min(rightBound - (left + width), distanceX)
+          : Math.max(-width, distanceX)
+        nextRect.width = width + effectXDistance
       }
       if (effectTop) {
-        const toBottom = distanceY > 0
         const effectYDistance = toBottom
           ? Math.min(height, distanceY)
           : Math.max(-top, distanceY)
         nextRect.top = top + effectYDistance
         nextRect.height = height - effectYDistance
+      } else if (effectHeight) {
+        const effectYDistance = toBottom
+          ? Math.min(bottomRound - (top + height), distanceY)
+          : Math.max(-height, distanceY)
+        nextRect.height = height + effectYDistance
       }
-      if (!effectLeft && effectWidth) nextRect.width = width + distanceX
-      if (!effectTop && effectHeight) nextRect.height = height + distanceY
       this.effect = [this.point]
       this.startX = clientX
       this.startY = clientY
