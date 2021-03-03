@@ -23,7 +23,7 @@ export default {
   },
   render () {
     return (
-      <select onChange={this.handleChange}>
+      <select class="border px-1" onChange={this.handleChange}>
         {...this.options.map(v => {
           return <option value={v.value}>{v.label}</option>
         })}

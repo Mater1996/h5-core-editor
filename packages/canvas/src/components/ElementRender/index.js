@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-13 10:09:46
- * @LastEditTime: 2021-03-03 14:37:20
+ * @LastEditTime: 2021-03-03 15:57:09
  * @Description :
  */
 import { cloneDeep } from 'lodash'
@@ -49,10 +49,7 @@ export default {
     const { style, animations } = element
     return (
       <ShapeLayer
-        width={style.width}
-        height={style.height}
-        left={style.left}
-        top={style.top}
+        shapeStyle={style}
         onChange={this._handleChange}
         onActive={this._handleActive}
         onDeactive={this._handleDeactive}

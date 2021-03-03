@@ -18,6 +18,12 @@ export default {
     }
   },
   render () {
-    return <input value={this.value} onInput={this.handleChange}/>
+    return (
+      <input
+        class="border px-1"
+        value={this.value}
+        onInput={this.handleChange}
+      />
+    )
   }
 }

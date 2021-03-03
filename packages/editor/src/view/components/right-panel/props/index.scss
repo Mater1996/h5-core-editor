@@ -1,18 +1,13 @@
 .props-config-form {
-  padding-top: 16px;
-
   &-item {
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
-    margin-bottom: 16px;
 
     .label {
       display: flex;
       align-self: flex-start;
       white-space: nowrap;
-      line-height: 40px;
-      height: 40px;
     }
 
     .prop-editor {

@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-03-03 14:38:03
+ * @LastEditTime: 2021-03-03 16:25:42
  * @Description :
  */
 
@@ -13,7 +13,19 @@ const ShapeLayerDefaultProps = {
   top: 0,
   left: 0,
   width: 100,
-  height: 40
+  height: 40,
+  paddingTop: 0,
+  marginTop: 0,
+  paddingLeft: 0,
+  marginLeft: 0,
+  paddingBottom: 0,
+  marginBottom: 0,
+  paddingRight: 0,
+  marginRight: 0,
+  borderTopWidth: 0,
+  borderLeftWidth: 0,
+  borderBottomWidth: 0,
+  borderRightWidth: 0
 }
 const elementComponentMap = {}
 let id = 0

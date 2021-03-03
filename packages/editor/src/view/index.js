@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-03-03 14:39:12
+ * @LastEditTime: 2021-03-03 16:16:07
  * @Description :
  */
 import { debounce } from 'lodash'
@@ -119,6 +119,9 @@ const LpbH5Editor = {
     },
     _handlePropsChange (value) {
       this.updateElement({ props: value })
+    },
+    _handleStyleChange (value) {
+      this.updateElement({ style: value })
     },
     _handleAnimationsChange (value) {
       this.updateElement({ animations: value })
@@ -237,6 +240,7 @@ const LpbH5Editor = {
           width={this.rightPanelWidth}
           element={this.activeElement}
           onPropsChange={this._handlePropsChange}
+          onStyleChange={this._handleStyleChange}
           onAnimationsChange={this._handleAnimationsChange}
         />
       </div>

@@ -1,7 +1,7 @@
 import './index.scss'
 
 export default {
-  name: 'Props',
+  name: 'PropsSetting',
   props: {
     layout: {
       type: String,
@@ -33,10 +33,10 @@ export default {
       const value = this.value[key]
       const PropsEditor = lubanSupport.getSupportComponent()
       return (
-        <div class="props-config-form-item" key={key}>
-          <label class="label">{lubanSupport.label}:</label>
+        <div class="props-config-form-item mb-1" key={key}>
+          <label class="label h-9 leading-9 text-sm">{lubanSupport.label}:</label>
           <PropsEditor
-            class="prop-editor"
+            class="prop-editor text-sm"
             props={lubanSupport.props}
             value={value}
             onChange={e => this.handlePropChange(key, e)}

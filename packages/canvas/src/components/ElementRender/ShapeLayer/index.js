@@ -10,21 +10,9 @@ export default {
     vClickOutside
   },
   props: {
-    width: {
-      type: Number,
-      default: 0
-    },
-    height: {
-      type: Number,
-      default: 0
-    },
-    left: {
-      type: Number,
-      default: 0
-    },
-    top: {
-      type: Number,
-      default: 0
+    shapeStyle: {
+      type: Object,
+      default: () => ({})
     },
     disable: {
       type: Boolean,
@@ -53,28 +41,20 @@ export default {
       }
     },
     shape () {
-      return this.normalizeShape({
-        width: this.width,
-        height: this.height,
-        left: this.left,
-        top: this.top
-      })
-    },
-    shapeStyle () {
-      return renderStyle(this.shape, this.lubanCanvasContext.unit)
+      return this.normalizeShape(this.shapeStyle)
     }
   },
   watch: {
-    top (top) {
+    'shape.top' (top) {
       this.rect.top = top
     },
-    left (left) {
+    'shape.left' (left) {
       this.rect.left = left
     },
-    width (width) {
+    'shape.width' (width) {
       this.rect.width = width
     },
-    height (height) {
+    'shape.height' (height) {
       this.rect.height = height
     },
     rect: {
@@ -212,9 +192,10 @@ export default {
         tabindex: 0
       }
     }
+    const style = renderStyle(this.shape, this.lubanCanvasContext.unit)
     return (
       <div
-        style={this.shapeStyle}
+        style={style}
         class="shape-layer"
         {...(!readonly ? options : {})}
       >
