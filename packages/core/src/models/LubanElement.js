@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-03-02 17:29:57
+ * @LastEditTime: 2021-03-03 14:38:03
  * @Description :
  */
 
@@ -17,7 +17,7 @@ const ShapeLayerDefaultProps = {
 }
 const elementComponentMap = {}
 let id = 0
-class LbpElement {
+class LubanElement {
   constructor (options = {}) {
     const {
       pluginName,
@@ -50,19 +50,19 @@ class LbpElement {
     this.animations = [...animations]
 
     if (component) {
-      LbpElement.saveComponent(this.id, component)
+      LubanElement.saveComponent(this.id, component)
       this.props = {
-        ...LbpElement.getComponentProps(component),
+        ...LubanElement.getComponentProps(component),
         ...this.props
       }
     }
   }
 
   /**
-   * close一个新的lbpElement
+   * close一个新的lubanElement
    */
   clone () {
-    return new LbpElement({
+    return new LubanElement({
       ...cloneDeep(this),
       component: this.getComponent()
     })
@@ -124,23 +124,23 @@ class LbpElement {
    * @param {Function} cb 回调
    */
   static getComponentAsync (component, cb) {
-    const cachedComponent = LbpElement.getCachedComponent(component)
+    const cachedComponent = LubanElement.getCachedComponent(component)
     if (cachedComponent) {
       return cb && cb(cachedComponent)
     } else {
-      if (LbpElement.isSyncComponent(component)) {
-        LbpElement.cacheComponent(component)
+      if (LubanElement.isSyncComponent(component)) {
+        LubanElement.cacheComponent(component)
         cb && cb(component)
       } else {
         const c = component()
         if (isPromise(c)) {
           c.then(res => {
             const component = res.default
-            LbpElement.cacheComponent(component)
+            LubanElement.cacheComponent(component)
             cb && cb(component)
           })
         } else {
-          LbpElement.cacheComponent(c)
+          LubanElement.cacheComponent(c)
           cb && cb(c)
         }
       }
@@ -155,7 +155,7 @@ class LbpElement {
     const props = {}
     const { props: propsDefine } = component
     Object.entries(propsDefine).forEach(([key, prop]) => {
-      props[key] = LbpElement.getPropDefaultValue(null, prop)
+      props[key] = LubanElement.getPropDefaultValue(null, prop)
     })
     return props
   }
@@ -174,8 +174,8 @@ class LbpElement {
   }
 
   static create (...options) {
-    return new LbpElement(...options)
+    return new LubanElement(...options)
   }
 }
 
-export default LbpElement
+export default LubanElement

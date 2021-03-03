@@ -2,14 +2,14 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 09:25:51
- * @LastEditTime: 2021-03-02 18:53:22
+ * @LastEditTime: 2021-03-03 14:33:22
  * @Description :
  */
 import Vue from 'vue'
 import App from './App.vue'
 
 import 'luban-h5/dist/luban-h5.esm.css'
-import lubanH5, { LubanH5Editor } from 'luban-h5'
+import LubanH5, { LubanH5Editor } from 'luban-h5'
 
 import {
   LbpButton,
@@ -30,7 +30,7 @@ import {
 } from '@luban-h5/plugins'
 import '@luban-h5/plugins/dist/plugins.css'
 
-console.log(lubanH5, LubanH5Editor)
+console.log(LubanH5, LubanH5Editor)
 
 const plugins = [
   {
@@ -150,7 +150,7 @@ const plugins = [
   }
 ]
 
-plugins.forEach(v => lubanH5.plugin.register(v))
+plugins.forEach(v => LubanH5.plugin.register(v))
 
 Vue.config.productionTip = false
 

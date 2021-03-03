@@ -5,12 +5,12 @@
  * @Description:
  */
 /* eslint-disable spaced-comment */
-import { genLbpPropEditor } from './prop-types/base'
+import { genLubanSupport } from './prop-types/base'
 
-export const Switch = /*#__PURE__*/ genLbpPropEditor('Switch', { type: Boolean })
-export const InputNumber = /*#__PURE__*/ genLbpPropEditor('InputNumber', { type: Number })
-export const Input = /*#__PURE__*/ genLbpPropEditor('Input', { type: String })
-export const Select = /*#__PURE__*/ genLbpPropEditor('Select', { type: null })
+export const Switch = /*#__PURE__*/ genLubanSupport('Switch', { type: Boolean })
+export const InputNumber = /*#__PURE__*/ genLubanSupport('InputNumber', { type: Number })
+export const Input = /*#__PURE__*/ genLubanSupport('Input', { type: String })
+export const Select = /*#__PURE__*/ genLubanSupport('Select', { type: null })
 
 export default {
   Switch,

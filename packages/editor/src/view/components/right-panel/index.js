@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-02-26 10:47:57
+ * @LastEditTime: 2021-03-03 14:55:08
  * @Description : 右侧panel为修改 props， events, animations 等属性
  */
 import { pick } from 'lodash'

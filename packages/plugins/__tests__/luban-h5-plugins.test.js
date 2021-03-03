@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
-const lbpH5Plugins = require('..');
+const lubanH5Plugins = require('..')
 
-describe('lbp-h5-plugins', () => {
-    it('needs tests');
-});
+describe('luban-h5-plugins', () => {
+  it('needs tests')
+})

@@ -31,7 +31,7 @@ export default {
       default: false
     }
   },
-  inject: ['lbpCanvasContext'],
+  inject: ['lubanCanvasContext'],
   data () {
     return {
       startY: 0,
@@ -44,12 +44,12 @@ export default {
   },
   computed: {
     bound () {
-      const { lbpCanvasContext } = this
+      const { lubanCanvasContext } = this
       return {
         left: 0,
         top: 0,
-        right: lbpCanvasContext.width,
-        bottom: lbpCanvasContext.height
+        right: lubanCanvasContext.width,
+        bottom: lubanCanvasContext.height
       }
     },
     shape () {
@@ -61,7 +61,7 @@ export default {
       })
     },
     shapeStyle () {
-      return renderStyle(this.shape, this.lbpCanvasContext.unit)
+      return renderStyle(this.shape, this.lubanCanvasContext.unit)
     }
   },
   watch: {
@@ -88,7 +88,7 @@ export default {
     this.vcoConfig = {
       events: ['mousedown'],
       handler: this.onClickOutside,
-      scopeNode: document.querySelector('.lbp-canvas-wrapper')
+      scopeNode: document.querySelector('.luban-h5-canvas-wrapper')
     }
   },
   methods: {
@@ -201,7 +201,7 @@ export default {
     }
   },
   render () {
-    const { readonly } = this.lbpCanvasContext
+    const { readonly } = this.lubanCanvasContext
     const options = {
       directives: [{ name: 'v-click-outside', value: this.vcoConfig }],
       on: {

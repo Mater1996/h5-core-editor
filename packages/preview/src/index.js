@@ -1,7 +1,7 @@
-import LbpH5Canvas from '@luban-h5/canvas'
+import LubanH5Canvas from '@luban-h5/canvas'
 import './styles/index.scss'
 
-const LbpH5Preview = {
+const LubanH5Preview = {
   name: 'LubanH5Preview',
   props: {
     h5: {
@@ -24,7 +24,7 @@ const LbpH5Preview = {
   },
   render () {
     return (
-      <LbpH5Canvas
+      <LubanH5Canvas
         width={this.currentPage.width}
         height={this.currentPage.height}
         elements={this.currentPage.elements}
@@ -35,11 +35,11 @@ const LbpH5Preview = {
   }
 }
 
-LbpH5Preview.install = (Vue, opts = {}) => {
-  Vue.component(LbpH5Preview.name, LbpH5Preview)
+LubanH5Preview.install = (Vue, opts = {}) => {
+  Vue.component(LubanH5Preview.name, LubanH5Preview)
 }
 if (typeof window !== 'undefined' && window.Vue) {
-  LbpH5Preview.install(window.Vue)
+  LubanH5Preview.install(window.Vue)
 }
 
-export default LbpH5Preview
+export default LubanH5Preview

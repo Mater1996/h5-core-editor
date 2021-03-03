@@ -2,14 +2,14 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-03-01 16:59:37
+ * @LastEditTime: 2021-03-03 14:36:54
  * @Description :
  */
 import './index.scss'
 import { renderStyle } from './utils'
 import ElementRender from './components/ElementRender'
 
-const LbpCanvas = {
+const LubanH5Canvas = {
   name: 'LubanH5Canvas',
   props: {
     width: {
@@ -35,12 +35,12 @@ const LbpCanvas = {
   },
   provide () {
     return {
-      lbpCanvasContext: this.lbpCanvasContext
+      lubanCanvasContext: this.lubanCanvasContext
     }
   },
   data () {
     return {
-      lbpCanvasContext: {
+      lubanCanvasContext: {
         width: this.width,
         height: this.height,
         readonly: this.readonly,
@@ -69,17 +69,17 @@ const LbpCanvas = {
   },
   methods: {
     updateCanvas (data) {
-      Object.assign(this.lbpCanvasContext, data)
+      Object.assign(this.lubanCanvasContext, data)
     }
   },
   render () {
     return (
       <div
-        class={['lbp-canvas', this.readonly ? 'readonly' : 'edit']}
+        class={['luban-h5-canvas', this.readonly ? 'readonly' : 'edit']}
         style={this.canvasStyle}
       >
-        <div class="lbp-canvas-wrapper">
-          <div class="lbp-elements">
+        <div class="luban-h5-canvas-wrapper">
+          <div class="luban-h5-elements">
             {this.elements.map(element => (
               <ElementRender
                 key={element.id}
@@ -95,4 +95,4 @@ const LbpCanvas = {
   }
 }
 
-export default LbpCanvas
+export default LubanH5Canvas

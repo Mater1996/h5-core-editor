@@ -6,11 +6,11 @@
  */
 
 import { cloneDeep } from 'lodash'
-import LbpPage from './LbpPage'
+import LubanPage from './LubanPage'
 
 let id = 0
 
-class LbpH5 {
+class LubanH5 {
   constructor ({
     title = '标题',
     description = '描述',
@@ -29,7 +29,7 @@ class LbpH5 {
   }
 
   addPage (...pages) {
-    this.pages.push(...pages.map(v => new LbpPage(v)))
+    this.pages.push(...pages.map(v => new LubanPage(v)))
   }
 
   deletePage (index) {
@@ -41,15 +41,15 @@ class LbpH5 {
   }
 
   clone () {
-    return new LbpH5({
+    return new LubanH5({
       ...cloneDeep(this),
       pages: this.pages.map(v => v.clone())
     })
   }
 
   static create (...options) {
-    return new LbpH5(...options)
+    return new LubanH5(...options)
   }
 }
 
-export default LbpH5
+export default LubanH5

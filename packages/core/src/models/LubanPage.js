@@ -2,13 +2,13 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-03-02 17:30:08
+ * @LastEditTime: 2021-03-03 14:38:16
  * @Description :
  */
 
 import { cloneDeep } from 'lodash'
-import Element from './LbpElement'
-import lbpPlugins from '../plugins'
+import Element from './LubanElement'
+import lubanPlugins from '../plugins'
 
 export const PAGE = {
   SWIPPER_PAGE: 'h5_swipper',
@@ -18,7 +18,7 @@ export const PAGE = {
 }
 
 let id = 0
-class LbpPage {
+class LubanPage {
   constructor ({
     title = '',
     elements = [],
@@ -38,7 +38,7 @@ class LbpPage {
   addElement (...elements) {
     return this.elements.push(
       ...elements.map(v => {
-        const plugin = lbpPlugins.getPlugin(v.pluginName) || {}
+        const plugin = lubanPlugins.getPlugin(v.pluginName) || {}
         return Element.create({
           ...v,
           component: plugin.component
@@ -56,15 +56,15 @@ class LbpPage {
   }
 
   clone () {
-    return new LbpPage({
+    return new LubanPage({
       ...cloneDeep(this),
       elements: this.elements.map(v => v.clone())
     })
   }
 
   static create (...options) {
-    return new LbpPage(...options)
+    return new LubanPage(...options)
   }
 }
 
-export default LbpPage
+export default LubanPage

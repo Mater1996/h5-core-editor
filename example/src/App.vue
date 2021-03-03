@@ -2,12 +2,11 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-11-02 09:25:51
- * @LastEditTime: 2021-02-04 11:11:57
+ * @LastEditTime: 2021-03-03 14:42:35
  * @Description:
 -->
 <template>
   <div id="app">
-    <!-- <lbp-h5-preview :data="work"></lbp-h5-preview> -->
     <LubanH5Editor :h5="work" ref="editor" style="height: 100vh;" />
   </div>
 </template>

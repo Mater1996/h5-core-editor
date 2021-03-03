@@ -5,10 +5,10 @@
  * @Description:
  */
 import LubanH5Preview from '@luban-h5/preview'
-import { LbpH5, LbpPlugin } from '@luban-h5/core'
+import { LubanH5, LubanPlugin } from '@luban-h5/core'
 
 export const create = (...args) => {
-  return LbpH5.create(...args)
+  return LubanH5.create(...args)
 }
 
-export { LbpPlugin as plugin, LubanH5Preview as preview }
+export { LubanPlugin as plugin, LubanH5Preview as preview }

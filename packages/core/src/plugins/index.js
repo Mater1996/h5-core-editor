@@ -2,13 +2,13 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-16 15:11:01
- * @LastEditTime: 2021-01-21 14:39:49
+ * @LastEditTime: 2021-03-03 14:34:24
  * @Description :
  */
 
-import LbpPlugin from './LbpPlugin'
+import LubanPlugin from './LubanPlugin'
 
-class LbpPluginController {
+class LubanPluginController {
   constructor ({ plugins = [] } = []) {
     this._plugins = []
     this._pluginsMap = {}
@@ -17,7 +17,7 @@ class LbpPluginController {
 
   register (option = {}) {
     // TODO support system-js module register
-    const plugin = new LbpPlugin(option)
+    const plugin = new LubanPlugin(option)
     if (plugin) {
       this._plugins.push(plugin)
       this._pluginsMap[plugin.getName()] = plugin
@@ -40,6 +40,6 @@ class LbpPluginController {
   }
 }
 
-const lbpPluginController = new LbpPluginController()
+const lubanPluginController = new LubanPluginController()
 
-export default lbpPluginController
+export default lubanPluginController

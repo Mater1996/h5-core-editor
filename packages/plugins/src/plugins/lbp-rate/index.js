@@ -2,7 +2,7 @@
  * @Author: ly525
  * @Date: 2020-05-17 20:04:23
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-25 14:29:09
+ * @LastEditTime: 2021-03-03 14:05:48
  * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-rate.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
@@ -22,6 +22,7 @@ export default {
     gutter: InputNumber({ label: '图标间距' }),
     mode: Select({
       label: '模式',
+      default: 'star',
       props: {
         options: [
           {
@@ -48,7 +49,8 @@ export default {
         size={this.size}
         color={this.color}
         gutter={this.gutter}
-        void-icon="star"
+        icon={this.mode}
+        void-icon={`${this.mode}-o`}
         void-color="#eee"
       />
     )

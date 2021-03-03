@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-13 10:09:46
- * @LastEditTime: 2021-03-02 16:30:57
+ * @LastEditTime: 2021-03-03 14:37:20
  * @Description :
  */
 import { cloneDeep } from 'lodash'
@@ -20,18 +20,18 @@ export default {
   watch: {
     element: {
       handler (newValue) {
-        this._trigger('onLbpElementChange', cloneDeep(newValue))
+        this._trigger('onLubanElementChange', cloneDeep(newValue))
       },
       deep: true
     }
   },
   mounted () {
-    this.$lbpElement = this.$refs.lbpElement
+    this.$lubanElement = this.$refs.lubanElement
   },
   methods: {
     _trigger (hookName, data) {
       const hook = this.element.getComponent()[hookName]
-      hook && hook.call(this.$lbpElement, data)
+      hook && hook.call(this.$lubanElement, data)
     },
     _handleChange (...args) {
       this.$emit('elementChange', ...args)
@@ -59,7 +59,7 @@ export default {
       >
         <AnimateLayer animations={animations}>
           {component ? (
-            <component ref="lbpElement" props={element.props}></component>
+            <component ref="lubanElement" props={element.props}></component>
           ) : null}
         </AnimateLayer>
       </ShapeLayer>

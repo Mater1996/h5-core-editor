@@ -2,11 +2,11 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-03-02 17:30:51
+ * @LastEditTime: 2021-03-03 14:39:12
  * @Description :
  */
 import { debounce } from 'lodash'
-import LbpH5Canvas from '@luban-h5/canvas'
+import LubanH5Canvas from '@luban-h5/canvas'
 import lubanH5 from 'luban-h5'
 
 import i18n from '../locales'
@@ -192,7 +192,7 @@ const LpbH5Editor = {
         <EditorLeftPanel
           class="section plugins flex flex-none w-64 overflow-auto h-full box-border"
           pages={this.work.pages}
-          dropTarget=".lbp-canvas"
+          dropTarget=".luban-h5-canvas"
           onPageChange={this._handlePageIndexChange}
           onAddElement={this._handleAddElement}
           onAdd={this._handleAddPage}
@@ -216,7 +216,7 @@ const LpbH5Editor = {
                 height={this.currentPage.height}
                 v-show={this.auxiliayVisible}
               />
-              <LbpH5Canvas
+              <LubanH5Canvas
                 width={this.currentPage.width}
                 height={this.currentPage.height}
                 elements={this.currentPage.elements}

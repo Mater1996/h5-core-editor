@@ -1,4 +1,3 @@
-import support from '../../../../support'
 import './index.scss'
 
 export default {
@@ -29,16 +28,16 @@ export default {
         [propName]: e.target ? e.target.value : e
       })
     },
-    renderPropFormItem (key, { name, props, label }) {
-      if (!name) return null
+    renderPropFormItem (key, lubanSupport) {
+      if (!lubanSupport.name) return null
       const value = this.value[key]
-      const PropsEditor = support[name]
+      const PropsEditor = lubanSupport.getSupportComponent()
       return (
         <div class="props-config-form-item" key={key}>
-          <label class="label">{label}:</label>
+          <label class="label">{lubanSupport.label}:</label>
           <PropsEditor
             class="prop-editor"
-            props={props}
+            props={lubanSupport.props}
             value={value}
             onChange={e => this.handlePropChange(key, e)}
           ></PropsEditor>

@@ -5,10 +5,10 @@
 ## Usage
 
 ```js
-import { LbpElement } from 'luban-h5-core'
+import { LubanElement } from 'luban-h5'
 import LubanH5Canvas from 'luban-h5-canvas'
 const elements = [
-  LbpElement.create({ component: button, style: {}, props: {}, animations: [] })
+  LubanElement.create({ component: button, style: {}, props: {}, animations: [] })
 ]
 ```
 

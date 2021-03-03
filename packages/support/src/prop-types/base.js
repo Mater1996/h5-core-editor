@@ -5,7 +5,9 @@
  * @Description:
  */
 
-function LbpPropEditor (options = {}) {
+import SupportComponents from './components'
+
+function LubanSupport (options = {}) {
   const { name, label, props, type, validator } = options
   this.name = name
   this.label = label
@@ -15,9 +17,13 @@ function LbpPropEditor (options = {}) {
   this.default = options.default
 }
 
-export const genLbpPropEditor = (name, defaultOptions) => options => {
+LubanSupport.prototype.getSupportComponent = function () {
+  return SupportComponents[this.name]
+}
+
+export const genLubanSupport = (name, defaultOptions) => options => {
   const newOp = Object.assign({}, defaultOptions, options)
-  return new LbpPropEditor({
+  return new LubanSupport({
     name,
     label: newOp.label,
     props: newOp.props,

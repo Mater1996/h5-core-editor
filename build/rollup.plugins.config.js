@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-19 20:57:15
- * @LastEditTime: 2021-02-25 15:54:33
+ * @LastEditTime: 2021-03-03 14:26:07
  * @Description :
  */
 const path = require('path')
@@ -28,7 +28,6 @@ const targetDir = path.resolve(pluginsDir, TARGET)
 const name = path.basename(targetDir)
 const resolveRoot = p => path.resolve(pluginDir, p)
 const resolve = p => path.resolve(targetDir, p)
-const pkg = require(path.resolve(pluginDir, './package.json'))
 const isProd = NODE_ENV === 'production'
 
 const globals = {
@@ -61,10 +60,7 @@ const babelConfig = {
   exclude: 'node_modules/**'
 }
 
-// 开发模式的时候合入所有的luban的包用来测试
-const { dependencies = {} } = pkg
-const dependenciesKeys = Object.keys(dependencies)
-const external = dependenciesKeys.filter(v => isProd ? false : !/luban/.test(v))
+const external = isProd ? ['@luban-h5/support'] : ['vant', 'resize-detector']
 
 module.exports = () => {
   return {

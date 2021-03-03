@@ -14,7 +14,7 @@ export default {
   },
   methods: {
     handleChange (e) {
-      this.$emit('change', e.target.value)
+      this.$emit('change', Number(e.target.value))
     }
   },
   render () {

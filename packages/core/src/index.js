@@ -4,14 +4,14 @@
  * @Date: 2021-02-04 10:41:44
  * @Description:
  */
-import LbpH5 from './models/LbpH5'
-import LbpPage from './models/LbpPage'
-import LbpElement from './models/LbpElement'
-import LbpPlugin from './plugins'
+import LubanH5 from './models/LubanH5'
+import LubanPage from './models/LubanPage'
+import LubanElement from './models/LubanElement'
+import LubanPlugin from './plugins'
 
 export {
-  LbpH5,
-  LbpPage,
-  LbpElement,
-  LbpPlugin
+  LubanH5,
+  LubanPage,
+  LubanElement,
+  LubanPlugin
 }
