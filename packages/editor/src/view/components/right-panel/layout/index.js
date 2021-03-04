@@ -36,9 +36,9 @@ export default {
   },
   watch: {
     value () {
-      const { __shapeLayer__ } = this.element || {}
-      if (__shapeLayer__) {
-        this.computedStyle = window.getComputedStyle(__shapeLayer__.$el)
+      const { __shape__ } = this.element || {}
+      if (__shape__) {
+        this.computedStyle = window.getComputedStyle(__shape__.$el)
       }
     }
   },

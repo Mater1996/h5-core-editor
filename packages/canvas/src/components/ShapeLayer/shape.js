@@ -10,6 +10,10 @@ export default {
     vClickOutside
   },
   props: {
+    element: {
+      type: Object,
+      default: () => ({})
+    },
     left: {
       type: Number,
       default: 0
@@ -53,25 +57,29 @@ export default {
       }
     },
     shape () {
+      const { elementStyle } = this
       return this.normalizeShape({
-        left: this.left,
-        top: this.top,
-        width: this.width,
-        height: this.height
+        left: elementStyle.left,
+        top: elementStyle.top,
+        width: elementStyle.width,
+        height: elementStyle.height
       })
+    },
+    elementStyle () {
+      return this.element.style
     }
   },
   watch: {
-    top (top) {
+    'elementStyle.top' (top) {
       this.rect.top = top
     },
-    left (left) {
+    'elementStyle.left' (left) {
       this.rect.left = left
     },
-    width (width) {
+    'elementStyle.width' (width) {
       this.rect.width = width
     },
-    height (height) {
+    'elementStyle.height' (height) {
       this.rect.height = height
     },
     rect: {
@@ -87,6 +95,11 @@ export default {
       handler: this.onClickOutside,
       scopeNode: document.querySelector('.luban-h5-canvas-wrapper')
     }
+    Object.defineProperties(this.element, {
+      __shape__: {
+        value: this
+      }
+    })
   },
   methods: {
     normalizeShape (shape) {

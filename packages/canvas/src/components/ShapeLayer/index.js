@@ -31,21 +31,15 @@ export default {
   render () {
     return (
       <div class="shape-layer">
-        {this.elements.map(element => {
-          const { style } = element
-          return (
-            <Shape
-              ref="shapeLayer"
-              left={style.left}
-              top={style.top}
-              width={style.width}
-              height={style.height}
-              onChange={(...args) => this._handleChange(...args, element)}
-              onActive={() => this._handleActive(element)}
-              onDeactive={() => this._handleDeactive(element)}
-            />
-          )
-        })}
+        {this.elements.map(element => (
+          <Shape
+            ref="shapeLayer"
+            element={element}
+            onChange={(...args) => this._handleChange(...args, element)}
+            onActive={() => this._handleActive(element)}
+            onDeactive={() => this._handleDeactive(element)}
+          />
+        ))}
       </div>
     )
   }
