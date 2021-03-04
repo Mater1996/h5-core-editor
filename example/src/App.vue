@@ -2,7 +2,7 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-11-02 09:25:51
- * @LastEditTime: 2021-03-03 14:42:35
+ * @LastEditTime: 2021-03-04 15:36:39
  * @Description:
 -->
 <template>
@@ -39,11 +39,7 @@ export default {
                   top: 0,
                   left: 0,
                   width: 186,
-                  height: 292,
-                  textAlign: 'center',
-                  color: '#000000',
-                  backgroundColor: 'rgba(255, 255, 255, 0)',
-                  fontSize: 14,
+                  height: 292
                 },
               },
             ],
