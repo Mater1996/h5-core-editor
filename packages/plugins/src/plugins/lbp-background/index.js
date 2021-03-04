@@ -88,10 +88,11 @@ export default {
     if (this.imgSrc) {
       style = {
         ...style,
-        'background-size': 'cover',
-        'background-position': '50% 50%',
-        'background-origin': 'content-box',
-        'background-image': `url(${this.imgSrc})`
+
+        backgroundSize: 'cover',
+        backgroundPosition: '50% 50%',
+        backgroundOrigin: 'content-box',
+        backgroundImage: `url(${this.imgSrc})`
       }
     } else {
       style = {

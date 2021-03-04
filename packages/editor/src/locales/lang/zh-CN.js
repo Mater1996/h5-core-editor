@@ -1,8 +1,8 @@
 /*
  * @Author: ly525
  * @Date: 2019-11-24 18:51:58
- * @LastEditors: ly525
- * @LastEditTime: 2020-10-13 01:29:21
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-03-04 10:33:11
  * @FilePath: /h5/src/locales/lang/zh-CN.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
@@ -46,7 +46,7 @@ export default {
       tree: '组件树'
     },
     pageManager: {
-      title: '第{index}页面',
+      title: '页面{index}',
       action: {
         add: '新增页面',
         copy: '复制页面',

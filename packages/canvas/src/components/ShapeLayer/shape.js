@@ -1,6 +1,6 @@
-import './index.scss'
-import { renderStyle } from '../../../utils'
-import vClickOutside from '../../../directive/v-click-outside'
+import './shape.scss'
+import { renderStyle } from '../../utils'
+import vClickOutside from '../../directive/v-click-outside'
 
 const points = ['lt', 'rt', 'lb', 'rb', 'lm', 'rm', 'mt', 'mb']
 
@@ -10,9 +10,21 @@ export default {
     vClickOutside
   },
   props: {
-    shapeStyle: {
-      type: Object,
-      default: () => ({})
+    left: {
+      type: Number,
+      default: 0
+    },
+    top: {
+      type: Number,
+      default: 0
+    },
+    width: {
+      type: Number,
+      default: 0
+    },
+    height: {
+      type: Number,
+      default: 0
     },
     disable: {
       type: Boolean,
@@ -41,20 +53,25 @@ export default {
       }
     },
     shape () {
-      return this.normalizeShape(this.shapeStyle)
+      return this.normalizeShape({
+        left: this.left,
+        top: this.top,
+        width: this.width,
+        height: this.height
+      })
     }
   },
   watch: {
-    'shape.top' (top) {
+    top (top) {
       this.rect.top = top
     },
-    'shape.left' (left) {
+    left (left) {
       this.rect.left = left
     },
-    'shape.width' (width) {
+    width (width) {
       this.rect.width = width
     },
-    'shape.height' (height) {
+    height (height) {
       this.rect.height = height
     },
     rect: {
@@ -194,12 +211,7 @@ export default {
     }
     const style = renderStyle(this.shape, this.lubanCanvasContext.unit)
     return (
-      <div
-        style={style}
-        class="shape-layer"
-        {...(!readonly ? options : {})}
-      >
-        <div class="shape-content">{this.$slots.default}</div>
+      <div style={style} class="shape" {...(!readonly ? options : {})}>
         {!readonly && (
           <div class="control">
             {points.map(v => (

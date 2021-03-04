@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-03-03 16:13:56
+ * @LastEditTime: 2021-03-04 15:03:16
  * @Description : 右侧panel为修改 props， events, animations 等属性
  */
 import { pick } from 'lodash'
@@ -62,6 +62,7 @@ export default {
           </Tab>
           <Tab name="布局">
             <RenderLayoutEditor
+              element={this.element}
               value={this.editStylevalue}
               onChange={this.$listeners.styleChange}
             />

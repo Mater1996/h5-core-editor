@@ -2,12 +2,13 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-03-03 14:36:54
+ * @LastEditTime: 2021-03-04 16:00:59
  * @Description :
  */
 import './index.scss'
 import { renderStyle } from './utils'
-import ElementRender from './components/ElementRender'
+import ElementLayer from './components/ElementLayer'
+import ShapeLayer from './components/ShapeLayer'
 
 const LubanH5Canvas = {
   name: 'LubanH5Canvas',
@@ -79,16 +80,8 @@ const LubanH5Canvas = {
         style={this.canvasStyle}
       >
         <div class="luban-h5-canvas-wrapper">
-          <div class="luban-h5-elements">
-            {this.elements.map(element => (
-              <ElementRender
-                key={element.id}
-                element={element}
-                disabled={this.disabled}
-                on={this.$listeners}
-              ></ElementRender>
-            ))}
-          </div>
+          <ElementLayer elements={this.elements} on={this.$listeners} />
+          <ShapeLayer elements={this.elements} on={this.$listeners} />
         </div>
       </div>
     )

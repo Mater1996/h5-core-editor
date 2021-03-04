@@ -8,7 +8,7 @@
 import { LubanElement } from 'luban-h5'
 import LubanH5Canvas from 'luban-h5-canvas'
 const elements = [
-  LubanElement.create({ component: button, style: {}, props: {}, animations: [] })
+  LubanElement.create({ component: VueComponent, style: {}, props: {}, animations: [] })
 ]
 ```
 

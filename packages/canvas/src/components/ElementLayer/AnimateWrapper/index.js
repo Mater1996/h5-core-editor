@@ -10,7 +10,7 @@ import 'animate.css/animate.css'
 import './index.scss'
 
 const AnimateLayer = {
-  name: 'AnimateLayer',
+  name: 'AnimateWrapper',
   props: {
     animations: {
       type: Array,
