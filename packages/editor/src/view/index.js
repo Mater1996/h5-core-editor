@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-03-05 14:53:34
+ * @LastEditTime: 2021-03-05 18:22:11
  * @Description :
  */
 import { debounce } from 'lodash'
@@ -32,6 +32,7 @@ const LpbH5Editor = {
   },
   data: () => ({
     work: {},
+    preview: false,
     pageIndex: 0,
     activeElement: null,
     auxiliayVisible: false,
@@ -187,6 +188,9 @@ const LpbH5Editor = {
     },
     _handleUndo () {
       this.undo()
+    },
+    _handleViewChange () {
+      this.preview = !this.preview
     }
   },
   render () {
@@ -202,13 +206,16 @@ const LpbH5Editor = {
           onDelete={this._handleDeletePage}
           onCopy={this._handleCopyPage}
         />
-        <div
-          class="section container flex flex-1 justify-center px-4 pb-8 pt-16 bg-gray-200"
-          id="editor-wrapper"
-        >
-          <div class="scroll-view remove-scrollbar overflow-auto h-full text-center">
+        <div class="section container relative flex flex-1 justify-center px-4 pb-8 pt-16 bg-gray-200">
+          <div class="edit-header absolute flex flex-row items-center left-0 top-0 right-0 h-9 px-2 bg-white box-border">
+            <div class="option preview flex items-center">
+              <label class="text-sm mr-1">预览:</label>
+              <input type="checkbox" onChange={this._handleViewChange} />
+            </div>
+          </div>
+          <div class="edit-view remove-scrollbar overflow-auto h-full text-center">
             <div
-              class="editor-content inline-block relative self-center"
+              class="inline-block relative self-center"
               onMousedown={this._handlerEditorMouseDown}
               onMouseup={this._hideAuxiliay}
             >
@@ -226,6 +233,7 @@ const LpbH5Editor = {
                 onElementActive={this._handleElementActive}
                 onElementDeactive={this._handleElementDeactive}
                 onElementChange={this._handleElementRectChange}
+                readonly={this.preview}
               />
               <AdjustHeight
                 height={this.currentPage.height}
