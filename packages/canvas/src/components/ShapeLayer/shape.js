@@ -59,6 +59,7 @@ export default {
     shape () {
       const { elementStyle } = this
       return this.normalizeShape({
+        position: elementStyle.position,
         left: elementStyle.left,
         top: elementStyle.top,
         width: elementStyle.width,

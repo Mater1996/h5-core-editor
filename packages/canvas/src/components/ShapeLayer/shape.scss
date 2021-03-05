@@ -1,7 +1,6 @@
 $pointSize: 8;
 
 .shape {
-  position: absolute;
   user-select: none;
   outline: 1px solid transparent;
 }
@@ -19,6 +18,12 @@ $pointSize: 8;
   width: 100%;
   height: 100%;
   overflow: hidden;
+}
+
+.shape .control {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 // !#zh 控制缩放大小的圆点

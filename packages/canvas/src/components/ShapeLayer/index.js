@@ -30,7 +30,7 @@ export default {
   },
   render () {
     return (
-      <div class="shape-layer">
+      <div class="shape-layer absolute left-0 top-0 right-0 bottom-0">
         {this.elements.map(element => (
           <Shape
             ref="shapeLayer"

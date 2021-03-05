@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-13 10:09:46
- * @LastEditTime: 2021-03-04 16:55:32
+ * @LastEditTime: 2021-03-05 10:22:51
  * @Description :
  */
 import Element from './element'
@@ -17,7 +17,7 @@ export default {
   },
   render () {
     return (
-      <div class="element-layer">
+      <div class="element-layer absolute left-0 top-0 right-0 bottom-0">
         {this.elements.map(element => {
           return <Element element={element}/>
         })}
