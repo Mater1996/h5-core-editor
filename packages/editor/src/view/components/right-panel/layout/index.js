@@ -20,7 +20,13 @@ export default {
   },
   data () {
     return {
-      computedStyle: {}
+      computedStyle: {},
+      color: {
+        margin: 'bg-blue-600',
+        border: 'bg-blue-500',
+        padding: 'bg-blue-400',
+        box: 'bg-blue-300'
+      }
     }
   },
   methods: {
@@ -43,59 +49,125 @@ export default {
     }
   },
   render () {
+    const { color, value } = this
     return (
       <div class="layout-setting flex justify-center">
-        <div class="margin flex flex-col text-center text-xs w-48 h-42">
-          <div class="margin-bar margin-top flex justify-center items-center bg-yellow-400 w-full h-4">
-            {this._normalizeValue(this.value.marginTop)}
+        <div class="margin flex flex-col text-center text-xs h-48">
+          <div
+            class={[
+              'margin-bar margin-top flex flex-auto justify-center items-center',
+              color.margin
+            ]}
+          >
+            {this._normalizeValue(value.marginTop)}
           </div>
-          <div class="flex flex-row flex-auto h-28">
-            <div class="margin-bar margin-left flex justify-center items-center bg-yellow-400 w-4 h-full">
-              {this._normalizeValue(this.value.marginLeft)}
+          <div class="flex flex-row flex-auto h-36">
+            <div
+              class={[
+                'margin-bar margin-left flex justify-center items-center min-w-4 h-full p-2',
+                color.margin
+              ]}
+            >
+              {this._normalizeValue(value.marginLeft)}
             </div>
             <div class="flex flex-col flex-auto">
-              <div class="border-bar border-top flex justify-center items-center bg-yellow-600 w-full h-4">
-                {this._normalizeValue(this.value.borderTopWidth)}
+              <div
+                class={[
+                  'border-bar border-top flex flex-auto justify-center items-center',
+                  color.border
+                ]}
+              >
+                {this._normalizeValue(value.borderTopWidth)}
               </div>
-              <div class="flex flex-row flex-auto h-20">
-                <div class="border-bar border-left flex justify-center items-center bg-yellow-600 w-4 h-full">
-                  {this._normalizeValue(this.value.borderLeftWidth)}
+              <div class="flex flex-row flex-auto h-24">
+                <div
+                  class={[
+                    'border-bar border-left flex justify-center items-center min-w-4 h-full p-2',
+                    color.border
+                  ]}
+                >
+                  {this._normalizeValue(value.borderLeftWidth)}
                 </div>
                 <div class="flex flex-col flex-auto">
-                  <div class="padding-bar padding-top flex justify-center items-center bg-yellow-800 w-full h-4">
+                  <div
+                    class={[
+                      'padding-bar padding-top flex flex-auto justify-center items-center',
+                      color.padding
+                    ]}
+                  >
                     {this._normalizeValue(this.value.paddingTop)}
                   </div>
                   <div class="flex flex-row flex-auto h-12">
-                    <div class="padding-bar padding-left flex justify-center items-center bg-yellow-800 w-4 h-full">
+                    <div
+                      class={[
+                        'padding-bar padding-left flex justify-center items-center min-w-4 h-full p-2',
+                        color.padding
+                      ]}
+                    >
                       {this._normalizeValue(this.value.paddingLeft)}
                     </div>
-                    <div class="box flex flex-auto justify-center items-center bg-yellow-900 w-full h-full">
+                    <div
+                      class={[
+                        'box flex flex-auto justify-center items-center min-w-24 h-full',
+                        color.box
+                      ]}
+                    >
                       {`${this._normalizeValue(
                         this.value.width
                       )} x ${this._normalizeValue(this.value.height)}`}
                     </div>
-                    <div class="padding-bar padding-right flex justify-center items-center bg-yellow-800 w-4 h-full ">
+                    <div
+                      class={[
+                        'padding-bar padding-right flex justify-center items-center min-w-4 h-full p-2',
+                        color.padding
+                      ]}
+                    >
                       {this._normalizeValue(this.value.paddingRight)}
                     </div>
                   </div>
-                  <div class="padding-bar padding-bottom flex justify-center items-center bg-yellow-800 w-full h-4 ">
+                  <div
+                    class={[
+                      'padding-bar padding-bottom flex flex-auto justify-center items-center',
+                      color.padding
+                    ]}
+                  >
                     {this._normalizeValue(this.value.paddingBottom)}
                   </div>
                 </div>
-                <div class="border-bar border-right flex justify-center items-center bg-yellow-600 w-4 h-full">
-                  {this._normalizeValue(this.value.borderRightWidth)}
+                <div
+                  class={[
+                    'border-bar border-right flex justify-center items-center min-w-4 h-full p-2',
+                    color.border
+                  ]}
+                >
+                  {this._normalizeValue(value.borderRightWidth)}
                 </div>
               </div>
-              <div class="border-bar border-bottom flex justify-center items-center bg-yellow-600 w-full h-4">
-                {this._normalizeValue(this.value.borderBottomWidth)}
+              <div
+                class={[
+                  'border-bar border-bottom flex flex-auto justify-center items-center ',
+                  color.border
+                ]}
+              >
+                {this._normalizeValue(value.borderBottomWidth)}
               </div>
             </div>
-            <div class="margin-bar margin-right flex justify-center items-center bg-yellow-400 w-4 h-full">
-              {this._normalizeValue(this.value.marginRight)}
+            <div
+              class={[
+                'margin-bar margin-right flex justify-center items-center min-w-4 h-full p-2',
+                color.margin
+              ]}
+            >
+              {this._normalizeValue(value.marginRight)}
             </div>
           </div>
-          <div class="margin-bar margin-bottom flex justify-center items-center bg-yellow-400 w-full h-4">
-            {this._normalizeValue(this.value.marginBottom)}
+          <div
+            class={[
+              'margin-bar margin-bottom flex flex-auto justify-center items-center',
+              color.margin
+            ]}
+          >
+            {this._normalizeValue(value.marginBottom)}
           </div>
         </div>
       </div>

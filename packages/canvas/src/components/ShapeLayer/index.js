@@ -34,6 +34,7 @@ export default {
         {this.elements.map(element => (
           <Shape
             ref="shapeLayer"
+            key={element.id}
             element={element}
             onChange={(...args) => this._handleChange(...args, element)}
             onActive={() => this._handleActive(element)}

@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-03-04 16:03:38
+ * @LastEditTime: 2021-03-05 14:46:59
  * @Description :
  */
 import { debounce } from 'lodash'
@@ -109,9 +109,11 @@ const LpbH5Editor = {
       this.auxiliayVisible = true
     },
     _handleElementActive (element) {
+      console.log('active', element)
       this.activeElement = element
     },
     _handleElementDeactive (deactiveElement) {
+      console.log('deactive', deactiveElement)
       if (deactiveElement === this.activeElement) this.activeElement = null
     },
     _handleAdjustLieMove (offset) {
@@ -203,7 +205,7 @@ const LpbH5Editor = {
           onCopy={this._handleCopyPage}
         />
         <div
-          class="section container flex flex-1 justify-center px-4 pb-8 pt-16 bg-gray-200 "
+          class="section container flex flex-1 justify-center px-4 pb-8 pt-16 bg-gray-200"
           id="editor-wrapper"
         >
           <div class="scroll-view remove-scrollbar overflow-auto h-full text-center">

@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-03-04 16:00:59
+ * @LastEditTime: 2021-03-05 11:43:34
  * @Description :
  */
 import './index.scss'
@@ -81,7 +81,9 @@ const LubanH5Canvas = {
       >
         <div class="luban-h5-canvas-wrapper">
           <ElementLayer elements={this.elements} on={this.$listeners} />
-          <ShapeLayer elements={this.elements} on={this.$listeners} />
+          {!this.readonly && (
+            <ShapeLayer elements={this.elements} on={this.$listeners} />
+          )}
         </div>
       </div>
     )

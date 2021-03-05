@@ -4,7 +4,11 @@ module.exports = {
   ],
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {}
+    extend: {},
+    minWidth: {
+      4: '1rem',
+      24: '6rem'
+    }
   },
   variants: {
     extend: {}

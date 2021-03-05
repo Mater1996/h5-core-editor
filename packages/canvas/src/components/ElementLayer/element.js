@@ -16,11 +16,13 @@ export default {
     const { $refs } = this
     const { lubanElement } = $refs
     this.$lubanElement = lubanElement
-    Object.defineProperties(this.element, {
-      __element__: {
-        value: lubanElement
-      }
-    })
+    if (!this.element.__element__) {
+      Object.defineProperties(this.element, {
+        __element__: {
+          value: lubanElement
+        }
+      })
+    }
   },
   render () {
     const { element } = this

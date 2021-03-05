@@ -96,11 +96,13 @@ export default {
       handler: this.onClickOutside,
       scopeNode: document.querySelector('.luban-h5-canvas-wrapper')
     }
-    Object.defineProperties(this.element, {
-      __shape__: {
-        value: this
-      }
-    })
+    if (!this.element.__shape__) {
+      Object.defineProperties(this.element, {
+        __shape__: {
+          value: this
+        }
+      })
+    }
   },
   methods: {
     normalizeShape (shape) {
