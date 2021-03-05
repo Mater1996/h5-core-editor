@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-03-01 16:49:53
+ * @LastEditTime: 2021-03-05 16:44:29
  * @Description :
  */
 export default {
@@ -26,7 +26,7 @@ export default {
             boxShadow: '0 0 0 1px #d9d9d9 inset'
           }}
         />
-        <span class="text-base font-medium text-gray-900">{this.getTitle()}</span>
+        <span class="text-sm font-medium text-gray-900">{this.getTitle()}</span>
       </span>
     )
   }

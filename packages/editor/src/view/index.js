@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-03-05 14:46:59
+ * @LastEditTime: 2021-03-05 14:53:34
  * @Description :
  */
 import { debounce } from 'lodash'
@@ -109,11 +109,9 @@ const LpbH5Editor = {
       this.auxiliayVisible = true
     },
     _handleElementActive (element) {
-      console.log('active', element)
       this.activeElement = element
     },
     _handleElementDeactive (deactiveElement) {
-      console.log('deactive', deactiveElement)
       if (deactiveElement === this.activeElement) this.activeElement = null
     },
     _handleAdjustLieMove (offset) {

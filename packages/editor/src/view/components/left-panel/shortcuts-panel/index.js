@@ -2,11 +2,12 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-18 09:35:11
- * @LastEditTime: 2021-03-02 15:26:26
+ * @LastEditTime: 2021-03-05 16:39:32
  * @Description :
  */
 import lubanH5 from 'luban-h5'
 import './index.scss'
+import Collapse from '../../../../components/collapse'
 import ShortcutButton from './shortcut-button'
 
 export default {
@@ -64,18 +65,25 @@ export default {
     const plugins =
       lubanH5.plugin.getPlugins().filter(plugin => plugin.visible) || []
     return (
-      <div class="shortcuts-panel flex flex-row flex-wrap justify-between">
-        {plugins.map(plugin => (
-          <ShortcutButton
-            draggable="true"
-            name={plugin.title || plugin.name}
-            icon={plugin.icon}
-            disabled={plugin.disabled}
-            onClick={() => this._triggerAdd({ pluginName: plugin.name })}
-            onDragend={(e) => this._handleDragEnd(e, plugin)}
-          />
-        ))}
-        {plugins.length % 2 !== 0 && <ShortcutButton class="invisible" />}
+      <div class="shortcuts-panel">
+        <Collapse>
+          <Collapse.Item title="普通" show={true}>
+            <div class="flex flex-row flex-wrap justify-between">
+              {plugins.map(plugin => (
+                <ShortcutButton
+                  draggable="true"
+                  name={plugin.title || plugin.name}
+                  icon={plugin.icon}
+                  disabled={plugin.disabled}
+                  onClick={() => this._triggerAdd({ pluginName: plugin.name })}
+                  onDragend={(e) => this._handleDragEnd(e, plugin)}
+                />
+              ))}
+              {plugins.length % 2 !== 0 && <ShortcutButton class="invisible" />}
+            </div>
+          </Collapse.Item>
+        </Collapse>
+
       </div>
     )
   }
