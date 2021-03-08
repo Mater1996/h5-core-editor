@@ -9,10 +9,12 @@ import Input from './input'
 import InputNumber from './input-number'
 import Select from './select'
 import Switch from './switch'
+import DataSource from './data-source-receive'
 
 export default {
   Input,
   InputNumber,
   Select,
-  Switch
+  Switch,
+  DataSource
 }

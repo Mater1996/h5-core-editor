@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-03-05 18:22:11
+ * @LastEditTime: 2021-03-08 17:49:29
  * @Description :
  */
 import { debounce } from 'lodash'
@@ -191,6 +191,10 @@ const LpbH5Editor = {
     },
     _handleViewChange () {
       this.preview = !this.preview
+    },
+    _handleDataSourceChange (value) {
+      console.log(value)
+      this.h5.setData(value)
     }
   },
   render () {
@@ -200,11 +204,13 @@ const LpbH5Editor = {
           class="section plugins flex flex-none w-64 overflow-auto h-full box-border"
           pages={this.work.pages}
           dropTarget=".luban-h5-canvas"
+          dataSource={this.work.data}
           onPageChange={this._handlePageIndexChange}
           onAddElement={this._handleAddElement}
           onAdd={this._handleAddPage}
           onDelete={this._handleDeletePage}
           onCopy={this._handleCopyPage}
+          onDataSourceChange={this._handleDataSourceChange}
         />
         <div class="section container relative flex flex-1 justify-center px-4 pb-8 pt-16 bg-gray-200">
           <div class="edit-header absolute flex flex-row items-center left-0 top-0 right-0 h-9 px-2 bg-white box-border">
@@ -227,9 +233,7 @@ const LpbH5Editor = {
                 v-show={this.auxiliayVisible}
               />
               <LubanH5Canvas
-                width={this.currentPage.width}
-                height={this.currentPage.height}
-                elements={this.currentPage.elements}
+                h5={this.h5}
                 onElementActive={this._handleElementActive}
                 onElementDeactive={this._handleElementDeactive}
                 onElementChange={this._handleElementRectChange}

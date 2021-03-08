@@ -2,7 +2,7 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-11-02 09:25:51
- * @LastEditTime: 2021-03-05 10:09:25
+ * @LastEditTime: 2021-03-08 18:54:06
  * @Description:
 -->
 <template>
@@ -22,7 +22,6 @@ export default {
         id: '3c31d1a0-0c91-4448-bf0a-9510b5b34be3',
         title: '标题',
         description: '描述',
-        cover_image_url: null,
         pages: [
           {
             title: '',
@@ -39,11 +38,12 @@ export default {
                   top: 0,
                   left: 0,
                   width: 186,
-                  height: 292
+                  height: 292,
                 },
               },
               {
-                pluginName: 'lbp-picture',
+                pluginName: 'lbp-rate',
+                subDataSource:['rate'],
                 props: {
                   fillType: 'contain',
                   imgSrc:
@@ -52,19 +52,16 @@ export default {
                 },
                 style: {
                   top: 0,
-                  left: 0,
-                  width: 186,
-                  height: 292
+                  left: 0
                 },
               },
             ],
           },
         ],
-        is_publish: 0,
-        is_template: 0,
-        created_at: '2020-10-12T06:34:41.000Z',
-        updated_at: '2020-10-28T01:24:23.000Z',
-        page_mode: 'h5_swipper',
+      }, {
+        data:{
+          rate: 1
+        }
       }),
     }
   },

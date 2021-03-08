@@ -2,13 +2,13 @@
  * @Author: ly525
  * @Date: 2020-05-17 20:04:23
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-03-03 14:05:48
+ * @LastEditTime: 2021-03-08 19:08:33
  * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-rate.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
  * @Copyright 2018 - 2020 luban-h5. All Rights Reserved
  */
-import { InputNumber, Select } from '@luban-h5/support'
+import { DataSourceReceive, Select, InputNumber } from '@luban-h5/support'
 import Rate from 'vant/lib/rate'
 import 'vant/lib/rate/style'
 import 'vant/lib/icon/local.css'
@@ -16,7 +16,7 @@ import 'vant/lib/icon/local.css'
 export default {
   name: 'lbp-rate',
   props: {
-    value: InputNumber({ label: '当前分值' }),
+    value: DataSourceReceive({ type: Object }), // 数据源输入例如 rate等 这样在组件初始化时会自动绑定上h5 数据源上的 rate 属性
     count: InputNumber({ label: '图标总数' }),
     size: InputNumber({ label: '图标大小' }),
     gutter: InputNumber({ label: '图标间距' }),
@@ -44,7 +44,7 @@ export default {
   render () {
     return (
       <Rate
-        value={this.value}
+        value={this.value.rate}
         count={this.count}
         size={this.size}
         color={this.color}

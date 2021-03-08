@@ -24,7 +24,7 @@ export default {
           onClick={this.clickTitleHandler}
         >
           <span>{this.title}</span>
-          <i class="fa fa-chevron-down text-xs"></i>
+          <i class={['fa fa-chevron-down text-xs', this.showTemp && 'rotate-180 transform']}></i>
         </div>
         <div class="content">{this.$slots.default}</div>
       </div>

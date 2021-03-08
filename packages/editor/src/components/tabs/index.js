@@ -8,4 +8,22 @@ import './index.scss'
 
 import { Tab, Tabs } from 'vue-tabs-component'
 
+const LubanTabs = {
+  render () {
+    return <Tabs>{this.$slots.default}</Tabs>
+  }
+}
+
+const LubanTab = {
+  props: {
+    name: {
+      type: String,
+      default: ''
+    }
+  },
+  render () {
+    return <Tab name={this.name}>{this.$slots.default}</Tab>
+  }
+}
+
 export { Tab, Tabs }

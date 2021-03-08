@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-03-05 10:59:11
+ * @LastEditTime: 2021-03-08 19:05:28
  * @Description :
  */
 
@@ -28,19 +28,20 @@ class LubanElement {
       props = {},
       style = {},
       attrs = {},
-      animations = []
+      animations = [],
+      subDataSource = []
     } = options
     this.pluginName = pluginName
     this.id = id++
-    // 传入具体的element render 的 参数
+    // 传入 ElementLayer 的 参数
     this.props = {
       ...props
     }
-    // 传入具体的element render 的 属性
+    // 传入 ElementLayer 的 属性
     this.attrs = {
       ...attrs
     }
-    // 传入具体的element render 的 样式
+    // 传入 ElementLayer 的 样式
     this.class = {
       ...options.class
     }
@@ -49,8 +50,11 @@ class LubanElement {
       ...ShapeLayerDefaultProps,
       ...style
     }
-    // 传入 animateLayer 以实现动画效果
+    // 传入 animateSetting 以实现动画效果
     this.animations = [...animations]
+
+    // 数据源订阅者
+    this.subDataSource = [...subDataSource]
 
     if (component) {
       LubanElement.saveComponent(this.id, component)
@@ -75,9 +79,10 @@ class LubanElement {
    *
    * @param {Object} data // 需要更新的element数据包括props ,style,animations
    */
-  update ({ props, style, animations }) {
+  update ({ props, style, animations, dataSource, attrs }) {
     props && Object.assign(this.props, props)
     style && Object.assign(this.style, style)
+    attrs && Object.assign(this.attrs, attrs)
     if (animations) {
       Object.assign(this.animations, animations)
       this.animations.length = animations.length
@@ -90,6 +95,14 @@ class LubanElement {
   getEditorProps () {
     const component = this.getComponent()
     return pickBy(component.props, c => !!c.name)
+  }
+
+  /**
+   *
+   */
+  getDataSourceReceiveProps () {
+    const component = this.getComponent()
+    return pickBy(component.props, c => c.name === 'DataSourceReceive')
   }
 
   /**

@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-03-05 11:43:34
+ * @LastEditTime: 2021-03-08 18:45:59
  * @Description :
  */
 import './index.scss'
@@ -13,17 +13,13 @@ import ShapeLayer from './components/ShapeLayer'
 const LubanH5Canvas = {
   name: 'LubanH5Canvas',
   props: {
-    width: {
+    h5: {
+      type: Object,
+      default: () => ({})
+    },
+    page: {
       type: Number,
       default: 0
-    },
-    height: {
-      type: Number,
-      default: 0
-    },
-    elements: {
-      type: Array,
-      default: () => []
     },
     readonly: {
       type: Boolean,
@@ -34,16 +30,11 @@ const LubanH5Canvas = {
       default: 'px'
     }
   },
-  provide () {
-    return {
-      lubanCanvasContext: this.lubanCanvasContext
-    }
-  },
   data () {
     return {
       lubanCanvasContext: {
-        width: this.width,
-        height: this.height,
+        width: this.h5.pages[this.page].width,
+        height: this.h5.pages[this.page].height,
         readonly: this.readonly,
         unit: this.unit
       }
@@ -58,14 +49,26 @@ const LubanH5Canvas = {
     }
   },
   computed: {
+    currentPage () {
+      return this.h5.pages[this.page]
+    },
+    elements () {
+      return this.currentPage.elements
+    },
     canvasStyle () {
       return renderStyle(
         {
-          width: this.width,
-          height: this.height
+          width: this.currentPage.width,
+          height: this.currentPage.height
         },
         this.unit
       )
+    }
+  },
+  provide () {
+    return {
+      lubanCanvasContext: this.lubanCanvasContext,
+      h5: this.h5
     }
   },
   methods: {

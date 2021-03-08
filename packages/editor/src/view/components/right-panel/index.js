@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-03-04 15:03:16
+ * @LastEditTime: 2021-03-08 19:00:31
  * @Description : 右侧panel为修改 props， events, animations 等属性
  */
 import { pick } from 'lodash'
@@ -10,6 +10,7 @@ import { Tabs, Tab } from '../../../components/tabs'
 import RenderPropsEditor from './props'
 import RenderLayoutEditor from './layout'
 import RenderActionEditor from './action'
+import RenderSubDataSource from './sub-data-source'
 
 export default {
   name: 'RightPanel',
@@ -47,6 +48,12 @@ export default {
       const { element } = this
       const animations = element ? element.animations : []
       return animations
+    },
+    editSubDataSource () {
+      const { element } = this
+      const subDataSource = element ? element.subDataSource : []
+      console.log(111, subDataSource)
+      return subDataSource
     }
   },
   render () {
@@ -73,8 +80,9 @@ export default {
               onChange={this.$listeners.animationsChange}
             /> */}
           </Tab>
-          <Tab name="动作">
-            {this.activeTabKey === '动作' && <RenderActionEditor />}
+          <Tab name="动作">{<RenderActionEditor />}</Tab>
+          <Tab name="订阅数据源">
+            {<RenderSubDataSource subDataSource={this.editSubDataSource} />}
           </Tab>
         </Tabs>
       </div>

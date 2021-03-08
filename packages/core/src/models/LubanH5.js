@@ -14,18 +14,24 @@ class LubanH5 {
   constructor ({
     title = '标题',
     description = '描述',
-    pages = [],
-    isPublish,
-    isTemplate
-  } = {}) {
+    pages = []
+  } = {}, {
+    data = {}
+  }) {
     this.id = id++
     this.title = title
     this.description = description
     this.pages = []
-    this.cover_image_url = ''
-    this.is_publish = !!isPublish
-    this.is_template = !!isTemplate
+    this.data = {}
     this.addPage(...pages)
+    this.setData(data)
+  }
+
+  setData (data) {
+    this.data = {
+      ...this.data,
+      ...data
+    }
   }
 
   addPage (...pages) {

@@ -2,12 +2,13 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-03-02 11:33:17
+ * @LastEditTime: 2021-03-08 19:23:20
  * @Description :
  */
 import { Tabs, Tab } from '../../../components/tabs'
 import RenderShortcutsPanel from './shortcuts-panel/index'
 import RenderPageManager from './page-manager/index'
+import RenderDataSourceEditor from './data-source'
 
 export default {
   name: 'LeftPanel',
@@ -19,17 +20,32 @@ export default {
     dropTarget: {
       type: String,
       default: 'body'
+    },
+    dataSource: {
+      type: Object,
+      default: () => ({})
     }
   },
   render (h) {
     return (
       <div>
         <Tabs options={{ useUrlFragment: false }} tabBarGutter={10}>
-          <Tab name="插件" tab={this.$t('editor.sidebar.components')}>
-            <RenderShortcutsPanel onAdd={this.$listeners.addElement} dropTarget={this.dropTarget}/>
+          <Tab name="插件">
+            <RenderShortcutsPanel
+              onAdd={this.$listeners.addElement}
+              dropTarget={this.dropTarget}
+            />
           </Tab>
-          <Tab name="页面" tab={this.$t('editor.sidebar.pages')}>
+          <Tab name="页面">
             <RenderPageManager pages={this.pages} on={this.$listeners} />
+          </Tab>
+          <Tab name="数据源">
+            {
+              <RenderDataSourceEditor
+                dataSource={this.dataSource}
+                onChange={this.$listeners.dataSourceChange}
+              />
+            }
           </Tab>
         </Tabs>
       </div>

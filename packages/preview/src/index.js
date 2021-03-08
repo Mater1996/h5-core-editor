@@ -1,5 +1,4 @@
 import LubanH5Canvas from '@luban-h5/canvas'
-import './styles/index.scss'
 
 const LubanH5Preview = {
   name: 'LubanH5Preview',
