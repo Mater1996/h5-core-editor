@@ -6,6 +6,7 @@
  */
 import './index.scss'
 
-import { Tab, Tabs } from 'vue-tabs-component'
+import Tabs from './components/Tabs'
+import Tab from './components/Tab'
 
 export { Tab, Tabs }

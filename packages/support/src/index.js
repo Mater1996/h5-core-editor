@@ -8,13 +8,20 @@
 import { genLubanSupport } from './prop-types/base'
 
 export const Switch = /*#__PURE__*/ genLubanSupport('Switch', { type: Boolean })
-export const InputNumber = /*#__PURE__*/ genLubanSupport('InputNumber', { type: Number })
+export const InputNumber = /*#__PURE__*/ genLubanSupport('InputNumber', {
+  type: Number
+})
 export const Input = /*#__PURE__*/ genLubanSupport('Input', { type: String })
 export const Select = /*#__PURE__*/ genLubanSupport('Select', { type: null })
+export const DataSourceReceive = /*#__PURE__*/ genLubanSupport('DataSourceReceive', {
+  type: null,
+  label: '数据'
+})
 
 export default {
   Switch,
   InputNumber,
   Input,
-  Select
+  Select,
+  DataSourceReceive
 }

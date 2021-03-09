@@ -2,7 +2,7 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-12-03 11:27:45
- * @LastEditTime: 2021-02-03 17:20:55
+ * @LastEditTime: 2021-03-09 10:58:19
  * @Description:
 -->
 
@@ -13,8 +13,8 @@
 ## Usage
 
 ```js
-import 'luban-h5-editor/dist/luban-h5-editor.css'
-import lubanH5Editor from 'luban-h5-editor'
+import '@luban-h5/editor/dist/luban-h5-editor.css'
+import lubanH5Editor from '@luban-h5/editor'
 
 Vue.use(lubanH5Editor)
 ```
