@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-03-09 10:50:56
+ * @LastEditTime: 2021-03-09 17:22:37
  * @Description :
  */
 import { debounce } from 'lodash'
@@ -241,6 +241,7 @@ const LpbH5Editor = {
               />
               <LubanH5Canvas
                 h5={this.h5}
+                page={this.pageIndex}
                 onElementActive={this._handleElementActive}
                 onElementDeactive={this._handleElementDeactive}
                 onElementChange={this._handleElementRectChange}
