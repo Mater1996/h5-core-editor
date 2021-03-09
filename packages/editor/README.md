@@ -2,7 +2,7 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-12-03 11:27:45
- * @LastEditTime: 2021-03-09 10:58:19
+ * @LastEditTime: 2021-03-09 18:52:44
  * @Description:
 -->
 
@@ -13,14 +13,23 @@
 ## Usage
 
 ```js
+import LubanH5 from 'luban-h5'
 import '@luban-h5/editor/dist/luban-h5-editor.css'
-import lubanH5Editor from '@luban-h5/editor'
+import LubanH5Editor from '@luban-h5/editor'
 
-Vue.use(lubanH5Editor)
+Vue.use(LubanH5Editor)
+
+export default{
+  data(){
+    return {
+      h5: LubanH5.create({})
+    }
+  }
+}
 ```
 
 ```html
-<CoreEditor :h5="{}" ref="editor" />
+<LubanH5Editor :h5="h5" ref="editor" />
 ```
 
 #### props

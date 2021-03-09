@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-03-09 10:16:33
+ * @LastEditTime: 2021-03-09 17:35:42
  * @Description :
  */
 
@@ -29,7 +29,8 @@ class LubanElement {
       style = {},
       attrs = {},
       animations = [],
-      subDataSource = []
+      subDataSource = [],
+      events = []
     } = options
     this.pluginName = pluginName
     this.id = id++
@@ -56,6 +57,10 @@ class LubanElement {
     // 数据源订阅者
     this.subDataSource = [...subDataSource]
 
+    // 事件
+    this.events = [...events]
+
+    // 填充 componet default props
     if (component) {
       LubanElement.saveComponent(this.id, component)
       this.props = {

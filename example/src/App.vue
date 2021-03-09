@@ -2,7 +2,7 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-11-02 09:25:51
- * @LastEditTime: 2021-03-09 15:51:27
+ * @LastEditTime: 2021-03-09 17:46:46
  * @Description:
 -->
 <template>
@@ -41,6 +41,9 @@ export default {
                     width: 186,
                     height: 292,
                   },
+                  events:[['click', function(){
+                    console.log(1233)
+                  }]]
                 },
                 {
                   pluginName: 'lbp-rate',
@@ -54,7 +57,7 @@ export default {
                   style: {
                     top: 0,
                     left: 0,
-                  },
+                  }
                 },
               ],
             },
