@@ -59,12 +59,21 @@ export default {
   },
   render () {
     const { element } = this
-    const { props } = element
+    const { props, events } = element
     const component = element.getComponent()
+    const options = {
+      nativeOn: {
+        ...events.reduce((result, [name, fn]) => {
+          result[name] = fn
+          return result
+        }, {})
+      }
+    }
     return (
       component && (
         <component
           ref="lubanElement"
+          {...options}
           props={{ ...props, ...this.dataSourceProp }}
           style={this.appliedStyle}
           onChange={this._handleChange}

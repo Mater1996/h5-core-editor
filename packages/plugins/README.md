@@ -2,20 +2,20 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-12-03 11:33:24
- * @LastEditTime: 2021-03-09 10:58:08
+ * @LastEditTime: 2021-03-09 18:54:31
  * @Description:
 -->
 
 # `luban-h5-plugins`
 
-> 鲁班 h5 插件集（为编辑器以及预览提供服务）
+> LubanH5 插件集（为编辑器以及预览提供服务）
 
 ## Usage
 
 ```js
-import lubanH5 from 'luban-h5'
+import LubanH5 from 'luban-h5'
 import { LbpButton } from 'luban-h5-plugins'
-lubanH5.plugin.register({
+LubanH5.plugin.register({
   title: '普通按钮',
   name: LbpButton.name,
   icon: 'hand-pointer-o',
@@ -42,28 +42,29 @@ lubanH5.plugin.register({
 | LbpTable             |       | 表格     |
 | LbpNewsList          |       | 新闻列表 |
 
-
 ## 自定义插件
 
 ```js
-import lubanH5 from 'luban-h5'
-import {Input} from '@luban-h5/support' // 引入luban自定义修改属性，由该方法声明的属性会可编辑
+import LubanH5 from 'luban-h5'
+import { Input } from '@luban-h5/support' // 引入luban自定义修改属性，由该方法声明的属性会可编辑
 
-const customComponent {
-  name: 'lbp-button2',
+const CustomComponent {
+  name: 'CustomComponent',
   props: {
     text: Input({
       label:'默认文字'
     })
+  },
+  render(){
+    return <div class="custom-component"></div>
   }
 }
 
-lubanH5.plugin.register({
-  title: '普通按钮',
-  name: customComponent.name,
+LubanH5.plugin.register({
+  title: '自定义组件',
+  name: CustomComponent.name,
   icon: 'hand-pointer-o',
   visible: true,
-  component: customComponent
+  component: CustomComponent
 })
 ```
-

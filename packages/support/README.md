@@ -2,13 +2,13 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-12-03 11:33:55
- * @LastEditTime: 2021-03-09 11:03:51
+ * @LastEditTime: 2021-03-09 18:55:08
  * @Description:
 -->
 
 # `luban-h5-support`
 
-> lubanH5 属性编辑器扩展支持/为插件编写提供支持
+> 为LubanH5插件提供可编辑属性声明支持
 
 ## Usage
 

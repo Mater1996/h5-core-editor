@@ -1,6 +1,6 @@
 # `luban-h5`
 
-> luban-h5
+> LubanH5
 
 ## Usage
 
