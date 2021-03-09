@@ -68,6 +68,24 @@ export default {
     },
     elementStyle () {
       return this.element.style
+    },
+    appliedStyle () {
+      return renderStyle(this.shape, this.lubanCanvasContext.unit)
+    },
+    shapeOptions () {
+      return {
+        directives: [{
+          name: 'v-click-outside',
+          value: this.vcoConfig
+        }],
+        on: {
+          mousedown: this.handleShapeDown
+        },
+        class: [{ shape: true, active: this.active }],
+        attrs: {
+          tabindex: 0
+        }
+      }
     }
   },
   watch: {
@@ -215,19 +233,8 @@ export default {
   },
   render () {
     const { readonly } = this.lubanCanvasContext
-    const options = {
-      directives: [{ name: 'v-click-outside', value: this.vcoConfig }],
-      on: {
-        mousedown: this.handleShapeDown
-      },
-      class: [{ active: this.active }],
-      attrs: {
-        tabindex: 0
-      }
-    }
-    const style = renderStyle(this.shape, this.lubanCanvasContext.unit)
     return (
-      <div style={style} class="shape" {...(!readonly ? options : {})}>
+      <div style={this.appliedStyle} {...(!readonly ? this.shapeOptions : {})}>
         {!readonly && (
           <div class="control">
             {points.map(v => (

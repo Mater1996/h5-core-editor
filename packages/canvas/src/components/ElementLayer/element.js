@@ -4,7 +4,7 @@
  * @Date: 2021-03-04 16:49:37
  * @Description:
  */
-import { renderStyle } from '../../utils'
+import { renderStyle, getPropertyValue, setPropertyValue } from '../../utils'
 export default {
   props: {
     element: {
@@ -13,6 +13,33 @@ export default {
     }
   },
   inject: ['h5'],
+  computed: {
+    componentDataSourceReceiveKey () {
+      const dataSourceReceive = this.element.getDataSourceReceiveProps()
+      return Object.keys(dataSourceReceive)[0]
+    },
+    elementSubDataSourceKey () {
+      const { subDataSource } = this.element
+      return subDataSource[0]
+    },
+    componentDataSourceReceiveValue () {
+      const dataSource = this.h5.getData()
+      return getPropertyValue(dataSource, this.elementSubDataSourceKey)
+    },
+    dataSourceProp () {
+      if (this.componentDataSourceReceiveKey) {
+        return {
+          [this.componentDataSourceReceiveKey]: this
+            .componentDataSourceReceiveValue
+        }
+      } else {
+        return {}
+      }
+    },
+    appliedStyle () {
+      return renderStyle(this.element.style)
+    }
+  },
   mounted () {
     const { $refs } = this
     const { lubanElement } = $refs
@@ -27,29 +54,19 @@ export default {
   },
   methods: {
     _handleChange (value) {
-      this.h5.setData(value)
+      setPropertyValue(this.h5.getData(), value, this.elementSubDataSourceKey)
     }
   },
   render () {
     const { element } = this
-    const { style, props, subDataSource } = element
-    const dataSource = this.h5.getData()
+    const { props } = element
     const component = element.getComponent()
-    const dataSourceReceive = element.getDataSourceReceiveProps()
-    const componentDataSource = {}
-    subDataSource.forEach(key =>
-      Object.assign(componentDataSource, dataSource[key])
-    )
-    const componentDataSourceReceiveKey = Object.keys(dataSourceReceive)[0]
-    const dataSourceProp = {
-      [componentDataSourceReceiveKey]: componentDataSource
-    }
     return (
       component && (
         <component
           ref="lubanElement"
-          props={{ ...props, ...dataSourceProp }}
-          style={renderStyle(style)}
+          props={{ ...props, ...this.dataSourceProp }}
+          style={this.appliedStyle}
           onChange={this._handleChange}
         ></component>
       )

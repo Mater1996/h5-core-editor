@@ -4,6 +4,9 @@
  * @Date: 2021-03-08 17:32:12
  * @Description: 订阅数据源
  */
+
+// import Table from '../../../../components/table'
+
 export default {
   props: {
     subDataSource: {
@@ -39,6 +42,7 @@ export default {
             return <p>{v}</p>
           })}
         </div>
+        {/* <Table/> */}
       </div>
     )
   }
