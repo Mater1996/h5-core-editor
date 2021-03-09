@@ -17,8 +17,19 @@ export default {
       default: () => ({})
     }
   },
+  watch: {
+    dataSource: {
+      handler (newValue) {
+        if (this.codeMirror.getValue() !== this.flushDataSource(newValue)) {
+          this.codeMirror.setValue(this.flushDataSource(newValue))
+        }
+      },
+      deep: true
+    }
+  },
   mounted () {
     setTimeout(() => {
+      // TODD: 外部响应
       const codeMirror = (this.codeMirror = CodeMirror(
         document.querySelector('.data-source'),
         {
@@ -30,22 +41,22 @@ export default {
           lint: true
         }
       ))
-      codeMirror.on('change', this._handleCodeChange)
+      codeMirror.on('update', this._handleCodeChange)
     })
   },
   methods: {
-    flushDataSource (dataSource) {
-      return JSON.stringify(dataSource, null, '  ')
+    flushDataSource (data) {
+      return JSON.stringify(data, null, '  ')
     },
     _handleCodeChange (e, changeObj) {
       try {
         const value = this.codeMirror
           .getValue()
           .replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ')
-        this.$emit('change', JSON.parse(value))
-      } catch (error) {
-
-      }
+        const parseValue = JSON.parse(value)
+        console.log(parseValue)
+        this.$emit('change', parseValue)
+      } catch (error) {}
     }
   },
   render () {

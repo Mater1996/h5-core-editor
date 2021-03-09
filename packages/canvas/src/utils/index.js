@@ -8,7 +8,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-17 16:59:14
- * @LastEditTime: 2021-03-03 16:09:42
+ * @LastEditTime: 2021-03-09 16:09:48
  * @Description :
  */
 import { isNumber } from 'lodash'
@@ -43,5 +43,26 @@ export const renderStyle = function (
 }
 
 export function isPromise (value) {
-  return value && typeof value.subscribe !== 'function' && typeof value.then === 'function'
+  return (
+    value &&
+    typeof value.subscribe !== 'function' &&
+    typeof value.then === 'function'
+  )
+}
+
+export function getPropertyValue (obj = {}, path = '') {
+  return path
+    .split('.') // split string based on `.`
+    .reduce(function (o, k) {
+      return o && o[k] // get inner property if `o` is defined else get `o` and return
+    }, obj) // set initial value as object
+}
+
+export function setPropertyValue (obj = {}, value, path = '') {
+  var i
+  path = path.split('.')
+  for (i = 0; i < path.length - 1; i++) {
+    obj = obj[path[i]]
+  }
+  obj[path[i]] = value
 }
