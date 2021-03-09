@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-03-08 19:05:28
+ * @LastEditTime: 2021-03-09 10:16:33
  * @Description :
  */
 
@@ -79,13 +79,16 @@ class LubanElement {
    *
    * @param {Object} data // 需要更新的element数据包括props ,style,animations
    */
-  update ({ props, style, animations, dataSource, attrs }) {
+  update ({ props, style, animations, subDataSource, attrs }) {
     props && Object.assign(this.props, props)
     style && Object.assign(this.style, style)
     attrs && Object.assign(this.attrs, attrs)
     if (animations) {
       Object.assign(this.animations, animations)
       this.animations.length = animations.length
+    }
+    if (subDataSource) {
+      this.subDataSource = subDataSource
     }
   }
 

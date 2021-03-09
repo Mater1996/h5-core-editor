@@ -2,7 +2,7 @@
  * @Author: ly525
  * @Date: 2020-05-17 20:04:23
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-03-08 19:08:33
+ * @LastEditTime: 2021-03-08 19:39:05
  * @FilePath: /luban-h5/front-end/h5/src/components/@/plugins/lbp-rate.js
  * @Github: https://github.com/ly525/luban-h5
  * @Description: Do not edit
@@ -41,6 +41,11 @@ export default {
       }
     })
   },
+  methods: {
+    _handleChange (value) {
+      this.$emit('change', { ...this.value, rate: value })
+    }
+  },
   render () {
     return (
       <Rate
@@ -52,6 +57,7 @@ export default {
         icon={this.mode}
         void-icon={`${this.mode}-o`}
         void-color="#eee"
+        onChange={this._handleChange}
       />
     )
   }

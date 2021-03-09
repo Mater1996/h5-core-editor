@@ -5,23 +5,26 @@
 ## Usage
 
 ```js
-import { LubanElement } from 'luban-h5'
-import LubanH5Canvas from 'luban-h5-canvas'
-const elements = [
-  LubanElement.create({ component: VueComponent, style: {}, props: {}, animations: [] })
-]
+import LubanH5 from 'luban-h5'
+import LubanH5Canvas from '@luban-h5/canvas'
+
+export default {
+  data() {
+    return {
+      h5: LubanH5.create({})
+    }
+  }
+}
 ```
 
 ```html
-<LubanH5Canvas :width="750" :height="1334" :elements="elements" />
+<LubanH5Canvas :h5="h5" />
 ```
 
 #### props
 
-| name     | type    | default |                |
-| -------- | ------- | ------- | -------------- |
-| width    | number  | 0       | 宽             |
-| height   | number  | 0       | 高             |
-| elements | array   | []      | 渲染的元素数组 |
-| readonly | boolean | false   | 是否只读       |
-| unit     | 'rem'   | 'px'    | 'px'           | 渲染的元素形状单位 |
+| name     | type    | default |           |
+| -------- | ------- | ------- | --------- |
+| h5       | LubanH5 | null      | 渲染的 H5 |
+| readonly | boolean | false   | 是否只读  |
+| unit     | 'rem'   | 'px'    | 'px'      | 渲染的元素形状单位 |

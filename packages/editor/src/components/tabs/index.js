@@ -6,24 +6,7 @@
  */
 import './index.scss'
 
-import { Tab, Tabs } from 'vue-tabs-component'
-
-const LubanTabs = {
-  render () {
-    return <Tabs>{this.$slots.default}</Tabs>
-  }
-}
-
-const LubanTab = {
-  props: {
-    name: {
-      type: String,
-      default: ''
-    }
-  },
-  render () {
-    return <Tab name={this.name}>{this.$slots.default}</Tab>
-  }
-}
+import Tabs from './components/Tabs'
+import Tab from './components/Tab'
 
 export { Tab, Tabs }

@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-03-08 18:45:59
+ * @LastEditTime: 2021-03-09 10:12:22
  * @Description :
  */
 import './index.scss'
@@ -30,24 +30,6 @@ const LubanH5Canvas = {
       default: 'px'
     }
   },
-  data () {
-    return {
-      lubanCanvasContext: {
-        width: this.h5.pages[this.page].width,
-        height: this.h5.pages[this.page].height,
-        readonly: this.readonly,
-        unit: this.unit
-      }
-    }
-  },
-  watch: {
-    width (width) {
-      this.updateCanvas({ width })
-    },
-    height (height) {
-      this.updateCanvas({ height })
-    }
-  },
   computed: {
     currentPage () {
       return this.h5.pages[this.page]
@@ -63,17 +45,20 @@ const LubanH5Canvas = {
         },
         this.unit
       )
+    },
+    lubanCanvasContext () {
+      return {
+        width: this.currentPage.width,
+        height: this.currentPage.height,
+        readonly: this.readonly,
+        unit: this.unit
+      }
     }
   },
   provide () {
     return {
       lubanCanvasContext: this.lubanCanvasContext,
       h5: this.h5
-    }
-  },
-  methods: {
-    updateCanvas (data) {
-      Object.assign(this.lubanCanvasContext, data)
     }
   },
   render () {

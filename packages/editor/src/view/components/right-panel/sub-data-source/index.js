@@ -18,18 +18,18 @@ export default {
   },
   methods: {
     _handleAddSubDataSource () {
-      this.$emit('change', [...this.subDataSources, this.currentSubDataSource])
+      this.$emit('change', [...this.subDataSource, this.currentSubDataSource])
     }
   },
   render () {
     return (
-      <div class="p-2">
+      <div>
         <input
-          class="inline-block border p-2"
+          class="inline-block border mr-2 text-xs h-7"
           v-model={this.currentSubDataSource}
         />
         <button
-          class="inline-block border p-2 bg-green-600 text-sm box-border"
+          class="inline-block border bg-green-600 text-xs p-1 px-2 text-center text-white"
           onClick={this._handleAddSubDataSource}
         >
           添加

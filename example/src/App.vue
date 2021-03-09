@@ -2,7 +2,7 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-11-02 09:25:51
- * @LastEditTime: 2021-03-08 18:54:06
+ * @LastEditTime: 2021-03-09 10:48:52
  * @Description:
 -->
 <template>
@@ -43,7 +43,7 @@ export default {
               },
               {
                 pluginName: 'lbp-rate',
-                subDataSource:['rate'],
+                subDataSource:['rateComponentDataSource'],
                 props: {
                   fillType: 'contain',
                   imgSrc:
@@ -60,7 +60,9 @@ export default {
         ],
       }, {
         data:{
-          rate: 1
+          rateComponentDataSource:{
+            rate: 1
+          }
         }
       }),
     }

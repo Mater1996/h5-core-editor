@@ -11715,11 +11715,6 @@ vue-runtime-helpers@^1.1.2:
   resolved "https://registry.npm.taobao.org/vue-runtime-helpers/download/vue-runtime-helpers-1.1.2.tgz#446b7b820888ab0c5264d2c3a32468e72e4100f3"
   integrity sha1-RGt7ggiIqwxSZNLDoyRo5y5BAPM=
 
-vue-tabs-component@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.npm.taobao.org/vue-tabs-component/download/vue-tabs-component-1.5.0.tgz#9b2f02adbc9bb58395729d68c4906a795a20d728"
-  integrity sha1-my8CrbybtYOVcp1oxJBqeVog1yg=
-
 vue-template-compiler@^2.6.12:
   version "2.6.12"
   resolved "https://registry.npm.taobao.org/vue-template-compiler/download/vue-template-compiler-2.6.12.tgz?cache=0&sync_timestamp=1597927391993&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvue-template-compiler%2Fdownload%2Fvue-template-compiler-2.6.12.tgz#947ed7196744c8a5285ebe1233fe960437fcc57e"

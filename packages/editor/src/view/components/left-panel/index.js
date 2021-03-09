@@ -2,8 +2,8 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-03-08 19:23:20
- * @Description :
+ * @LastEditTime: 2021-03-09 10:51:26
+ * @Description : 左侧修改为修改H5数据 例如 page,data 等
  */
 import { Tabs, Tab } from '../../../components/tabs'
 import RenderShortcutsPanel from './shortcuts-panel/index'

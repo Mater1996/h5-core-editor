@@ -2,7 +2,7 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-12-03 11:33:24
- * @LastEditTime: 2021-02-03 17:24:48
+ * @LastEditTime: 2021-03-09 10:58:08
  * @Description:
 -->
 
@@ -47,12 +47,14 @@ lubanH5.plugin.register({
 
 ```js
 import lubanH5 from 'luban-h5'
-import PropTypes from 'luban-h5-support' // 引入luban自定义修改属性，由该方法声明的属性会可编辑
+import {Input} from '@luban-h5/support' // 引入luban自定义修改属性，由该方法声明的属性会可编辑
 
 const customComponent {
   name: 'lbp-button2',
   props: {
-    text: PropTypes.string()
+    text: Input({
+      label:'默认文字'
+    })
   }
 }
 

@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-03-08 17:49:29
+ * @LastEditTime: 2021-03-09 10:50:56
  * @Description :
  */
 import { debounce } from 'lodash'
@@ -31,7 +31,6 @@ const LpbH5Editor = {
     }
   },
   data: () => ({
-    work: {},
     preview: false,
     pageIndex: 0,
     activeElement: null,
@@ -41,7 +40,7 @@ const LpbH5Editor = {
   }),
   computed: {
     currentPage () {
-      const { pages = [] } = this.work
+      const { pages = [] } = this.h5
       const currentPage = pages[this.pageIndex] || {}
       return currentPage
     },
@@ -54,29 +53,33 @@ const LpbH5Editor = {
   watch: {
     h5: {
       handler (h5 = {}) {
-        this.work = h5
-        history.init(this.work)
-        console.log(this.work)
+        history.init(this.h5)
+        console.log(this.h5)
       },
       immediate: true
     }
   },
+  provide () {
+    return {
+      h5: this.h5
+    }
+  },
   methods: {
     record: debounce(function () {
-      history.addState(this.work)
+      history.addState(this.h5)
     }, 80),
     getData () {
-      return this.work
+      return this.h5
     },
     changePageIndex (index) {
       this.pageIndex = index
     },
     addPage (page) {
-      this.work.addPage(page)
+      this.h5.addPage(page)
       this.record()
     },
     deletePage (index) {
-      this.work.deletePage(index)
+      this.h5.deletePage(index)
     },
     updatePage (data) {
       Object.assign(this.currentPage, data)
@@ -95,10 +98,10 @@ const LpbH5Editor = {
       this.record()
     },
     undo () {
-      this.work = lubanH5.create(history.undo())
+      this.h5 = lubanH5.create(history.undo())
     },
     redo () {
-      this.work = lubanH5.create(history.redo())
+      this.h5 = lubanH5.create(history.redo())
     },
     _handlerEditorMouseDown () {
       this.activeElement && this._showAuxiliay()
@@ -174,7 +177,7 @@ const LpbH5Editor = {
       this.deletePage(index)
     },
     _handleCopyPage (index) {
-      const newPage = this.work.pages[index].clone()
+      const newPage = this.h5.pages[index].clone()
       this.addPage(newPage)
     },
     _handlePageHeightChange (height) {
@@ -193,8 +196,12 @@ const LpbH5Editor = {
       this.preview = !this.preview
     },
     _handleDataSourceChange (value) {
-      console.log(value)
       this.h5.setData(value)
+    },
+    _handleSubDataSourceChange (value) {
+      this.updateElement({
+        subDataSource: value
+      })
     }
   },
   render () {
@@ -202,9 +209,9 @@ const LpbH5Editor = {
       <div class="luban-h5-editor flex flex-row justify-between h-full">
         <EditorLeftPanel
           class="section plugins flex flex-none w-64 overflow-auto h-full box-border"
-          pages={this.work.pages}
+          pages={this.h5.pages}
           dropTarget=".luban-h5-canvas"
-          dataSource={this.work.data}
+          dataSource={this.h5.data}
           onPageChange={this._handlePageIndexChange}
           onAddElement={this._handleAddElement}
           onAdd={this._handleAddPage}
@@ -230,7 +237,7 @@ const LpbH5Editor = {
                 data={this.elementsRect}
                 width={this.currentPage.width}
                 height={this.currentPage.height}
-                v-show={this.auxiliayVisible}
+                v-show={!this.preview && this.auxiliayVisible}
               />
               <LubanH5Canvas
                 h5={this.h5}
@@ -240,6 +247,7 @@ const LpbH5Editor = {
                 readonly={this.preview}
               />
               <AdjustHeight
+                v-show={!this.preview}
                 height={this.currentPage.height}
                 onChange={this._handlePageHeightChange}
               />
@@ -254,6 +262,7 @@ const LpbH5Editor = {
           onPropsChange={this._handlePropsChange}
           onStyleChange={this._handleStyleChange}
           onAnimationsChange={this._handleAnimationsChange}
+          onSubDataSourceChange={this._handleSubDataSourceChange}
         />
       </div>
     )

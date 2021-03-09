@@ -27,20 +27,22 @@ export default {
   },
   methods: {
     _handleChange (value) {
-      this.element.onChange('rate', value)
+      this.h5.setData(value)
     }
   },
   render () {
     const { element } = this
     const { style, props, subDataSource } = element
+    const dataSource = this.h5.getData()
     const component = element.getComponent()
     const dataSourceReceive = element.getDataSourceReceiveProps()
-    const componentDataSource = subDataSource.reduce((a, b) => {
-      a[b] = this.h5.data[b]
-      return a
-    }, {})
+    const componentDataSource = {}
+    subDataSource.forEach(key =>
+      Object.assign(componentDataSource, dataSource[key])
+    )
+    const componentDataSourceReceiveKey = Object.keys(dataSourceReceive)[0]
     const dataSourceProp = {
-      [Object.keys(dataSourceReceive)[0]]: componentDataSource
+      [componentDataSourceReceiveKey]: componentDataSource
     }
     return (
       component && (

@@ -2,7 +2,7 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-02 16:12:09
- * @LastEditTime: 2021-03-08 19:00:31
+ * @LastEditTime: 2021-03-09 10:14:55
  * @Description : 右侧panel为修改 props， events, animations 等属性
  */
 import { pick } from 'lodash'
@@ -52,7 +52,6 @@ export default {
     editSubDataSource () {
       const { element } = this
       const subDataSource = element ? element.subDataSource : []
-      console.log(111, subDataSource)
       return subDataSource
     }
   },
@@ -60,29 +59,36 @@ export default {
     return (
       <div style={{ width: `${this.width}px` }}>
         <Tabs options={{ useUrlFragment: false }}>
-          <Tab name="属性">
+          <Tab name="属性" class="p-2">
             <RenderPropsEditor
               config={this.editPropsConfig}
               value={this.editPropsValue}
               onChange={this.$listeners.propsChange}
             />
           </Tab>
-          <Tab name="布局">
+          <Tab name="布局" class="p-2">
             <RenderLayoutEditor
               element={this.element}
               value={this.editStylevalue}
               onChange={this.$listeners.styleChange}
             />
           </Tab>
-          <Tab name="动画">
+          <Tab name="动画" class="p-2">
             {/* <RenderAnimationEditor
               value={this.editAnimationValue}
               onChange={this.$listeners.animationsChange}
             /> */}
           </Tab>
-          <Tab name="动作">{<RenderActionEditor />}</Tab>
-          <Tab name="订阅数据源">
-            {<RenderSubDataSource subDataSource={this.editSubDataSource} />}
+          <Tab name="动作" class="p-2">
+            {<RenderActionEditor />}
+          </Tab>
+          <Tab name="订阅数据源" class="p-2">
+            {
+              <RenderSubDataSource
+                subDataSource={this.editSubDataSource}
+                onChange={this.$listeners.subDataSourceChange}
+              />
+            }
           </Tab>
         </Tabs>
       </div>

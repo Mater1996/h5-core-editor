@@ -4,6 +4,6 @@
 
 ## Usage
 
-```
-import {}
+``` js
+import {LubanH5, LubanPage, LubanElement, LubanPlugin} from '@luban-h5/core'
 ```
