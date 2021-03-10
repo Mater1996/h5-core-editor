@@ -4,7 +4,7 @@
  * @Date: 2020-10-29 19:52:14
  * @Description: 
 -->
-# 鲁班H5编辑器
+# LubanH5 Editor
 
 - [Demo](https://mater1996.github.io/h5-core-editor)
 
