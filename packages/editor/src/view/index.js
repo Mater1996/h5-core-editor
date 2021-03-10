@@ -2,12 +2,12 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-10-28 09:30:06
- * @LastEditTime: 2021-03-09 17:22:37
+ * @LastEditTime: 2021-03-09 21:01:40
  * @Description :
  */
 import { debounce } from 'lodash'
 import LubanH5Canvas from '@luban-h5/canvas'
-import lubanH5 from 'luban-h5'
+import LubanH5 from 'luban-h5'
 
 import i18n from '../locales'
 import history from '../utils/history'
@@ -98,10 +98,10 @@ const LpbH5Editor = {
       this.record()
     },
     undo () {
-      this.h5 = lubanH5.create(history.undo())
+      this.h5 = LubanH5.create(history.undo())
     },
     redo () {
-      this.h5 = lubanH5.create(history.redo())
+      this.h5 = LubanH5.create(history.redo())
     },
     _handlerEditorMouseDown () {
       this.activeElement && this._showAuxiliay()

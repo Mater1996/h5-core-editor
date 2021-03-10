@@ -2,13 +2,13 @@
  * @author: Mater
  * @Email: bxh8640@gmail.com
  * @Date: 2020-12-03 11:27:45
- * @LastEditTime: 2021-03-09 18:52:44
+ * @LastEditTime: 2021-03-10 10:19:59
  * @Description:
 -->
 
 # `luban-h5-editor`
 
-> 鲁班 H5 核心编辑器
+> LubanH5 Editor
 
 ## Usage
 

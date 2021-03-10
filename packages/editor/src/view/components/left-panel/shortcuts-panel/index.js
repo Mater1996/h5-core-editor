@@ -2,10 +2,10 @@
  * @author : Mater
  * @Email : bxh8640@gmail.com
  * @Date : 2020-11-18 09:35:11
- * @LastEditTime: 2021-03-05 16:39:32
+ * @LastEditTime: 2021-03-10 10:19:31
  * @Description :
  */
-import lubanH5 from 'luban-h5'
+import LubanH5 from 'luban-h5'
 import './index.scss'
 import Collapse from '../../../../components/collapse'
 import ShortcutButton from './shortcut-button'
@@ -63,7 +63,7 @@ export default {
   },
   render () {
     const plugins =
-      lubanH5.plugin.getPlugins().filter(plugin => plugin.visible) || []
+      LubanH5.plugin.getPlugins().filter(plugin => plugin.visible) || []
     return (
       <div class="shortcuts-panel">
         <Collapse>
@@ -83,7 +83,6 @@ export default {
             </div>
           </Collapse.Item>
         </Collapse>
-
       </div>
     )
   }
